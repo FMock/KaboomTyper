@@ -1,6 +1,8 @@
 #define SDL_MAIN_HANDLED
 #include "Game.h"
 
+using namespace GameEngine;
+
 /*  main.cpp
 	Project Name - Kaboom Typer
 	Author       - Frank Mock
