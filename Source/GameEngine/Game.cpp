@@ -1,7 +1,9 @@
 #include"Game.h"
 #include<GL/glew.h>
 #include<time.h>
+#include "Sprite.h"
 
+using namespace GameEngine;
 
 Game::Game()
 {
@@ -92,76 +94,8 @@ void Game::Shutdown()
 
 void Game::ProcessInput()
 {
-	m_kbState = SDL_GetKeyboardState(NULL);// We want status of all the keys
-
-	memcpy(m_kbPrevState, m_kbState, sizeof(m_kbPrevState)); // copy key states into previous key states array
-
-	// Handle OS message pump.
-	SDL_Event event;
-	while (SDL_PollEvent(&event))
-	{
-		switch (event.type)
-		{
-		case SDL_QUIT:
-			m_shouldExit = 1;
-		}
-	}
-
-	// Take action if any keys are pressed. check SDL SCANCODES https://wiki.libsdl.org/SDL_Scancode
-	if (m_kbState[SDL_SCANCODE_BACKSPACE] && !m_kbPrevState[SDL_SCANCODE_BACKSPACE])
-	{
-		m_noKeyPressTime = 0;
-		printf("BACKSPACE\n");
-	}
-	else if (m_kbState[SDL_SCANCODE_RETURN] && !m_kbPrevState[SDL_SCANCODE_RETURN])
-	{
-		m_noKeyPressTime = 0;
-		printf("RETURN\n");
-
-	}
-	else if (m_kbState[SDL_SCANCODE_LEFT] && !m_kbPrevState[SDL_SCANCODE_LEFT])
-	{ // LEFT ARROW KEY PRESSED
-		m_noKeyPressTime = 0;
-		printf("LEFT_ARROW\n");
-
-	}// NO DIRECTIONAL KEYS PRESSED
-	else if (!m_kbState[SDL_SCANCODE_LEFT] &&									
-		!m_kbPrevState[SDL_SCANCODE_LEFT] &&
-		!m_kbState[SDL_SCANCODE_RIGHT] &&
-		!m_kbPrevState[SDL_SCANCODE_RIGHT] &&
-		!m_kbState[SDL_SCANCODE_UP] &&
-		!m_kbPrevState[SDL_SCANCODE_UP] &&
-		!m_kbState[SDL_SCANCODE_DOWN] &&
-		!m_kbPrevState[SDL_SCANCODE_DOWN])
-	{
-		m_noKeyPressTime = 0;
-
-	}
-	else if (m_kbState[SDL_SCANCODE_RIGHT] && !m_kbPrevState[SDL_SCANCODE_RIGHT])
-	{  // RIGHT ARROW KEY PRESSED
-		m_noKeyPressTime = 0;
-		printf("RIGHT_ARROW\n");
-	}
-	else if (m_kbState[SDL_SCANCODE_UP] && !m_kbPrevState[SDL_SCANCODE_UP])
-	{  // UP ARROW KEY PRESSED
-		m_noKeyPressTime = 0;
-		printf("UP_ARROW\n");
-	}
-	else if (m_kbState[SDL_SCANCODE_DOWN] && !m_kbPrevState[SDL_SCANCODE_DOWN])
-	{  // DOWN ARROW KEY PRESSED
-		m_noKeyPressTime = 0;
-		printf("DOWN_ARROW\n");
-	}
-	else if (m_kbState[SDL_SCANCODE_SPACE] && !m_kbPrevState[SDL_SCANCODE_SPACE])
-	{
-		m_noKeyPressTime = 0;
-		printf("SPACE\n");
-	}
-	// player wants to exit game
-	if (m_kbState[SDL_SCANCODE_ESCAPE])
-	{
-		m_shouldExit = 1;
-	}
+	m_InputManager->ProcessInput();
+	m_shouldExit = m_InputManager->ShouldQuit();
 }
 
 void Game::UpdateGame()
@@ -184,6 +118,7 @@ void Game::UpdateGame()
 
 	m_fps++; // increment frame counter each iteration
 
+	m_sprite->Update();
 
 	//fmod_sys->update(); // If you don't update the sound will play once
 }
@@ -202,11 +137,15 @@ void Game::GenerateOutput()
 
 void Game::LoadData()
 {
-
+	// Initialize Input Manager
+	m_InputManager = new InputManager();
+	m_sprite = new Sprite();
+	m_InputManager->RegisterObserver(m_sprite);
 }
 
 void Game::UnloadData()
 {
-
+	delete m_InputManager;
+	delete m_sprite;
 }
 
