@@ -135,16 +135,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="DrawUtils.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="InputObserver.h" />
     <ClInclude Include="Sprite.h" />
+    <ClInclude Include="TextString.h" />
+    <ClInclude Include="TextStringFont.h" />
     <ClInclude Include="Vector2D.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="DrawUtils.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="Sprite.cpp" />
+    <ClCompile Include="TextString.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

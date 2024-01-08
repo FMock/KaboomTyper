@@ -13,6 +13,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GameEngine", "Source\GameEngine\GameEngine.vcxproj", "{595E98F5-E70B-4430-9303-E1A6CF0FB63C}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KaboomTyper", "Source\KaboomTyper\KaboomTyper.vcxproj", "{49E3D023-BADA-4D16-9CF6-3548AEBBB794}"
+	ProjectSection(ProjectDependencies) = postProject
+		{595E98F5-E70B-4430-9303-E1A6CF0FB63C} = {595E98F5-E70B-4430-9303-E1A6CF0FB63C}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "InputTestApp", "Source\InputTestApp\InputTestApp.vcxproj", "{EEC42797-4431-45C4-B025-B7FAA4AD0B96}"
 EndProject
