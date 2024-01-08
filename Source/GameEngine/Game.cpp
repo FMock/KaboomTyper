@@ -2,6 +2,8 @@
 #include<GL/glew.h>
 #include<time.h>
 #include "Sprite.h"
+#include "TextString.h"
+#include "TextStringFont.h"
 
 using namespace GameEngine;
 
@@ -119,6 +121,7 @@ void Game::UpdateGame()
 	m_fps++; // increment frame counter each iteration
 
 	m_sprite->Update();
+	m_textStr->Update(m_deltaTime);
 
 	//fmod_sys->update(); // If you don't update the sound will play once
 }
@@ -130,6 +133,7 @@ void Game::GenerateOutput()
 	glClear(GL_COLOR_BUFFER_BIT); // Be sure to always draw objects after this
 
 	// Draw Objects
+	m_textStr->DrawText();
 
 	// Swap Window
 	SDL_GL_SwapWindow(m_window);
@@ -141,11 +145,24 @@ void Game::LoadData()
 	m_InputManager = new InputManager();
 	m_sprite = new Sprite();
 	m_InputManager->RegisterObserver(m_sprite);
+
+	// Initialize a TextString to drawing
+	m_textStr = new TextString();
+	TextStringFont font;
+	font.image = DrawUtilities::glTexImageTGAFile("../../Resources/images/game_font.tga"); // TODO READ INIT PARAMS FROM CONFIG FILE
+	font.imageWidth = 496;
+	font.imageHeight = 216;
+	font.frameWidth = 31;
+	font.frameHeight = 36;
+	int x = 150; // x position to draw on screen
+	int y = 150; // y position to draw on screen
+	m_textStr->Initialize("Kaboom Typer!", x, y, font);
 }
 
 void Game::UnloadData()
 {
 	delete m_InputManager;
 	delete m_sprite;
+	delete m_textStr;
 }
 

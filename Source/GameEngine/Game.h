@@ -5,6 +5,7 @@
 #include <vector>
 #include "InputManager.h"
 #include "Sprite.h"
+#include "TextString.h"
 
 namespace GameEngine
 {
@@ -18,6 +19,7 @@ namespace GameEngine
 
 	private:
 		Sprite* m_sprite;
+		TextString* m_textStr;
 		InputManager* m_InputManager;
 		SDL_Window* m_window;
 		SDL_GLContext m_glcontext;
