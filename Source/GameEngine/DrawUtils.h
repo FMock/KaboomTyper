@@ -19,6 +19,7 @@ struct GlDrawFrameParams
 namespace DrawUtilities
 {
 	GLuint glTexImageTGAFile(const char* filename);
+	GLuint glTexImageTGAFile(const char* filename, int* outWidth, int* outHeight);
 
 	/* Uses default values for s and t texture coordinates since it assumes
 		* the full texture will be drawn*/
@@ -53,4 +54,5 @@ namespace DrawUtilities
 
 	void glDrawSpriteRotate(GLuint tex, int x, int y, int w, int h, GLfloat angle);
 
+	void DrawTrapezoid();
 }

@@ -1,0 +1,10 @@
+<Parameters>
+	<FontParameters parameters>
+		<FontsheetName>game_font.tga</FontsheetName>
+		<Texture>0</Texture>
+		<FontsheetWidth>496</FontsheetWidth>
+		<FontsheetHeight>216</FontsheetHeight>
+		<FontWidth>31</FontWidth>
+		<FontHeight>36</FontHeight>
+	</FontParameters parameters>
+</Parameters>
