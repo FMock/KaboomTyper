@@ -125,9 +125,48 @@ void Game::UpdateGame()
 	m_fps++; // increment frame counter each iteration
 
 	m_sprite->Update();
-	m_textStr->Update(m_deltaTime);
 
 	//fmod_sys->update(); // If you don't update the sound will play once
+}
+
+void Game::LoadData()
+{
+	// Initialize Input Manager
+	m_InputManager = new InputManager();
+	m_sprite = new Sprite();
+	m_InputManager->RegisterObserver(m_sprite);
+
+	Utilities::ReadXmlFile("../../Config/FontParameters.xml", m_fontParameters); // TODO: DON'T USE HARD-CODED PATHS
+
+	m_font = new TextStringFont();
+	m_font->image = m_fontParameters.m_texture;
+	m_font->imageWidth = m_fontParameters.m_fontsheetWidth;
+	m_font->imageHeight = m_fontParameters.m_fontsheetHeight;
+	m_font->frameWidth = m_fontParameters.m_fontWidth;
+	m_font->frameHeight = m_fontParameters.m_fontHeight;
+	int x = 8; // x position to draw on screen
+	int y = 4; // y position to draw on screen
+
+
+	m_textStr2 = new TextString();
+	m_textStr2->Initialize("Press Spacebar to Begin", x + 50, y + 50, *m_font);
+
+	Utilities::ReadXmlFile("../../Config/TextBlockParameters.xml", m_textBlockParameters); // TODO: DON'T USE HARD-CODED PATHS
+
+	// Load all the textures into the String-to-Image map
+	m_stringToImageMap["red"] = m_textBlockParameters.redBlockTexture;
+	m_stringToImageMap["blue"] = m_textBlockParameters.blueBlockTexture;
+	m_stringToImageMap["green"] = m_textBlockParameters.greenBlockTexture;
+	m_stringToImageMap["yellow"] = m_textBlockParameters.yellowBlockTexture;
+	m_stringToImageMap["purple"] = m_textBlockParameters.purpleBlockTexture;
+	m_stringToImageMap["white"] = m_textBlockParameters.whiteBlockTexture;
+	m_stringToImageMap["orange"] = m_textBlockParameters.orangeBlockTexture;
+	m_textBlockWidth = m_textBlockParameters.blockWidth;
+	m_textBlockHeight = m_textBlockParameters.blockHeight;
+
+	// Create a TextBlock
+	m_textBlock = new TextBlock(10, 10, m_textBlockParameters, *m_font, std::string("Kaboom Typer!"), m_stringToImageMap);
+	m_InputManager->RegisterObserver(m_textBlock);
 }
 
 void Game::GenerateOutput()
@@ -138,60 +177,17 @@ void Game::GenerateOutput()
 
 	// Draw Objects
 	m_textBlock->Draw();
-	m_textStr->DrawText();
 	m_textStr2->DrawText();
 
 	// Swap Window
 	SDL_GL_SwapWindow(m_window);
 }
 
-void Game::LoadData()
-{
-	// Initialize Input Manager
-	m_InputManager = new InputManager();
-	m_sprite = new Sprite();
-	m_InputManager->RegisterObserver(m_sprite);
-
-	// Initialize a TextString to drawing
-	m_textStr = new TextString();
-	m_textStr2 = new TextString();
-
-	Utilities::ReadXmlFile("../../Config/FontParameters.xml", m_fontParameters); // TODO: DON'T USE HARD-CODED PATHS
-
-	TextStringFont font;
-	font.image = m_fontParameters.m_texture;
-	font.imageWidth = m_fontParameters.m_fontsheetWidth;
-	font.imageHeight = m_fontParameters.m_fontsheetHeight;
-	font.frameWidth = m_fontParameters.m_fontWidth;
-	font.frameHeight = m_fontParameters.m_fontHeight;
-	int x = 8; // x position to draw on screen
-	int y = 4; // y position to draw on screen
-	m_textStr->Initialize("Kaboom Typer!", x, y, font);
-	m_textStr2->Initialize("More Text", x + 50, y + 50, font);
-
-	Utilities::ReadXmlFile("../../Config/TextBlockParameters.xml", m_textBlockParameters); // TODO: DON'T USE HARD-CODED PATHS
-
-	// Load all the textures into the String-to-Image map
-	m_stringToImageMap["red"] = m_textBlockParameters.m_redBlockTexture;
-	m_stringToImageMap["blue"] = m_textBlockParameters.m_blueBlockTexture;
-	m_stringToImageMap["green"] = m_textBlockParameters.m_greenBlockTexture;
-	m_stringToImageMap["yellow"] = m_textBlockParameters.m_yellowBlockTexture;
-	m_stringToImageMap["purple"] = m_textBlockParameters.m_purpleBlockTexture;
-	m_stringToImageMap["white"] = m_textBlockParameters.m_whiteBlockTexture;
-	m_stringToImageMap["orange"] = m_textBlockParameters.m_orangeBlockTexture;
-	m_textBlockWidth = m_textBlockParameters.m_blockWidth;
-	m_textBlockHeight = m_textBlockParameters.m_blockHeight;
-
-	// Create a TextBlock
-	std::string stringForTextBlock("Kaboom!");
-	m_textBlock = new TextBlock(10, 10, m_textBlockParameters.m_blockWidth, m_textBlockParameters.m_blockHeight, stringForTextBlock.c_str(), m_stringToImageMap);
-}
-
 void Game::UnloadData()
 {
 	delete m_InputManager;
 	delete m_sprite;
-	delete m_textStr;
+	delete m_font;
 	delete m_textStr2;
 	delete m_textBlock;
 }

@@ -11,6 +11,7 @@ public:
 	TextString() = default;
 
 	void Initialize(const char* string, int x, int y, TextStringFont& params);
+	void Initialize(std::string& string, int x, int y, TextStringFont& params);
 	void DrawText();
 	void Update(float dt);
 	void MoveRight();
@@ -20,7 +21,8 @@ public:
 	void Stop();
 
 private:
-	const char* m_string;
+	//const char* m_string;
+	std::string m_string;
 	GLuint m_image;
 	int m_width;  // image width
 	int m_height; // image height

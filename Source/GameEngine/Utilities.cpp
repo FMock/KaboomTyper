@@ -109,74 +109,74 @@ bool Utilities::ReadXmlFile(const char* fileName, TextBlockParameters& parameter
 
 		if (row[0] == "BlockWidth") // WIDTH OF A SINGLE TEXTBLOCK 
 		{
-			parameters.m_blockWidth = stoi(row[1]);
+			parameters.blockWidth = stoi(row[1]);
 		}
 		else if (row[0] == "BlockHeight") // HEIGHT OF A SINGLE TEXTBLOCK
 		{
-			parameters.m_blockHeight = stoi(row[1]);
+			parameters.blockHeight = stoi(row[1]);
 		}
 		else if (row[0] == "RedBlockFileName") // RED
 		{
-			parameters.m_redBlockFileName = row[1];
+			parameters.redBlockFileName = row[1];
 		}
 		else if (row[0] == "RedBlockTexture")
 		{                                          
-			pathToFontFile.append(parameters.m_redBlockFileName);
-			parameters.m_redBlockTexture = DrawUtilities::glTexImageTGAFile(pathToFontFile.c_str(), &parameters.m_blockWidth, &parameters.m_blockHeight);
+			pathToFontFile.append(parameters.redBlockFileName);
+			parameters.redBlockTexture = DrawUtilities::glTexImageTGAFile(pathToFontFile.c_str(), &parameters.blockWidth, &parameters.blockHeight);
 		}
 		if (row[0] == "BlueBlockFileName") // BLUE
 		{
-			parameters.m_blueBlockFileName = row[1];
+			parameters.blueBlockFileName = row[1];
 		}
 		else if (row[0] == "BlueBlockTexture")
 		{                   
-			pathToFontFile.append(parameters.m_blueBlockFileName);
-			parameters.m_blueBlockTexture = DrawUtilities::glTexImageTGAFile(pathToFontFile.c_str(), &parameters.m_blockWidth, &parameters.m_blockHeight);
+			pathToFontFile.append(parameters.blueBlockFileName);
+			parameters.blueBlockTexture = DrawUtilities::glTexImageTGAFile(pathToFontFile.c_str(), &parameters.blockWidth, &parameters.blockHeight);
 		}
 		if (row[0] == "GreenBlockFileName") // GREEN
 		{
-			parameters.m_greenBlockFileName = row[1];
+			parameters.greenBlockFileName = row[1];
 		}
 		else if (row[0] == "GreenBlockTexture")
 		{                              
-			pathToFontFile.append(parameters.m_greenBlockFileName);
-			parameters.m_greenBlockTexture = DrawUtilities::glTexImageTGAFile(pathToFontFile.c_str(), &parameters.m_blockWidth, &parameters.m_blockHeight);
+			pathToFontFile.append(parameters.greenBlockFileName);
+			parameters.greenBlockTexture = DrawUtilities::glTexImageTGAFile(pathToFontFile.c_str(), &parameters.blockWidth, &parameters.blockHeight);
 		}
 		if (row[0] == "YellowBlockFileName") // YELLOW
 		{
-			parameters.m_yellowBlockFileName = row[1];
+			parameters.yellowBlockFileName = row[1];
 		}
 		else if (row[0] == "YellowBlockTexture")
 		{                                           
-			pathToFontFile.append(parameters.m_yellowBlockFileName);
-			parameters.m_yellowBlockTexture = DrawUtilities::glTexImageTGAFile(pathToFontFile.c_str(), &parameters.m_blockWidth, &parameters.m_blockHeight);
+			pathToFontFile.append(parameters.yellowBlockFileName);
+			parameters.yellowBlockTexture = DrawUtilities::glTexImageTGAFile(pathToFontFile.c_str(), &parameters.blockWidth, &parameters.blockHeight);
 		}
 		if (row[0] == "PurpleBlockFileName") // PURPLE
 		{
-			parameters.m_purpleBlockFileName = row[1];
+			parameters.purpleBlockFileName = row[1];
 		}
 		else if (row[0] == "PurpleBlockTexture")
 		{                                     
-			pathToFontFile.append(parameters.m_purpleBlockFileName);
-			parameters.m_purpleBlockTexture = DrawUtilities::glTexImageTGAFile(pathToFontFile.c_str(), &parameters.m_blockWidth, &parameters.m_blockHeight);
+			pathToFontFile.append(parameters.purpleBlockFileName);
+			parameters.purpleBlockTexture = DrawUtilities::glTexImageTGAFile(pathToFontFile.c_str(), &parameters.blockWidth, &parameters.blockHeight);
 		}
 		if (row[0] == "WhiteBlockFileName") // WHITE
 		{
-			parameters.m_whiteBlockFileName = row[1];
+			parameters.whiteBlockFileName = row[1];
 		}
 		else if (row[0] == "WhiteBlockTexture")
 		{                                                  
-			pathToFontFile.append(parameters.m_whiteBlockFileName);
-			parameters.m_whiteBlockTexture = DrawUtilities::glTexImageTGAFile(pathToFontFile.c_str(), &parameters.m_blockWidth, &parameters.m_blockHeight);
+			pathToFontFile.append(parameters.whiteBlockFileName);
+			parameters.whiteBlockTexture = DrawUtilities::glTexImageTGAFile(pathToFontFile.c_str(), &parameters.blockWidth, &parameters.blockHeight);
 		}
 		if (row[0] == "OrangeBlockFileName") // ORANGE
 		{
-			parameters.m_orangeBlockFileName = row[1];
+			parameters.orangeBlockFileName = row[1];
 		}
 		else if (row[0] == "OrangeBlockTexture")
 		{                                        
-			pathToFontFile.append(parameters.m_orangeBlockFileName);
-			parameters.m_orangeBlockTexture = DrawUtilities::glTexImageTGAFile(pathToFontFile.c_str(), &parameters.m_blockWidth, &parameters.m_blockHeight);
+			pathToFontFile.append(parameters.orangeBlockFileName);
+			parameters.orangeBlockTexture = DrawUtilities::glTexImageTGAFile(pathToFontFile.c_str(), &parameters.blockWidth, &parameters.blockHeight);
 		}
 	}
 	in.close();

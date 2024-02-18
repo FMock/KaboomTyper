@@ -38,8 +38,69 @@ TextBlock::TextBlock(int x, int y, int w, int h, std::string s, std::map<std::st
 	//setWidth(w);  // 30 a single textblock is 30 pixels wide
 	setHeight(h); // 30 a single textblock is 30 pixels high, When constructed we only need the height
 	int textSize = m_text.size(); // TODO: THERE SHOULD BE A m_textSize member of TextString that TextBlock uses
-	setWidth(textSize * fontWidth);
+	float scaleFactor = 0.5f;
+	int adjustedSize = (int)textSize * fontWidth * scaleFactor;
+	setWidth(adjustedSize);
 }
+
+GameEngine::TextBlock::~TextBlock()
+{
+	delete m_textString;
+}
+
+//GameEngine::TextBlock::TextBlock(int x, int y, TextBlockParameters& textBlockParams, TextString& textString, std::string s, std::map<std::string, GLuint>& tMap) 
+//	: Sprite(x, y, textBlockParams.blockWidth, textBlockParams.blockHeight), m_strToImageMap(tMap), m_textString(textString)
+//{
+//	m_colors.push_back("white"), m_colors.push_back("blue"), m_colors.push_back("green");
+//	m_colors.push_back("yellow"), m_colors.push_back("purple"), m_colors.push_back("red");
+//	m_colors.push_back("orange");
+//	srand(time(0));
+//	m_color = m_colors.at(rand() % 7);
+//	fontWidth = 31; // 23 previously - TODO THIS SHOULD NOT BE HARD-CODED
+//	fontHeight = 36; //25 previously - TODO THIS SHOULD NOT BE HARD-CODED
+//	m_text = s;
+//	collided = false;
+//	remove = false;
+//	isHit = false;
+//	moving = true;
+//	direction = DOWN;
+//	box.setW(m_characterSize[0]);
+//	box.setH(m_characterSize[1]);
+//	//loadImages();
+//	//setWidth(w);  // 30 a single textblock is 30 pixels wide
+//	setHeight(textBlockParams.blockHeight); // 30 a single textblock is 30 pixels high, When constructed we only need the height
+//	int textSize = m_text.size(); // TODO: THERE SHOULD BE A m_textSize member of TextString that TextBlock uses
+//	setWidth(textSize * fontWidth);
+//}
+
+GameEngine::TextBlock::TextBlock(int x, int y, TextBlockParameters& textBlockParams, TextStringFont& font, std::string str, std::map<std::string, GLuint>& tMap) 
+	: Sprite(x, y, textBlockParams.blockWidth, textBlockParams.blockHeight), m_strToImageMap(tMap), m_textString(new TextString())
+{
+	m_textString->Initialize(str.c_str(), x, y, font);
+
+	m_colors.push_back("white"), m_colors.push_back("blue"), m_colors.push_back("green");
+	m_colors.push_back("yellow"), m_colors.push_back("purple"), m_colors.push_back("red");
+	m_colors.push_back("orange");
+	srand(time(0));
+	m_color = m_colors.at(rand() % 7);
+	//fontWidth = 31; // 23 previously - TODO THIS SHOULD NOT BE HARD-CODED
+	//fontHeight = 36; //25 previously - TODO THIS SHOULD NOT BE HARD-CODED
+	m_text = str;
+	collided = false;
+	remove = false;
+	isHit = false;
+	moving = true;
+	direction = DOWN;
+	box.setW(m_characterSize[0]);
+	box.setH(m_characterSize[1]);
+	//loadImages();
+	//setWidth(w);  // 30 a single textblock is 30 pixels wide
+	setHeight(textBlockParams.blockHeight); // 30 a single textblock is 30 pixels high, When constructed we only need the height
+	int textSize = m_text.size(); // TODO: THERE SHOULD BE A m_textSize member of TextString that TextBlock uses
+	setWidth(textSize * textBlockParams.blockWidth);
+}
+
+
 
 
 // Draw the textBlock to the screen
@@ -47,7 +108,7 @@ void TextBlock::Draw(){
 	//int textSize = m_text.size(); // TODO: THERE SHOULD BE A m_textSize member of TextString that TextBlock uses
 	//setWidth(textSize * fontWidth);
 	glDrawSprite(m_strToImageMap[m_color],  m_characterPos[0], m_characterPos[1], m_characterSize[0], m_characterSize[1]);
-
+	m_textString->DrawText();
 	// For each character of text, get it's corresponding image from the map and draw it
 	//int offset = 0;
 	//for(std::string::size_type i = 0; i < textSize; ++i) {

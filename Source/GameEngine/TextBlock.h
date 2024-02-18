@@ -8,6 +8,9 @@
 #include "game_data.h"
 #include <sstream>
 #include <ctime>
+#include "TextString.h"
+#include "TextBlockParameters.h"
+#include "TextStringFont.h"
 
 // Author - Frank Mock
 // TextBlock.h
@@ -21,6 +24,10 @@ namespace GameEngine
 	public:
 		TextBlock() = default;
 		TextBlock(int, int, int, int, std::string, std::map<std::string, GLuint>& tMap);
+		TextBlock(int, int, TextBlockParameters&, TextStringFont&, std::string, std::map<std::string, GLuint>& tMap);
+		//TextBlock(int, int, TextBlockParameters&, TextString&, std::string, std::map<std::string, GLuint>& tMap);
+		~TextBlock();
+		TextString* m_textString;
 
 		std::map<std::string, GLuint> m_strToImageMap;
 

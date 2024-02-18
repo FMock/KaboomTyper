@@ -29,6 +29,24 @@ void TextString::Initialize(const char* string, int x, int y, TextStringFont& pa
 	m_speedY = 140; // TODO GET RID OF THIS MAGIC NUMBER 
 }
 
+void TextString::Initialize(std::string& string, int x, int y, TextStringFont& params)
+{
+	m_string = string;
+	m_image = params.image;
+	m_width = params.imageWidth;
+	m_height = params.imageHeight;
+	m_frameWidth = params.frameWidth;
+	m_frameHeight = params.frameHeight;
+	m_numColumns = (params.imageWidth / params.frameWidth);
+	m_numRows = (params.imageHeight / params.frameHeight);
+	m_x = x;
+	m_y = y;
+	m_changeX = 0;
+	m_changeY = 0;
+	m_speedX = 140; // TODO GET RID OF THIS MAGIC NUMBER (LOAD FROM CONFIG FILE?)
+	m_speedY = 140; // TODO GET RID OF THIS MAGIC NUMBER 
+}
+
 /*Draws each character of this objects string
  *Assumes the following raster font image which is 16 characters wide X 6 characters high
  character in the top left corner is a space, ascii character = 32
@@ -47,7 +65,7 @@ void TextString::DrawText(){
 	int currentCol = 0;
 	int currentRow = 0;
 
-	for(int i = 0; i < strlen(m_string); i++){
+	for(int i = 0; i < strlen(m_string.c_str()); i++){
 
 		int asciiValue = m_string[i]; // get ascii value of character
 
