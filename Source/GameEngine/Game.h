@@ -33,6 +33,7 @@ namespace GameEngine
 		GLuint m_red;
 		GLuint m_blue;
 		GLuint m_green;
+		TextStringFont* m_font;
 		FontParameters m_fontParameters;
 		int m_textBlockWidth = 30;
 		int m_textBlockHeight = 30;
