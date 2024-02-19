@@ -21,22 +21,17 @@ namespace GameEngine
 		void Shutdown();
 
 	private:
-		Sprite* m_sprite;
+
 		TextString* m_textStr;
-		TextString* m_textStr2;
 		TextBlock* m_textBlock;
 		TextBlockParameters m_textBlockParameters;
 		InputManager* m_InputManager;
 		SDL_Window* m_window;
 		SDL_GLContext m_glcontext;
-		std::map<std::string, GLuint> m_stringToImageMap;
-		GLuint m_red;
-		GLuint m_blue;
-		GLuint m_green;
+		std::map<std::string, GLuint> m_stringToColoredBlockTextureMap;
 		TextStringFont* m_font;
 		FontParameters m_fontParameters;
-		int m_textBlockWidth = 30;
-		int m_textBlockHeight = 30;
+
 		void ProcessInput();
 		void UpdateGame();
 		void GenerateOutput();

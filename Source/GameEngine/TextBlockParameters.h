@@ -18,6 +18,12 @@ struct TextBlockParameters
 	GLuint whiteBlockTexture;
 	std::string orangeBlockFileName;
 	GLuint orangeBlockTexture;
-	int blockWidth = 30;
-	int blockHeight = 30;
+	int blockWidth;
+	int blockHeight;
+
+	// TODO RETHINK THIS. THESE SHOULD BE ASSIGNED FROM A CONFIG FILE
+	static const int defaultBlockWidth = 30;
+	static const int defaultBlockHeight = 30;
+	inline static int GetWidth() { return defaultBlockHeight; }
+	inline static int GetHeight(){ return defaultBlockHeight; }
 };

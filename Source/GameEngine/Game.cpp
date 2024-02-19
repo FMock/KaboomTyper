@@ -117,25 +117,21 @@ void Game::UpdateGame()
 	if (m_f_currentTime > m_f_previousTime + 1000)
 	{
 		m_seconds++;
-		//printf("fps: %i\n", fps);
+		printf("FPS: %i\n", m_fps);
 		m_fps = 0;
 		m_f_previousTime = m_f_currentTime;
 	}
 
 	m_fps++; // increment frame counter each iteration
 
-	m_sprite->Update();
-
+	m_InputManager->ProcessInput();
+	m_textBlock->Update();
+	m_textStr->Update(m_deltaTime);
 	//fmod_sys->update(); // If you don't update the sound will play once
 }
 
 void Game::LoadData()
 {
-	// Initialize Input Manager
-	m_InputManager = new InputManager();
-	m_sprite = new Sprite();
-	m_InputManager->RegisterObserver(m_sprite);
-
 	Utilities::ReadXmlFile("../../Config/FontParameters.xml", m_fontParameters); // TODO: DON'T USE HARD-CODED PATHS
 
 	m_font = new TextStringFont();
@@ -144,28 +140,30 @@ void Game::LoadData()
 	m_font->imageHeight = m_fontParameters.m_fontsheetHeight;
 	m_font->frameWidth = m_fontParameters.m_fontWidth;
 	m_font->frameHeight = m_fontParameters.m_fontHeight;
-	int x = 8; // x position to draw on screen
-	int y = 4; // y position to draw on screen
-
-
-	m_textStr2 = new TextString();
-	m_textStr2->Initialize("Press Spacebar to Begin", x + 50, y + 50, *m_font);
+	int x = 50; // x position to draw on screen
+	int y = 50; // y position to draw on screen
+	m_textStr = new TextString();
+	m_textStr->Initialize("Press Spacebar to Begin", x, y, *m_font); // draw some text to the screen
 
 	Utilities::ReadXmlFile("../../Config/TextBlockParameters.xml", m_textBlockParameters); // TODO: DON'T USE HARD-CODED PATHS
 
 	// Load all the textures into the String-to-Image map
-	m_stringToImageMap["red"] = m_textBlockParameters.redBlockTexture;
-	m_stringToImageMap["blue"] = m_textBlockParameters.blueBlockTexture;
-	m_stringToImageMap["green"] = m_textBlockParameters.greenBlockTexture;
-	m_stringToImageMap["yellow"] = m_textBlockParameters.yellowBlockTexture;
-	m_stringToImageMap["purple"] = m_textBlockParameters.purpleBlockTexture;
-	m_stringToImageMap["white"] = m_textBlockParameters.whiteBlockTexture;
-	m_stringToImageMap["orange"] = m_textBlockParameters.orangeBlockTexture;
-	m_textBlockWidth = m_textBlockParameters.blockWidth;
-	m_textBlockHeight = m_textBlockParameters.blockHeight;
+	m_stringToColoredBlockTextureMap["red"]    = m_textBlockParameters.redBlockTexture;
+	m_stringToColoredBlockTextureMap["blue"]   = m_textBlockParameters.blueBlockTexture;
+	m_stringToColoredBlockTextureMap["green"]  = m_textBlockParameters.greenBlockTexture;
+	m_stringToColoredBlockTextureMap["yellow"] = m_textBlockParameters.yellowBlockTexture;
+	m_stringToColoredBlockTextureMap["purple"] = m_textBlockParameters.purpleBlockTexture;
+	m_stringToColoredBlockTextureMap["white"]  = m_textBlockParameters.whiteBlockTexture;
+	m_stringToColoredBlockTextureMap["orange"] = m_textBlockParameters.orangeBlockTexture;
 
-	// Create a TextBlock
-	m_textBlock = new TextBlock(10, 10, m_textBlockParameters, *m_font, std::string("Kaboom Typer!"), m_stringToImageMap);
+	// Create a TextBlock at a radom position in the window
+	srand(time(0));
+	int randomX = rand() % 500;
+	int randomY = rand() % 500;
+	m_textBlock = new TextBlock(randomX, randomY, m_textBlockParameters, *m_font, std::string("Kaboom Typer!"), m_stringToColoredBlockTextureMap);
+
+	// Initialize Input Manager
+	m_InputManager = new InputManager();
 	m_InputManager->RegisterObserver(m_textBlock);
 }
 
@@ -177,7 +175,7 @@ void Game::GenerateOutput()
 
 	// Draw Objects
 	m_textBlock->Draw();
-	m_textStr2->DrawText();
+	m_textStr->DrawText();
 
 	// Swap Window
 	SDL_GL_SwapWindow(m_window);
@@ -186,9 +184,8 @@ void Game::GenerateOutput()
 void Game::UnloadData()
 {
 	delete m_InputManager;
-	delete m_sprite;
 	delete m_font;
-	delete m_textStr2;
+	delete m_textStr;
 	delete m_textBlock;
 }
 

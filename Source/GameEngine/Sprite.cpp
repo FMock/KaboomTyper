@@ -64,18 +64,22 @@ void GameEngine::Sprite::RespondToObserved(InputManager* InputMgr)
 	if (!InputMgr->m_kbPrevState[SDL_SCANCODE_RIGHT] && InputMgr->m_kbState[SDL_SCANCODE_RIGHT])
 	{
 		m_moveDirection = GameEngine::MoveDirection::RIGHT;
+		std::cout << "move right" << std::endl;
 	}
 	else if (!InputMgr->m_kbPrevState[SDL_SCANCODE_LEFT] && InputMgr->m_kbState[SDL_SCANCODE_LEFT])
 	{
 		m_moveDirection = GameEngine::MoveDirection::LEFT;
+		std::cout << "move left" << std::endl;
 	}
 	else if (!InputMgr->m_kbPrevState[SDL_SCANCODE_UP] && InputMgr->m_kbState[SDL_SCANCODE_UP])
 	{
 		m_moveDirection = GameEngine::MoveDirection::UP;
+		std::cout << "move up" << std::endl;
 	}
 	else if (!InputMgr->m_kbPrevState[SDL_SCANCODE_DOWN] && InputMgr->m_kbState[SDL_SCANCODE_DOWN])
 	{
 		m_moveDirection = GameEngine::MoveDirection::DOWN;
+		std::cout << "move down" << std::endl;
 	}
 	else
 	{

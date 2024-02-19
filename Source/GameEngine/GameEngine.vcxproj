@@ -136,6 +136,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AABB.h" />
+    <ClInclude Include="Colors.h" />
     <ClInclude Include="DrawUtils.h" />
     <ClInclude Include="FontParameters.h" />
     <ClInclude Include="Game.h" />
