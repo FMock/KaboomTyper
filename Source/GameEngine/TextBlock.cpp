@@ -1,3 +1,4 @@
+#include <iostream>
 #include "TextBlock.h"
 #include "AABB.h"
 #include "DrawUtils.h"
@@ -85,7 +86,6 @@ GameEngine::TextBlock::~TextBlock()
 	delete m_textString;
 }
 
-
 // Draw the textBlock to the screen
 void TextBlock::Draw()
 {
@@ -96,7 +96,7 @@ void TextBlock::Draw()
 	m_textString->DrawText();
 }
 
-void TextBlock::update(float deltaTime)
+void TextBlock::Update(float deltaTime)
 {
 	if(m_moving){
 		moveDown();
@@ -218,4 +218,42 @@ void GameEngine::TextBlock::ScaleTextBlock(int textSize, int blockWidth)
 	m_scaleFactor = 0.60f; // TODO PUT THIS IN CONFIG FILE
 	m_adjustedTextblockWidth = static_cast<int>((m_text.size() * blockWidth * m_scaleFactor));
 	setWidth(m_adjustedTextblockWidth);
+}
+
+void GameEngine::TextBlock::RespondToObserved(InputManager* InputMgr)
+{
+	if (!InputMgr->m_kbPrevState[SDL_SCANCODE_RIGHT] && InputMgr->m_kbState[SDL_SCANCODE_RIGHT])
+	{
+		m_moveDirection = GameEngine::MoveDirection::RIGHT;
+		std::cout << "TextBlock move right" << std::endl;
+	}
+	else if (!InputMgr->m_kbPrevState[SDL_SCANCODE_LEFT] && InputMgr->m_kbState[SDL_SCANCODE_LEFT])
+	{
+		m_moveDirection = GameEngine::MoveDirection::LEFT;
+		std::cout << "TextBlock move left" << std::endl;
+	}
+	else if (!InputMgr->m_kbPrevState[SDL_SCANCODE_UP] && InputMgr->m_kbState[SDL_SCANCODE_UP])
+	{
+		m_moveDirection = GameEngine::MoveDirection::UP;
+		std::cout << "TextBlock move up not allowed!" << std::endl;
+	}
+	else if (!InputMgr->m_kbPrevState[SDL_SCANCODE_DOWN] && InputMgr->m_kbState[SDL_SCANCODE_DOWN])
+	{
+		m_moveDirection = GameEngine::MoveDirection::DOWN;
+		std::cout << "TextBlock move down" << std::endl;
+	}
+	else
+	{
+		m_moveDirection = GameEngine::MoveDirection::NONE;
+	}
+}
+
+void TextBlock::SetActiveState(bool state)
+{
+	this->m_isActive = state;
+}
+
+bool GameEngine::TextBlock::GetActiveState()
+{
+	return this->m_isActive;
 }

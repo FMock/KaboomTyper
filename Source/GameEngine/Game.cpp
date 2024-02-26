@@ -1,20 +1,34 @@
-#include"Game.h"
-#include<GL/glew.h>
-#include<time.h>
+#pragma once
+
+#include "Game.h"
+#include <GL/glew.h>
+#include <time.h>
 #include "Sprite.h"
 #include "TextString.h"
 #include "TextStringFont.h"
 #include "TextBlock.h"
 #include "DrawUtils.h"
 #include "Utilities.h"
+#include "StateMachine.h"
+#include "StateMainMenu.h"
+#include "StateSplashScreen.h"
+#include "StateGamePlay.h"
+#include "StateGameOver.h"
 
 using namespace GameEngine;
 using namespace GameEngine::Utility;
 
 Game::Game()
 {
+	// empty constructor to ensure that members are created after the OpenGL context is set up
 }
+	
+	
 
+/// <summary>
+/// Creates an SDL2 game windows with an OpenGL context
+/// </summary>
+/// <returns></returns>
 bool Game::Initialize()
 {
 	// Initialize SDL.
@@ -80,6 +94,51 @@ bool Game::Initialize()
 	return true;
 }
 
+/// <summary>
+/// Load game assets and objects
+/// </summary>
+void Game::LoadData()
+{
+	Utilities::ReadXmlFile("../../Config/FontParameters.xml", m_fontParameters); // TODO: DON'T USE HARD-CODED PATHS
+
+	m_font = new TextStringFont();
+	m_font->image = m_fontParameters.m_texture;
+	m_font->imageWidth = m_fontParameters.m_fontsheetWidth;
+	m_font->imageHeight = m_fontParameters.m_fontsheetHeight;
+	m_font->frameWidth = m_fontParameters.m_fontWidth;
+	m_font->frameHeight = m_fontParameters.m_fontHeight;
+	int x = 50; // x position to draw on screen
+	int y = 50; // y position to draw on screen
+	m_textStr = new TextString();
+	m_textStr->Initialize("Press Spacebar to Begin", x, y, *m_font); // draw some text to the screen
+
+	Utilities::ReadXmlFile("../../Config/TextBlockParameters.xml", m_textBlockParameters); // TODO: DON'T USE HARD-CODED PATHS
+
+	// Load all the textures into the String-to-Image map
+	m_stringToColoredBlockTextureMap["red"] = m_textBlockParameters.redBlockTexture;
+	m_stringToColoredBlockTextureMap["blue"] = m_textBlockParameters.blueBlockTexture;
+	m_stringToColoredBlockTextureMap["green"] = m_textBlockParameters.greenBlockTexture;
+	m_stringToColoredBlockTextureMap["yellow"] = m_textBlockParameters.yellowBlockTexture;
+	m_stringToColoredBlockTextureMap["purple"] = m_textBlockParameters.purpleBlockTexture;
+	m_stringToColoredBlockTextureMap["white"] = m_textBlockParameters.whiteBlockTexture;
+	m_stringToColoredBlockTextureMap["orange"] = m_textBlockParameters.orangeBlockTexture;
+
+	// Create a TextBlock at a radom position in the window
+	srand(time(0));
+	int randomX = rand() % 500;
+	int randomY = rand() % 500;
+	m_textBlock = new TextBlock(randomX, randomY, m_textBlockParameters, *m_font, std::string("Kaboom Typer!"), m_stringToColoredBlockTextureMap);
+
+	// Load game states
+	m_stateManager = std::make_unique<StateManager>();
+	InitializeStates();
+	m_stateManager->SwitchState(GameState::SplashScreen);
+
+	// Initialize Input Manager
+	m_inputManager = std::make_unique<InputManager>();
+	m_inputManager->RegisterObserver(m_textBlock);
+}
+
 void Game::RunLoop()
 {
 	while (!m_shouldExit)
@@ -90,18 +149,10 @@ void Game::RunLoop()
 	}
 }
 
-void Game::Shutdown()
-{
-	UnloadData();
-	// Once finished with OpenGL functions, the SDL_GLContext can be deleted.
-	SDL_GL_DeleteContext(m_glcontext);
-	SDL_Quit();
-}
-
 void Game::ProcessInput()
 {
-	m_InputManager->ProcessInput();
-	m_shouldExit = m_InputManager->ShouldQuit();
+	//m_inputManager->Update();
+	m_shouldExit = m_inputManager->ShouldQuit();
 }
 
 void Game::UpdateGame()
@@ -124,47 +175,11 @@ void Game::UpdateGame()
 
 	m_fps++; // increment frame counter each iteration
 
-	m_InputManager->ProcessInput();
-	m_textBlock->Update();
+	m_stateManager->Update(m_deltaTime);
+	m_inputManager->Update();
+	m_textBlock->Update(m_deltaTime);
 	m_textStr->Update(m_deltaTime);
 	//fmod_sys->update(); // If you don't update the sound will play once
-}
-
-void Game::LoadData()
-{
-	Utilities::ReadXmlFile("../../Config/FontParameters.xml", m_fontParameters); // TODO: DON'T USE HARD-CODED PATHS
-
-	m_font = new TextStringFont();
-	m_font->image = m_fontParameters.m_texture;
-	m_font->imageWidth = m_fontParameters.m_fontsheetWidth;
-	m_font->imageHeight = m_fontParameters.m_fontsheetHeight;
-	m_font->frameWidth = m_fontParameters.m_fontWidth;
-	m_font->frameHeight = m_fontParameters.m_fontHeight;
-	int x = 50; // x position to draw on screen
-	int y = 50; // y position to draw on screen
-	m_textStr = new TextString();
-	m_textStr->Initialize("Press Spacebar to Begin", x, y, *m_font); // draw some text to the screen
-
-	Utilities::ReadXmlFile("../../Config/TextBlockParameters.xml", m_textBlockParameters); // TODO: DON'T USE HARD-CODED PATHS
-
-	// Load all the textures into the String-to-Image map
-	m_stringToColoredBlockTextureMap["red"]    = m_textBlockParameters.redBlockTexture;
-	m_stringToColoredBlockTextureMap["blue"]   = m_textBlockParameters.blueBlockTexture;
-	m_stringToColoredBlockTextureMap["green"]  = m_textBlockParameters.greenBlockTexture;
-	m_stringToColoredBlockTextureMap["yellow"] = m_textBlockParameters.yellowBlockTexture;
-	m_stringToColoredBlockTextureMap["purple"] = m_textBlockParameters.purpleBlockTexture;
-	m_stringToColoredBlockTextureMap["white"]  = m_textBlockParameters.whiteBlockTexture;
-	m_stringToColoredBlockTextureMap["orange"] = m_textBlockParameters.orangeBlockTexture;
-
-	// Create a TextBlock at a radom position in the window
-	srand(time(0));
-	int randomX = rand() % 500;
-	int randomY = rand() % 500;
-	m_textBlock = new TextBlock(randomX, randomY, m_textBlockParameters, *m_font, std::string("Kaboom Typer!"), m_stringToColoredBlockTextureMap);
-
-	// Initialize Input Manager
-	m_InputManager = new InputManager();
-	m_InputManager->RegisterObserver(m_textBlock);
 }
 
 void Game::GenerateOutput()
@@ -174,6 +189,7 @@ void Game::GenerateOutput()
 	glClear(GL_COLOR_BUFFER_BIT); // Be sure to always draw objects after this
 
 	// Draw Objects
+	m_stateManager->Render();
 	m_textBlock->Draw();
 	m_textStr->DrawText();
 
@@ -181,11 +197,34 @@ void Game::GenerateOutput()
 	SDL_GL_SwapWindow(m_window);
 }
 
+void Game::Shutdown()
+{
+	UnloadData();
+	// Once finished with OpenGL functions, the SDL_GLContext can be deleted.
+	SDL_GL_DeleteContext(m_glcontext);
+	SDL_Quit();
+}
+
 void Game::UnloadData()
 {
-	delete m_InputManager;
 	delete m_font;
 	delete m_textStr;
 	delete m_textBlock;
+	CleanupStates();
 }
 
+void Game::InitializeStates()
+{
+	m_stateManager->AddState(GameState::SplashScreen, new StateSplashScreen());
+	m_stateManager->AddState(GameState::MainMenu, new StateMainMenu());
+	m_stateManager->AddState(GameState::Gameplay, new StateGamePlay());
+	m_stateManager->AddState(GameState::GameOver, new StateGameOver());
+}
+
+void Game::CleanupStates()
+{
+	delete m_stateManager->GetState(GameState::SplashScreen);
+	delete m_stateManager->GetState(GameState::MainMenu);
+	delete m_stateManager->GetState(GameState::Gameplay);
+	delete m_stateManager->GetState(GameState::GameOver);
+}

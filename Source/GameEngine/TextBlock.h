@@ -54,7 +54,7 @@ namespace GameEngine
 		// If True remove TextBlock from game
 		bool m_remove;
 
-		void update(float deltaTime);
+		void Update(float deltaTime) override;
 
 		void Draw();
 
@@ -65,12 +65,16 @@ namespace GameEngine
 		void stop();
 		void collision(Sprite& sprite);
 		std::string to_string() const;
+		void SetActiveState(bool state);
+		bool GetActiveState();
 
 	private:
 		float m_scaleFactor;
 		int m_adjustedTextblockWidth;
 		void LoadColorVector();
 		void ScaleTextBlock(int textSize, int blockWidth);
+		virtual void RespondToObserved(InputManager* InputMgr);
+		bool m_isActive;
 	};
 }
 

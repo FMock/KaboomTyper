@@ -10,7 +10,7 @@ namespace GameEngine
 	{
 	public:
 		InputManager();
-		void ProcessInput();
+		void Update();
 		bool ShouldQuit() const;
 		bool m_quit = 0;
 		void NotifyObservers();

@@ -19,9 +19,11 @@ public:
 	void MoveUp();
 	void MoveDown();
 	void Stop();
+	void SetPartOfTextBlock(bool);
+	bool GetPartOfTextBlock();
 
 private:
-	//const char* m_string;
+
 	std::string m_string;
 	GLuint m_image;
 	int m_width;  // image width
@@ -32,6 +34,7 @@ private:
 	int m_x, m_y, m_numColumns, m_numRows; //(x, y) = where to start drawing on screen
 	float m_changeX, m_changeY;
 	float m_speedX, m_speedY;
+	bool m_partOfTextBlock;
 };
 
 #endif

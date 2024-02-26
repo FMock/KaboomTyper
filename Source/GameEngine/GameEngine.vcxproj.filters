@@ -13,6 +13,30 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\Sprite">
+      <UniqueIdentifier>{6d93371c-99d6-4156-828e-8a5143154013}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Input">
+      <UniqueIdentifier>{6ff103fc-0263-4511-bc77-3a6b00b35aaf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Text">
+      <UniqueIdentifier>{4c3ee941-a151-418f-a536-c14755a6d544}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\State">
+      <UniqueIdentifier>{860d6b5a-764a-4023-9238-b281ee8f857f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\State">
+      <UniqueIdentifier>{0a30d457-7f10-4a06-ae3c-c0abdf1983e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Sprite">
+      <UniqueIdentifier>{723d30ee-197b-4bcd-82af-5c2dd9a7188e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Text">
+      <UniqueIdentifier>{3ff8823d-8190-4155-ba5f-259c8eb55e2e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Input">
+      <UniqueIdentifier>{9b465b2a-80ac-43e8-a6fa-bfb2b3b85bb6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -21,25 +45,7 @@
     <ClInclude Include="Vector2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="InputManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="InputObserver.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Sprite.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="DrawUtils.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TextString.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TextStringFont.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TextBlock.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="AABB.h">
@@ -51,37 +57,100 @@
     <ClInclude Include="Utilities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="FontParameters.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TextBlockParameters.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Colors.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StateManager.h">
+      <Filter>Header Files\State</Filter>
+    </ClInclude>
+    <ClInclude Include="IState.h">
+      <Filter>Header Files\State</Filter>
+    </ClInclude>
+    <ClInclude Include="StateMachine.h">
+      <Filter>Header Files\State</Filter>
+    </ClInclude>
+    <ClInclude Include="GameStates.h">
+      <Filter>Header Files\State</Filter>
+    </ClInclude>
+    <ClInclude Include="TextBlockParameters.h">
+      <Filter>Header Files\Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="TextBlock.h">
+      <Filter>Header Files\Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectStates.h">
+      <Filter>Header Files\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite.h">
+      <Filter>Header Files\Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="InputManager.h">
+      <Filter>Header Files\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="InputObserver.h">
+      <Filter>Header Files\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="FontParameters.h">
+      <Filter>Header Files\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="TextString.h">
+      <Filter>Header Files\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="TextStringFont.h">
+      <Filter>Header Files\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="StateSplashScreen.h">
+      <Filter>Header Files\State</Filter>
+    </ClInclude>
+    <ClInclude Include="StateMainMenu.h">
+      <Filter>Header Files\State</Filter>
+    </ClInclude>
+    <ClInclude Include="StateGamePlay.h">
+      <Filter>Header Files\State</Filter>
+    </ClInclude>
+    <ClInclude Include="StateGameOver.h">
+      <Filter>Header Files\State</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="InputManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Sprite.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="DrawUtils.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TextString.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TextBlock.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Utilities.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StateSplashScreen.cpp">
+      <Filter>Source Files\State</Filter>
+    </ClCompile>
+    <ClCompile Include="StateMachine.cpp">
+      <Filter>Source Files\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Sprite.cpp">
+      <Filter>Source Files\Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="TextBlock.cpp">
+      <Filter>Source Files\Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="TextString.cpp">
+      <Filter>Source Files\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="InputManager.cpp">
+      <Filter>Source Files\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="StateMainMenu.cpp">
+      <Filter>Source Files\State</Filter>
+    </ClCompile>
+    <ClCompile Include="StateGamePlay.cpp">
+      <Filter>Source Files\State</Filter>
+    </ClCompile>
+    <ClCompile Include="StateGameOver.cpp">
+      <Filter>Source Files\State</Filter>
+    </ClCompile>
+    <ClCompile Include="StateManager.cpp">
+      <Filter>Source Files\State</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
