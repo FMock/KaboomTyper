@@ -28,7 +28,7 @@ void GameEngine::InputManager::GetNewInputState()
 	}
 }
 
-void GameEngine::InputManager::ProcessInput()
+void GameEngine::InputManager::Update()
 {
 	PrepareForStateChange(); // copy previous state first
 	GetNewInputState();      // next get new input state
@@ -42,9 +42,9 @@ bool GameEngine::InputManager::ShouldQuit() const
 
 void GameEngine::InputManager::NotifyObservers()
 {
-	for (unsigned int i = 0; i < m_myObservers.size(); i++)
+	for (auto observer : m_myObservers)
 	{
-		m_myObservers.at(i)->Notify(this);
+		observer->Notify(this);
 	}
 }
 

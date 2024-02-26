@@ -41,12 +41,12 @@ GameEngine::Sprite::~Sprite()
 	delete[] m_characterPos;
 }
 
-void GameEngine::Sprite::Update()
-{
-	int move = static_cast<int>(m_moveDirection);
-	if(m_moveDirection != GameEngine::MoveDirection::NONE)
-		std::cout << m_move[move] << std::endl;
-}
+//void GameEngine::Sprite::Update()
+//{
+//	//int move = static_cast<int>(m_moveDirection);
+//	//if(m_moveDirection != GameEngine::MoveDirection::NONE)
+//	//	std::cout << m_move[move] << std::endl;
+//}
 
 void GameEngine::Sprite::Draw()
 {
@@ -60,31 +60,7 @@ void GameEngine::Sprite::ProcessInput()
 
 void GameEngine::Sprite::RespondToObserved(InputManager* InputMgr)
 {
-
-	if (!InputMgr->m_kbPrevState[SDL_SCANCODE_RIGHT] && InputMgr->m_kbState[SDL_SCANCODE_RIGHT])
-	{
-		m_moveDirection = GameEngine::MoveDirection::RIGHT;
-		std::cout << "move right" << std::endl;
-	}
-	else if (!InputMgr->m_kbPrevState[SDL_SCANCODE_LEFT] && InputMgr->m_kbState[SDL_SCANCODE_LEFT])
-	{
-		m_moveDirection = GameEngine::MoveDirection::LEFT;
-		std::cout << "move left" << std::endl;
-	}
-	else if (!InputMgr->m_kbPrevState[SDL_SCANCODE_UP] && InputMgr->m_kbState[SDL_SCANCODE_UP])
-	{
-		m_moveDirection = GameEngine::MoveDirection::UP;
-		std::cout << "move up" << std::endl;
-	}
-	else if (!InputMgr->m_kbPrevState[SDL_SCANCODE_DOWN] && InputMgr->m_kbState[SDL_SCANCODE_DOWN])
-	{
-		m_moveDirection = GameEngine::MoveDirection::DOWN;
-		std::cout << "move down" << std::endl;
-	}
-	else
-	{
-		m_moveDirection = GameEngine::MoveDirection::NONE;
-	}
+	// Do nothing. Let derived classes decide how to respond.
 }
 
 

@@ -1,5 +1,6 @@
 #define SDL_MAIN_HANDLED
 #include "Game.h"
+#include "StateMachine.h" // do not delete
 
 using namespace GameEngine;
 
@@ -13,13 +14,14 @@ using namespace GameEngine;
 
 int main(int argc, char** argv)
 {
-	Game game;
-	bool success = game.Initialize();
+	auto game = new Game();
+	bool success = game->Initialize();
 	if (success)
 	{
-		game.RunLoop();
+		game->RunLoop();
 	}
-	game.Shutdown();
+	game->Shutdown();
 
+	delete game;
 	return 0;
 }

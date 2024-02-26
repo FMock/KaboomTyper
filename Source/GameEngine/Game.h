@@ -3,12 +3,14 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <memory>
 #include "InputManager.h"
 #include "Sprite.h"
 #include "TextString.h"
 #include "TextBlock.h"
 #include "FontParameters.h"
 #include "TextBlockParameters.h"
+#include "StateManager.h"
 
 namespace GameEngine
 {
@@ -20,23 +22,29 @@ namespace GameEngine
 		void RunLoop();
 		void Shutdown();
 
+		// Add a friend declaration for StateMachine
+		friend class StateMachine;
+
 	private:
 
 		TextString* m_textStr;
 		TextBlock* m_textBlock;
 		TextBlockParameters m_textBlockParameters;
-		InputManager* m_InputManager;
+		std::unique_ptr<InputManager> m_inputManager;
 		SDL_Window* m_window;
 		SDL_GLContext m_glcontext;
 		std::map<std::string, GLuint> m_stringToColoredBlockTextureMap;
 		TextStringFont* m_font;
 		FontParameters m_fontParameters;
+		std::unique_ptr<StateManager> m_stateManager;
 
 		void ProcessInput();
 		void UpdateGame();
 		void GenerateOutput();
 		void LoadData();
 		void UnloadData();
+		void InitializeStates();
+		void CleanupStates();
 
 		// The previous frame's keyboard state.
 		unsigned char m_kbPrevState[SDL_NUM_SCANCODES] = { 0 };

@@ -6,6 +6,7 @@
 #include <vector>
 #include <string>
 #include "AABB.h"
+#include "ObjectStates.h"
 
 
 namespace GameEngine
@@ -22,13 +23,16 @@ namespace GameEngine
 		Sprite(int, int, int, int);
 		~Sprite();
 		const char* m_type;
-		void Update();
+
+		virtual void Update(float deltaTime) = 0; // must be overridden by derived classes
 		void Draw();
 		void ProcessInput();
 		virtual void RespondToObserved(InputManager* InputMgr);
+
 		AABB box;
 		AABB& getBox();
 		GLuint m_image;
+
 		void setXPos(int);
 		void setYPos(int);
 		void setWidth(int);
@@ -37,17 +41,22 @@ namespace GameEngine
 		int getHeight() const;
 		int getXPos() const;
 		int getYPos() const;
-		//int x;
-		//int y;
+
 		int* m_characterSize;
 		float* m_characterPos;
 		int change_x;
 		int change_y;
+		inline State getState() const { return m_state; }
+		inline void setState(State newState) { m_state = newState; }
+
 	protected:
 		float x;
 		float y;
-	private:
 		MoveDirection m_moveDirection;
 		std::vector<std::string> m_move;
+		State m_state = State::IDLE; // Default state
+
+	private:
+
 	};
 }

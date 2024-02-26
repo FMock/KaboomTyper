@@ -96,8 +96,16 @@ void TextString::DrawText(){
 
 void TextString::Update(float deltaTime)
 {
-	m_x += m_changeX * deltaTime;
-	m_y += m_changeY * deltaTime;
+	if (m_partOfTextBlock)
+	{
+		// TextString needs to move with the TextBlock
+
+	}
+	else
+	{
+		//m_x += m_changeX * deltaTime;
+		//m_y += m_changeY * deltaTime;
+	}
 }
 
 void TextString::MoveRight()
@@ -128,4 +136,14 @@ void TextString::Stop()
 {
 	m_changeX = 0;
 	m_changeY = 0;
+}
+
+void TextString::SetPartOfTextBlock(bool b)
+{
+	m_partOfTextBlock = b;
+}
+
+bool TextString::GetPartOfTextBlock()
+{
+	return m_partOfTextBlock;
 }
