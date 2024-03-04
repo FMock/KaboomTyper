@@ -21,7 +21,7 @@ void StateManager::AddState(GameState state, IState* stateObject)
     }
 }
 
-IState* GameEngine::StateManager::GetState(GameState state)
+IState* StateManager::GetState(GameState state)
 {
     if (!m_states.empty())
     {
