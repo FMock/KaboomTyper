@@ -73,8 +73,10 @@ namespace GameEngine
 		int m_adjustedTextblockWidth;
 		void LoadColorVector();
 		void ScaleTextBlock(int textSize, int blockWidth);
-		virtual void RespondToObserved(InputManager* InputMgr);
 		bool m_isActive;
+
+	protected:
+		virtual void RespondToObserved(InputManager* InputMgr);
 	};
 }
 

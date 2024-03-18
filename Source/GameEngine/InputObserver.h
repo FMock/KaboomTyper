@@ -9,8 +9,10 @@ namespace GameEngine
 	public:
 		inline InputObserver(void) {}
 		inline ~InputObserver(void) {}
-		virtual void RespondToObserved(InputManager*) = 0;
 		template<typename T> void Notify(T*);
+
+	protected:
+		virtual void RespondToObserved(InputManager*) = 0;
 	};
 
 	/* InputObserver receives notification from InputManager) */
