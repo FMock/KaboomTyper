@@ -27,7 +27,6 @@ namespace GameEngine
 		virtual void Update(float deltaTime) = 0; // must be overridden by derived classes
 		void Draw();
 		void ProcessInput();
-		virtual void RespondToObserved(InputManager* InputMgr);
 
 		AABB box;
 		AABB& getBox();
@@ -55,6 +54,7 @@ namespace GameEngine
 		MoveDirection m_moveDirection;
 		std::vector<std::string> m_move;
 		State m_state = State::IDLE; // Default state
+		virtual void RespondToObserved(InputManager* InputMgr);
 
 	private:
 
