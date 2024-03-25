@@ -1,5 +1,6 @@
 #include "SpriteFactory.h"
 #include "SpriteType.h"
+#include <memory>
 
 
 namespace GameEngine
@@ -7,6 +8,6 @@ namespace GameEngine
 	class ConcreteSpriteFactory : public SpriteFactory
 	{
 	public:
-		virtual Sprite* GetSprite(SpriteType type) override;
+		virtual std::unique_ptr<Sprite> CreateSprite(SpriteType type) override;
 	};
 }

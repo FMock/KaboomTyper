@@ -150,6 +150,9 @@
     <ClInclude Include="LevelGamePlay.h">
       <Filter>Header Files\Level</Filter>
     </ClInclude>
+    <ClInclude Include="GameStateComparator.h">
+      <Filter>Header Files\State</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">

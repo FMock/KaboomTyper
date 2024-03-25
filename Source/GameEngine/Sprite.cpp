@@ -41,6 +41,26 @@ GameEngine::Sprite::~Sprite()
 	delete[] m_characterPos;
 }
 
+void Sprite::Initialize(int x, int y, int w, int h)
+{
+	m_image = NULL;
+	m_characterSize = new int[2]();
+	m_characterPos = new float[2]();
+	m_characterSize[0] = w; // width
+	m_characterSize[1] = h; // height
+	box = AABB();
+	box.setX(x);
+	box.setY(y);
+	box.setW(w);
+	box.setH(h);
+	setXPos(x);
+	setYPos(y);
+	change_x = 0;
+	change_y = 0;
+	m_type = new char[20];
+	m_type = "sprite";
+}
+
 //void GameEngine::Sprite::Update()
 //{
 //	//int move = static_cast<int>(m_moveDirection);

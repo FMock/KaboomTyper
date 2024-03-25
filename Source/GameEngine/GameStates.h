@@ -14,20 +14,22 @@
     MenuCredits: The state where players can view the game's credits.
     QuitConfirmation: The state where players are prompted to confirm quitting the game.
 */
-
-enum class GameState
+namespace GameEngine
 {
-    SplashScreen,
-    MainMenu,
-    Gameplay,
-    Paused,
-    GameOver,
-    Victory,
-    Loading,
-    MenuSettings,
-    MenuOptions,
-    MenuInstructions,
-    MenuCredits,
-    QuitConfirmation,
-    NumStates // Keep this as the last enum value for easy counting
-};
+    enum class GameState
+    {
+        SPLASH_SCREEN,
+        MAIN_MENU,
+        GAME_PLAY,
+        PAUSED,
+        GAME_OVER,
+        VICTORY,
+        LOADING,
+        MENU_SETTINGS,
+        MENU_OPTIONS,
+        MENU_INSTRUCTIONS,
+        MENU_CREDITS,
+        QUIT_CONFIRMATION,
+        NUMBER_STATES // Keep this as the last enum value for easy counting
+    };
+}

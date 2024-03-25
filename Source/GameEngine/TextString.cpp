@@ -2,6 +2,7 @@
 #include<string>
 #include<cmath>
 
+using namespace GameEngine;
 using namespace DrawUtilities;
 
 /// <summary>

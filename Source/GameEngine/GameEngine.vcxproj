@@ -143,6 +143,7 @@
     <ClInclude Include="FontParameters.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameManager.h" />
+    <ClInclude Include="GameStateComparator.h" />
     <ClInclude Include="GameStates.h" />
     <ClInclude Include="game_data.h" />
     <ClInclude Include="ILevel.h" />

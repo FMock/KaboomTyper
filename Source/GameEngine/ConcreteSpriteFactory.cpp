@@ -3,16 +3,20 @@
 
 using namespace GameEngine;
 
-Sprite* ConcreteSpriteFactory::GetSprite(SpriteType type)
+std::unique_ptr<Sprite> ConcreteSpriteFactory::CreateSprite(SpriteType type)
 {
 	switch (type)
 	{
-	case SpriteType::None:
-		return nullptr;
 	case SpriteType::TextBlock:
-		return new TextBlock();
-		// Add more cases for each sprite type...
+		return std::make_unique<TextBlock>();
+		break;
+	case SpriteType::Leaf:
+		// Create and return Leaf sprite
+		break;
+	case SpriteType::Ballon:
+		// Create and return Ballon sprite
+		break;
 	default:
-		return nullptr; // If the sprite type is not recognized, return null or throw an exception.
+		throw std::invalid_argument("Invalid SpriteType");
 	}
 }

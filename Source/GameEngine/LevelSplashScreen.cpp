@@ -1,23 +1,32 @@
 #include "LevelSplashScreen.h"
+#include "ConcreteSpriteFactory.h"
+#include <memory>
+#include <iostream>
 
 using namespace GameEngine;
+
+LevelSplashScreen::LevelSplashScreen()
+{
+	m_spriteFactoryPtr = std::make_unique<ConcreteSpriteFactory>();
+}
 
 void LevelSplashScreen::LoadAssets()
 {
 }
 
-void GameEngine::LevelSplashScreen::Update(float dt)
+void LevelSplashScreen::Update(float dt)
 {
 }
 
-void GameEngine::LevelSplashScreen::Render()
+void LevelSplashScreen::Render()
+{
+	//std::cout << "LevelSplashScreen Render" << std::endl;
+}
+
+void LevelSplashScreen::Enter()
 {
 }
 
-void GameEngine::LevelSplashScreen::Enter()
-{
-}
-
-void GameEngine::LevelSplashScreen::Exit()
+void LevelSplashScreen::Exit()
 {
 }
