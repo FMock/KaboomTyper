@@ -11,6 +11,7 @@
 #include "FontParameters.h"
 #include "TextBlockParameters.h"
 #include "StateManager.h"
+#include "GameManager.h"
 
 namespace GameEngine
 {
@@ -37,6 +38,7 @@ namespace GameEngine
 		TextStringFont* m_font;
 		FontParameters m_fontParameters;
 		std::unique_ptr<StateManager> m_stateManager;
+		std::unique_ptr<GameManager> m_gameManager;
 
 		void ProcessInput();
 		void UpdateGame();

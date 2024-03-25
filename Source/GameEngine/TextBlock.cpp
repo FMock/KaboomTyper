@@ -4,14 +4,13 @@
 #include "DrawUtils.h"
 #include "Utilities.h"
 
-using namespace GameEngine::Utility;
-
 /**
 * File Name - TextBlock.cpp
 * Author - Frank Mock
 * 
 * TextBlock class represents a colored block with text on it
 */
+using namespace GameEngine::Utility;
 using namespace GameEngine;
 using namespace DrawUtilities;
 using std::ostringstream;
@@ -84,6 +83,31 @@ TextBlock::TextBlock(int x, int y, TextBlockParameters& textBlockParams, TextStr
 GameEngine::TextBlock::~TextBlock()
 {
 	delete m_textString;
+}
+
+void TextBlock::InitializeTextBlock(int x, int y, TextBlockParameters& textBlockParams, TextStringFont& font, std::string str, const std::map<std::string, GLuint>& tMap)
+{
+	m_strToImageMap = tMap;
+	m_textString = new TextString();
+	m_textString->Initialize(str.c_str(), x + 8, y - 5, font); // TODO: PUT IN CONFIG FILE. 5 PIXEL TEXTSTRING POSITION ADJUSTMENT SO ITS CENTERED ON THE TEXTBLOCK
+
+	LoadColorVector();
+
+	srand(time(0));
+	m_color = m_colors.at(rand() % 7);
+	m_text = str;
+	m_collided = false;
+	m_remove = false;
+	m_isHit = false;
+	m_moving = true;
+	m_direction = DOWN;
+	box.setW(m_characterSize[0]);
+	box.setH(m_characterSize[1]);
+
+	setHeight(textBlockParams.blockHeight); // 30 a single textblock is 30 pixels high, When constructed we only need the height
+
+	// Adjust the number of blocks that make up this textblock, so the TextString and TextBlock are similar width
+	ScaleTextBlock(m_textSize, textBlockParams.blockWidth);
 }
 
 // Draw the textBlock to the screen

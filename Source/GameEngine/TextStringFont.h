@@ -18,13 +18,16 @@
 /// 
 /// </summary>
 
-struct TextStringFont
+namespace GameEngine
 {
-	GLuint image;    // the loaded font image
-	int imageWidth;  // width of font image file
-	int imageHeight; // height of the font image file
-	int frameWidth;  // width of a single character of the image file
-	int frameHeight; // height of a single character of the image file
-	inline int GetFontWidth() const { return frameWidth; }
-	inline int GetFontHeight() const { return frameHeight; }
-};
+	struct TextStringFont
+	{
+		GLuint image;    // the loaded font image
+		int imageWidth;  // width of font image file
+		int imageHeight; // height of the font image file
+		int frameWidth;  // width of a single character of the image file
+		int frameHeight; // height of a single character of the image file
+		inline int GetFontWidth() const { return frameWidth; }
+		inline int GetFontHeight() const { return frameHeight; }
+	};
+}

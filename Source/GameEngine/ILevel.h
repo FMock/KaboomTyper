@@ -16,6 +16,12 @@ namespace GameEngine
 		virtual void Enter() = 0;
 		virtual void Exit() = 0;
 
+		// Getter for m_spriteFactoryPtr
+		virtual std::unique_ptr<SpriteFactory>& GetSpriteFactory()
+		{
+			return m_spriteFactoryPtr;
+		}
+
 	protected:
 		std::unique_ptr<SpriteFactory> m_spriteFactoryPtr;
 	};

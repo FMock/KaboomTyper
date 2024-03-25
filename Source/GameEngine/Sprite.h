@@ -24,6 +24,7 @@ namespace GameEngine
 		virtual ~Sprite();// Virtual destructor for polymorphism.
 		const char* m_type;
 
+		void Initialize(int, int, int, int);
 		virtual void Update(float deltaTime) = 0; // must be overridden by derived classes
 		void Draw();
 		void ProcessInput();

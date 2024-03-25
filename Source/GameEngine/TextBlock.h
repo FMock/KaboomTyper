@@ -27,6 +27,7 @@ namespace GameEngine
 		TextBlock(int, int, int, int, std::string, std::map<std::string, GLuint>& tMap);
 		TextBlock(int, int, TextBlockParameters&, TextStringFont&, std::string, std::map<std::string, GLuint>& tMap);
 		~TextBlock();
+		void InitializeTextBlock(int x, int y, TextBlockParameters& textBlockParams, TextStringFont& font, std::string str, const std::map<std::string, GLuint>& tMap);
 
 		std::string m_text;        // the text for the TextString
 		int m_textSize;

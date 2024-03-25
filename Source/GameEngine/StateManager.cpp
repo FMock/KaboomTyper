@@ -4,7 +4,7 @@ using namespace GameEngine;
 
 
 
-StateManager::StateManager() : m_currentState(GameState::SplashScreen), m_states{}
+StateManager::StateManager() : m_currentState(GameState::SPLASH_SCREEN), m_states{}
 {
 
 }

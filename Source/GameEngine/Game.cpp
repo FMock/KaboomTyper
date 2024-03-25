@@ -132,11 +132,14 @@ void Game::LoadData()
 	// Load game states
 	m_stateManager = std::make_unique<StateManager>();
 	InitializeStates();
-	m_stateManager->SwitchState(GameState::SplashScreen);
+	m_stateManager->SwitchState(GameState::SPLASH_SCREEN);
 
 	// Initialize Input Manager
 	m_inputManager = std::make_unique<InputManager>();
 	m_inputManager->RegisterObserver(m_textBlock);
+
+	// Load GameManager
+	m_gameManager = std::make_unique<GameManager>();
 }
 
 void Game::RunLoop()
@@ -180,6 +183,8 @@ void Game::UpdateGame()
 	m_textBlock->Update(m_deltaTime);
 	m_textStr->Update(m_deltaTime);
 	//fmod_sys->update(); // If you don't update the sound will play once
+
+	m_gameManager->Update(m_deltaTime);
 }
 
 void Game::GenerateOutput()
@@ -192,6 +197,8 @@ void Game::GenerateOutput()
 	m_stateManager->Render();
 	m_textBlock->Draw();
 	m_textStr->DrawText();
+
+	m_gameManager->Render();
 
 	// Swap Window
 	SDL_GL_SwapWindow(m_window);
@@ -215,16 +222,16 @@ void Game::UnloadData()
 
 void Game::InitializeStates()
 {
-	m_stateManager->AddState(GameState::SplashScreen, new StateSplashScreen());
-	m_stateManager->AddState(GameState::MainMenu, new StateMainMenu());
-	m_stateManager->AddState(GameState::Gameplay, new StateGamePlay());
-	m_stateManager->AddState(GameState::GameOver, new StateGameOver());
+	m_stateManager->AddState(GameState::SPLASH_SCREEN, new StateSplashScreen());
+	m_stateManager->AddState(GameState::MAIN_MENU, new StateMainMenu());
+	m_stateManager->AddState(GameState::GAME_PLAY, new StateGamePlay());
+	m_stateManager->AddState(GameState::GAME_OVER, new StateGameOver());
 }
 
 void Game::CleanupStates()
 {
-	delete m_stateManager->GetState(GameState::SplashScreen);
-	delete m_stateManager->GetState(GameState::MainMenu);
-	delete m_stateManager->GetState(GameState::Gameplay);
-	delete m_stateManager->GetState(GameState::GameOver);
+	delete m_stateManager->GetState(GameState::SPLASH_SCREEN);
+	delete m_stateManager->GetState(GameState::MAIN_MENU);
+	delete m_stateManager->GetState(GameState::GAME_PLAY);
+	delete m_stateManager->GetState(GameState::GAME_OVER);
 }

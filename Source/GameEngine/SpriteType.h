@@ -6,5 +6,7 @@ namespace GameEngine
 	{
 		None = -1,
 		TextBlock = 0,
+		Leaf,
+		Ballon
 	};
 }

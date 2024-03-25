@@ -2,20 +2,31 @@
 #include "InputObserver.h"
 #include "GameStates.h"
 #include "LevelManager.h"
+#include "TextStringFont.h"
+#include "FontParameters.h"
+#include "TextBlockParameters.h"
+#include <memory>
 #include <vector>
 #include <map>
+#include "GameStates.h"
 
 namespace GameEngine 
 {
 	class GameManager : public InputObserver
 	{
 	public:
+		GameManager();
+		~GameManager();
 		void Update(float dt);
 		void Render();
 
 	private:
 		GameState m_gameState;
-		std::map<GameState, LevelManager> m_levels;
+		TextBlockParameters m_textBlockParameters;
+		std::map<std::string, GLuint> m_stringToColoredBlockTextureMap;
+		FontParameters m_fontParameters;
+		std::shared_ptr<TextStringFont> m_fontPtr;
+		std::map<GameState, LevelManager*> m_levels;
 		void Initialize();
 
 	protected:
