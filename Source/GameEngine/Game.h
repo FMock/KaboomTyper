@@ -1,7 +1,6 @@
 #pragma once
 #include <SDL.h>
 #include <string>
-#include <unordered_map>
 #include <vector>
 #include <memory>
 #include "InputManager.h"
@@ -30,11 +29,10 @@ namespace GameEngine
 
 		TextString* m_textStr;
 		TextBlock* m_textBlock;
-		TextBlockParameters m_textBlockParameters;
 		std::unique_ptr<InputManager> m_inputManager;
 		SDL_Window* m_window;
 		SDL_GLContext m_glcontext;
-		std::map<std::string, GLuint> m_stringToColoredBlockTextureMap;
+		
 		std::unique_ptr<StateManager> m_stateManager;
 		std::unique_ptr<GameManager> m_gameManager;
 

@@ -1,6 +1,7 @@
 #pragma once
 #include<GL/glew.h>
 #include<string>
+#include <map>
 
 namespace GameEngine
 {
@@ -22,6 +23,8 @@ namespace GameEngine
 		GLuint orangeBlockTexture;
 		int blockWidth;
 		int blockHeight;
+
+		std::map<std::string, GLuint> m_stringColorTextureColorMap;
 
 		// TODO RETHINK THIS. THESE SHOULD BE ASSIGNED FROM A CONFIG FILE
 		static const int defaultBlockWidth = 30;
