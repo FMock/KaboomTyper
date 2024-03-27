@@ -23,16 +23,9 @@ namespace GameEngine
 		Sprite();
 		Sprite(float width, float height, int x, int y);
 		virtual ~Sprite();// Virtual destructor for polymorphism.
-		const char* m_type;
-
 		void Initialize(float, float, int, int);
 		void Draw();
 		void ProcessInput();
-
-		AABB box;
-		AABB& getBox();
-		GLuint m_image;
-
 		void setXPos(float);
 		void setYPos(float);
 		void setWidth(int);
@@ -42,15 +35,19 @@ namespace GameEngine
 		float getXPos() const;
 		float getYPos() const;
 
-		int change_x;
-		int change_y;
-		inline State getState() const { return m_state; }
-		inline void setState(State newState) { m_state = newState; }
-
 		std::pair<int, int> getSize() const;
 		std::pair<float, float> getPosition() const;
 
+		inline State getState() const { return m_state; }
+		inline void setState(State newState) { m_state = newState; }
+
 	protected:
+		const char* m_type;
+		AABB box;
+		AABB& getBox();
+		GLuint m_image;
+		int change_x;
+		int change_y;
 		std::pair<int, int> m_size; // width, height
 		std::pair<float, float> m_position; // x, y position
 

@@ -11,17 +11,6 @@ using namespace GameEngine::Utility;
 
 void GameManager::Initialize()
 {
-	Utilities::ReadXmlFile("../../Config/TextBlockParameters.xml", m_textBlockParameters);
-
-	// Load all the textures into the String-to-Image map
-	m_stringToColoredBlockTextureMap["red"] = m_textBlockParameters.redBlockTexture;
-	m_stringToColoredBlockTextureMap["blue"] = m_textBlockParameters.blueBlockTexture;
-	m_stringToColoredBlockTextureMap["green"] = m_textBlockParameters.greenBlockTexture;
-	m_stringToColoredBlockTextureMap["yellow"] = m_textBlockParameters.yellowBlockTexture;
-	m_stringToColoredBlockTextureMap["purple"] = m_textBlockParameters.purpleBlockTexture;
-	m_stringToColoredBlockTextureMap["white"] = m_textBlockParameters.whiteBlockTexture;
-	m_stringToColoredBlockTextureMap["orange"] = m_textBlockParameters.orangeBlockTexture;
-
 	// Load Splash Screen
 	auto gameState = GameState::SPLASH_SCREEN;
 	m_levels[gameState] = new LevelManager();
@@ -36,7 +25,7 @@ void GameManager::Initialize()
 		if (auto* textBlockPtr = dynamic_cast<TextBlock*>(textBlock.get()))
 		{
 			// Access TextBlock-specific methods
-			textBlockPtr->InitializeTextBlock(150, 150, m_textBlockParameters, std::string("Splash Screen"), m_stringToColoredBlockTextureMap);
+			textBlockPtr->InitializeTextBlock(150, 150, std::string("Splash Screen"));
 		}
 	}
 	m_levels[gameState]->AddLevel(levelSplashScreen);

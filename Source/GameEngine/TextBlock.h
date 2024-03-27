@@ -24,33 +24,25 @@ namespace GameEngine
 	{
 	public:
 		TextBlock() = default;
-		TextBlock(float x, float y, int w, int h, std::string s, std::map<std::string, GLuint>& tMap);
-		TextBlock(int, int, TextBlockParameters&, std::string, std::map<std::string, GLuint>& tMap);
+		TextBlock(int w, int h, float x, float y, std::string s);
+		TextBlock(int, int, std::string);
 		~TextBlock();
-		void InitializeTextBlock(float x, float y, TextBlockParameters& textBlockParams, std::string str, const std::map<std::string, GLuint>& tMap);
+		void InitializeTextBlock(float x, float y, std::string str);
 
 		std::string m_text;        // the text for the TextString
 		int m_textSize;
 		TextString* m_textString; // TextString that's drawn over the TextBlock
-		std::map<std::string, GLuint> m_strToImageMap;
 		std::vector<std::string> m_colors;
 		std::string m_color;
 
-		// The direction the textblock is moving
-		int m_direction;
+		MoveDirection m_moveDirection; // The direction the textblock is moving
 		int m_prev_change_x;
 		int m_prev_change_y;
 
-		// If x and y velocity is not 0
-		bool m_moving;
-
+		bool m_moving; // If x and y velocity is not 0
 		bool m_collided;
-
-		// True when hit by any enemy
-		bool m_isHit;
-
-		// If True remove TextBlock from game
-		bool m_remove;
+		bool m_isHit; // True when hit by any enemy
+		bool m_remove; // If True remove TextBlock from game
 
 		void Update(float deltaTime) override;
 		void Draw();

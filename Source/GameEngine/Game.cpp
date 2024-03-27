@@ -105,22 +105,11 @@ void Game::LoadData()
 	m_textStr = new TextString();
 	m_textStr->Initialize("Press Spacebar to Begin", x, y); // draw some text to the screen
 
-	Utilities::ReadXmlFile("../../Config/TextBlockParameters.xml", m_textBlockParameters); // TODO: DON'T USE HARD-CODED PATHS
-
-	// Load all the textures into the String-to-Image map
-	m_stringToColoredBlockTextureMap["red"] = m_textBlockParameters.redBlockTexture;
-	m_stringToColoredBlockTextureMap["blue"] = m_textBlockParameters.blueBlockTexture;
-	m_stringToColoredBlockTextureMap["green"] = m_textBlockParameters.greenBlockTexture;
-	m_stringToColoredBlockTextureMap["yellow"] = m_textBlockParameters.yellowBlockTexture;
-	m_stringToColoredBlockTextureMap["purple"] = m_textBlockParameters.purpleBlockTexture;
-	m_stringToColoredBlockTextureMap["white"] = m_textBlockParameters.whiteBlockTexture;
-	m_stringToColoredBlockTextureMap["orange"] = m_textBlockParameters.orangeBlockTexture;
-
 	// Create a TextBlock at a radom position in the window
 	srand(time(0));
 	int randomX = rand() % 500;
 	int randomY = rand() % 500;
-	m_textBlock = new TextBlock(randomX, randomY, m_textBlockParameters, std::string("Kaboom Typer!"), m_stringToColoredBlockTextureMap);
+	m_textBlock = new TextBlock(randomX, randomY, std::string("Kaboom Typer!"));
 
 	// Load game states
 	m_stateManager = std::make_unique<StateManager>();
