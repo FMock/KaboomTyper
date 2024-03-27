@@ -11,14 +11,6 @@ using namespace GameEngine::Utility;
 
 void GameManager::Initialize()
 {
-	Utilities::ReadXmlFile("../../Config/FontParameters.xml", m_fontParameters); // TODO: DON'T USE HARD-CODED PATHS
-	m_fontPtr = std::make_shared<TextStringFont>();
-	m_fontPtr->image = m_fontParameters.m_texture;
-	m_fontPtr->imageWidth = m_fontParameters.m_fontsheetWidth;
-	m_fontPtr->imageHeight = m_fontParameters.m_fontsheetHeight;
-	m_fontPtr->frameWidth = m_fontParameters.m_fontWidth;
-	m_fontPtr->frameHeight = m_fontParameters.m_fontHeight;
-
 	Utilities::ReadXmlFile("../../Config/TextBlockParameters.xml", m_textBlockParameters);
 
 	// Load all the textures into the String-to-Image map
@@ -44,7 +36,7 @@ void GameManager::Initialize()
 		if (auto* textBlockPtr = dynamic_cast<TextBlock*>(textBlock.get()))
 		{
 			// Access TextBlock-specific methods
-			textBlockPtr->InitializeTextBlock(150, 150, m_textBlockParameters, *m_fontPtr, std::string("Splash Screen"), m_stringToColoredBlockTextureMap);
+			textBlockPtr->InitializeTextBlock(150, 150, m_textBlockParameters, std::string("Splash Screen"), m_stringToColoredBlockTextureMap);
 		}
 	}
 	m_levels[gameState]->AddLevel(levelSplashScreen);

@@ -1,40 +1,41 @@
 #pragma once
 
-#include<GL/glew.h>
-#include"DrawUtils.h"
-#include"TextStringFont.h"
+#include <GL/glew.h>
+#include "DrawUtils.h"
+#include "TextStringFont.h"
+#include "FontParameters.h"
 
 namespace GameEngine
 {
-	class TextString
-	{
-	public:
-		TextString() = default;
+    class TextString
+    {
+    public:
+        TextString() = default;
 
-		void Initialize(const char* string, int x, int y, TextStringFont& params);
-		void Initialize(std::string& string, int x, int y, TextStringFont& params);
-		void DrawText();
-		void Update(float dt);
-		void MoveRight();
-		void MoveLeft();
-		void MoveUp();
-		void MoveDown();
-		void Stop();
-		void SetPartOfTextBlock(bool);
-		bool GetPartOfTextBlock();
+        void Initialize(const char* string, int x, int y);
+        void Initialize(std::string& string, int x, int y);
 
-	private:
+        void DrawText();
+        void Update(float dt);
+        void MoveRight();
+        void MoveLeft();
+        void MoveUp();
+        void MoveDown();
+        void Stop();
+        void SetPartOfTextBlock(bool);
+        bool GetPartOfTextBlock();
 
-		std::string m_string;
-		GLuint m_image;
-		int m_width;  // image width
-		int m_height; // image height
-		int m_frameWidth;  // width of frame within image that gets drawn
-		int m_frameHeight; // height of frame within image that gets drawn
-		float m_s1, m_s2, m_t1, m_t2; // coords that specify area of image to draw
-		int m_x, m_y, m_numColumns, m_numRows; //(x, y) = where to start drawing on screen
-		float m_changeX, m_changeY;
-		float m_speedX, m_speedY;
-		bool m_partOfTextBlock;
-	};
+        // Static member for TextStringFont shared across all instances
+        static TextStringFont s_font;
+        static bool s_fontInitialized;
+
+    private:
+        FontParameters m_fontParameters; // used to initialize s_font
+        std::string m_string;
+        float m_s1, m_s2, m_t1, m_t2; // coords that specify area of image to draw
+        int m_x, m_y; // (x, y) = where to start drawing on screen
+        float m_changeX, m_changeY;
+        float m_speedX, m_speedY;
+        //bool m_partOfTextBlock;
+    };
 }

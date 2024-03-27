@@ -1,27 +1,48 @@
 #include "TextString.h"
 #include<string>
 #include<cmath>
+#include "Utilities.h"
+#include <stdexcept>
 
 using namespace GameEngine;
 using namespace DrawUtilities;
+using namespace GameEngine::Utility;
+
+// Definition of static members
+TextStringFont TextString::s_font;
+bool TextString::s_fontInitialized = false;
 
 /// <summary>
 /// Initializes the TextString members.
 /// </summary>
-/// <param name="string">C-String of text</param>
+/// <param name="string">C-String of text. This text gets drawn to the screen.</param>
 /// <param name="x">The starting x postion to draw the text on screen</param>
 /// <param name="y">The starting y position to draw the text on screen</param>
-/// <param name="params">A reference to a TextStringFont</param>
-void TextString::Initialize(const char* string, int x, int y, TextStringFont& params)
+void TextString::Initialize(const char* string, int x, int y)
 {
 	m_string = string;
-	m_image = params.image;
-	m_width = params.imageWidth;
-	m_height = params.imageHeight;
-	m_frameWidth = params.frameWidth;
-	m_frameHeight = params.frameHeight;
-	m_numColumns = (params.imageWidth / params.frameWidth);
-	m_numRows = (params.imageHeight / params.frameHeight);
+
+	// Initialize the static TextStringFont member if it hasn't been initialized yet
+	if (!s_fontInitialized)
+	{
+		bool initialized = Utilities::ReadXmlFile("../../Config/FontParameters.xml", m_fontParameters);
+
+		if (!initialized)
+		{
+			throw std::runtime_error("Failed to initialize FontParameters from XML file.");
+		}
+
+		s_font.image = m_fontParameters.m_texture;
+		s_font.imageWidth = m_fontParameters.m_fontsheetWidth;
+		s_font.imageHeight = m_fontParameters.m_fontsheetHeight;
+		s_font.frameWidth = m_fontParameters.m_fontWidth;
+		s_font.frameHeight = m_fontParameters.m_fontHeight;
+		s_font.numberColumns = (s_font.imageWidth / s_font.frameWidth);
+		s_font.numberRows = (s_font.imageHeight / s_font.frameHeight);
+
+		s_fontInitialized = true;
+	}
+
 	m_x = x;
 	m_y = y;
 	m_changeX = 0;
@@ -30,22 +51,15 @@ void TextString::Initialize(const char* string, int x, int y, TextStringFont& pa
 	m_speedY = 140; // TODO GET RID OF THIS MAGIC NUMBER 
 }
 
-void TextString::Initialize(std::string& string, int x, int y, TextStringFont& params)
+/// <summary>
+/// Initializes the TextString members.
+/// </summary>
+/// <param name="string">std::string of text. This text gets drawn to the screen</param>
+/// <param name="x">The starting x postion to draw the text on screen</param>
+/// <param name="y">The starting y position to draw the text on screen</param>
+void TextString::Initialize(std::string& string, int x, int y)
 {
-	m_string = string;
-	m_image = params.image;
-	m_width = params.imageWidth;
-	m_height = params.imageHeight;
-	m_frameWidth = params.frameWidth;
-	m_frameHeight = params.frameHeight;
-	m_numColumns = (params.imageWidth / params.frameWidth);
-	m_numRows = (params.imageHeight / params.frameHeight);
-	m_x = x;
-	m_y = y;
-	m_changeX = 0;
-	m_changeY = 0;
-	m_speedX = 140; // TODO GET RID OF THIS MAGIC NUMBER (LOAD FROM CONFIG FILE?)
-	m_speedY = 140; // TODO GET RID OF THIS MAGIC NUMBER 
+	Initialize(string.c_str(), x, y);
 }
 
 /*Draws each character of this objects string
@@ -59,10 +73,15 @@ void TextString::Initialize(std::string& string, int x, int y, TextStringFont& p
   `abcdefghijklmno
   qrstuvwxyz{|}~
  * */
-void TextString::DrawText(){
+void TextString::DrawText()
+{
+	if (!s_fontInitialized)
+	{
+		throw std::runtime_error("Error: A TextString must be initialized before it can be used.");
+	}
 
-	float colDivision = 1.0f/m_numColumns;
-	float rowDivision = 1.0f/m_numRows;
+	float colDivision = 1.0f/s_font.numberColumns;
+	float rowDivision = 1.0f/s_font.numberRows;
 	int currentCol = 0;
 	int currentRow = 0;
 
@@ -81,11 +100,11 @@ void TextString::DrawText(){
 
 		GlDrawFrameParams params;
 
-		params.tex = m_image;
-		params.x = m_x + i * (m_frameWidth / 2);
+		params.tex = s_font.image;
+		params.x = m_x + i * (s_font.frameWidth / 2);
 		params.y = m_y;
-		params.w = m_frameWidth;
-		params.h = m_frameHeight;
+		params.w = s_font.frameWidth;
+		params.h = s_font.frameHeight;
 		params.s1 = m_s1;
 		params.s2 = m_s2;
 		params.t1 = m_t1;
@@ -97,16 +116,7 @@ void TextString::DrawText(){
 
 void TextString::Update(float deltaTime)
 {
-	if (m_partOfTextBlock)
-	{
-		// TextString needs to move with the TextBlock
 
-	}
-	else
-	{
-		//m_x += m_changeX * deltaTime;
-		//m_y += m_changeY * deltaTime;
-	}
 }
 
 void TextString::MoveRight()
@@ -137,14 +147,4 @@ void TextString::Stop()
 {
 	m_changeX = 0;
 	m_changeY = 0;
-}
-
-void TextString::SetPartOfTextBlock(bool b)
-{
-	m_partOfTextBlock = b;
-}
-
-bool TextString::GetPartOfTextBlock()
-{
-	return m_partOfTextBlock;
 }
