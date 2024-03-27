@@ -20,7 +20,7 @@ enum Direction{LEFT, RIGHT, UP, DOWN };
 
 // ****** RETHINK THIS CONSTRUCTOR - DOES w and h NEED TO BE PASSED IN WITH EACH OBJECT
 // ******
-TextBlock::TextBlock(int x, int y, int w, int h, std::string s, std::map<std::string, GLuint>& tMap)
+TextBlock::TextBlock(float x, float y, int w, int h, std::string s, std::map<std::string, GLuint>& tMap)
 	:Sprite(x, y, w, h), m_strToImageMap(tMap), m_textString(new TextString())
 {
 	//FontParameters fontParamters;
@@ -47,8 +47,8 @@ TextBlock::TextBlock(int x, int y, int w, int h, std::string s, std::map<std::st
 	m_isHit = false;
 	m_moving = true;
 	m_direction = DOWN;
-	box.setW(m_characterSize[0]);
-	box.setH(m_characterSize[1]);
+	box.setW(m_size.first);
+	box.setH(m_size.second);
 
 	setHeight(h); // 30 a single textblock is 30 pixels high, When constructed we only need the height
 
@@ -57,7 +57,7 @@ TextBlock::TextBlock(int x, int y, int w, int h, std::string s, std::map<std::st
 }
 
 TextBlock::TextBlock(int x, int y, TextBlockParameters& textBlockParams, std::string str, std::map<std::string, GLuint>& tMap) 
-	: Sprite(x, y, textBlockParams.blockWidth, textBlockParams.blockHeight), m_strToImageMap(tMap), m_textString(new TextString())
+	: Sprite(x, y, 0, 0), m_strToImageMap(tMap), m_textString(new TextString())
 {
 	m_textString->Initialize(str.c_str(), x + 8, y - 5); // TODO: PUT IN CONFIG FILE. 5 PIXEL TEXTSTRING POSITION ADJUSTMENT SO ITS CENTERED ON THE TEXTBLOCK
 
@@ -71,8 +71,8 @@ TextBlock::TextBlock(int x, int y, TextBlockParameters& textBlockParams, std::st
 	m_isHit = false;
 	m_moving = true;
 	m_direction = DOWN;
-	box.setW(m_characterSize[0]);
-	box.setH(m_characterSize[1]);
+	box.setW(m_size.first);
+	box.setH(m_size.second);
 
 	setHeight(textBlockParams.blockHeight); // 30 a single textblock is 30 pixels high, When constructed we only need the height
 
@@ -85,7 +85,7 @@ GameEngine::TextBlock::~TextBlock()
 	delete m_textString;
 }
 
-void TextBlock::InitializeTextBlock(int x, int y, TextBlockParameters& textBlockParams, std::string str, const std::map<std::string, GLuint>& tMap)
+void TextBlock::InitializeTextBlock(float x, float y, TextBlockParameters& textBlockParams, std::string str, const std::map<std::string, GLuint>& tMap)
 {
 	m_strToImageMap = tMap;
 	m_textString = new TextString();
@@ -101,8 +101,8 @@ void TextBlock::InitializeTextBlock(int x, int y, TextBlockParameters& textBlock
 	m_isHit = false;
 	m_moving = true;
 	m_direction = DOWN;
-	box.setW(m_characterSize[0]);
-	box.setH(m_characterSize[1]);
+	box.setW(m_size.first);
+	box.setH(m_size.second);
 
 	setHeight(textBlockParams.blockHeight); // 30 a single textblock is 30 pixels high, When constructed we only need the height
 
@@ -114,7 +114,7 @@ void TextBlock::InitializeTextBlock(int x, int y, TextBlockParameters& textBlock
 void TextBlock::Draw()
 {
 	// First, draw the colored blocks
-	glDrawSprite(m_strToImageMap[m_color],  m_characterPos[0], m_characterPos[1], m_characterSize[0], m_characterSize[1]);
+	glDrawSprite(m_strToImageMap[m_color], (int) m_position.first, (int)m_position.second, m_size.first, m_size.second);
 
 	// Next, draw the text over the colored blocks
 	m_textString->DrawText();
@@ -125,31 +125,31 @@ void TextBlock::Update(float deltaTime)
 	if(m_moving){
 		moveDown();
 
-		if(m_characterPos[0] > GD::WORLD_WIDTH - m_characterSize[0] - GD::BLOCK_AREA_TO_RH_EDGE){
+		if(m_position.first > GD::WORLD_WIDTH - m_size.first - GD::BLOCK_AREA_TO_RH_EDGE){
 			change_x = 0; //stop block from going out of bounds (right boundry)
-			m_characterPos[0] -= 1;
+			m_position.first -= 1;
 		}
 
-		if(m_characterPos[0] < 0){
+		if(m_position.first < 0){
 			change_x = 0; //stop block from going out of bounds (left boundry)
-			m_characterPos[0] += 1;
+			m_position.first += 1;
 		}
 
-		if(m_characterPos[1] < 0){
+		if(m_position.second < 0){
 			change_y = 0; //stop block from going out of bounds up (upper boundry)
-			m_characterPos[1] += 1;
+			m_position.second += 1;
 		}
 
-		if(m_characterPos[1] > GD::WORLD_HEIGHT - m_characterSize[1] - GD::BL_FLOOR_TO_BOTTOM){
+		if(m_position.second > GD::WORLD_HEIGHT - m_size.second - GD::BL_FLOOR_TO_BOTTOM){
 			change_y = 0; //stop block from going out of bounds up (lower boundry)
-			m_characterPos[1] -= 1;
+			m_position.second -= 1;
 			m_moving = false;
 		}
 
-		m_characterPos[0] += change_x * deltaTime;
-		box.setX(abs(m_characterPos[0]));
-		m_characterPos[1] += change_y * deltaTime;
-		box.setY(abs(m_characterPos[1]));
+		m_position.first += change_x * deltaTime;
+		box.setX(abs(m_position.first));
+		m_position.second += change_y * deltaTime;
+		box.setY(abs(m_position.second));
 	}
 	else
 	{

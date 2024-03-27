@@ -4,24 +4,17 @@
 
 using namespace GameEngine;
 
-GameEngine::Sprite::Sprite() : InputObserver()
+GameEngine::Sprite::Sprite() : m_size(0, 0), m_position(0.0f, 0.0f), InputObserver()
 {
 	m_move = { "Left arrow pressed",
 			   "Right arrow pressed",
 			   "Up arrow pressed",
 			   "Down arrow pressed" };
-
-	m_characterSize = new int[2]();
-	m_characterPos = new float[2]();
 }
 
-GameEngine::Sprite::Sprite(int x, int y, int w, int h) : InputObserver()
+GameEngine::Sprite::Sprite(float x, float y, int w, int h) : m_size(w, h), m_position(x, y), InputObserver()
 {
 	m_image = NULL;
-	m_characterSize = new int[2]();
-	m_characterPos = new float[2]();
-	m_characterSize[0] = w; // width
-	m_characterSize[1] = h; // height
 	box = AABB();
 	box.setX(x);
 	box.setY(y);
@@ -37,17 +30,15 @@ GameEngine::Sprite::Sprite(int x, int y, int w, int h) : InputObserver()
 
 GameEngine::Sprite::~Sprite()
 {
-	delete[] m_characterSize;
-	delete[] m_characterPos;
 }
 
-void Sprite::Initialize(int x, int y, int w, int h)
+void Sprite::Initialize(float x, float y, int w, int h)
 {
 	m_image = NULL;
-	m_characterSize = new int[2]();
-	m_characterPos = new float[2]();
-	m_characterSize[0] = w; // width
-	m_characterSize[1] = h; // height
+	m_size.first = w;
+	m_size.second = h;
+	m_position.first = x;
+	m_position.second = y;
 	box = AABB();
 	box.setX(x);
 	box.setY(y);
@@ -61,21 +52,17 @@ void Sprite::Initialize(int x, int y, int w, int h)
 	m_type = "sprite";
 }
 
-//void GameEngine::Sprite::Update()
-//{
-//	//int move = static_cast<int>(m_moveDirection);
-//	//if(m_moveDirection != GameEngine::MoveDirection::NONE)
-//	//	std::cout << m_move[move] << std::endl;
-//}
+void GameEngine::Sprite::Update(float dt)
+{
+}
 
 void GameEngine::Sprite::Draw()
 {
-	DrawUtilities::glDrawSprite(m_image, m_characterPos[0], m_characterPos[1], m_characterSize[0], m_characterSize[1]);
+	DrawUtilities::glDrawSprite(m_image, m_position.first, m_position.second, m_size.first, m_size.second);
 }
 
 void GameEngine::Sprite::ProcessInput()
 {
-
 }
 
 void GameEngine::Sprite::RespondToObserved(InputManager* InputMgr)
@@ -84,47 +71,56 @@ void GameEngine::Sprite::RespondToObserved(InputManager* InputMgr)
 }
 
 
-void GameEngine::Sprite::setXPos(int x)
+void GameEngine::Sprite::setXPos(float x)
 {
-	m_characterPos[0] = x;
-	box.setX(abs(m_characterPos[0]));
+	m_position.first = x;
+	box.setX(abs(x));
 }
 
-int GameEngine::Sprite::getXPos() const
+float GameEngine::Sprite::getXPos() const
 {
-	int x = abs(m_characterPos[0]);
-	return x;
+	return abs(m_position.first);
 }
 
-void GameEngine::Sprite::setYPos(int y)
+void GameEngine::Sprite::setYPos(float y)
 {
-	m_characterPos[1] = y;
-	box.setY(abs(m_characterPos[1]));
+	m_position.second = y;
+	box.setY(abs(y));
 }
 
-int GameEngine::Sprite::getYPos() const
+float GameEngine::Sprite::getYPos() const
 {
-	return abs(m_characterPos[1]);
+	return m_position.second;
+}
+
+std::pair<int, int> GameEngine::Sprite::getSize() const
+{
+	return m_size;
+}
+
+std::pair<float, float> GameEngine::Sprite::getPosition() const
+{
+	return m_position;
 }
 
 void GameEngine::Sprite::setWidth(int w)
 {
-	m_characterSize[0] = w;
+	m_size.first = w;
 	box.setW(w);
 }
 
 int GameEngine::Sprite::getWidth() const
 {
-	return m_characterSize[0];
+	return m_size.first;
 }
 
 void GameEngine::Sprite::setHeight(int h)
 {
-	m_characterSize[1] = h;
+	m_size.second = h;
 	box.setH(h);
 }
 
 int GameEngine::Sprite::getHeight() const
 {
-	return m_characterSize[1];
+	return m_size.second;
 }

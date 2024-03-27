@@ -24,10 +24,10 @@ namespace GameEngine
 	{
 	public:
 		TextBlock() = default;
-		TextBlock(int, int, int, int, std::string, std::map<std::string, GLuint>& tMap);
+		TextBlock(float x, float y, int w, int h, std::string s, std::map<std::string, GLuint>& tMap);
 		TextBlock(int, int, TextBlockParameters&, std::string, std::map<std::string, GLuint>& tMap);
 		~TextBlock();
-		void InitializeTextBlock(int x, int y, TextBlockParameters& textBlockParams, std::string str, const std::map<std::string, GLuint>& tMap);
+		void InitializeTextBlock(float x, float y, TextBlockParameters& textBlockParams, std::string str, const std::map<std::string, GLuint>& tMap);
 
 		std::string m_text;        // the text for the TextString
 		int m_textSize;
@@ -53,9 +53,7 @@ namespace GameEngine
 		bool m_remove;
 
 		void Update(float deltaTime) override;
-
 		void Draw();
-
 		void moveLeft();
 		void moveRight();
 		void moveUp();
@@ -65,6 +63,10 @@ namespace GameEngine
 		std::string to_string() const;
 		void SetActiveState(bool state);
 		bool GetActiveState();
+
+		// Static members to share across all instances
+		static TextBlockParameters s_textBlockParameters;
+		static bool s_textBlockInitialized;
 
 	private:
 		float m_scaleFactor;
