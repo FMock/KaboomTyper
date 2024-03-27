@@ -27,6 +27,8 @@ namespace GameEngine
 		int imageHeight; // height of the font image file
 		int frameWidth;  // width of a single character of the image file
 		int frameHeight; // height of a single character of the image file
+		int numberColumns; // (imageWidth / frameWidth);
+		int numberRows; // (imageHeight / frameHeight);
 		inline int GetFontWidth() const { return frameWidth; }
 		inline int GetFontHeight() const { return frameHeight; }
 	};

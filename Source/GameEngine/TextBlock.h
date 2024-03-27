@@ -25,9 +25,9 @@ namespace GameEngine
 	public:
 		TextBlock() = default;
 		TextBlock(int, int, int, int, std::string, std::map<std::string, GLuint>& tMap);
-		TextBlock(int, int, TextBlockParameters&, TextStringFont&, std::string, std::map<std::string, GLuint>& tMap);
+		TextBlock(int, int, TextBlockParameters&, std::string, std::map<std::string, GLuint>& tMap);
 		~TextBlock();
-		void InitializeTextBlock(int x, int y, TextBlockParameters& textBlockParams, TextStringFont& font, std::string str, const std::map<std::string, GLuint>& tMap);
+		void InitializeTextBlock(int x, int y, TextBlockParameters& textBlockParams, std::string str, const std::map<std::string, GLuint>& tMap);
 
 		std::string m_text;        // the text for the TextString
 		int m_textSize;
@@ -35,9 +35,6 @@ namespace GameEngine
 		std::map<std::string, GLuint> m_strToImageMap;
 		std::vector<std::string> m_colors;
 		std::string m_color;
-
-		int m_fontWidth;
-		int m_fontHeight;
 
 		// The direction the textblock is moving
 		int m_direction;

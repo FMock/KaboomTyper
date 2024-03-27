@@ -35,8 +35,6 @@ namespace GameEngine
 		SDL_Window* m_window;
 		SDL_GLContext m_glcontext;
 		std::map<std::string, GLuint> m_stringToColoredBlockTextureMap;
-		TextStringFont* m_font;
-		FontParameters m_fontParameters;
 		std::unique_ptr<StateManager> m_stateManager;
 		std::unique_ptr<GameManager> m_gameManager;
 

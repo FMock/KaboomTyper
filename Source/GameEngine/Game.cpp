@@ -99,18 +99,11 @@ bool Game::Initialize()
 /// </summary>
 void Game::LoadData()
 {
-	Utilities::ReadXmlFile("../../Config/FontParameters.xml", m_fontParameters); // TODO: DON'T USE HARD-CODED PATHS
-
-	m_font = new TextStringFont();
-	m_font->image = m_fontParameters.m_texture;
-	m_font->imageWidth = m_fontParameters.m_fontsheetWidth;
-	m_font->imageHeight = m_fontParameters.m_fontsheetHeight;
-	m_font->frameWidth = m_fontParameters.m_fontWidth;
-	m_font->frameHeight = m_fontParameters.m_fontHeight;
 	int x = 50; // x position to draw on screen
 	int y = 50; // y position to draw on screen
+
 	m_textStr = new TextString();
-	m_textStr->Initialize("Press Spacebar to Begin", x, y, *m_font); // draw some text to the screen
+	m_textStr->Initialize("Press Spacebar to Begin", x, y); // draw some text to the screen
 
 	Utilities::ReadXmlFile("../../Config/TextBlockParameters.xml", m_textBlockParameters); // TODO: DON'T USE HARD-CODED PATHS
 
@@ -127,7 +120,7 @@ void Game::LoadData()
 	srand(time(0));
 	int randomX = rand() % 500;
 	int randomY = rand() % 500;
-	m_textBlock = new TextBlock(randomX, randomY, m_textBlockParameters, *m_font, std::string("Kaboom Typer!"), m_stringToColoredBlockTextureMap);
+	m_textBlock = new TextBlock(randomX, randomY, m_textBlockParameters, std::string("Kaboom Typer!"), m_stringToColoredBlockTextureMap);
 
 	// Load game states
 	m_stateManager = std::make_unique<StateManager>();
@@ -214,7 +207,6 @@ void Game::Shutdown()
 
 void Game::UnloadData()
 {
-	delete m_font;
 	delete m_textStr;
 	delete m_textBlock;
 	CleanupStates();

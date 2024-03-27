@@ -23,23 +23,23 @@ enum Direction{LEFT, RIGHT, UP, DOWN };
 TextBlock::TextBlock(int x, int y, int w, int h, std::string s, std::map<std::string, GLuint>& tMap)
 	:Sprite(x, y, w, h), m_strToImageMap(tMap), m_textString(new TextString())
 {
-	FontParameters fontParamters;
-	Utilities::ReadXmlFile("../../Config/FontParameters.xml", fontParamters); // TODO: DON'T USE HARD-CODED PATHS
-	TextStringFont font;
-	font.image = fontParamters.m_texture;
-	font.imageWidth = fontParamters.m_fontsheetWidth;
-	font.imageHeight = fontParamters.m_fontsheetHeight;
-	font.frameWidth = fontParamters.m_fontWidth;
-	font.frameHeight = fontParamters.m_fontHeight;
-	m_textString->Initialize(s.c_str(), x + 8, y - 5, font); // TODO: PUT IN CONFIG FILE. 5 PIXEL TEXTSTRING POSITION ADJUSTMENT SO ITS CENTERED ON THE TEXTBLOCK
+	//FontParameters fontParamters;
+	//Utilities::ReadXmlFile("../../Config/FontParameters.xml", fontParamters); // TODO: DON'T USE HARD-CODED PATHS
+	//TextStringFont font;
+	//font.image = fontParamters.m_texture;
+	//font.imageWidth = fontParamters.m_fontsheetWidth;
+	//font.imageHeight = fontParamters.m_fontsheetHeight;
+	//font.frameWidth = fontParamters.m_fontWidth;
+	//font.frameHeight = fontParamters.m_fontHeight;
+	m_textString->Initialize(s.c_str(), x + 8, y - 5); // TODO: PUT IN CONFIG FILE. 5 PIXEL TEXTSTRING POSITION ADJUSTMENT SO ITS CENTERED ON THE TEXTBLOCK
 
 	LoadColorVector();
 
 	srand(time(0));
 	m_color = m_colors.at(rand() % 7); // chooses a random color for this textblock
 
-	m_fontWidth = 31; // 23 previously - TODO THIS SHOULD NOT BE HARD-CODED
-	m_fontHeight = 36; //25 previously - TODO THIS SHOULD NOT BE HARD-CODED
+	//m_fontWidth = 31; // 23 previously - TODO THIS SHOULD NOT BE HARD-CODED
+	//m_fontHeight = 36; //25 previously - TODO THIS SHOULD NOT BE HARD-CODED
 
 	m_text = s;
 	m_collided = false;
@@ -56,10 +56,10 @@ TextBlock::TextBlock(int x, int y, int w, int h, std::string s, std::map<std::st
 	ScaleTextBlock(m_textSize, TextBlockParameters::defaultBlockWidth);
 }
 
-TextBlock::TextBlock(int x, int y, TextBlockParameters& textBlockParams, TextStringFont& font, std::string str, std::map<std::string, GLuint>& tMap) 
+TextBlock::TextBlock(int x, int y, TextBlockParameters& textBlockParams, std::string str, std::map<std::string, GLuint>& tMap) 
 	: Sprite(x, y, textBlockParams.blockWidth, textBlockParams.blockHeight), m_strToImageMap(tMap), m_textString(new TextString())
 {
-	m_textString->Initialize(str.c_str(), x + 8, y - 5, font); // TODO: PUT IN CONFIG FILE. 5 PIXEL TEXTSTRING POSITION ADJUSTMENT SO ITS CENTERED ON THE TEXTBLOCK
+	m_textString->Initialize(str.c_str(), x + 8, y - 5); // TODO: PUT IN CONFIG FILE. 5 PIXEL TEXTSTRING POSITION ADJUSTMENT SO ITS CENTERED ON THE TEXTBLOCK
 
 	LoadColorVector();
 
@@ -85,11 +85,11 @@ GameEngine::TextBlock::~TextBlock()
 	delete m_textString;
 }
 
-void TextBlock::InitializeTextBlock(int x, int y, TextBlockParameters& textBlockParams, TextStringFont& font, std::string str, const std::map<std::string, GLuint>& tMap)
+void TextBlock::InitializeTextBlock(int x, int y, TextBlockParameters& textBlockParams, std::string str, const std::map<std::string, GLuint>& tMap)
 {
 	m_strToImageMap = tMap;
 	m_textString = new TextString();
-	m_textString->Initialize(str.c_str(), x + 8, y - 5, font); // TODO: PUT IN CONFIG FILE. 5 PIXEL TEXTSTRING POSITION ADJUSTMENT SO ITS CENTERED ON THE TEXTBLOCK
+	m_textString->Initialize(str.c_str(), x + 8, y - 5); // TODO: PUT IN CONFIG FILE. 5 PIXEL TEXTSTRING POSITION ADJUSTMENT SO ITS CENTERED ON THE TEXTBLOCK
 
 	LoadColorVector();
 
