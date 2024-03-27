@@ -1,5 +1,6 @@
 #pragma once
 
+#include <utility> // for std::pair
 #include <GL/glew.h>
 #include "InputObserver.h"
 #include "InputManager.h"
@@ -20,12 +21,11 @@ namespace GameEngine
 	{
 	public:
 		Sprite();
-		Sprite(int, int, int, int);
+		Sprite(float width, float height, int x, int y);
 		virtual ~Sprite();// Virtual destructor for polymorphism.
 		const char* m_type;
 
-		void Initialize(int, int, int, int);
-		virtual void Update(float deltaTime) = 0; // must be overridden by derived classes
+		void Initialize(float, float, int, int);
 		void Draw();
 		void ProcessInput();
 
@@ -33,31 +33,31 @@ namespace GameEngine
 		AABB& getBox();
 		GLuint m_image;
 
-		void setXPos(int);
-		void setYPos(int);
+		void setXPos(float);
+		void setYPos(float);
 		void setWidth(int);
 		void setHeight(int);
 		int getWidth() const;
 		int getHeight() const;
-		int getXPos() const;
-		int getYPos() const;
+		float getXPos() const;
+		float getYPos() const;
 
-		int* m_characterSize;
-		float* m_characterPos;
 		int change_x;
 		int change_y;
 		inline State getState() const { return m_state; }
 		inline void setState(State newState) { m_state = newState; }
 
+		std::pair<int, int> getSize() const;
+		std::pair<float, float> getPosition() const;
+
 	protected:
-		float x;
-		float y;
+		std::pair<int, int> m_size; // width, height
+		std::pair<float, float> m_position; // x, y position
+
 		MoveDirection m_moveDirection;
 		std::vector<std::string> m_move;
 		State m_state = State::IDLE; // Default state
 		virtual void RespondToObserved(InputManager* InputMgr);
-
-	private:
-
+		virtual void Update(float deltaTime);
 	};
 }

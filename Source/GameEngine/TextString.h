@@ -22,8 +22,6 @@ namespace GameEngine
         void MoveUp();
         void MoveDown();
         void Stop();
-        void SetPartOfTextBlock(bool);
-        bool GetPartOfTextBlock();
 
         // Static member for TextStringFont shared across all instances
         static TextStringFont s_font;
@@ -36,6 +34,5 @@ namespace GameEngine
         int m_x, m_y; // (x, y) = where to start drawing on screen
         float m_changeX, m_changeY;
         float m_speedX, m_speedY;
-        //bool m_partOfTextBlock;
     };
 }
