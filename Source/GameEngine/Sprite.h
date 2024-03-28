@@ -24,7 +24,6 @@ namespace GameEngine
 		Sprite(float width, float height, int x, int y);
 		virtual ~Sprite();// Virtual destructor for polymorphism.
 		void Initialize(float, float, int, int);
-		void Draw();
 		void ProcessInput();
 		void setXPos(float);
 		void setYPos(float);
@@ -56,5 +55,6 @@ namespace GameEngine
 		State m_state = State::IDLE; // Default state
 		virtual void RespondToObserved(InputManager* InputMgr);
 		virtual void Update(float deltaTime);
+		virtual void Draw();
 	};
 }

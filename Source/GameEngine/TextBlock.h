@@ -8,6 +8,7 @@
 #include <vector>
 #include "game_data.h"
 #include <sstream>
+#include <memory>
 #include <ctime>
 #include "TextString.h"
 #include "TextBlockParameters.h"
@@ -31,7 +32,7 @@ namespace GameEngine
 
 		std::string m_text;        // the text for the TextString
 		int m_textSize;
-		TextString* m_textString; // TextString that's drawn over the TextBlock
+		std::unique_ptr<TextString> m_textString; // TextString that's drawn over the TextBlock
 		std::vector<std::string> m_colors;
 		std::string m_color;
 
@@ -63,6 +64,7 @@ namespace GameEngine
 	private:
 		float m_scaleFactor;
 		int m_adjustedTextblockWidth;
+		bool InitializeTextBlockParameters();
 		void LoadColorVector();
 		void ScaleTextBlock(int textSize, int blockWidth);
 		bool m_isActive;
