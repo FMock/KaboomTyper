@@ -24,8 +24,7 @@ enum Direction{LEFT, RIGHT, UP, DOWN };
 
 // ****** RETHINK THIS CONSTRUCTOR - DOES w and h NEED TO BE PASSED IN WITH EACH OBJECT
 // ******
-TextBlock::TextBlock(int w, int h, float x, float y, std::string s)
-	:Sprite(w, h, x, y), m_textString(new TextString())
+TextBlock::TextBlock(int w, int h, float x, float y, std::string s) : Sprite(w, h, x, y), m_textString(new TextString())
 {
 	m_textString->Initialize(s.c_str(), x + 8, y - 5); // TODO: PUT IN CONFIG FILE. 5 PIXEL TEXTSTRING POSITION ADJUSTMENT SO ITS CENTERED ON THE TEXTBLOCK
 
@@ -49,28 +48,11 @@ TextBlock::TextBlock(int w, int h, float x, float y, std::string s)
 
 	if (!s_textBlockInitialized)
 	{
-		bool initialized = Utilities::ReadXmlFile("../../Config/TextBlockParameters.xml", s_textBlockParameters); // TODO: DON'T USE HARD-CODED PATHS
-
-		if (!initialized)
-		{
-			throw std::runtime_error("Failed to initialize TextBlockParameters from XML file.");
-		}
-
-		// Load all the textures into the String-to-Image map
-		s_textBlockParameters.m_stringColorTextureColorMap["red"] = s_textBlockParameters.redBlockTexture;
-		s_textBlockParameters.m_stringColorTextureColorMap["blue"] = s_textBlockParameters.blueBlockTexture;
-		s_textBlockParameters.m_stringColorTextureColorMap["green"] = s_textBlockParameters.greenBlockTexture;
-		s_textBlockParameters.m_stringColorTextureColorMap["yellow"] = s_textBlockParameters.yellowBlockTexture;
-		s_textBlockParameters.m_stringColorTextureColorMap["purple"] = s_textBlockParameters.purpleBlockTexture;
-		s_textBlockParameters.m_stringColorTextureColorMap["white"] = s_textBlockParameters.whiteBlockTexture;
-		s_textBlockParameters.m_stringColorTextureColorMap["orange"] = s_textBlockParameters.orangeBlockTexture;
-
-		s_textBlockInitialized = true;
+		InitializeTextBlockParameters();
 	}
 }
 
-TextBlock::TextBlock(int x, int y, std::string str) 
-	: Sprite(x, y, 0, 0), m_textString(new TextString())
+TextBlock::TextBlock(int x, int y, std::string str) : Sprite(x, y, 0, 0), m_textString(new TextString())
 {
 	m_textString->Initialize(str.c_str(), x + 8, y - 5); // TODO: PUT IN CONFIG FILE. 5 PIXEL TEXTSTRING POSITION ADJUSTMENT SO ITS CENTERED ON THE TEXTBLOCK
 
@@ -89,40 +71,22 @@ TextBlock::TextBlock(int x, int y, std::string str)
 
 	if (!s_textBlockInitialized)
 	{
-		bool initialized = Utilities::ReadXmlFile("../../Config/TextBlockParameters.xml", s_textBlockParameters); // TODO: DON'T USE HARD-CODED PATHS
-
-		if (!initialized)
-		{
-			throw std::runtime_error("Failed to initialize TextBlockParameters from XML file.");
-		}
-
-		// Load all the textures into the String-to-Image map
-		s_textBlockParameters.m_stringColorTextureColorMap["red"] = s_textBlockParameters.redBlockTexture;
-		s_textBlockParameters.m_stringColorTextureColorMap["blue"] = s_textBlockParameters.blueBlockTexture;
-		s_textBlockParameters.m_stringColorTextureColorMap["green"] = s_textBlockParameters.greenBlockTexture;
-		s_textBlockParameters.m_stringColorTextureColorMap["yellow"] = s_textBlockParameters.yellowBlockTexture;
-		s_textBlockParameters.m_stringColorTextureColorMap["purple"] = s_textBlockParameters.purpleBlockTexture;
-		s_textBlockParameters.m_stringColorTextureColorMap["white"] = s_textBlockParameters.whiteBlockTexture;
-		s_textBlockParameters.m_stringColorTextureColorMap["orange"] = s_textBlockParameters.orangeBlockTexture;
-
-		s_textBlockInitialized = true;
+		InitializeTextBlockParameters();
 	}
 
-	setHeight(s_textBlockParameters.blockHeight); // 30 a single textblock is 30 pixels high, When constructed we only need the height
+	setHeight(s_textBlockParameters.blockHeight); // A single textblock is 30 pixels high
 
-	// Adjust the number of blocks that make up this textblock, so the TextString and TextBlock are similar width
+	// Adjust the number of blocks that make up this textblock, so the TextString and TextBlock are a similar width
 	ScaleTextBlock(m_textSize, s_textBlockParameters.blockWidth);
 }
 
 GameEngine::TextBlock::~TextBlock()
 {
-	delete m_textString;
 }
 
 void TextBlock::InitializeTextBlock(float x, float y, std::string str)
 {
-	//m_strToImageMap = tMap;
-	m_textString = new TextString();
+	m_textString = std::make_unique<TextString>();
 	m_textString->Initialize(str.c_str(), x + 8, y - 5); // TODO: PUT IN CONFIG FILE. 5 PIXEL TEXTSTRING POSITION ADJUSTMENT SO ITS CENTERED ON THE TEXTBLOCK
 
 	LoadColorVector();
@@ -140,29 +104,37 @@ void TextBlock::InitializeTextBlock(float x, float y, std::string str)
 
 	if (!s_textBlockInitialized)
 	{
-		bool initialized = Utilities::ReadXmlFile("../../Config/TextBlockParameters.xml", s_textBlockParameters); // TODO: DON'T USE HARD-CODED PATHS
-
-		if (!initialized)
-		{
-			throw std::runtime_error("Failed to initialize TextBlockParameters from XML file.");
-		}
-
-		// Load all the textures into the String-to-Image map
-		s_textBlockParameters.m_stringColorTextureColorMap["red"] = s_textBlockParameters.redBlockTexture;
-		s_textBlockParameters.m_stringColorTextureColorMap["blue"] = s_textBlockParameters.blueBlockTexture;
-		s_textBlockParameters.m_stringColorTextureColorMap["green"] = s_textBlockParameters.greenBlockTexture;
-		s_textBlockParameters.m_stringColorTextureColorMap["yellow"] = s_textBlockParameters.yellowBlockTexture;
-		s_textBlockParameters.m_stringColorTextureColorMap["purple"] = s_textBlockParameters.purpleBlockTexture;
-		s_textBlockParameters.m_stringColorTextureColorMap["white"] = s_textBlockParameters.whiteBlockTexture;
-		s_textBlockParameters.m_stringColorTextureColorMap["orange"] = s_textBlockParameters.orangeBlockTexture;
-
-		s_textBlockInitialized = true;
+		InitializeTextBlockParameters();
 	}
+
+	this->setXPos(x);
+	this->setYPos(y);
 
 	setHeight(s_textBlockParameters.blockHeight); // 30 a single textblock is 30 pixels high, When constructed we only need the height
 
 	// Adjust the number of blocks that make up this textblock, so the TextString and TextBlock are similar width
 	ScaleTextBlock(m_textSize, s_textBlockParameters.blockWidth);
+}
+
+bool GameEngine::TextBlock::InitializeTextBlockParameters()
+{
+	bool initialized = Utilities::ReadXmlFile("../../Config/TextBlockParameters.xml", s_textBlockParameters); // TODO: DON'T USE HARD-CODED PATHS
+
+	if (!initialized)
+	{
+		throw std::runtime_error("Failed to initialize TextBlockParameters from XML file.");
+	}
+
+	// Load all the textures into the String-to-Image map
+	s_textBlockParameters.m_stringColorTextureColorMap["red"] = s_textBlockParameters.redBlockTexture;
+	s_textBlockParameters.m_stringColorTextureColorMap["blue"] = s_textBlockParameters.blueBlockTexture;
+	s_textBlockParameters.m_stringColorTextureColorMap["green"] = s_textBlockParameters.greenBlockTexture;
+	s_textBlockParameters.m_stringColorTextureColorMap["yellow"] = s_textBlockParameters.yellowBlockTexture;
+	s_textBlockParameters.m_stringColorTextureColorMap["purple"] = s_textBlockParameters.purpleBlockTexture;
+	s_textBlockParameters.m_stringColorTextureColorMap["white"] = s_textBlockParameters.whiteBlockTexture;
+	s_textBlockParameters.m_stringColorTextureColorMap["orange"] = s_textBlockParameters.orangeBlockTexture;
+
+	s_textBlockInitialized = true;
 }
 
 // Draw the textBlock to the screen
@@ -177,39 +149,7 @@ void TextBlock::Draw()
 
 void TextBlock::Update(float deltaTime)
 {
-	if(m_moving){
-		moveDown();
-
-		if(m_position.first > GD::WORLD_WIDTH - m_size.first - GD::BLOCK_AREA_TO_RH_EDGE){
-			change_x = 0; //stop block from going out of bounds (right boundry)
-			m_position.first -= 1;
-		}
-
-		if(m_position.first < 0){
-			change_x = 0; //stop block from going out of bounds (left boundry)
-			m_position.first += 1;
-		}
-
-		if(m_position.second < 0){
-			change_y = 0; //stop block from going out of bounds up (upper boundry)
-			m_position.second += 1;
-		}
-
-		if(m_position.second > GD::WORLD_HEIGHT - m_size.second - GD::BL_FLOOR_TO_BOTTOM){
-			change_y = 0; //stop block from going out of bounds up (lower boundry)
-			m_position.second -= 1;
-			m_moving = false;
-		}
-
-		m_position.first += change_x * deltaTime;
-		box.setX(abs(m_position.first));
-		m_position.second += change_y * deltaTime;
-		box.setY(abs(m_position.second));
-	}
-	else
-	{
-		stop();
-	}
+	// TODO: ADD UPDATE CODE
 }
 
 void TextBlock::moveLeft()

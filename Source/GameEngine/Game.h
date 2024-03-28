@@ -28,7 +28,8 @@ namespace GameEngine
 	private:
 
 		TextString* m_textStr;
-		TextBlock* m_textBlock;
+		std::unique_ptr<TextBlock> m_textBlock;
+		std::unique_ptr<TextBlock> m_textBlock2;
 		std::unique_ptr<InputManager> m_inputManager;
 		SDL_Window* m_window;
 		SDL_GLContext m_glcontext;

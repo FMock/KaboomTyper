@@ -23,8 +23,6 @@ Game::Game()
 	// empty constructor to ensure that members are created after the OpenGL context is set up
 }
 	
-	
-
 /// <summary>
 /// Creates an SDL2 game windows with an OpenGL context
 /// </summary>
@@ -109,7 +107,9 @@ void Game::LoadData()
 	srand(time(0));
 	int randomX = rand() % 500;
 	int randomY = rand() % 500;
-	m_textBlock = new TextBlock(randomX, randomY, std::string("Kaboom Typer!"));
+	m_textBlock = std::make_unique<TextBlock>(randomX, randomY, std::string("Kaboom Typer!"));
+	m_textBlock2 = std::make_unique<TextBlock>();
+	m_textBlock2->InitializeTextBlock(randomX + 75, randomY + 75, std::string("A word typing game."));
 
 	// Load game states
 	m_stateManager = std::make_unique<StateManager>();
@@ -118,7 +118,7 @@ void Game::LoadData()
 
 	// Initialize Input Manager
 	m_inputManager = std::make_unique<InputManager>();
-	m_inputManager->RegisterObserver(m_textBlock);
+	m_inputManager->RegisterObserver(m_textBlock.get());
 
 	// Load GameManager
 	m_gameManager = std::make_unique<GameManager>();
@@ -163,6 +163,7 @@ void Game::UpdateGame()
 	m_stateManager->Update(m_deltaTime);
 	m_inputManager->Update();
 	m_textBlock->Update(m_deltaTime);
+	m_textBlock2->Update(m_deltaTime);
 	m_textStr->Update(m_deltaTime);
 	//fmod_sys->update(); // If you don't update the sound will play once
 
@@ -178,6 +179,7 @@ void Game::GenerateOutput()
 	// Draw Objects
 	m_stateManager->Render();
 	m_textBlock->Draw();
+	m_textBlock2->Draw();
 	m_textStr->DrawText();
 
 	m_gameManager->Render();
@@ -197,7 +199,6 @@ void Game::Shutdown()
 void Game::UnloadData()
 {
 	delete m_textStr;
-	delete m_textBlock;
 	CleanupStates();
 }
 
