@@ -15,17 +15,15 @@ GameEngine::Sprite::Sprite() : m_size(0, 0), m_position(0.0f, 0.0f), InputObserv
 GameEngine::Sprite::Sprite(float x, float y, int w, int h) : m_size(w, h), m_position(x, y), InputObserver()
 {
 	m_image = NULL;
-	box = AABB();
-	box.setX(x);
-	box.setY(y);
-	box.setW(w);
-	box.setH(h);
+	m_box = AABB();
+	m_box.setX(x);
+	m_box.setY(y);
+	m_box.setW(w);
+	m_box.setH(h);
 	setXPos(x);
 	setYPos(y);
-	change_x = 0;
-	change_y = 0;
-	m_type = new char[20];
-	m_type = "sprite";
+	m_change_x = 0;
+	m_change_y = 0;
 }
 
 GameEngine::Sprite::~Sprite()
@@ -39,17 +37,15 @@ void Sprite::Initialize(float x, float y, int w, int h)
 	m_size.second = h;
 	m_position.first = x;
 	m_position.second = y;
-	box = AABB();
-	box.setX(x);
-	box.setY(y);
-	box.setW(w);
-	box.setH(h);
+	m_box = AABB();
+	m_box.setX(x);
+	m_box.setY(y);
+	m_box.setW(w);
+	m_box.setH(h);
 	setXPos(x);
 	setYPos(y);
-	change_x = 0;
-	change_y = 0;
-	m_type = new char[20];
-	m_type = "sprite";
+	m_change_x = 0;
+	m_change_y = 0;;
 }
 
 void GameEngine::Sprite::Update(float dt)
@@ -74,7 +70,7 @@ void GameEngine::Sprite::RespondToObserved(InputManager* InputMgr)
 void GameEngine::Sprite::setXPos(float x)
 {
 	m_position.first = x;
-	box.setX(abs(x));
+	m_box.setX(abs(x));
 }
 
 float GameEngine::Sprite::getXPos() const
@@ -85,7 +81,7 @@ float GameEngine::Sprite::getXPos() const
 void GameEngine::Sprite::setYPos(float y)
 {
 	m_position.second = y;
-	box.setY(abs(y));
+	m_box.setY(abs(y));
 }
 
 float GameEngine::Sprite::getYPos() const
@@ -106,7 +102,7 @@ std::pair<float, float> GameEngine::Sprite::getPosition() const
 void GameEngine::Sprite::setWidth(int w)
 {
 	m_size.first = w;
-	box.setW(w);
+	m_box.setW(w);
 }
 
 int GameEngine::Sprite::getWidth() const
@@ -117,7 +113,7 @@ int GameEngine::Sprite::getWidth() const
 void GameEngine::Sprite::setHeight(int h)
 {
 	m_size.second = h;
-	box.setH(h);
+	m_box.setH(h);
 }
 
 int GameEngine::Sprite::getHeight() const

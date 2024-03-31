@@ -7,8 +7,8 @@ namespace GameEngine
 	class InputObserver
 	{
 	public:
-		inline InputObserver(void) {}
-		inline ~InputObserver(void) {}
+		InputObserver(void) {}
+		~InputObserver(void) {}
 		template<typename T> void Notify(T*);
 
 	protected:
