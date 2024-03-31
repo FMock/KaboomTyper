@@ -41,12 +41,11 @@ namespace GameEngine
 		inline void setState(State newState) { m_state = newState; }
 
 	protected:
-		const char* m_type;
-		AABB box;
+		AABB m_box;
 		AABB& getBox();
 		GLuint m_image;
-		int change_x;
-		int change_y;
+		int m_change_x;
+		int m_change_y;
 		std::pair<int, int> m_size; // width, height
 		std::pair<float, float> m_position; // x, y position
 

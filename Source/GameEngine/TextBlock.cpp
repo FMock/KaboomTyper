@@ -38,8 +38,8 @@ TextBlock::TextBlock(int w, int h, float x, float y, std::string s) : Sprite(w, 
 	m_isHit = false;
 	m_moving = true;
 	m_moveDirection = MoveDirection::DOWN;
-	box.setW(m_size.first);
-	box.setH(m_size.second);
+	m_box.setW(m_size.first);
+	m_box.setH(m_size.second);
 
 	setHeight(h); // 30 a single textblock is 30 pixels high, When constructed we only need the height
 
@@ -66,8 +66,8 @@ TextBlock::TextBlock(int x, int y, std::string str) : Sprite(x, y, 0, 0), m_text
 	m_isHit = false;
 	m_moving = true;
 	m_moveDirection = MoveDirection::DOWN;
-	box.setW(m_size.first);
-	box.setH(m_size.second);
+	m_box.setW(m_size.first);
+	m_box.setH(m_size.second);
 
 	if (!s_textBlockInitialized)
 	{
@@ -99,8 +99,8 @@ void TextBlock::InitializeTextBlock(float x, float y, std::string str)
 	m_isHit = false;
 	m_moving = true;
 	m_moveDirection = MoveDirection::DOWN;
-	box.setW(m_size.first);
-	box.setH(m_size.second);
+	m_box.setW(m_size.first);
+	m_box.setH(m_size.second);
 
 	if (!s_textBlockInitialized)
 	{
@@ -155,50 +155,50 @@ void TextBlock::Update(float deltaTime)
 void TextBlock::moveLeft()
 {
 	m_moving = true;
-	m_prev_change_y = change_y;
-	change_y = 0;
-	m_prev_change_x = change_x;
-	//change_x = -speedX;
+	m_prev_change_y = m_change_y;
+	m_change_y = 0;
+	m_prev_change_x = m_change_x;
+	//m_change_x = -speedX;
 	m_moveDirection = MoveDirection::LEFT;
 }
 
 void TextBlock::moveRight()
 {
 	m_moving = true;
-	m_prev_change_y = change_y;
-	change_y = 0;
-	m_prev_change_x = change_x;
-	//change_x = speedX;
+	m_prev_change_y = m_change_y;
+	m_change_y = 0;
+	m_prev_change_x = m_change_x;
+	//m_change_x = speedX;
 	m_moveDirection = MoveDirection::RIGHT;
 }
 
 void TextBlock::moveUp()
 {
 	m_moving = true;
-	m_prev_change_x = change_x;
-	change_x = 0;
-	m_prev_change_y = change_y;
-	//change_y = -speedY;
+	m_prev_change_x = m_change_x;
+	m_change_x = 0;
+	m_prev_change_y = m_change_y;
+	//m_change_y = -speedY;
 	m_moveDirection = MoveDirection::UP;
 }
 
 void TextBlock::moveDown()
 {
 	m_moving = true;
-	m_prev_change_x = change_x;
-	change_x = 0;
-	m_prev_change_y = change_y;
-	//change_y = speedY;
+	m_prev_change_x = m_change_x;
+	m_change_x = 0;
+	m_prev_change_y = m_change_y;
+	//m_change_y = speedY;
 	m_moveDirection = MoveDirection::DOWN;
 }
 
 void TextBlock::stop()
 {
 	m_moving = false;
-	m_prev_change_x = change_x;
-	change_x = 0;
-	m_prev_change_y = change_y;
-	change_y = 0;
+	m_prev_change_x = m_change_x;
+	m_change_x = 0;
+	m_prev_change_y = m_change_y;
+	m_change_y = 0;
 }
 
 void TextBlock::collision(Sprite &sprite)
@@ -215,10 +215,10 @@ std::string TextBlock::to_string() const
 		<< "moving = " << m_moving << "\n"
 		<< "Direction = " << (int)m_moveDirection << "\n"
 		<< "isHit = "  << m_isHit << "\n"
-		<< "AABB x = " << box.x << "\n"
-		<< "AABB y = " << box.y << "\n"
-		<< "AABB w = " << box.w << "\n"
-		<< "AABB h = " << box.h << "\n"
+		<< "AABB x = " << m_box.x << "\n"
+		<< "AABB y = " << m_box.y << "\n"
+		<< "AABB w = " << m_box.w << "\n"
+		<< "AABB h = " << m_box.h << "\n"
 		<< "xPos = " << getXPos() << "\n"
 		<< "YPos = " << getYPos() << "\n"
 		<< "END TextBlock *********\n";
