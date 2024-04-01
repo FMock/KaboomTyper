@@ -1,27 +1,25 @@
 #pragma once
 
 #include <GL/glew.h>
+#include <memory>
 #include "DrawUtils.h"
 #include "TextStringFont.h"
 #include "FontParameters.h"
+#include "Moveable.h"
 
 namespace GameEngine
 {
     class TextString
     {
     public:
-        TextString() = default;
-
+        TextString();
+        TextString(std::string text, int x, int y);
+        TextString(const char* text, int x, int y);
         void Initialize(const char* string, int x, int y);
         void Initialize(std::string& string, int x, int y);
-
+        size_t GetTextSize();
         void DrawText();
         void Update(float dt);
-        void MoveRight();
-        void MoveLeft();
-        void MoveUp();
-        void MoveDown();
-        void Stop();
 
         // Static member for TextStringFont shared across all instances
         static TextStringFont s_font;
@@ -30,9 +28,9 @@ namespace GameEngine
     private:
         FontParameters m_fontParameters; // used to initialize s_font
         std::string m_string;
+        int m_textSize;
         float m_s1, m_s2, m_t1, m_t2; // coords that specify area of image to draw
         int m_x, m_y; // (x, y) = where to start drawing on screen
-        float m_changeX, m_changeY;
-        float m_speedX, m_speedY;
+        std::unique_ptr<Moveable> m_moveable;
     };
 }

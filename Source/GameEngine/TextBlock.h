@@ -25,33 +25,23 @@ namespace GameEngine
 	{
 	public:
 		TextBlock() = default;
-		TextBlock(int w, int h, float x, float y, std::string s);
-		TextBlock(int, int, std::string);
+		TextBlock(int x, int y, std::string);
 		~TextBlock();
 		void InitializeTextBlock(float x, float y, std::string str);
 
-		std::string m_text;        // the text for the TextString
-		int m_textSize;
 		std::unique_ptr<TextString> m_textString; // TextString that's drawn over the TextBlock
 		std::vector<std::string> m_colors;
 		std::string m_color;
 
-		MoveDirection m_moveDirection; // The direction the textblock is moving
 		int m_prev_change_x;
 		int m_prev_change_y;
 
-		bool m_moving; // If x and y velocity is not 0
 		bool m_collided;
 		bool m_isHit; // True when hit by any enemy
 		bool m_remove; // If True remove TextBlock from game
 
 		void Update(float deltaTime) override;
 		void Draw();
-		void moveLeft();
-		void moveRight();
-		void moveUp();
-		void moveDown();
-		void stop();
 		void collision(Sprite& sprite);
 		std::string to_string() const;
 		void SetActiveState(bool state);
@@ -66,7 +56,7 @@ namespace GameEngine
 		int m_adjustedTextblockWidth;
 		bool InitializeTextBlockParameters();
 		void LoadColorVector();
-		void ScaleTextBlock(int textSize, int blockWidth);
+		int ScaleTextBlockWidth(int textSize, int blockWidth);
 		bool m_isActive;
 
 	protected:

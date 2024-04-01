@@ -4,7 +4,7 @@
 
 using namespace GameEngine;
 
-GameEngine::Sprite::Sprite() : m_size(0, 0), m_position(0.0f, 0.0f), InputObserver()
+GameEngine::Sprite::Sprite() : m_size(0, 0), m_position(0.0f, 0.0f), m_moveable(std::make_unique<Moveable>()), InputObserver()
 {
 	m_move = { "Left arrow pressed",
 			   "Right arrow pressed",
@@ -12,7 +12,7 @@ GameEngine::Sprite::Sprite() : m_size(0, 0), m_position(0.0f, 0.0f), InputObserv
 			   "Down arrow pressed" };
 }
 
-GameEngine::Sprite::Sprite(float x, float y, int w, int h) : m_size(w, h), m_position(x, y), InputObserver()
+GameEngine::Sprite::Sprite(float x, float y, int w, int h) : m_size(w, h), m_position(x, y), m_moveable(std::make_unique<Moveable>()), InputObserver()
 {
 	m_image = NULL;
 	m_box = AABB();
@@ -22,8 +22,6 @@ GameEngine::Sprite::Sprite(float x, float y, int w, int h) : m_size(w, h), m_pos
 	m_box.setH(h);
 	setXPos(x);
 	setYPos(y);
-	m_change_x = 0;
-	m_change_y = 0;
 }
 
 GameEngine::Sprite::~Sprite()
@@ -44,8 +42,6 @@ void Sprite::Initialize(float x, float y, int w, int h)
 	m_box.setH(h);
 	setXPos(x);
 	setYPos(y);
-	m_change_x = 0;
-	m_change_y = 0;;
 }
 
 void GameEngine::Sprite::Update(float dt)
