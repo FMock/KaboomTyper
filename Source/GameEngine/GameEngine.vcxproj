@@ -137,6 +137,7 @@
   <ItemGroup>
     <ClInclude Include="AABB.h" />
     <ClInclude Include="Colors.h" />
+    <ClInclude Include="Common.h" />
     <ClInclude Include="ConcreteLevel.h" />
     <ClInclude Include="ConcreteSpriteFactory.h" />
     <ClInclude Include="DrawUtils.h" />
@@ -154,6 +155,7 @@
     <ClInclude Include="LevelMainMenu.h" />
     <ClInclude Include="LevelManager.h" />
     <ClInclude Include="LevelSplashScreen.h" />
+    <ClInclude Include="Moveable.h" />
     <ClInclude Include="ObjectStates.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="IState.h" />
@@ -184,6 +186,7 @@
     <ClCompile Include="LevelMainMenu.cpp" />
     <ClCompile Include="LevelManager.cpp" />
     <ClCompile Include="LevelSplashScreen.cpp" />
+    <ClCompile Include="Moveable.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="StateGameOver.cpp" />
     <ClCompile Include="StateGamePlay.cpp" />

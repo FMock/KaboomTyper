@@ -6,17 +6,15 @@
 #include "InputManager.h"
 #include <vector>
 #include <string>
+#include <memory>
 #include "AABB.h"
 #include "ObjectStates.h"
+#include "Common.h"
+#include "Moveable.h"
 
 
 namespace GameEngine
 {
-	enum class MoveDirection
-	{
-		NONE = -1, LEFT, RIGHT, UP, DOWN
-	};
-
 	class Sprite : public InputObserver
 	{
 	public:
@@ -44,8 +42,8 @@ namespace GameEngine
 		AABB m_box;
 		AABB& getBox();
 		GLuint m_image;
-		int m_change_x;
-		int m_change_y;
+		std::unique_ptr<Moveable> m_moveable;
+
 		std::pair<int, int> m_size; // width, height
 		std::pair<float, float> m_position; // x, y position
 

@@ -20,39 +20,8 @@ typedef Game_Data GD;
 TextBlockParameters TextBlock::s_textBlockParameters;
 bool TextBlock::s_textBlockInitialized;
 
-enum Direction{LEFT, RIGHT, UP, DOWN };
 
-// ****** RETHINK THIS CONSTRUCTOR - DOES w and h NEED TO BE PASSED IN WITH EACH OBJECT
-// ******
-TextBlock::TextBlock(int w, int h, float x, float y, std::string s) : Sprite(w, h, x, y), m_textString(new TextString())
-{
-	m_textString->Initialize(s.c_str(), x + 8, y - 5); // TODO: PUT IN CONFIG FILE. 5 PIXEL TEXTSTRING POSITION ADJUSTMENT SO ITS CENTERED ON THE TEXTBLOCK
-
-	LoadColorVector();
-
-	srand(time(0));
-	m_color = m_colors.at(rand() % 7); // chooses a random color for this textblock
-	m_text = s;
-	m_collided = false;
-	m_remove = false;
-	m_isHit = false;
-	m_moving = true;
-	m_moveDirection = MoveDirection::DOWN;
-	m_box.setW(m_size.first);
-	m_box.setH(m_size.second);
-
-	setHeight(h); // 30 a single textblock is 30 pixels high, When constructed we only need the height
-
-	m_textSize = m_text.size(); // TODO: THERE SHOULD BE A m_textSize member of TextString that TextBlock uses
-	ScaleTextBlock(m_textSize, TextBlockParameters::defaultBlockWidth);
-
-	if (!s_textBlockInitialized)
-	{
-		InitializeTextBlockParameters();
-	}
-}
-
-TextBlock::TextBlock(int x, int y, std::string str) : Sprite(x, y, 0, 0), m_textString(new TextString())
+TextBlock::TextBlock(int x, int y, std::string str) : Sprite(x, y, 0, 0), m_textString(new TextString(str, x, y))
 {
 	m_textString->Initialize(str.c_str(), x + 8, y - 5); // TODO: PUT IN CONFIG FILE. 5 PIXEL TEXTSTRING POSITION ADJUSTMENT SO ITS CENTERED ON THE TEXTBLOCK
 
@@ -60,11 +29,9 @@ TextBlock::TextBlock(int x, int y, std::string str) : Sprite(x, y, 0, 0), m_text
 
 	srand(time(0));
 	m_color = m_colors.at(rand() % 7);
-	m_text = str;
 	m_collided = false;
 	m_remove = false;
 	m_isHit = false;
-	m_moving = true;
 	m_moveDirection = MoveDirection::DOWN;
 	m_box.setW(m_size.first);
 	m_box.setH(m_size.second);
@@ -74,10 +41,9 @@ TextBlock::TextBlock(int x, int y, std::string str) : Sprite(x, y, 0, 0), m_text
 		InitializeTextBlockParameters();
 	}
 
+	int textBlockWidth = ScaleTextBlockWidth(m_textString->GetTextSize(), s_textBlockParameters.blockWidth);
+	setWidth(textBlockWidth);
 	setHeight(s_textBlockParameters.blockHeight); // A single textblock is 30 pixels high
-
-	// Adjust the number of blocks that make up this textblock, so the TextString and TextBlock are a similar width
-	ScaleTextBlock(m_textSize, s_textBlockParameters.blockWidth);
 }
 
 GameEngine::TextBlock::~TextBlock()
@@ -87,17 +53,15 @@ GameEngine::TextBlock::~TextBlock()
 void TextBlock::InitializeTextBlock(float x, float y, std::string str)
 {
 	m_textString = std::make_unique<TextString>();
-	m_textString->Initialize(str.c_str(), x + 8, y - 5); // TODO: PUT IN CONFIG FILE. 5 PIXEL TEXTSTRING POSITION ADJUSTMENT SO ITS CENTERED ON THE TEXTBLOCK
+	m_textString->Initialize(str.c_str(), x + 5, y - 5); // TODO: PUT IN CONFIG FILE. 5 PIXEL TEXTSTRING POSITION ADJUSTMENT SO ITS CENTERED ON THE TEXTBLOCK
 
 	LoadColorVector();
 
 	srand(time(0));
 	m_color = m_colors.at(rand() % 7);
-	m_text = str;
 	m_collided = false;
 	m_remove = false;
 	m_isHit = false;
-	m_moving = true;
 	m_moveDirection = MoveDirection::DOWN;
 	m_box.setW(m_size.first);
 	m_box.setH(m_size.second);
@@ -110,10 +74,9 @@ void TextBlock::InitializeTextBlock(float x, float y, std::string str)
 	this->setXPos(x);
 	this->setYPos(y);
 
+	int textBlockWidth = ScaleTextBlockWidth(m_textString->GetTextSize(), s_textBlockParameters.blockWidth);
+	setWidth(textBlockWidth);
 	setHeight(s_textBlockParameters.blockHeight); // 30 a single textblock is 30 pixels high, When constructed we only need the height
-
-	// Adjust the number of blocks that make up this textblock, so the TextString and TextBlock are similar width
-	ScaleTextBlock(m_textSize, s_textBlockParameters.blockWidth);
 }
 
 bool GameEngine::TextBlock::InitializeTextBlockParameters()
@@ -152,67 +115,16 @@ void TextBlock::Update(float deltaTime)
 	// TODO: ADD UPDATE CODE
 }
 
-void TextBlock::moveLeft()
-{
-	m_moving = true;
-	m_prev_change_y = m_change_y;
-	m_change_y = 0;
-	m_prev_change_x = m_change_x;
-	//m_change_x = -speedX;
-	m_moveDirection = MoveDirection::LEFT;
-}
-
-void TextBlock::moveRight()
-{
-	m_moving = true;
-	m_prev_change_y = m_change_y;
-	m_change_y = 0;
-	m_prev_change_x = m_change_x;
-	//m_change_x = speedX;
-	m_moveDirection = MoveDirection::RIGHT;
-}
-
-void TextBlock::moveUp()
-{
-	m_moving = true;
-	m_prev_change_x = m_change_x;
-	m_change_x = 0;
-	m_prev_change_y = m_change_y;
-	//m_change_y = -speedY;
-	m_moveDirection = MoveDirection::UP;
-}
-
-void TextBlock::moveDown()
-{
-	m_moving = true;
-	m_prev_change_x = m_change_x;
-	m_change_x = 0;
-	m_prev_change_y = m_change_y;
-	//m_change_y = speedY;
-	m_moveDirection = MoveDirection::DOWN;
-}
-
-void TextBlock::stop()
-{
-	m_moving = false;
-	m_prev_change_x = m_change_x;
-	m_change_x = 0;
-	m_prev_change_y = m_change_y;
-	m_change_y = 0;
-}
-
 void TextBlock::collision(Sprite &sprite)
 {
 	m_collided = true;
 }
-
 
 std::string TextBlock::to_string() const
 {
 	ostringstream oss;
 	oss << "TextBlock ************\n"
 		<< "isDead = " << remove << "\n"
-		<< "moving = " << m_moving << "\n"
 		<< "Direction = " << (int)m_moveDirection << "\n"
 		<< "isHit = "  << m_isHit << "\n"
 		<< "AABB x = " << m_box.x << "\n"
@@ -232,11 +144,12 @@ void GameEngine::TextBlock::LoadColorVector()
 	m_colors.push_back("orange");
 }
 
-void GameEngine::TextBlock::ScaleTextBlock(int textSize, int blockWidth)
+int GameEngine::TextBlock::ScaleTextBlockWidth(int textSize, int blockWidth)
 {
-	m_scaleFactor = 0.60f; // TODO PUT THIS IN CONFIG FILE
-	m_adjustedTextblockWidth = static_cast<int>((m_text.size() * blockWidth * m_scaleFactor));
+	m_scaleFactor = 0.54f; // TODO PUT THIS IN CONFIG FILE
+	m_adjustedTextblockWidth = static_cast<int>((textSize * blockWidth * m_scaleFactor));
 	setWidth(m_adjustedTextblockWidth);
+	return m_adjustedTextblockWidth;
 }
 
 void GameEngine::TextBlock::RespondToObserved(InputManager* InputMgr)

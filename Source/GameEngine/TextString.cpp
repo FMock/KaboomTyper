@@ -3,6 +3,7 @@
 #include<cmath>
 #include "Utilities.h"
 #include <stdexcept>
+#include <cstring>
 
 using namespace GameEngine;
 using namespace DrawUtilities;
@@ -12,15 +13,20 @@ using namespace GameEngine::Utility;
 TextStringFont TextString::s_font;
 bool TextString::s_fontInitialized = false;
 
-/// <summary>
-/// Initializes the TextString members.
-/// </summary>
-/// <param name="string">C-String of text. This text gets drawn to the screen.</param>
-/// <param name="x">The starting x postion to draw the text on screen</param>
-/// <param name="y">The starting y position to draw the text on screen</param>
-void TextString::Initialize(const char* string, int x, int y)
+TextString::TextString() 
+	: m_moveable(std::make_unique<Moveable>()),
+	m_s1(0.0f), m_s2(0.0f), m_t1(0.0f), m_t2(0.0f), m_x(0), m_y(0), m_textSize(0)
 {
-	m_string = string;
+}
+
+GameEngine::TextString::TextString(std::string text, int x, int y) : TextString(text.c_str(), x, y)
+{	
+}
+
+GameEngine::TextString::TextString(const char* text, int x, int y)
+{
+	m_string = text;
+	m_textSize = std::strlen(text);
 
 	// Initialize the static TextStringFont member if it hasn't been initialized yet
 	if (!s_fontInitialized)
@@ -45,10 +51,50 @@ void TextString::Initialize(const char* string, int x, int y)
 
 	m_x = x;
 	m_y = y;
-	m_changeX = 0;
-	m_changeY = 0;
-	m_speedX = 140; // TODO GET RID OF THIS MAGIC NUMBER (LOAD FROM CONFIG FILE?)
-	m_speedY = 140; // TODO GET RID OF THIS MAGIC NUMBER 
+	m_s1 = 0.0f;
+	m_s2 = 0.0f;
+	m_t1 = 0.0f;
+	m_t2 = 0.0f;
+}
+
+/// <summary>
+/// Initializes the TextString members.
+/// </summary>
+/// <param name="string">C-String of text. This text gets drawn to the screen.</param>
+/// <param name="x">The starting x postion to draw the text on screen</param>
+/// <param name="y">The starting y position to draw the text on screen</param>
+void TextString::Initialize(const char* str, int x, int y)
+{
+	m_string = str;
+	m_textSize = std::strlen(str);
+
+	// Initialize the static TextStringFont member if it hasn't been initialized yet
+	if (!s_fontInitialized)
+	{
+		bool initialized = Utilities::ReadXmlFile("../../Config/FontParameters.xml", m_fontParameters);
+
+		if (!initialized)
+		{
+			throw std::runtime_error("Failed to initialize FontParameters from XML file.");
+		}
+
+		s_font.image = m_fontParameters.m_texture;
+		s_font.imageWidth = m_fontParameters.m_fontsheetWidth;
+		s_font.imageHeight = m_fontParameters.m_fontsheetHeight;
+		s_font.frameWidth = m_fontParameters.m_fontWidth;
+		s_font.frameHeight = m_fontParameters.m_fontHeight;
+		s_font.numberColumns = (s_font.imageWidth / s_font.frameWidth);
+		s_font.numberRows = (s_font.imageHeight / s_font.frameHeight);
+
+		s_fontInitialized = true;
+	}
+
+	m_x = x;
+	m_y = y;
+	m_s1 = 0.0f;
+	m_s2 = 0.0f;
+	m_t1 = 0.0f;
+	m_t2 = 0.0f;
 }
 
 /// <summary>
@@ -60,6 +106,11 @@ void TextString::Initialize(const char* string, int x, int y)
 void TextString::Initialize(std::string& string, int x, int y)
 {
 	Initialize(string.c_str(), x, y);
+}
+
+size_t GameEngine::TextString::GetTextSize()
+{
+	return m_textSize;
 }
 
 /*Draws each character of this objects string
@@ -117,34 +168,4 @@ void TextString::DrawText()
 void TextString::Update(float deltaTime)
 {
 
-}
-
-void TextString::MoveRight()
-{
-	m_changeX += m_speedX;
-	m_changeY = 0;
-}
-
-void TextString::MoveLeft()
-{
-	m_changeX += -m_speedX;
-	m_changeY = 0;
-}
-
-void TextString::MoveUp()
-{
-	m_changeX = 0;
-	m_changeY-= m_speedY;
-}
-
-void TextString::MoveDown()
-{
-	m_changeX = 0;
-	m_changeY += m_speedY;
-}
-
-void TextString::Stop()
-{
-	m_changeX = 0;
-	m_changeY = 0;
 }
