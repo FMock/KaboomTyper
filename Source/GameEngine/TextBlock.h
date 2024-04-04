@@ -1,30 +1,29 @@
 #pragma once
-#ifndef TEXTBLOCK_H
-#define TEXTBLOCK_H
 
-#include "sprite.h"
 #include <GL/glew.h>
 #include <map>
 #include <vector>
-#include "game_data.h"
 #include <sstream>
 #include <memory>
 #include <ctime>
+#include "game_data.h"
+#include "sprite.h"
 #include "TextString.h"
 #include "TextBlockParameters.h"
 #include "TextStringFont.h"
+#include "InputObserver.h"
+#include "InputManager.h"
 
-// Author - Frank Mock
-// TextBlock.h
-// TextBlock is a composite sprite consisting of a rectangular 
-// block with text imposed over it
+/// <summary>
+/// A TextBlock is a composite of colored blocks with a TextString 
+/// </summary>
 
 namespace GameEngine
 {
-	class TextBlock : public Sprite
+	class TextBlock : public Sprite, public InputObserver
 	{
 	public:
-		TextBlock() = default;
+		TextBlock();
 		TextBlock(int x, int y, std::string);
 		~TextBlock();
 		void InitializeTextBlock(float x, float y, std::string str);
@@ -41,7 +40,7 @@ namespace GameEngine
 		bool m_remove; // If True remove TextBlock from game
 
 		void Update(float deltaTime) override;
-		void Draw();
+		void Draw() override;
 		void collision(Sprite& sprite);
 		std::string to_string() const;
 		void SetActiveState(bool state);
@@ -60,8 +59,6 @@ namespace GameEngine
 		bool m_isActive;
 
 	protected:
-		virtual void RespondToObserved(InputManager* InputMgr);
+		void RespondToObserved(InputManager* InputMgr) override;
 	};
 }
-
-#endif
