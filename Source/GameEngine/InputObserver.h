@@ -2,13 +2,13 @@
 
 namespace GameEngine
 {
-	class InputManager; // forward declaration
+	class InputManager; // forward declaration to minimize dependencies
 
 	class InputObserver
 	{
 	public:
-		InputObserver(void) {}
-		~InputObserver(void) {}
+		InputObserver(void) = default;
+		virtual ~InputObserver(void) = default;
 		template<typename T> void Notify(T*);
 
 	protected:

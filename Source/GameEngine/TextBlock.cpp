@@ -20,6 +20,10 @@ typedef Game_Data GD;
 TextBlockParameters TextBlock::s_textBlockParameters;
 bool TextBlock::s_textBlockInitialized;
 
+GameEngine::TextBlock::TextBlock() : Sprite(), InputObserver()
+{
+
+}
 
 TextBlock::TextBlock(int x, int y, std::string str) : Sprite(x, y, 0, 0), m_textString(new TextString(str, x, y))
 {
@@ -42,8 +46,9 @@ TextBlock::TextBlock(int x, int y, std::string str) : Sprite(x, y, 0, 0), m_text
 	}
 
 	int textBlockWidth = ScaleTextBlockWidth(m_textString->GetTextSize(), s_textBlockParameters.blockWidth);
-	setWidth(textBlockWidth);
-	setHeight(s_textBlockParameters.blockHeight); // A single textblock is 30 pixels high
+	setSize(textBlockWidth, s_textBlockParameters.blockHeight);
+	//setWidth(textBlockWidth);
+	//setHeight(s_textBlockParameters.blockHeight); // A single textblock is 30 pixels high
 }
 
 GameEngine::TextBlock::~TextBlock()
@@ -71,12 +76,14 @@ void TextBlock::InitializeTextBlock(float x, float y, std::string str)
 		InitializeTextBlockParameters();
 	}
 
-	this->setXPos(x);
-	this->setYPos(y);
+	//this->setXPos(x);
+	//this->setYPos(y);
+	setPosition(x, y);
 
 	int textBlockWidth = ScaleTextBlockWidth(m_textString->GetTextSize(), s_textBlockParameters.blockWidth);
-	setWidth(textBlockWidth);
-	setHeight(s_textBlockParameters.blockHeight); // 30 a single textblock is 30 pixels high, When constructed we only need the height
+	//setWidth(textBlockWidth);
+	//setHeight(s_textBlockParameters.blockHeight); // 30 a single textblock is 30 pixels high, When constructed we only need the height
+	setSize(textBlockWidth, s_textBlockParameters.blockHeight);
 }
 
 bool GameEngine::TextBlock::InitializeTextBlockParameters()
@@ -131,8 +138,8 @@ std::string TextBlock::to_string() const
 		<< "AABB y = " << m_box.y << "\n"
 		<< "AABB w = " << m_box.w << "\n"
 		<< "AABB h = " << m_box.h << "\n"
-		<< "xPos = " << getXPos() << "\n"
-		<< "YPos = " << getYPos() << "\n"
+		//<< "xPos = " << getXPos() << "\n"
+		//<< "YPos = " << getYPos() << "\n"
 		<< "END TextBlock *********\n";
 	return oss.str();
 }
@@ -148,7 +155,8 @@ int GameEngine::TextBlock::ScaleTextBlockWidth(int textSize, int blockWidth)
 {
 	m_scaleFactor = 0.54f; // TODO PUT THIS IN CONFIG FILE
 	m_adjustedTextblockWidth = static_cast<int>((textSize * blockWidth * m_scaleFactor));
-	setWidth(m_adjustedTextblockWidth);
+	//setWidth(m_adjustedTextblockWidth);
+	setSize(m_adjustedTextblockWidth, -1); // -1 leaves height unchanged
 	return m_adjustedTextblockWidth;
 }
 
