@@ -68,6 +68,10 @@ bool Utilities::ReadXmlFile(const char* fileName, FontParameters& parameters)
 		{
 			parameters.m_fontHeight = stoi(row[1]);
 		}
+		else if (row[0] == "Padding")
+		{
+			parameters.m_padding = stoi(row[1]);
+		}
 	}
 	in.close();
 	return true;

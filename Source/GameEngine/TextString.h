@@ -26,6 +26,7 @@ namespace GameEngine
         static bool s_fontInitialized;
 
     private:
+        static void InitializeFont(FontParameters& fontParameters); // used to initialize s_font
         FontParameters m_fontParameters; // used to initialize s_font
         std::string m_string;
         int m_textSize;

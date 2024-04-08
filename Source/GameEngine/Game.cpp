@@ -101,15 +101,16 @@ void Game::LoadData()
 	int y = 50; // y position to draw on screen
 
 	m_textStr = new TextString();
+	//m_textStr = new TextString("The quick brown fox jumped over the lazy old man.", x, y);
 	m_textStr->Initialize("Press Spacebar to Begin", x, y); // draw some text to the screen
 
 	// Create a TextBlock at a radom position in the window
 	srand(time(0));
 	int randomX = rand() % 500;
 	int randomY = rand() % 500;
-	m_textBlock = std::make_unique<TextBlock>(randomX, randomY, std::string("Kaboom Typer!"));
+	m_textBlock = std::make_unique<TextBlock>(randomX, randomY, std::string("A typing game."));
 	m_textBlock2 = std::make_unique<TextBlock>();
-	m_textBlock2->InitializeTextBlock(randomX + 75, randomY + 75, std::string("A word typing game."));
+	m_textBlock2->InitializeTextBlock(randomX + 75, randomY + 75, std::string("by Frank Mock"));
 
 	// Load game states
 	m_stateManager = std::make_unique<StateManager>();

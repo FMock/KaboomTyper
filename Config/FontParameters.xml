@@ -6,5 +6,6 @@
 		<FontsheetHeight>216</FontsheetHeight>
 		<FontWidth>31</FontWidth>
 		<FontHeight>36</FontHeight>
+		<Padding>8</Padding>
 	</FontParameters parameters>
 </Parameters>
