@@ -13,6 +13,30 @@ using namespace GameEngine::Utility;
 TextStringFont TextString::s_font;
 bool TextString::s_fontInitialized = false;
 
+// Implement the static method to initialize the font
+void TextString::InitializeFont(FontParameters& fontParameters)
+{
+	if (!s_fontInitialized)
+	{
+		bool initialized = Utilities::ReadXmlFile("../../Config/FontParameters.xml", fontParameters);
+
+		if (!initialized)
+		{
+			throw std::runtime_error("Failed to initialize FontParameters from XML file.");
+		}
+
+		s_font.image = fontParameters.m_texture;
+		s_font.imageWidth = fontParameters.m_fontsheetWidth;
+		s_font.imageHeight = fontParameters.m_fontsheetHeight;
+		s_font.frameWidth = fontParameters.m_fontWidth;
+		s_font.frameHeight = fontParameters.m_fontHeight;
+		s_font.numberColumns = (s_font.imageWidth / s_font.frameWidth);
+		s_font.numberRows = (s_font.imageHeight / s_font.frameHeight);
+		s_font.padding = fontParameters.m_padding;
+		s_fontInitialized = true;
+	}
+}
+
 TextString::TextString() 
 	: m_moveable(std::make_unique<Moveable>()),
 	m_s1(0.0f), m_s2(0.0f), m_t1(0.0f), m_t2(0.0f), m_x(0), m_y(0), m_textSize(0)
@@ -31,22 +55,7 @@ GameEngine::TextString::TextString(const char* text, int x, int y)
 	// Initialize the static TextStringFont member if it hasn't been initialized yet
 	if (!s_fontInitialized)
 	{
-		bool initialized = Utilities::ReadXmlFile("../../Config/FontParameters.xml", m_fontParameters);
-
-		if (!initialized)
-		{
-			throw std::runtime_error("Failed to initialize FontParameters from XML file.");
-		}
-
-		s_font.image = m_fontParameters.m_texture;
-		s_font.imageWidth = m_fontParameters.m_fontsheetWidth;
-		s_font.imageHeight = m_fontParameters.m_fontsheetHeight;
-		s_font.frameWidth = m_fontParameters.m_fontWidth;
-		s_font.frameHeight = m_fontParameters.m_fontHeight;
-		s_font.numberColumns = (s_font.imageWidth / s_font.frameWidth);
-		s_font.numberRows = (s_font.imageHeight / s_font.frameHeight);
-
-		s_fontInitialized = true;
+		InitializeFont(m_fontParameters);
 	}
 
 	m_x = x;
@@ -71,22 +80,7 @@ void TextString::Initialize(const char* str, int x, int y)
 	// Initialize the static TextStringFont member if it hasn't been initialized yet
 	if (!s_fontInitialized)
 	{
-		bool initialized = Utilities::ReadXmlFile("../../Config/FontParameters.xml", m_fontParameters);
-
-		if (!initialized)
-		{
-			throw std::runtime_error("Failed to initialize FontParameters from XML file.");
-		}
-
-		s_font.image = m_fontParameters.m_texture;
-		s_font.imageWidth = m_fontParameters.m_fontsheetWidth;
-		s_font.imageHeight = m_fontParameters.m_fontsheetHeight;
-		s_font.frameWidth = m_fontParameters.m_fontWidth;
-		s_font.frameHeight = m_fontParameters.m_fontHeight;
-		s_font.numberColumns = (s_font.imageWidth / s_font.frameWidth);
-		s_font.numberRows = (s_font.imageHeight / s_font.frameHeight);
-
-		s_fontInitialized = true;
+		InitializeFont(m_fontParameters);
 	}
 
 	m_x = x;
@@ -152,7 +146,16 @@ void TextString::DrawText()
 		GlDrawFrameParams params;
 
 		params.tex = s_font.image;
-		params.x = m_x + i * (s_font.frameWidth / 2);
+
+		if (s_font.padding < 1)
+		{
+			params.x = m_x + i * (s_font.frameWidth);
+		}
+		else
+		{
+			params.x = m_x + i * (s_font.padding * 2);
+		}
+		
 		params.y = m_y;
 		params.w = s_font.frameWidth;
 		params.h = s_font.frameHeight;

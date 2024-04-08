@@ -12,5 +12,6 @@ namespace GameEngine
 		int m_fontsheetHeight = 216;
 		int m_fontWidth = 31;
 		int m_fontHeight = 36;
+		int m_padding = 0;
 	};
 }

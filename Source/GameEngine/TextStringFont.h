@@ -29,6 +29,7 @@ namespace GameEngine
 		int frameHeight; // height of a single character of the image file
 		int numberColumns; // (imageWidth / frameWidth);
 		int numberRows; // (imageHeight / frameHeight);
+		int padding; // space between characters
 		inline int GetFontWidth() const { return frameWidth; }
 		inline int GetFontHeight() const { return frameHeight; }
 	};
