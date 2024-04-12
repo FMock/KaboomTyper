@@ -213,6 +213,40 @@ void DrawUtilities::glDrawSprite(GLuint tex, int x, int y, int w, int h)
 	glEnd(); // sends all submitted data to the GPU for rendering
 }
 
+/* Draw the sprite with scaling
+ * Assumes the full texture will be drawn
+ * The lower left of a texture is (0.0, 0.0) and upper right is (1.0, 1.0)
+ * Horizontal axis is s, and vertical axis is t
+ * param tex is an openGL texture mapped to a quad
+ * param x is position to draw sprite in the game world
+ * param y is position to draw sprite in the game world
+ * param w is frame width - width of part of texture to be drawn
+ * param h is frame height - height of part of texture to be drawn
+ * param scaleX is the scaling factor along the x-axis
+ * param scaleY is the scaling factor along the y-axis */
+void DrawUtilities::glDrawSpriteScaled(GLuint tex, int x, int y, int w, int h, float scaleX, float scaleY)
+{
+	glBindTexture(GL_TEXTURE_2D, tex);
+	glBegin(GL_QUADS);
+	{
+		glColor3ub(255, 255, 255);
+
+		glTexCoord2f(0.0f, 1.0f); // top left
+		glVertex2i(x, y);
+
+		glTexCoord2f(scaleX, 1.0f); // top right
+		glVertex2i(x + w * scaleX, y);
+
+		glTexCoord2f(scaleX, 0.0f); // bottom right
+		glVertex2i(x + w * scaleX, y + h * scaleY);
+
+		glTexCoord2f(0.0f, 0.0f); // bottom left
+		glVertex2i(x, y + h * scaleY);
+	}
+	glEnd(); // sends all submitted data to the GPU for rendering
+}
+
+
 // Draws a single frame of a GL texture
 void DrawUtilities::glDrawFrame(GlDrawFrameParams params)
 {
