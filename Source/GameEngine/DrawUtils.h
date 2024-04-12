@@ -26,6 +26,18 @@ namespace DrawUtilities
 	void glDrawSprite(GLuint tex, int x, int y, int w, int h);
 
 	/// <summary>
+	/// Draw scaled sprite
+	/// </summary>
+	/// <param name="tex"></param>
+	/// <param name="x"></param>
+	/// <param name="y"></param>
+	/// <param name="w"></param>
+	/// <param name="h"></param>
+	/// <param name="scaleX"></param>
+	/// <param name="scaleY"></param>
+	void glDrawSpriteScaled(GLuint tex, int x, int y, int w, int h, float scaleX, float scaleY);
+
+	/// <summary>
 	/// Draws a single frame of a GL texture
 	/// </summary>
 	/// <param name="params">GlDrawFrameParams object containing specifics of the frame to draw:
