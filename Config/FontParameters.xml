@@ -1,11 +1,11 @@
 <Parameters>
 	<FontParameters parameters>
-		<FontsheetName>game_font.tga</FontsheetName>
+		<FontsheetName>KaboomTyperFont.tga</FontsheetName>
 		<Texture>0</Texture>
-		<FontsheetWidth>496</FontsheetWidth>
-		<FontsheetHeight>216</FontsheetHeight>
-		<FontWidth>31</FontWidth>
-		<FontHeight>36</FontHeight>
-		<Padding>8</Padding>
+		<FontsheetWidth>384</FontsheetWidth>
+		<FontsheetHeight>192</FontsheetHeight>
+		<FontWidth>24</FontWidth>
+		<FontHeight>32</FontHeight>
+		<Padding>0</Padding>
 	</FontParameters parameters>
 </Parameters>

@@ -112,7 +112,7 @@ void TextBlock::Draw()
 {
 	// First, draw the colored blocks
 	//glDrawSprite(s_textBlockParameters.m_stringColorTextureColorMap[m_color], (int) m_position.first, (int)m_position.second, m_size.first, m_size.second);
-	glDrawSpriteScaled(s_textBlockParameters.m_stringColorTextureColorMap[m_color], (int) m_position.first, (int)m_position.second, m_size.first, m_size.second, 1.5f, 1.5f);
+	glDrawSpriteScaled(s_textBlockParameters.m_stringColorTextureColorMap[m_color], (int) m_position.first, (int)m_position.second, m_size.first, m_size.second, 2.0f, 2.0f);
 
 	// Next, draw the text over the colored blocks
 	m_textString->DrawText();
