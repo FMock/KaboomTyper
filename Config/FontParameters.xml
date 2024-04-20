@@ -1,6 +1,6 @@
 <Parameters>
 	<FontParameters parameters>
-		<FontsheetName>KaboomTyperFont.tga</FontsheetName>
+		<FontsheetName>KaboomTyperGameFont.tga</FontsheetName>
 		<Texture>0</Texture>
 		<FontsheetWidth>384</FontsheetWidth>
 		<FontsheetHeight>192</FontsheetHeight>

@@ -27,7 +27,7 @@ GameEngine::TextBlock::TextBlock() : Sprite(), InputObserver()
 
 TextBlock::TextBlock(int x, int y, std::string str) : Sprite(x, y, 0, 0), m_textString(new TextString(str, x, y))
 {
-	m_textString->Initialize(str.c_str(), x + 8, y - 5); // TODO: PUT IN CONFIG FILE. 5 PIXEL TEXTSTRING POSITION ADJUSTMENT SO ITS CENTERED ON THE TEXTBLOCK
+	m_textString->Initialize(str.c_str(), x, y);
 
 	LoadColorVector();
 
@@ -45,10 +45,9 @@ TextBlock::TextBlock(int x, int y, std::string str) : Sprite(x, y, 0, 0), m_text
 		InitializeTextBlockParameters();
 	}
 
+	m_scaleFactor = m_textString->GetFontWidth();
 	int textBlockWidth = ScaleTextBlockWidth(m_textString->GetTextSize(), s_textBlockParameters.blockWidth);
 	setSize(textBlockWidth, s_textBlockParameters.blockHeight);
-	//setWidth(textBlockWidth);
-	//setHeight(s_textBlockParameters.blockHeight); // A single textblock is 30 pixels high
 }
 
 GameEngine::TextBlock::~TextBlock()
@@ -58,7 +57,7 @@ GameEngine::TextBlock::~TextBlock()
 void TextBlock::InitializeTextBlock(float x, float y, std::string str)
 {
 	m_textString = std::make_unique<TextString>();
-	m_textString->Initialize(str.c_str(), x + 5, y - 5); // TODO: PUT IN CONFIG FILE. 5 PIXEL TEXTSTRING POSITION ADJUSTMENT SO ITS CENTERED ON THE TEXTBLOCK
+	m_textString->Initialize(str.c_str(), x, y);
 
 	LoadColorVector();
 
@@ -75,14 +74,9 @@ void TextBlock::InitializeTextBlock(float x, float y, std::string str)
 	{
 		InitializeTextBlockParameters();
 	}
-
-	//this->setXPos(x);
-	//this->setYPos(y);
+	m_scaleFactor = m_textString->GetFontWidth();
 	setPosition(x, y);
-
 	int textBlockWidth = ScaleTextBlockWidth(m_textString->GetTextSize(), s_textBlockParameters.blockWidth);
-	//setWidth(textBlockWidth);
-	//setHeight(s_textBlockParameters.blockHeight); // 30 a single textblock is 30 pixels high, When constructed we only need the height
 	setSize(textBlockWidth, s_textBlockParameters.blockHeight);
 }
 
@@ -110,9 +104,10 @@ bool GameEngine::TextBlock::InitializeTextBlockParameters()
 // Draw the textBlock to the screen
 void TextBlock::Draw()
 {
-	// First, draw the colored blocks
-	//glDrawSprite(s_textBlockParameters.m_stringColorTextureColorMap[m_color], (int) m_position.first, (int)m_position.second, m_size.first, m_size.second);
-	glDrawSpriteScaled(s_textBlockParameters.m_stringColorTextureColorMap[m_color], (int) m_position.first, (int)m_position.second, m_size.first, m_size.second, 2.0f, 2.0f);
+	// First, draw the colored blocks scaled to fit the textstring
+	glDrawSpriteScaled(s_textBlockParameters.m_stringColorTextureColorMap[m_color], 
+		              (int) m_position.first, (int)m_position.second, m_size.first, 
+		              m_size.second, 1.0f, 32.0f); // 1.0 because textblock width is already scaled, 32.0 to scale to same height as font
 
 	// Next, draw the text over the colored blocks
 	m_textString->DrawText();
@@ -152,12 +147,18 @@ void GameEngine::TextBlock::LoadColorVector()
 	m_colors.push_back("orange");
 }
 
+/// <summary>
+/// Sets the size of the TextBlock to the same size as the text size
+/// </summary>
+/// <param name="textSize">The number of characters in the textstring</param>
+/// <param name="blockWidth">The width of a single textblock (default is 1 pixels)</param>
+/// <returns></returns>
 int GameEngine::TextBlock::ScaleTextBlockWidth(int textSize, int blockWidth)
 {
-	m_scaleFactor = 0.54f; // TODO PUT THIS IN CONFIG FILE
-	m_adjustedTextblockWidth = static_cast<int>((textSize * blockWidth * m_scaleFactor));
-	//setWidth(m_adjustedTextblockWidth);
+	m_adjustedTextblockWidth = static_cast<int>((textSize * m_scaleFactor * blockWidth));
+
 	setSize(m_adjustedTextblockWidth, -1); // -1 leaves height unchanged
+
 	return m_adjustedTextblockWidth;
 }
 
