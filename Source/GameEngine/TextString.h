@@ -18,6 +18,8 @@ namespace GameEngine
         void Initialize(const char* string, int x, int y);
         void Initialize(std::string& string, int x, int y);
         size_t GetTextSize();
+        size_t GetFontWidth();
+        size_t GetFontHeight();
         void DrawText();
         void Update(float dt);
 

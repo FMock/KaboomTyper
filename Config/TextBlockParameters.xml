@@ -1,20 +1,20 @@
 <Parameters>
 	<FontParameters parameters>
-		<BlockWidth>30</BlockWidth>
-		<BlockHeight>30</BlockHeight>
-		<RedBlockFileName>red_block.tga</RedBlockFileName>
+		<BlockWidth>1</BlockWidth>
+		<BlockHeight>1</BlockHeight>
+		<RedBlockFileName>Red.tga</RedBlockFileName>
 		<RedBlockTexture>0</RedBlockTexture>
-		<BlueBlockFileName>blue_block.tga</BlueBlockFileName>
+		<BlueBlockFileName>Blue.tga</BlueBlockFileName>
 		<BlueBlockTexture>0</BlueBlockTexture>
-		<GreenBlockFileName>green_block.tga</GreenBlockFileName>
+		<GreenBlockFileName>Green.tga</GreenBlockFileName>
 		<GreenBlockTexture>0</GreenBlockTexture>
-		<YellowBlockFileName>yellow_block.tga</YellowBlockFileName>
+		<YellowBlockFileName>Yellow.tga</YellowBlockFileName>
 		<YellowBlockTexture>0</YellowBlockTexture>
-		<PurpleBlockFileName>purple_block.tga</PurpleBlockFileName>
+		<PurpleBlockFileName>Purple.tga</PurpleBlockFileName>
 		<PurpleBlockTexture>0</PurpleBlockTexture>
-		<WhiteBlockFileName>white_block.tga</WhiteBlockFileName>
+		<WhiteBlockFileName>White.tga</WhiteBlockFileName>
 		<WhiteBlockTexture>0</WhiteBlockTexture>
-		<OrangeBlockFileName>orange_block.tga</OrangeBlockFileName>
+		<OrangeBlockFileName>Orange.tga</OrangeBlockFileName>
 		<OrangeBlockTexture>0</OrangeBlockTexture>
 	</FontParameters parameters>
 </Parameters>

@@ -27,8 +27,8 @@ namespace GameEngine
 		std::map<std::string, GLuint> m_stringColorTextureColorMap;
 
 		// TODO RETHINK THIS. THESE SHOULD BE ASSIGNED FROM A CONFIG FILE
-		static const int defaultBlockWidth = 30;
-		static const int defaultBlockHeight = 30;
+		static const int defaultBlockWidth = 1; // 1 pixel wide
+		static const int defaultBlockHeight = 1; // 1 pixel high
 		inline static int GetWidth() { return defaultBlockHeight; }
 		inline static int GetHeight() { return defaultBlockHeight; }
 	};

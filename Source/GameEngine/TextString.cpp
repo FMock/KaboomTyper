@@ -107,6 +107,16 @@ size_t GameEngine::TextString::GetTextSize()
 	return m_textSize;
 }
 
+size_t GameEngine::TextString::GetFontWidth()
+{
+	return m_fontParameters.m_fontWidth;
+}
+
+size_t GameEngine::TextString::GetFontHeight()
+{
+	return m_fontParameters.m_fontHeight;
+}
+
 /*Draws each character of this objects string
  *Assumes the following raster font image which is 16 characters wide X 6 characters high
  character in the top left corner is a space, ascii character = 32

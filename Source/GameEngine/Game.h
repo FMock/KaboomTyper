@@ -28,6 +28,7 @@ namespace GameEngine
 	private:
 
 		TextString* m_textStr;
+		std::unique_ptr<TextString> m_textStr2;
 		std::unique_ptr<TextBlock> m_textBlock;
 		std::unique_ptr<TextBlock> m_textBlock2;
 		std::unique_ptr<InputManager> m_inputManager;

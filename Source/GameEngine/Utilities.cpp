@@ -48,7 +48,7 @@ bool Utilities::ReadXmlFile(const char* fileName, FontParameters& parameters)
 		}
 		else if (row[0] == "Texture")
 		{                                                          // YIKES, A HARD-CODED PATH!
-			std::string pathToFontFile("../../Resources/images/"); // TODO: ADJUST THE ABOVE STRING TOKENIZER CODE TO READ PATH FROM FontParameters.xml 
+			std::string pathToFontFile("../../Resources/images/fonts/"); // TODO: ADJUST THE ABOVE STRING TOKENIZER CODE TO READ PATH FROM FontParameters.xml 
 			pathToFontFile.append(parameters.m_fontsheetName);
 			parameters.m_texture = DrawUtilities::glTexImageTGAFile(pathToFontFile.c_str());
 		}
@@ -109,7 +109,7 @@ bool Utilities::ReadXmlFile(const char* fileName, TextBlockParameters& parameter
 		if (row.size() < 3)
 			continue;
 															   // YIKES, A HARD-CODED PATH!
-		std::string pathToFontFile("../../Resources/images/"); // TODO: ADJUST THE ABOVE STRING TOKENIZER CODE TO READ PATH FROM TextBlockParameters.xml
+		std::string pathToFontFile("../../Resources/images/Colors/"); // TODO: ADJUST THE ABOVE STRING TOKENIZER CODE TO READ PATH FROM TextBlockParameters.xml
 
 		if (row[0] == "BlockWidth") // WIDTH OF A SINGLE TEXTBLOCK 
 		{
