@@ -1,0 +1,36 @@
+<Parameters>
+	<ColorParameters parameters>
+		<TextureWidth>1</TextureWidth>
+		<TextureHeight>1</TextureHeight>
+		<RedFileName>Red.tga</RedFileName>
+		<RedTexture>0</RedTexture>
+		<DarkRedFileName>DarkRed.tga</DarkRedFileName>
+		<DarkRedTexture>0</DarkRedTexture>
+		<BlueFileName>Blue.tga</BlueFileName>
+		<BlueTexture>0</BlueTexture>
+		<DarkBlueFileName>DarkBlue.tga</DarkBlueFileName>
+		<DarkBlueTexture>0</DarkBlueTexture>
+		<GreenFileName>Green.tga</GreenFileName>
+		<GreenTexture>0</GreenTexture>
+		<DarkGreenFileName>DarkGreen.tga</DarkGreenFileName>
+		<DarkGreenTexture>0</DarkGreenTexture>
+		<YellowFileName>Yellow.tga</YellowFileName>
+		<YellowTexture>0</YellowTexture>
+		<DarkYellowFileName>DarkYellow.tga</DarkYellowFileName>
+		<DarkYellowTexture>0</DarkYellowTexture>
+		<PurpleFileName>Purple.tga</PurpleFileName>
+		<PurpleTexture>0</PurpleTexture>
+		<DarkPurpleFileName>DarkPurple.tga</DarkPurpleFileName>
+		<DarkPurpleTexture>0</DarkPurpleTexture>
+		<WhiteFileName>White.tga</WhiteFileName>
+		<WhiteTexture>0</WhiteTexture>
+		<OrangeFileName>Orange.tga</OrangeFileName>
+		<OrangeTexture>0</OrangeTexture>
+		<BrownFileName>Brown.tga</BrownFileName>
+		<BrownTexture>0</BrownTexture>
+		<DarkGrayFileName>darkGray.tga</DarkGrayFileName>
+		<DarkGrayTexture>0</DarkGrayTexture>
+		<BlackFileName>black.tga</BlackFileName>
+		<BlackTexture>0</BlackTexture>
+	</ColorParameters parameters>
+</Parameters>

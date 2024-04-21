@@ -3,6 +3,7 @@
 #include <vector>
 #include "FontParameters.h"
 #include "TextBlockParameters.h"
+#include "ColorParameters.h"
 
 namespace GameEngine
 {
@@ -12,6 +13,7 @@ namespace GameEngine
 		{
 			static bool ReadXmlFile(const char* fileName, FontParameters& parameters);
 			static bool ReadXmlFile(const char* fileName, TextBlockParameters& parameters);
+			static bool ReadXmlFile(const char* fileName, ColorParameters& parameters);
 		};
 	}
 }

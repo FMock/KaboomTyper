@@ -43,6 +43,12 @@
     <Filter Include="Source Files\Level">
       <UniqueIdentifier>{07fef409-bc99-4767-b2a1-9dabfa36733e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Draw">
+      <UniqueIdentifier>{9b68f4e4-578c-4bd5-a2f3-28829c437ff1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Draw">
+      <UniqueIdentifier>{0b809c0f-8672-4ee0-a9ef-a8d7f8b99aa7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -159,6 +165,12 @@
     <ClInclude Include="Moveable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ColorParameters.h">
+      <Filter>Header Files\Draw</Filter>
+    </ClInclude>
+    <ClInclude Include="Color.h">
+      <Filter>Header Files\Draw</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -226,6 +238,9 @@
     </ClCompile>
     <ClCompile Include="Moveable.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Color.cpp">
+      <Filter>Source Files\Draw</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

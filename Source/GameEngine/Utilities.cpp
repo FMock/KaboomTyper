@@ -259,6 +259,191 @@ bool Utilities::ReadXmlFile(const char* fileName, TextBlockParameters& parameter
 	return true;
 }
 
+/// <summary>
+/// Read the parameter values for Color
+/// </summary>
+/// <param name="fileName">the name of the XML file for the color parameters</param>
+/// <param name="parameters">A reference to a ColorParameters object</param>
+/// <returns></returns>
+bool Utilities::ReadXmlFile(const char* fileName, ColorParameters& parameters)
+{
+	char* pch;
+
+	std::string line;
+	std::vector<std::string> row;
+
+	std::ifstream in(fileName);
+
+	if (!in.is_open()) { return false; }
+
+	while (getline(in, line))
+	{
+		row.clear();
+
+		pch = strtok((char*)line.c_str(), " \t></");
+		if (pch != NULL)
+			row.push_back(pch);
+
+		while (pch != NULL)
+		{
+			pch = strtok(NULL, " \t></");
+			if (pch != NULL)
+				row.push_back(pch);
+		}
+
+		if (row.size() < 3)
+			continue;
+		// YIKES, A HARD-CODED PATH! CAN THIS GO IN A CONFIG FILE?
+		std::string pathToFontFile("../../Resources/images/Colors/");
+
+		if (row[0] == "TextureWidth") 
+		{
+			parameters.textureWidth = stoi(row[1]);
+		}
+		else if (row[0] == "TextureHeight")
+		{
+			parameters.textureHeight = stoi(row[1]);
+		}
+		else if (row[0] == "RedFileName") // RED
+		{
+			parameters.redFileName = row[1];
+		}
+		else if (row[0] == "RedTexture")
+		{
+			pathToFontFile.append(parameters.redFileName);
+			parameters.redTexture = DrawUtilities::glTexImageTGAFile(pathToFontFile.c_str(), &parameters.textureWidth, &parameters.textureHeight);
+		}
+		else if (row[0] == "DarkRedFileName") // DARK RED
+		{
+			parameters.darkRedFileName = row[1];
+		}
+		else if (row[0] == "DarkRedTexture")
+		{
+			pathToFontFile.append(parameters.darkRedFileName);
+			parameters.darkRedTexture = DrawUtilities::glTexImageTGAFile(pathToFontFile.c_str(), &parameters.textureWidth, &parameters.textureHeight);
+		}
+		if (row[0] == "BlueFileName") // BLUE
+		{
+			parameters.blueFileName = row[1];
+		}
+		else if (row[0] == "BlueTexture")
+		{
+			pathToFontFile.append(parameters.blueFileName);
+			parameters.blueTexture = DrawUtilities::glTexImageTGAFile(pathToFontFile.c_str(), &parameters.textureWidth, &parameters.textureHeight);
+		}
+		if (row[0] == "DarkBlueFileName") // DARK BLUE
+		{
+			parameters.darkBlueFileName = row[1];
+		}
+		else if (row[0] == "DarkBlueTexture")
+		{
+			pathToFontFile.append(parameters.darkBlueFileName);
+			parameters.darkBlueTexture = DrawUtilities::glTexImageTGAFile(pathToFontFile.c_str(), &parameters.textureWidth, &parameters.textureHeight);
+		}
+		if (row[0] == "GreenBlockFileName") // GREEN
+		{
+			parameters.greenFileName = row[1];
+		}
+		else if (row[0] == "GreenTexture")
+		{
+			pathToFontFile.append(parameters.greenFileName);
+			parameters.greenTexture = DrawUtilities::glTexImageTGAFile(pathToFontFile.c_str(), &parameters.textureWidth, &parameters.textureHeight);
+		}
+		if (row[0] == "DarkGreenFileName") // DARK GREEN
+		{
+			parameters.darkGreenFileName = row[1];
+		}
+		else if (row[0] == "DarkGreenTexture")
+		{
+			pathToFontFile.append(parameters.darkGreenFileName);
+			parameters.darkGreenTexture = DrawUtilities::glTexImageTGAFile(pathToFontFile.c_str(), &parameters.textureWidth, &parameters.textureHeight);
+		}
+		if (row[0] == "YellowFileName") // YELLOW
+		{
+			parameters.yellowFileName = row[1];
+		}
+		else if (row[0] == "YellowTexture")
+		{
+			pathToFontFile.append(parameters.yellowFileName);
+			parameters.yellowTexture = DrawUtilities::glTexImageTGAFile(pathToFontFile.c_str(), &parameters.textureWidth, &parameters.textureHeight);
+		}
+		if (row[0] == "DarkYellowFileName") // DARK YELLOW
+		{
+			parameters.darkYellowFileName = row[1];
+		}
+		else if (row[0] == "DarkYellowTexture")
+		{
+			pathToFontFile.append(parameters.darkYellowFileName);
+			parameters.darkYellowTexture = DrawUtilities::glTexImageTGAFile(pathToFontFile.c_str(), &parameters.textureWidth, &parameters.textureHeight);
+		}
+		if (row[0] == "PurpleBlockFileName") // PURPLE
+		{
+			parameters.purpleFileName = row[1];
+		}
+		else if (row[0] == "PurpleTexture")
+		{
+			pathToFontFile.append(parameters.purpleFileName);
+			parameters.purpleTexture = DrawUtilities::glTexImageTGAFile(pathToFontFile.c_str(), &parameters.textureWidth, &parameters.textureHeight);
+		}
+		if (row[0] == "DarkPurpleFileName") // DARK PURPLE
+		{
+			parameters.darkPurpleFileName = row[1];
+		}
+		else if (row[0] == "DarkPurpleTexture")
+		{
+			pathToFontFile.append(parameters.darkPurpleFileName);
+			parameters.darkPurpleTexture = DrawUtilities::glTexImageTGAFile(pathToFontFile.c_str(), &parameters.textureWidth, &parameters.textureHeight);
+		}
+		if (row[0] == "WhiteFileName") // WHITE
+		{
+			parameters.whiteFileName = row[1];
+		}
+		else if (row[0] == "WhiteTexture")
+		{
+			pathToFontFile.append(parameters.whiteFileName);
+			parameters.whiteTexture = DrawUtilities::glTexImageTGAFile(pathToFontFile.c_str(), &parameters.textureWidth, &parameters.textureHeight);
+		}
+		if (row[0] == "OrangeFileName") // ORANGE
+		{
+			parameters.orangeFileName = row[1];
+		}
+		else if (row[0] == "OrangeTexture")
+		{
+			pathToFontFile.append(parameters.orangeFileName);
+			parameters.orangeTexture = DrawUtilities::glTexImageTGAFile(pathToFontFile.c_str(), &parameters.textureWidth, &parameters.textureHeight);
+		}
+		if (row[0] == "BrownFileName") // BROWN
+		{
+			parameters.brownFileName = row[1];
+		}
+		else if (row[0] == "BrownTexture")
+		{
+			pathToFontFile.append(parameters.brownFileName);
+			parameters.brownTexture = DrawUtilities::glTexImageTGAFile(pathToFontFile.c_str(), &parameters.textureWidth, &parameters.textureHeight);
+		}
+		if (row[0] == "DarkGrayFileName") // DARK GRAY
+		{
+			parameters.darkGrayFileName = row[1];
+		}
+		else if (row[0] == "DarkGrayTexture")
+		{
+			pathToFontFile.append(parameters.darkGrayFileName);
+			parameters.darkGrayTexture = DrawUtilities::glTexImageTGAFile(pathToFontFile.c_str(), &parameters.textureWidth, &parameters.textureHeight);
+		}
+		if (row[0] == "BlackFileName") // BLACK
+		{
+			parameters.blackFileName = row[1];
+		}
+		else if (row[0] == "BlackTexture")
+		{
+			pathToFontFile.append(parameters.blackFileName);
+			parameters.blackTexture = DrawUtilities::glTexImageTGAFile(pathToFontFile.c_str(), &parameters.textureWidth, &parameters.textureHeight);
+		}
+	}
+	in.close();
+	return true;
+}
+
 ///*
 //*  Reads an .csv file which contains AnimationParameter data
 //*  and loads each animation into a vector.
