@@ -32,7 +32,7 @@ TextBlock::TextBlock(int x, int y, std::string str) : Sprite(x, y, 0, 0), m_text
 	LoadColorVector();
 
 	srand(time(0));
-	m_color = m_colors.at(rand() % 7);
+	m_color = m_colors.at(rand() % 14);
 	m_collided = false;
 	m_remove = false;
 	m_isHit = false;
@@ -62,7 +62,7 @@ void TextBlock::InitializeTextBlock(float x, float y, std::string str)
 	LoadColorVector();
 
 	srand(time(0));
-	m_color = m_colors.at(rand() % 7);
+	m_color = m_colors.at(rand() % 14);
 	m_collided = false;
 	m_remove = false;
 	m_isHit = false;
@@ -91,12 +91,20 @@ bool GameEngine::TextBlock::InitializeTextBlockParameters()
 
 	// Load all the textures into the String-to-Image map
 	s_textBlockParameters.m_stringColorTextureColorMap["red"] = s_textBlockParameters.redBlockTexture;
+	s_textBlockParameters.m_stringColorTextureColorMap["darkRed"] = s_textBlockParameters.darkRedBlockTexture;
 	s_textBlockParameters.m_stringColorTextureColorMap["blue"] = s_textBlockParameters.blueBlockTexture;
+	s_textBlockParameters.m_stringColorTextureColorMap["darkBlue"] = s_textBlockParameters.darkBlueBlockTexture;
 	s_textBlockParameters.m_stringColorTextureColorMap["green"] = s_textBlockParameters.greenBlockTexture;
+	s_textBlockParameters.m_stringColorTextureColorMap["darkGreen"] = s_textBlockParameters.darkGreenBlockTexture;
 	s_textBlockParameters.m_stringColorTextureColorMap["yellow"] = s_textBlockParameters.yellowBlockTexture;
+	s_textBlockParameters.m_stringColorTextureColorMap["darkYellow"] = s_textBlockParameters.darkYellowBlockTexture;
 	s_textBlockParameters.m_stringColorTextureColorMap["purple"] = s_textBlockParameters.purpleBlockTexture;
+	s_textBlockParameters.m_stringColorTextureColorMap["darkPurple"] = s_textBlockParameters.darkPurpleBlockTexture;
 	s_textBlockParameters.m_stringColorTextureColorMap["white"] = s_textBlockParameters.whiteBlockTexture;
 	s_textBlockParameters.m_stringColorTextureColorMap["orange"] = s_textBlockParameters.orangeBlockTexture;
+	s_textBlockParameters.m_stringColorTextureColorMap["brown"] = s_textBlockParameters.brownBlockTexture;
+	s_textBlockParameters.m_stringColorTextureColorMap["darkGray"] = s_textBlockParameters.darkGrayBlockTexture;
+	s_textBlockParameters.m_stringColorTextureColorMap["black"] = s_textBlockParameters.blackBlockTexture;
 
 	s_textBlockInitialized = true;
 }
@@ -143,8 +151,10 @@ std::string TextBlock::to_string() const
 void GameEngine::TextBlock::LoadColorVector()
 {
 	m_colors.push_back("white"), m_colors.push_back("blue"), m_colors.push_back("green");
-	m_colors.push_back("yellow"), m_colors.push_back("purple"), m_colors.push_back("red");
-	m_colors.push_back("orange");
+	m_colors.push_back("darkBlue"), m_colors.push_back("darkGreen"), m_colors.push_back("yellow");
+	m_colors.push_back("darkYellow"), m_colors.push_back("purple"), m_colors.push_back("red");
+	m_colors.push_back("darkRed"), m_colors.push_back("darkPurple"), m_colors.push_back("brown");
+	m_colors.push_back("orange"), m_colors.push_back("darkGray"), m_colors.push_back("black");
 }
 
 /// <summary>
