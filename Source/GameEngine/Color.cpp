@@ -5,6 +5,10 @@
 using namespace GameEngine;
 using namespace GameEngine::Utility;
 
+// Definition of static members
+ColorParameters Color::s_colorParameters;
+bool Color::s_initialized;
+
 Color::Color()
 {
 	if (!s_initialized)

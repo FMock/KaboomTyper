@@ -9,10 +9,10 @@
 #include "game_data.h"
 #include "sprite.h"
 #include "TextString.h"
-#include "TextBlockParameters.h"
 #include "TextStringFont.h"
 #include "InputObserver.h"
 #include "InputManager.h"
+#include "Color.h"
 
 /// <summary>
 /// A TextBlock is a composite of colored blocks with a TextString 
@@ -30,11 +30,10 @@ namespace GameEngine
 
 		std::unique_ptr<TextString> m_textString; // TextString that's drawn over the TextBlock
 		std::vector<std::string> m_colors;
-		std::string m_color;
+		std::string m_colorStr;
 
 		int m_prev_change_x;
 		int m_prev_change_y;
-
 		bool m_collided;
 		bool m_isHit; // True when hit by any enemy
 		bool m_remove; // If True remove TextBlock from game
@@ -46,17 +45,14 @@ namespace GameEngine
 		void SetActiveState(bool state);
 		bool GetActiveState();
 
-		// Static members to share across all instances
-		static TextBlockParameters s_textBlockParameters;
-		static bool s_textBlockInitialized;
-
 	private:
+		std::unique_ptr<Color> m_color; // TextBlock colored body
 		float m_scaleFactor;
 		int m_adjustedTextblockWidth;
-		bool InitializeTextBlockParameters();
+		bool m_isActive;
+
 		void LoadColorVector();
 		int ScaleTextBlockWidth(int textSize, int blockWidth);
-		bool m_isActive;
 
 	protected:
 		void RespondToObserved(InputManager* InputMgr) override;

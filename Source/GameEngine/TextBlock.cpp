@@ -16,38 +16,29 @@ using namespace DrawUtilities;
 using std::ostringstream;
 typedef Game_Data GD;
 
-// Definition of static members
-TextBlockParameters TextBlock::s_textBlockParameters;
-bool TextBlock::s_textBlockInitialized;
-
-GameEngine::TextBlock::TextBlock() : Sprite(), InputObserver()
+GameEngine::TextBlock::TextBlock() : Sprite(), InputObserver(), m_color(std::make_unique<Color>())
 {
 
 }
 
-TextBlock::TextBlock(int x, int y, std::string str) : Sprite(x, y, 0, 0), m_textString(new TextString(str, x, y))
+TextBlock::TextBlock(int x, int y, std::string str) : Sprite(x, y, 0, 0), m_textString(new TextString(str, x, y)), m_color(std::make_unique<Color>())
 {
 	m_textString->Initialize(str.c_str(), x, y);
 
-	LoadColorVector();
+	LoadColorVector(); // load strings of color names
 
 	srand(time(0));
-	m_color = m_colors.at(rand() % 14);
+	m_colorStr = m_colors.at(rand() % 14);
 	m_collided = false;
 	m_remove = false;
 	m_isHit = false;
 	m_moveDirection = MoveDirection::DOWN;
 	m_box.setW(m_size.first);
 	m_box.setH(m_size.second);
-
-	if (!s_textBlockInitialized)
-	{
-		InitializeTextBlockParameters();
-	}
-
 	m_scaleFactor = m_textString->GetFontWidth();
-	int textBlockWidth = ScaleTextBlockWidth(m_textString->GetTextSize(), s_textBlockParameters.blockWidth);
-	setSize(textBlockWidth, s_textBlockParameters.blockHeight);
+
+	int textBlockWidth = ScaleTextBlockWidth(m_textString->GetTextSize(), m_color->s_colorParameters.textureWidth);
+	setSize(textBlockWidth, m_color->s_colorParameters.textureHeight);
 }
 
 GameEngine::TextBlock::~TextBlock()
@@ -59,63 +50,31 @@ void TextBlock::InitializeTextBlock(float x, float y, std::string str)
 	m_textString = std::make_unique<TextString>();
 	m_textString->Initialize(str.c_str(), x, y);
 
-	LoadColorVector();
+	LoadColorVector(); // load strings of color names
 
 	srand(time(0));
-	m_color = m_colors.at(rand() % 14);
+	m_colorStr = m_colors.at(rand() % 14);
 	m_collided = false;
 	m_remove = false;
 	m_isHit = false;
 	m_moveDirection = MoveDirection::DOWN;
 	m_box.setW(m_size.first);
 	m_box.setH(m_size.second);
-
-	if (!s_textBlockInitialized)
-	{
-		InitializeTextBlockParameters();
-	}
 	m_scaleFactor = m_textString->GetFontWidth();
 	setPosition(x, y);
-	int textBlockWidth = ScaleTextBlockWidth(m_textString->GetTextSize(), s_textBlockParameters.blockWidth);
-	setSize(textBlockWidth, s_textBlockParameters.blockHeight);
+
+	int textBlockWidth = ScaleTextBlockWidth(m_textString->GetTextSize(), m_color->s_colorParameters.textureWidth);
+	setSize(textBlockWidth, m_color->s_colorParameters.textureHeight);
 }
 
-bool GameEngine::TextBlock::InitializeTextBlockParameters()
-{
-	bool initialized = Utilities::ReadXmlFile("../../Config/TextBlockParameters.xml", s_textBlockParameters); // TODO: DON'T USE HARD-CODED PATHS
-
-	if (!initialized)
-	{
-		throw std::runtime_error("Failed to initialize TextBlockParameters from XML file.");
-	}
-
-	// Load all the textures into the String-to-Image map
-	s_textBlockParameters.m_stringColorTextureColorMap["red"] = s_textBlockParameters.redBlockTexture;
-	s_textBlockParameters.m_stringColorTextureColorMap["darkRed"] = s_textBlockParameters.darkRedBlockTexture;
-	s_textBlockParameters.m_stringColorTextureColorMap["blue"] = s_textBlockParameters.blueBlockTexture;
-	s_textBlockParameters.m_stringColorTextureColorMap["darkBlue"] = s_textBlockParameters.darkBlueBlockTexture;
-	s_textBlockParameters.m_stringColorTextureColorMap["green"] = s_textBlockParameters.greenBlockTexture;
-	s_textBlockParameters.m_stringColorTextureColorMap["darkGreen"] = s_textBlockParameters.darkGreenBlockTexture;
-	s_textBlockParameters.m_stringColorTextureColorMap["yellow"] = s_textBlockParameters.yellowBlockTexture;
-	s_textBlockParameters.m_stringColorTextureColorMap["darkYellow"] = s_textBlockParameters.darkYellowBlockTexture;
-	s_textBlockParameters.m_stringColorTextureColorMap["purple"] = s_textBlockParameters.purpleBlockTexture;
-	s_textBlockParameters.m_stringColorTextureColorMap["darkPurple"] = s_textBlockParameters.darkPurpleBlockTexture;
-	s_textBlockParameters.m_stringColorTextureColorMap["white"] = s_textBlockParameters.whiteBlockTexture;
-	s_textBlockParameters.m_stringColorTextureColorMap["orange"] = s_textBlockParameters.orangeBlockTexture;
-	s_textBlockParameters.m_stringColorTextureColorMap["brown"] = s_textBlockParameters.brownBlockTexture;
-	s_textBlockParameters.m_stringColorTextureColorMap["darkGray"] = s_textBlockParameters.darkGrayBlockTexture;
-	s_textBlockParameters.m_stringColorTextureColorMap["black"] = s_textBlockParameters.blackBlockTexture;
-
-	s_textBlockInitialized = true;
-}
 
 // Draw the textBlock to the screen
 void TextBlock::Draw()
 {
-	// First, draw the colored blocks scaled to fit the textstring
-	glDrawSpriteScaled(s_textBlockParameters.m_stringColorTextureColorMap[m_color], 
-		              (int) m_position.first, (int)m_position.second, m_size.first, 
-		              m_size.second, 1.0f, 32.0f); // 1.0 because textblock width is already scaled, 32.0 to scale to same height as font
+		// First, draw the colored blocks scaled to fit the textstring
+	glDrawSpriteScaled(m_color->s_colorParameters.m_stringColorTextureColorMap[m_colorStr],
+		(int)m_position.first, (int)m_position.second, m_size.first,
+		m_size.second, 1.0f, 32.0f); // 1.0 because textblock width is already scaled, 32.0 to scale to same height as font
 
 	// Next, draw the text over the colored blocks
 	m_textString->DrawText();
