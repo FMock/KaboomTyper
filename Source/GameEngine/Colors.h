@@ -5,13 +5,20 @@ namespace GameEngine
 	enum Colors
 	{
 		RED = 0,
+		DARK_RED,
 		GREEN,
+		DARK_GREEN,
 		BLUE,
-		ORANGE,
-		RED,
+		DARK_BLUE,
+		PURPLE,
+		DARK_PURPLE,
 		YELLOW,
-		WHITE,
+		DARK_YELLOW,
+		ORANGE,
 		BROWN,
+		GRAY,
+		DARK_GRAY,
+		WHITE,
 		BLACK,
 		UNKNOWN,
 		NONE
