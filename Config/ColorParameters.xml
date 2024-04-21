@@ -28,9 +28,9 @@
 		<OrangeTexture>0</OrangeTexture>
 		<BrownFileName>Brown.tga</BrownFileName>
 		<BrownTexture>0</BrownTexture>
-		<DarkGrayFileName>darkGray.tga</DarkGrayFileName>
+		<DarkGrayFileName>DarkGray.tga</DarkGrayFileName>
 		<DarkGrayTexture>0</DarkGrayTexture>
-		<BlackFileName>black.tga</BlackFileName>
+		<BlackFileName>Black.tga</BlackFileName>
 		<BlackTexture>0</BlackTexture>
 	</ColorParameters parameters>
 </Parameters>

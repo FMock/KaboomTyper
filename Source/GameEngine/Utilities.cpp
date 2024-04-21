@@ -340,7 +340,7 @@ bool Utilities::ReadXmlFile(const char* fileName, ColorParameters& parameters)
 			pathToFontFile.append(parameters.darkBlueFileName);
 			parameters.darkBlueTexture = DrawUtilities::glTexImageTGAFile(pathToFontFile.c_str(), &parameters.textureWidth, &parameters.textureHeight);
 		}
-		if (row[0] == "GreenBlockFileName") // GREEN
+		if (row[0] == "GreenFileName") // GREEN
 		{
 			parameters.greenFileName = row[1];
 		}
@@ -376,7 +376,7 @@ bool Utilities::ReadXmlFile(const char* fileName, ColorParameters& parameters)
 			pathToFontFile.append(parameters.darkYellowFileName);
 			parameters.darkYellowTexture = DrawUtilities::glTexImageTGAFile(pathToFontFile.c_str(), &parameters.textureWidth, &parameters.textureHeight);
 		}
-		if (row[0] == "PurpleBlockFileName") // PURPLE
+		if (row[0] == "PurpleFileName") // PURPLE
 		{
 			parameters.purpleFileName = row[1];
 		}
