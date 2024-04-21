@@ -128,6 +128,15 @@ bool Utilities::ReadXmlFile(const char* fileName, TextBlockParameters& parameter
 			pathToFontFile.append(parameters.redBlockFileName);
 			parameters.redBlockTexture = DrawUtilities::glTexImageTGAFile(pathToFontFile.c_str(), &parameters.blockWidth, &parameters.blockHeight);
 		}
+		else if (row[0] == "DarkRedBlockFileName") // DARK RED
+		{
+			parameters.darkRedBlockFileName = row[1];
+		}
+		else if (row[0] == "DarkRedBlockTexture")
+		{
+			pathToFontFile.append(parameters.darkRedBlockFileName);
+			parameters.darkRedBlockTexture = DrawUtilities::glTexImageTGAFile(pathToFontFile.c_str(), &parameters.blockWidth, &parameters.blockHeight);
+		}
 		if (row[0] == "BlueBlockFileName") // BLUE
 		{
 			parameters.blueBlockFileName = row[1];
@@ -136,6 +145,15 @@ bool Utilities::ReadXmlFile(const char* fileName, TextBlockParameters& parameter
 		{                   
 			pathToFontFile.append(parameters.blueBlockFileName);
 			parameters.blueBlockTexture = DrawUtilities::glTexImageTGAFile(pathToFontFile.c_str(), &parameters.blockWidth, &parameters.blockHeight);
+		}
+		if (row[0] == "DarkBlueBlockFileName") // DARK BLUE
+		{
+			parameters.darkBlueBlockFileName = row[1];
+		}
+		else if (row[0] == "DarkBlueBlockTexture")
+		{
+			pathToFontFile.append(parameters.darkBlueBlockFileName);
+			parameters.darkBlueBlockTexture = DrawUtilities::glTexImageTGAFile(pathToFontFile.c_str(), &parameters.blockWidth, &parameters.blockHeight);
 		}
 		if (row[0] == "GreenBlockFileName") // GREEN
 		{
@@ -146,6 +164,15 @@ bool Utilities::ReadXmlFile(const char* fileName, TextBlockParameters& parameter
 			pathToFontFile.append(parameters.greenBlockFileName);
 			parameters.greenBlockTexture = DrawUtilities::glTexImageTGAFile(pathToFontFile.c_str(), &parameters.blockWidth, &parameters.blockHeight);
 		}
+		if (row[0] == "DarkGreenBlockFileName") // DARK GREEN
+		{
+			parameters.darkGreenBlockFileName = row[1];
+		}
+		else if (row[0] == "DarkGreenBlockTexture")
+		{
+			pathToFontFile.append(parameters.darkGreenBlockFileName);
+			parameters.darkGreenBlockTexture = DrawUtilities::glTexImageTGAFile(pathToFontFile.c_str(), &parameters.blockWidth, &parameters.blockHeight);
+		}
 		if (row[0] == "YellowBlockFileName") // YELLOW
 		{
 			parameters.yellowBlockFileName = row[1];
@@ -155,6 +182,15 @@ bool Utilities::ReadXmlFile(const char* fileName, TextBlockParameters& parameter
 			pathToFontFile.append(parameters.yellowBlockFileName);
 			parameters.yellowBlockTexture = DrawUtilities::glTexImageTGAFile(pathToFontFile.c_str(), &parameters.blockWidth, &parameters.blockHeight);
 		}
+		if (row[0] == "DarkYellowBlockFileName") // DARK YELLOW
+		{
+			parameters.darkYellowBlockFileName = row[1];
+		}
+		else if (row[0] == "DarkYellowBlockTexture")
+		{
+			pathToFontFile.append(parameters.darkYellowBlockFileName);
+			parameters.darkYellowBlockTexture = DrawUtilities::glTexImageTGAFile(pathToFontFile.c_str(), &parameters.blockWidth, &parameters.blockHeight);
+		}
 		if (row[0] == "PurpleBlockFileName") // PURPLE
 		{
 			parameters.purpleBlockFileName = row[1];
@@ -163,6 +199,15 @@ bool Utilities::ReadXmlFile(const char* fileName, TextBlockParameters& parameter
 		{                                     
 			pathToFontFile.append(parameters.purpleBlockFileName);
 			parameters.purpleBlockTexture = DrawUtilities::glTexImageTGAFile(pathToFontFile.c_str(), &parameters.blockWidth, &parameters.blockHeight);
+		}
+		if (row[0] == "DarkPurpleBlockFileName") // DARK PURPLE
+		{
+			parameters.darkPurpleBlockFileName = row[1];
+		}
+		else if (row[0] == "DarkPurpleBlockTexture")
+		{
+			pathToFontFile.append(parameters.darkPurpleBlockFileName);
+			parameters.darkPurpleBlockTexture = DrawUtilities::glTexImageTGAFile(pathToFontFile.c_str(), &parameters.blockWidth, &parameters.blockHeight);
 		}
 		if (row[0] == "WhiteBlockFileName") // WHITE
 		{
@@ -181,6 +226,33 @@ bool Utilities::ReadXmlFile(const char* fileName, TextBlockParameters& parameter
 		{                                        
 			pathToFontFile.append(parameters.orangeBlockFileName);
 			parameters.orangeBlockTexture = DrawUtilities::glTexImageTGAFile(pathToFontFile.c_str(), &parameters.blockWidth, &parameters.blockHeight);
+		}
+		if (row[0] == "BrownBlockFileName") // BROWN
+		{
+			parameters.brownBlockFileName = row[1];
+		}
+		else if (row[0] == "BrownBlockTexture")
+		{
+			pathToFontFile.append(parameters.brownBlockFileName);
+			parameters.brownBlockTexture = DrawUtilities::glTexImageTGAFile(pathToFontFile.c_str(), &parameters.blockWidth, &parameters.blockHeight);
+		}
+		if (row[0] == "DarkGrayBlockFileName") // DARK GRAY
+		{
+			parameters.darkGrayBlockFileName = row[1];
+		}
+		else if (row[0] == "DarkGrayBlockTexture")
+		{
+			pathToFontFile.append(parameters.darkGrayBlockFileName);
+			parameters.darkGrayBlockTexture = DrawUtilities::glTexImageTGAFile(pathToFontFile.c_str(), &parameters.blockWidth, &parameters.blockHeight);
+		}
+		if (row[0] == "BlackBlockFileName") // BLACK
+		{
+			parameters.blackBlockFileName = row[1];
+		}
+		else if (row[0] == "BlackBlockTexture")
+		{
+			pathToFontFile.append(parameters.blackBlockFileName);
+			parameters.blackBlockTexture = DrawUtilities::glTexImageTGAFile(pathToFontFile.c_str(), &parameters.blockWidth, &parameters.blockHeight);
 		}
 	}
 	in.close();

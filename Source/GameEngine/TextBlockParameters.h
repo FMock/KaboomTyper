@@ -9,18 +9,34 @@ namespace GameEngine
 	{
 		std::string redBlockFileName;
 		GLuint redBlockTexture;
+		std::string darkRedBlockFileName;
+		GLuint darkRedBlockTexture;
 		std::string blueBlockFileName;
 		GLuint blueBlockTexture;
+		std::string darkBlueBlockFileName;
+		GLuint darkBlueBlockTexture;
 		std::string greenBlockFileName;
 		GLuint greenBlockTexture;
+		std::string darkGreenBlockFileName;
+		GLuint darkGreenBlockTexture;
 		std::string yellowBlockFileName;
 		GLuint yellowBlockTexture;
+		std::string darkYellowBlockFileName;
+		GLuint darkYellowBlockTexture;
 		std::string purpleBlockFileName;
 		GLuint purpleBlockTexture;
+		std::string darkPurpleBlockFileName;
+		GLuint darkPurpleBlockTexture;
 		std::string whiteBlockFileName;
 		GLuint whiteBlockTexture;
 		std::string orangeBlockFileName;
 		GLuint orangeBlockTexture;
+		std::string brownBlockFileName;
+		GLuint brownBlockTexture;
+		std::string darkGrayBlockFileName;
+		GLuint darkGrayBlockTexture;
+		std::string blackBlockFileName;
+		GLuint blackBlockTexture;
 		int blockWidth;
 		int blockHeight;
 

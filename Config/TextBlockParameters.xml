@@ -4,17 +4,33 @@
 		<BlockHeight>1</BlockHeight>
 		<RedBlockFileName>Red.tga</RedBlockFileName>
 		<RedBlockTexture>0</RedBlockTexture>
+		<DarkRedBlockFileName>DarkRed.tga</DarkRedBlockFileName>
+		<DarkRedBlockTexture>0</DarkRedBlockTexture>
 		<BlueBlockFileName>Blue.tga</BlueBlockFileName>
 		<BlueBlockTexture>0</BlueBlockTexture>
+		<DarkBlueBlockFileName>DarkBlue.tga</DarkBlueBlockFileName>
+		<DarkBlueBlockTexture>0</DarkBlueBlockTexture>
 		<GreenBlockFileName>Green.tga</GreenBlockFileName>
 		<GreenBlockTexture>0</GreenBlockTexture>
+		<DarkGreenBlockFileName>DarkGreen.tga</DarkGreenBlockFileName>
+		<DarkGreenBlockTexture>0</DarkGreenBlockTexture>
 		<YellowBlockFileName>Yellow.tga</YellowBlockFileName>
 		<YellowBlockTexture>0</YellowBlockTexture>
+		<DarkYellowBlockFileName>DarkYellow.tga</DarkYellowBlockFileName>
+		<DarkYellowBlockTexture>0</DarkYellowBlockTexture>
 		<PurpleBlockFileName>Purple.tga</PurpleBlockFileName>
 		<PurpleBlockTexture>0</PurpleBlockTexture>
+		<DarkPurpleBlockFileName>DarkPurple.tga</DarkPurpleBlockFileName>
+		<DarkPurpleBlockTexture>0</DarkPurpleBlockTexture>
 		<WhiteBlockFileName>White.tga</WhiteBlockFileName>
 		<WhiteBlockTexture>0</WhiteBlockTexture>
 		<OrangeBlockFileName>Orange.tga</OrangeBlockFileName>
 		<OrangeBlockTexture>0</OrangeBlockTexture>
+		<BrownBlockFileName>Brown.tga</BrownBlockFileName>
+		<BrownBlockTexture>0</BrownBlockTexture>
+		<DarkGrayBlockFileName>darkGray.tga</DarkGrayBlockFileName>
+		<DarkGrayBlockTexture>0</DarkGrayBlockTexture>
+		<BlackBlockFileName>black.tga</BlackBlockFileName>
+		<BlackBlockTexture>0</BlackBlockTexture>
 	</FontParameters parameters>
 </Parameters>
