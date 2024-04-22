@@ -11,6 +11,7 @@
 #include "TextBlockParameters.h"
 #include "StateManager.h"
 #include "GameManager.h"
+#include "RectangleDrawable.h"
 
 namespace GameEngine
 {
@@ -27,6 +28,7 @@ namespace GameEngine
 
 	private:
 
+		std::unique_ptr<RectangleDrawable> m_rectangleDrawable;
 		TextString* m_textStr;
 		std::unique_ptr<TextString> m_textStr2;
 		std::unique_ptr<TextBlock> m_textBlock;

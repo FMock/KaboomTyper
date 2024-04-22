@@ -171,6 +171,12 @@
     <ClInclude Include="Color.h">
       <Filter>Header Files\Draw</Filter>
     </ClInclude>
+    <ClInclude Include="IDrawable.h">
+      <Filter>Header Files\Draw</Filter>
+    </ClInclude>
+    <ClInclude Include="RectangleDrawable.h">
+      <Filter>Header Files\Draw</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -240,6 +246,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Color.cpp">
+      <Filter>Source Files\Draw</Filter>
+    </ClCompile>
+    <ClCompile Include="RectangleDrawable.cpp">
       <Filter>Source Files\Draw</Filter>
     </ClCompile>
   </ItemGroup>
