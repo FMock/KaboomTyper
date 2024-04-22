@@ -105,6 +105,8 @@ void Game::LoadData()
 
 	m_textStr2 = std::make_unique<TextString>(TextString("Press Spacebar to Begin", x, y + 40));
 
+	m_rectangleDrawable = std::make_unique<RectangleDrawable>();
+
 	// Create a TextBlock at a radom position in the window
 	srand(time(0));
 	int randomX = rand() % 50;
@@ -184,6 +186,8 @@ void Game::GenerateOutput()
 	m_textBlock2->Draw();
 	m_textStr->DrawText();
 	m_textStr2->DrawText();
+
+	m_rectangleDrawable->Draw();
 
 	m_gameManager->Render();
 

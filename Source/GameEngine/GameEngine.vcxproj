@@ -149,6 +149,7 @@
     <ClInclude Include="GameStateComparator.h" />
     <ClInclude Include="GameStates.h" />
     <ClInclude Include="game_data.h" />
+    <ClInclude Include="IDrawable.h" />
     <ClInclude Include="ILevel.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="InputObserver.h" />
@@ -159,6 +160,7 @@
     <ClInclude Include="LevelSplashScreen.h" />
     <ClInclude Include="Moveable.h" />
     <ClInclude Include="ObjectStates.h" />
+    <ClInclude Include="RectangleDrawable.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="IState.h" />
     <ClInclude Include="SpriteFactory.h" />
@@ -190,6 +192,7 @@
     <ClCompile Include="LevelManager.cpp" />
     <ClCompile Include="LevelSplashScreen.cpp" />
     <ClCompile Include="Moveable.cpp" />
+    <ClCompile Include="RectangleDrawable.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="StateGameOver.cpp" />
     <ClCompile Include="StateGamePlay.cpp" />
