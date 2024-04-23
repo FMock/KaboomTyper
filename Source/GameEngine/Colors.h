@@ -19,6 +19,7 @@ namespace GameEngine
 		GRAY,
 		DARK_GRAY,
 		WHITE,
+		DEFAULT_COLOR = WHITE,
 		BLACK,
 		UNKNOWN,
 		NONE
