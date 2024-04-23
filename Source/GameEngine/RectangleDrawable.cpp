@@ -5,14 +5,34 @@ using namespace DrawUtilities;
 
 namespace GameEngine
 {
-    RectangleDrawable::RectangleDrawable()
+    RectangleDrawable::RectangleDrawable() : IDrawable(), m_initialized(false), m_width(0), m_height(0)
     {
-        // The base class constructor will initialize m_color
+        SetX(0);
+        SetY(0);
+        m_color = Colors::DEFAULT_COLOR;
+    }
+
+    RectangleDrawable::RectangleDrawable(int x, int y, int width, int height, Colors rectColor)
+        : IDrawable(), m_width(width), m_height(height), m_initialized(true)
+    {
+        SetX(x);
+        SetY(y);
+        m_color = rectColor;
     }
 
     RectangleDrawable::~RectangleDrawable()
     {
         // Destructor implementation if needed
+    }
+
+    void RectangleDrawable::Initialize(int x, int y, int width, int height, Colors rectColor)
+    {
+        SetX(x);
+        SetY(y);
+        m_width = width;
+        m_height = height;
+        m_color = rectColor;
+        m_initialized = true;
     }
 
     void RectangleDrawable::Update()
@@ -22,15 +42,40 @@ namespace GameEngine
 
     void RectangleDrawable::Draw()
     {
+        if (!m_initialized)
+            throw std::exception("RectangleDrawable Not Fully Initialized");
+
         DrawRectangle();
     }
+
+    void RectangleDrawable::SetWidth(int width)
+    {
+        m_width = width;
+    }
+
+    int RectangleDrawable::GetWidth() const
+    {
+        return m_width;
+    }
+
+    void RectangleDrawable::SetHeight(int height)
+    {
+        m_height = height;
+    }
+
+    int RectangleDrawable::GetHeight() const
+    {
+        return m_height;
+    }
+
     void RectangleDrawable::DrawRectangle()
     {
-        int xPostion = 100;
-        int yPosition = 100;
-        int width = 1;  // m_color has GLuint textures that are 1 pixel wide
-        int height = 1; // m_color has GLuint textres that are 1 pixel wide
+        int textureWidth = m_colorPtr->s_colorParameters.textureWidth;  // m_colorPtr has GLuint textures that are 1 pixel wide
+        int textureHeight = m_colorPtr->s_colorParameters.textureHeight; // m_colorPtr has GLuint textres that are 1 pixel high
 
-        glDrawSpriteScaled(m_color->s_colorParameters.m_stringColorTextureColorMap["red"], xPostion, yPosition, width, height, 32.0f, 32.0f);
+        auto color = m_colorToStringMap[m_color];
+        GLuint texture = m_colorPtr->s_colorParameters.m_stringColorTextureColorMap[color.c_str()];
+
+        glDrawSpriteScaled(texture, m_x, m_y, textureWidth, textureHeight, (float)m_width, (float)m_height);
     }
 }
