@@ -2,6 +2,7 @@
 
 #include<GL/glew.h>
 #include<string>
+#include<vector>
 
 struct GlDrawFrameParams
 {
@@ -36,6 +37,8 @@ namespace DrawUtilities
 	/// <param name="scaleX"></param>
 	/// <param name="scaleY"></param>
 	void glDrawSpriteScaled(GLuint tex, int x, int y, int w, int h, float scaleX, float scaleY);
+
+	void glDrawAudio(GLuint tex, int x, int y, int w, int h, std::vector<float> audio);
 
 	/// <summary>
 	/// Draws a single frame of a GL texture

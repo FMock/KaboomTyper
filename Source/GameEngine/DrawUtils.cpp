@@ -246,6 +246,36 @@ void DrawUtilities::glDrawSpriteScaled(GLuint tex, int x, int y, int w, int h, f
 	glEnd(); // sends all submitted data to the GPU for rendering
 }
 
+#include <cmath>
+
+#include <vector>
+
+void DrawUtilities::glDrawAudio(GLuint tex, int x, int y, int w, int h, std::vector<float> audioData)
+{
+	glBindTexture(GL_TEXTURE_2D, tex);
+	glBegin(GL_LINE_STRIP);
+	{
+		glColor3ub(255, 255, 255);
+
+		// Calculate the scaling factors for x and y axes
+		float scaleX = static_cast<float>(1);
+		float scaleY = static_cast<float>(100); // Adjust for half height
+
+		for (size_t i = 0; i < audioData.size()/128; ++i)
+		{
+			// Calculate the position on the screen
+			float posX = x + i * scaleX;
+			float posY = y + h / 2 + audioData[i] * scaleY;
+
+			// Plot the point
+			glVertex2f(posX, posY);
+		}
+	}
+	glEnd();
+}
+
+
+
 
 // Draws a single frame of a GL texture
 void DrawUtilities::glDrawFrame(GlDrawFrameParams params)
