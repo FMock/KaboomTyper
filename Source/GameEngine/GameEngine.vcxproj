@@ -78,6 +78,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -92,6 +93,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -107,6 +109,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>..\..\Libraries\libraries_used\FMOD\lib;..\..\Libraries\libraries_used\SDL2\lib\x64;..\..\Libraries\libraries_used\GLEW\glew-2.2.0\lib\Debug\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -124,6 +127,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>..\..\Libraries\libraries_used\FMOD\lib;..\..\Libraries\libraries_used\SDL2\lib\x64;..\..\Libraries\libraries_used\GLEW\glew-2.2.0\lib\Release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -136,6 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AABB.h" />
+    <ClInclude Include="AudioGenerator.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="ColorParameters.h" />
     <ClInclude Include="Colors.h" />
@@ -149,6 +154,7 @@
     <ClInclude Include="GameStateComparator.h" />
     <ClInclude Include="GameStates.h" />
     <ClInclude Include="game_data.h" />
+    <ClInclude Include="HeadsUpDisplay.h" />
     <ClInclude Include="IDrawable.h" />
     <ClInclude Include="ILevel.h" />
     <ClInclude Include="InputManager.h" />
@@ -161,6 +167,7 @@
     <ClInclude Include="Moveable.h" />
     <ClInclude Include="ObjectStates.h" />
     <ClInclude Include="RectangleDrawable.h" />
+    <ClInclude Include="Score.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="IState.h" />
     <ClInclude Include="SpriteFactory.h" />
@@ -179,12 +186,14 @@
     <ClInclude Include="Vector2D.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AudioGenerator.cpp" />
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="ConcreteLevel.cpp" />
     <ClCompile Include="ConcreteSpriteFactory.cpp" />
     <ClCompile Include="DrawUtils.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="HeadsUpDisplay.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="LevelGameOver.cpp" />
     <ClCompile Include="LevelGamePlay.cpp" />
@@ -193,6 +202,7 @@
     <ClCompile Include="LevelSplashScreen.cpp" />
     <ClCompile Include="Moveable.cpp" />
     <ClCompile Include="RectangleDrawable.cpp" />
+    <ClCompile Include="Score.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="StateGameOver.cpp" />
     <ClCompile Include="StateGamePlay.cpp" />

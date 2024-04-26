@@ -49,6 +49,18 @@
     <Filter Include="Source Files\Draw">
       <UniqueIdentifier>{0b809c0f-8672-4ee0-a9ef-a8d7f8b99aa7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Audio">
+      <UniqueIdentifier>{66a342be-bb97-48ad-ac55-4debb7e21c58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Audio">
+      <UniqueIdentifier>{403c67db-13fe-46b0-9d7f-1a220052edd1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\HUD">
+      <UniqueIdentifier>{0b3167c8-9a71-446c-8cc0-c33cca1ceec8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\HUD">
+      <UniqueIdentifier>{a866acc9-90b1-4780-8096-a2b22ee51eef}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -177,6 +189,15 @@
     <ClInclude Include="RectangleDrawable.h">
       <Filter>Header Files\Draw</Filter>
     </ClInclude>
+    <ClInclude Include="AudioGenerator.h">
+      <Filter>Header Files\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="HeadsUpDisplay.h">
+      <Filter>Header Files\HUD</Filter>
+    </ClInclude>
+    <ClInclude Include="Score.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -250,6 +271,15 @@
     </ClCompile>
     <ClCompile Include="RectangleDrawable.cpp">
       <Filter>Source Files\Draw</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioGenerator.cpp">
+      <Filter>Source Files\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="HeadsUpDisplay.cpp">
+      <Filter>Source Files\HUD</Filter>
+    </ClCompile>
+    <ClCompile Include="Score.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

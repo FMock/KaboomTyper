@@ -12,6 +12,8 @@
 #include "StateManager.h"
 #include "GameManager.h"
 #include "RectangleDrawable.h"
+#include "AudioGenerator.h"
+#include "HeadsUpDisplay.h"
 
 namespace GameEngine
 {
@@ -27,8 +29,8 @@ namespace GameEngine
 		friend class StateMachine;
 
 	private:
-
-		std::unique_ptr<RectangleDrawable> m_rectangleDrawable;
+		std::unique_ptr<HeadsUpDisplay> m_headsUpDisplay;
+		//std::unique_ptr<AudioGenerator> m_audioGenerator;
 		TextString* m_textStr;
 		std::unique_ptr<TextString> m_textStr2;
 		std::unique_ptr<TextBlock> m_textBlock;

@@ -103,10 +103,7 @@ void Game::LoadData()
 	m_textStr = new TextString();
 	m_textStr->Initialize("Kaboom Typer!", x, y); // draw some text to the screen
 
-	m_textStr2 = std::make_unique<TextString>(TextString("Press Spacebar to Begin", x, y + 40));
-
-	m_rectangleDrawable = std::make_unique<RectangleDrawable>();
-	m_rectangleDrawable->Initialize(20, 100, 600, 10, Colors::PURPLE);
+	m_textStr2 = std::make_unique<TextString>(TextString("Press Spacebar", x, y + 40));
 
 	// Create a TextBlock at a radom position in the window
 	srand(time(0));
@@ -114,7 +111,12 @@ void Game::LoadData()
 	int randomY = rand() % 500;
 	m_textBlock = std::make_unique<TextBlock>(randomX, randomY, std::string("Kaboom Typer!"));
 	m_textBlock2 = std::make_unique<TextBlock>();
-	m_textBlock2->InitializeTextBlock(randomX + 50, randomY + 50, std::string("A Typing Game by Frank Mock"));
+	m_textBlock2->InitializeTextBlock(randomX + 50, randomY + 50, std::string("A Typing Game"));
+
+	//m_audioGenerator = std::make_unique<AudioGenerator>();
+
+	m_headsUpDisplay = std::make_unique<HeadsUpDisplay>();
+	m_headsUpDisplay->Initialize(475, 0);
 
 	// Load game states
 	m_stateManager = std::make_unique<StateManager>();
@@ -188,7 +190,14 @@ void Game::GenerateOutput()
 	m_textStr->DrawText();
 	m_textStr2->DrawText();
 
-	m_rectangleDrawable->Draw();
+	m_headsUpDisplay->Draw();
+
+	// Generate audio data
+	//float frequency = 440.0f; // 440 Hz (A4)
+	//float duration = 1.0f;    // 1 second
+	//float sampleRate = 44100.0f; // CD quality sample rate
+	//std::vector<float> audioData = m_audioGenerator->GenerateSineWave(frequency, duration, sampleRate);
+	//m_audioGenerator->DrawAudio(0, 150, 150, 1, 1, audioData);
 
 	m_gameManager->Render();
 
