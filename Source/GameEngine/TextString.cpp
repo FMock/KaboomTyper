@@ -4,6 +4,7 @@
 #include "Utilities.h"
 #include <stdexcept>
 #include <cstring>
+#include <unordered_map>
 
 using namespace GameEngine;
 using namespace DrawUtilities;
@@ -135,25 +136,29 @@ void TextString::DrawText()
 		throw std::runtime_error("Error: A TextString must be initialized before it can be used.");
 	}
 
-	float colDivision = 1.0f/s_font.numberColumns;
-	float rowDivision = 1.0f/s_font.numberRows;
+	float colDivision = 1.0f / s_font.numberColumns;
+	float rowDivision = 1.0f / s_font.numberRows;
 	int currentCol = 0;
 	int currentRow = 0;
+	int previousAscii = -1;
 
-	for(int i = 0; i < strlen(m_string.c_str()); i++){
+	for (int i = 0; i < strlen(m_string.c_str()); i++)
+	{
+		GlDrawFrameParams params; // each character to draw needs a GlDrawFrameParams object
 
 		int asciiValue = m_string[i]; // get ascii value of character
 
-		currentCol = (asciiValue - 32) % 16;
-		currentRow = abs(((asciiValue - (32 + currentCol)) / 16) - 5);
+		if (previousAscii != asciiValue) // new character so recalculate values.
+		{
+			currentCol = (asciiValue - 32) % 16;
+			currentRow = abs(((asciiValue - (32 + currentCol)) / 16) - 5);
 
-		// update s1, s2, t1, t2
-		m_s1 = currentCol * colDivision;
-		m_s2 = (currentCol * colDivision) + colDivision;
-		m_t1 = currentRow * rowDivision;
-		m_t2 = (currentRow * rowDivision) + rowDivision;
-
-		GlDrawFrameParams params;
+			// update s1, s2, t1, t2
+			m_s1 = currentCol * colDivision;
+			m_s2 = (currentCol * colDivision) + colDivision;
+			m_t1 = currentRow * rowDivision;
+			m_t2 = (currentRow * rowDivision) + rowDivision;
+		}
 
 		params.tex = s_font.image;
 
@@ -165,7 +170,7 @@ void TextString::DrawText()
 		{
 			params.x = m_x + i * (s_font.padding * 2);
 		}
-		
+
 		params.y = m_y;
 		params.w = s_font.frameWidth;
 		params.h = s_font.frameHeight;
@@ -175,6 +180,7 @@ void TextString::DrawText()
 		params.t2 = m_t2;
 
 		glDrawFrame(params);
+		previousAscii = asciiValue; // save copy
 	}
 }
 
