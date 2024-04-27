@@ -30,6 +30,8 @@ namespace GameEngine
 		int numberColumns; // (imageWidth / frameWidth);
 		int numberRows; // (imageHeight / frameHeight);
 		int padding; // space between characters
+		float colDivision = 1.0f / numberColumns;
+		float rowDivision = 1.0f / numberRows;
 		inline int GetFontWidth() const { return frameWidth; }
 		inline int GetFontHeight() const { return frameHeight; }
 	};
