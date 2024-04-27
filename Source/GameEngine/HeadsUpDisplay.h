@@ -21,8 +21,12 @@ namespace GameEngine
 		std::unique_ptr<RectangleDrawable> m_background;
 		std::unique_ptr<TextString> m_scoreLabel;
 		std::unique_ptr<TextString> m_scoreAsText;
+		std::unique_ptr<TextString> m_highScoreLabel;
+		std::unique_ptr<TextString> m_highScoreAsText;
+		std::unique_ptr<TextString> m_levelLabel;
+		std::unique_ptr<TextString> m_levelAsText;
 		std::unique_ptr<Score> m_score;
-		int m_x, m_y;
-		
+		int m_x, m_y; // HUD Position
+		int m_width, m_height; // HUD Width and Height
 	};
 }

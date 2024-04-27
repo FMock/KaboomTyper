@@ -116,7 +116,7 @@ void Game::LoadData()
 	//m_audioGenerator = std::make_unique<AudioGenerator>();
 
 	m_headsUpDisplay = std::make_unique<HeadsUpDisplay>();
-	m_headsUpDisplay->Initialize(475, 0);
+	m_headsUpDisplay->Initialize(450, 0);
 
 	// Load game states
 	m_stateManager = std::make_unique<StateManager>();

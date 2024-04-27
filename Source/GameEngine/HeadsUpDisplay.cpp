@@ -3,11 +3,15 @@
 using namespace GameEngine;
 
 HeadsUpDisplay::HeadsUpDisplay() 
-	: m_background(std::make_unique<RectangleDrawable>()), 
+	: m_background(std::make_unique<RectangleDrawable>()),
+	  m_levelLabel(std::make_unique<TextString>()),
+	  m_levelAsText(std::make_unique<TextString>()),
 	  m_scoreLabel(std::make_unique<TextString>()),
 	  m_scoreAsText(std::make_unique<TextString>()),
+	  m_highScoreLabel(std::make_unique<TextString>()),
+	  m_highScoreAsText(std::make_unique<TextString>()),
 	  m_score(std::make_unique<Score>()),
-	  m_x(0), m_y(0)
+	  m_x(0), m_y(0), m_width(0), m_height(0)
 {
 }
 
@@ -22,31 +26,70 @@ void HeadsUpDisplay::Draw()
 
 void GameEngine::HeadsUpDisplay::Initialize(int x, int y)
 {
+	/****** HUD Background ******/
 	m_x = x;
 	m_y = y;
-	m_background->Initialize(m_x, m_y, 325, 300, Colors::DARK_YELLOW);
-	m_scoreLabel->Initialize("SCORE:", m_x + 5, m_y + 5); // draw some text to the screen
+	m_width = 350;
+	m_height = 100;
+	int xPad = 5;
+	int yPad = 5;
+	int column2XOffset = 175;
+	m_background->Initialize(m_x, m_y, m_width, m_height, Colors::RED);
 
-	// Retrieve the score as an integer
+	/****** Level  ******/
+	m_levelLabel->Initialize("LEVEL:", m_x + xPad, m_y + yPad);
+
+	int levelValue = 1;
+
+	// Ensure the score is limited to 7 digits
+	if (levelValue > 9999999)
+		levelValue = 9999999;
+
+	// Convert the integer score to a string with leading zeros and a width of 7 characters
+	std::string level = std::to_string(levelValue);
+	level = std::string(7 - level.length(), '0') + level;
+
+	m_levelAsText->Initialize(level, m_x + column2XOffset, m_y + 5);
+
+	/****** Score ******/
+	m_scoreLabel->Initialize("SCORE:", m_x + xPad, m_y + 32 + yPad);
+	m_score->SetScore(100);
 	int scoreValue = m_score->GetScore();
 
 	// Ensure the score is limited to 7 digits
 	if (scoreValue > 9999999)
-	{
 		scoreValue = 9999999;
-	}
+	
 	// Convert the integer score to a string with leading zeros and a width of 7 characters
 	std::string score = std::to_string(scoreValue);
 	score = std::string(7 - score.length(), '0') + score;
 
-	m_scoreAsText->Initialize(score, m_x + 150, m_y + 5);
+	m_scoreAsText->Initialize(score, m_x + column2XOffset, m_y + + 32 + yPad);
 
+	/****** High Score ******/
+	m_highScoreLabel->Initialize("HIGH:", m_x + xPad, m_y + 32 + 32 + yPad);
+	m_score->SetHighScore(25775);
+	// Retrieve the high score as an integer
+	int highScoreValue = m_score->GetHighScore();
+
+	// Ensure the score is limited to 7 digits
+	if (highScoreValue > 9999999)
+		highScoreValue = 9999999;
+
+	std::string highScore = std::to_string(highScoreValue);
+	highScore = std::string(7 - highScore.length(), '0') + highScore;
+
+	m_highScoreAsText->Initialize(highScore, m_x + column2XOffset, m_y + 32 + 32 + yPad);
 }
 
 void HeadsUpDisplay::DrawHud()
 {
 	m_background->Draw();
+	m_levelLabel->DrawText();
+	m_levelAsText->DrawText();
 	m_scoreLabel->DrawText();
 	m_scoreAsText->DrawText();
+	m_highScoreLabel->DrawText();
+	m_highScoreAsText->DrawText();
 }
 
