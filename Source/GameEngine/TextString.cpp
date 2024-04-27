@@ -34,6 +34,8 @@ void TextString::InitializeFont(FontParameters& fontParameters)
 		s_font.numberColumns = (s_font.imageWidth / s_font.frameWidth);
 		s_font.numberRows = (s_font.imageHeight / s_font.frameHeight);
 		s_font.padding = fontParameters.m_padding;
+		s_font.colDivision = 1.0f / (s_font.imageWidth / s_font.frameWidth);
+		s_font.rowDivision = 1.0f / (s_font.imageHeight / s_font.frameHeight);
 		s_fontInitialized = true;
 	}
 }
@@ -136,28 +138,27 @@ void TextString::DrawText()
 		throw std::runtime_error("Error: A TextString must be initialized before it can be used.");
 	}
 
-	float colDivision = 1.0f / s_font.numberColumns;
-	float rowDivision = 1.0f / s_font.numberRows;
 	int currentCol = 0;
 	int currentRow = 0;
 	int previousAscii = -1;
+	int strLen = strlen(m_string.c_str());
 
-	for (int i = 0; i < strlen(m_string.c_str()); i++)
+	for (int i = 0; i < strLen; i++)
 	{
 		GlDrawFrameParams params; // each character to draw needs a GlDrawFrameParams object
 
 		int asciiValue = m_string[i]; // get ascii value of character
 
-		if (previousAscii != asciiValue) // new character so recalculate values.
+		if (previousAscii != asciiValue) // new ascii character so recalculate values.
 		{
 			currentCol = (asciiValue - 32) % 16;
 			currentRow = abs(((asciiValue - (32 + currentCol)) / 16) - 5);
 
 			// update s1, s2, t1, t2
-			m_s1 = currentCol * colDivision;
-			m_s2 = (currentCol * colDivision) + colDivision;
-			m_t1 = currentRow * rowDivision;
-			m_t2 = (currentRow * rowDivision) + rowDivision;
+			m_s1 = currentCol * s_font.colDivision;
+			m_s2 = (currentCol * s_font.colDivision) + s_font.colDivision;
+			m_t1 = currentRow * s_font.rowDivision;
+			m_t2 = (currentRow * s_font.rowDivision) + s_font.rowDivision;
 		}
 
 		params.tex = s_font.image;
@@ -180,6 +181,7 @@ void TextString::DrawText()
 		params.t2 = m_t2;
 
 		glDrawFrame(params);
+
 		previousAscii = asciiValue; // save copy
 	}
 }
