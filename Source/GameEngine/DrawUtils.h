@@ -7,10 +7,10 @@
 struct GlDrawFrameParams
 {
 	GLuint tex;
-	int x;
-	int y;
-	int w;
-	int h;
+	short x;
+	short y;
+	short w;
+	short h;
 	float s1;
 	float s2;
 	float t1;
@@ -37,6 +37,7 @@ namespace DrawUtilities
 	/// <param name="scaleX"></param>
 	/// <param name="scaleY"></param>
 	void glDrawSpriteScaled(GLuint tex, int x, int y, int w, int h, float scaleX, float scaleY);
+	void glDrawSpriteScaled(GLuint tex, int x, int y, int w, int h, float scaleX, float scaleY, GLuint xScaled, GLuint yScaled);
 
 	void glDrawAudio(GLuint tex, int x, int y, int w, int h, std::vector<float> audio);
 

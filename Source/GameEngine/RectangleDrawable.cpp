@@ -8,7 +8,7 @@ using namespace DrawUtilities;
 
 namespace GameEngine
 {
-    RectangleDrawable::RectangleDrawable() : IDrawable(), m_initialized(false), m_width(0), m_height(0)
+    RectangleDrawable::RectangleDrawable() : IDrawable(), m_initialized(false), m_width(0), m_height(0), m_colorTexture(0), m_colorTextureWidth(1), m_colorTextureHeight(1)
     {
         SetX(0);
         SetY(0);
@@ -16,7 +16,7 @@ namespace GameEngine
     }
 
     RectangleDrawable::RectangleDrawable(int x, int y, int width, int height, Colors rectColor)
-        : IDrawable(), m_width(width), m_height(height), m_initialized(true)
+        : IDrawable(), m_width(width), m_height(height), m_initialized(true), m_colorTexture(0), m_colorTextureWidth(1), m_colorTextureHeight(1)
     {
         SetX(x);
         SetY(y);
