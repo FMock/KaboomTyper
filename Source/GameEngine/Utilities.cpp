@@ -439,6 +439,10 @@ bool Utilities::ReadXmlFile(const char* fileName, ColorParameters& parameters)
 			pathToFontFile.append(parameters.blackFileName);
 			parameters.blackTexture = DrawUtilities::glTexImageTGAFile(pathToFontFile.c_str(), &parameters.textureWidth, &parameters.textureHeight);
 		}
+		if (row[0] == "NumberOfColors") // Number of colors
+		{
+			parameters.numberOfColors = std::stoi(row[1]);
+		}
 	}
 	in.close();
 	return true;

@@ -32,5 +32,6 @@
 		<DarkGrayTexture>0</DarkGrayTexture>
 		<BlackFileName>Black.tga</BlackFileName>
 		<BlackTexture>0</BlackTexture>
+		<NumberOfColors>15</NumberOfColors>
 	</ColorParameters parameters>
 </Parameters>

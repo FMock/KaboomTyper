@@ -52,6 +52,7 @@ namespace GameEngine
 		std::string blackFileName; // #15. Black
 		GLuint blackTexture;
 
+		int numberOfColors;
 		int textureWidth;
 		int textureHeight;
 

@@ -246,6 +246,30 @@ void DrawUtilities::glDrawSpriteScaled(GLuint tex, int x, int y, int w, int h, f
 	glEnd(); // sends all submitted data to the GPU for rendering
 }
 
+// TODO: This overload avoids the math in the glVertex2i calls. Use with TextBlock to optimize efficiency.
+//       Figure out correct calculations for xScaled and yScaled for TextBlock to use this overload
+void DrawUtilities::glDrawSpriteScaled(GLuint tex, int x, int y, int w, int h, float scaleX, float scaleY, GLuint xScaled, GLuint yScaled)
+{
+	glBindTexture(GL_TEXTURE_2D, tex);
+	glBegin(GL_QUADS);
+	{
+		glColor3ub(255, 255, 255);
+
+		glTexCoord2f(0.0f, 1.0f); // top left
+		glVertex2i(x, y);
+
+		glTexCoord2f(scaleX, 1.0f); // top right
+		glVertex2i(xScaled, y);
+
+		glTexCoord2f(scaleX, 0.0f); // bottom right
+		glVertex2i(xScaled, yScaled);
+
+		glTexCoord2f(0.0f, 0.0f); // bottom left
+		glVertex2i(x, yScaled);
+	}
+	glEnd(); // sends all submitted data to the GPU for rendering
+}
+
 #include <cmath>
 
 #include <vector>

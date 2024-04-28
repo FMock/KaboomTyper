@@ -198,6 +198,9 @@
     <ClInclude Include="Score.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="InputTextBox.h">
+      <Filter>Header Files\Input</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -280,6 +283,9 @@
     </ClCompile>
     <ClCompile Include="Score.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="InputTextBox.cpp">
+      <Filter>Source Files\Input</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

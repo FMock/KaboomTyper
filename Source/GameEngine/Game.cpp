@@ -118,6 +118,9 @@ void Game::LoadData()
 	m_headsUpDisplay = std::make_unique<HeadsUpDisplay>();
 	m_headsUpDisplay->Initialize(450, 0);
 
+	m_inputTextBox = std::make_unique<InputTextBox>();
+	m_inputTextBox->InitializeTextBox(10, 500, 400, 32);
+
 	// Load game states
 	m_stateManager = std::make_unique<StateManager>();
 	InitializeStates();
@@ -126,6 +129,7 @@ void Game::LoadData()
 	// Initialize Input Manager
 	m_inputManager = std::make_unique<InputManager>();
 	m_inputManager->RegisterObserver(m_textBlock.get());
+	m_inputManager->RegisterObserver(m_inputTextBox.get()); // so InputTextbox can respond to user key presses
 
 	// Load GameManager
 	m_gameManager = std::make_unique<GameManager>();
@@ -191,6 +195,8 @@ void Game::GenerateOutput()
 	m_textStr2->DrawText();
 
 	m_headsUpDisplay->Draw();
+
+	m_inputTextBox->Draw();
 
 	// Generate audio data
 	//float frequency = 440.0f; // 440 Hz (A4)

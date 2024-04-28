@@ -138,16 +138,16 @@ void TextString::DrawText()
 		throw std::runtime_error("Error: A TextString must be initialized before it can be used.");
 	}
 
-	int currentCol = 0;
-	int currentRow = 0;
-	int previousAscii = -1;
-	int strLen = strlen(m_string.c_str());
+	short currentCol = 0;
+	short currentRow = 0;
+	short previousAscii = -1;
+	short strLen = strlen(m_string.c_str());
 
-	for (int i = 0; i < strLen; i++)
+	for (short i = 0; i < strLen; i++)
 	{
 		GlDrawFrameParams params; // each character to draw needs a GlDrawFrameParams object
 
-		int asciiValue = m_string[i]; // get ascii value of character
+		short asciiValue = m_string[i]; // get ascii value of character
 
 		if (previousAscii != asciiValue) // new ascii character so recalculate values.
 		{

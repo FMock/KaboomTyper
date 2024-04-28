@@ -47,10 +47,12 @@ namespace GameEngine
 
 	private:
 		std::unique_ptr<Color> m_color; // TextBlock colored body
+		GLuint m_texture;
 		float m_scaleFactor;
 		int m_adjustedTextblockWidth;
+		float m_fontHeight;
 		bool m_isActive;
-
+		void Initialize(float x, float y, std::string str);
 		void LoadColorVector();
 		int ScaleTextBlockWidth(int textSize, int blockWidth);
 

@@ -14,6 +14,7 @@
 #include "RectangleDrawable.h"
 #include "AudioGenerator.h"
 #include "HeadsUpDisplay.h"
+#include "InputTextBox.h"
 
 namespace GameEngine
 {
@@ -29,6 +30,7 @@ namespace GameEngine
 		friend class StateMachine;
 
 	private:
+		std::unique_ptr<InputTextBox> m_inputTextBox;
 		std::unique_ptr<HeadsUpDisplay> m_headsUpDisplay;
 		//std::unique_ptr<AudioGenerator> m_audioGenerator;
 		TextString* m_textStr;
