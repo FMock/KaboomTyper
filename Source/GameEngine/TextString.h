@@ -22,6 +22,7 @@ namespace GameEngine
         size_t GetFontHeight();
         void DrawText();
         void Update(float dt);
+        std::string GetText() const;
 
         // Static member for TextStringFont shared across all instances
         static TextStringFont s_font;

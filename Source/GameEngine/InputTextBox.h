@@ -19,17 +19,25 @@ namespace GameEngine
 		void Draw();
 		void AddText(std::string text);
 		void RemoveLast();
+		void RemoveAll();
+		static std::string getTextboxText();
 
 	private:
 		int m_cursorXPos;
 		int m_cursorYPos;
+		int m_startCursorXPos;
+		int m_startCursorYPos;
 		int m_fontWidth;
 		void MoveCursorForward();
 		void MoveCursorBack();
+		std::string GetTextBoxContentsAsString();
 		void Initialize();
 		std::unique_ptr<RectangleDrawable> m_textBox;
 		std::vector<std::unique_ptr<TextString>> m_inputText;
 		bool m_initialized;
+		bool m_full;
+		int m_maxCharacters;
+		static std::string s_textboxText;
 
 	protected:
 		void RespondToObserved(InputManager* InputMgr) override;

@@ -190,3 +190,8 @@ void TextString::Update(float deltaTime)
 {
 
 }
+
+std::string GameEngine::TextString::GetText() const
+{
+	return m_string;
+}

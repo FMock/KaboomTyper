@@ -4,7 +4,15 @@
 
 using namespace GameEngine;
 
-InputTextBox::InputTextBox() : m_textBox(std::make_unique<RectangleDrawable>()), m_cursorXPos(0), m_cursorYPos(0), m_fontWidth(24),m_initialized(false)
+// Definition of the static member variable
+std::string InputTextBox::s_textboxText = "";
+std::string InputTextBox::getTextboxText()
+{
+    return s_textboxText;
+}
+
+InputTextBox::InputTextBox()
+    : m_textBox(std::make_unique<RectangleDrawable>()), m_cursorXPos(0), m_cursorYPos(0), m_fontWidth(24),m_initialized(false), m_full(false), m_startCursorXPos(0),m_startCursorYPos(0), m_maxCharacters(0)
 {
 }
 
@@ -16,7 +24,11 @@ void InputTextBox::InitializeTextBox(int x, int y, int width, int height, Colors
 {
     m_textBox->Initialize(x, y, width, height, rectColor);
     m_cursorXPos = x;
+    m_startCursorXPos = x;
     m_cursorYPos = y + 2;
+    m_startCursorYPos = y + 2;
+    m_maxCharacters = width / m_fontWidth;
+    m_full = false;
     m_initialized = true;
 }
 
@@ -41,8 +53,11 @@ void InputTextBox::Draw()
 
 void InputTextBox::AddText(std::string text)
 {
-    m_inputText.push_back(std::make_unique<TextString>(text, m_cursorXPos, m_cursorYPos));
-    MoveCursorForward();
+    if (!m_full && m_cursorXPos + m_fontWidth < m_startCursorXPos + m_fontWidth + m_maxCharacters * m_fontWidth)
+    {
+        m_inputText.push_back(std::make_unique<TextString>(text, m_cursorXPos, m_cursorYPos));
+        MoveCursorForward();
+    }
 }
 
 void InputTextBox::RemoveLast()
@@ -54,14 +69,43 @@ void InputTextBox::RemoveLast()
     MoveCursorBack();
 }
 
+void InputTextBox::RemoveAll()
+{
+    m_inputText.clear();
+
+    MoveCursorBack();
+    m_full = false;
+}
+
 void InputTextBox::MoveCursorForward()
 {
-    m_cursorXPos += m_fontWidth;
+    if (m_cursorXPos + m_fontWidth > m_startCursorXPos + m_maxCharacters * m_fontWidth)
+    {
+        m_cursorXPos = m_textBox->GetWidth();
+        m_full = true;
+    }  
+    else
+        m_cursorXPos += m_fontWidth;
 }
 
 void InputTextBox::MoveCursorBack()
 {
-    m_cursorXPos -= m_fontWidth;
+    if (m_cursorXPos - m_fontWidth < m_startCursorXPos)
+        m_cursorXPos = m_startCursorXPos;
+    else
+        m_cursorXPos -= m_fontWidth;
+
+    m_full = false;
+}
+
+std::string InputTextBox::GetTextBoxContentsAsString()
+{
+    std::string output("");
+    for (int i = 0; i < m_inputText.size(); i++)
+    {
+        output.append(m_inputText[i]->GetText());
+    }
+    return output;
 }
 
 void InputTextBox::Initialize()
@@ -79,336 +123,288 @@ void InputTextBox::RespondToObserved(InputManager* InputMgr)
             {
             case SDL_SCANCODE_A:
                 if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                    m_inputText.push_back(std::make_unique<TextString>("A", m_cursorXPos, m_cursorYPos));
+                    AddText("A");
                 else
-                    m_inputText.push_back(std::make_unique<TextString>("a", m_cursorXPos, m_cursorYPos));
-                MoveCursorForward();
+                    AddText("a");
                 break;
             case SDL_SCANCODE_B:
                 if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                    m_inputText.push_back(std::make_unique<TextString>("B", m_cursorXPos, m_cursorYPos));
+                    AddText("B");
                 else
-                    m_inputText.push_back(std::make_unique<TextString>("b", m_cursorXPos, m_cursorYPos));
-                MoveCursorForward();
+                    AddText("B");
                 break;
             case SDL_SCANCODE_C:
                 if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                    m_inputText.push_back(std::make_unique<TextString>("C", m_cursorXPos, m_cursorYPos));
+                    AddText("C");
                 else
-                    m_inputText.push_back(std::make_unique<TextString>("c", m_cursorXPos, m_cursorYPos));
-                MoveCursorForward();
+                    AddText("c");
                 break;
             case SDL_SCANCODE_D:
                 if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                    m_inputText.push_back(std::make_unique<TextString>("D", m_cursorXPos, m_cursorYPos));
+                    AddText("D");
                 else
-                    m_inputText.push_back(std::make_unique<TextString>("d", m_cursorXPos, m_cursorYPos));
-                MoveCursorForward();
+                    AddText("d");
                 break;
             case SDL_SCANCODE_E:
                 if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                    m_inputText.push_back(std::make_unique<TextString>("E", m_cursorXPos, m_cursorYPos));
+                    AddText("E");
                 else
-                    m_inputText.push_back(std::make_unique<TextString>("e", m_cursorXPos, m_cursorYPos));
-                MoveCursorForward();
+                    AddText("e");
                 break;
             case SDL_SCANCODE_F:
                 if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                    m_inputText.push_back(std::make_unique<TextString>("F", m_cursorXPos, m_cursorYPos));
+                    AddText("F");
                 else
-                    m_inputText.push_back(std::make_unique<TextString>("f", m_cursorXPos, m_cursorYPos));
-                MoveCursorForward();
+                    AddText("f");
                 break;
             case SDL_SCANCODE_G:
                 if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                    m_inputText.push_back(std::make_unique<TextString>("G", m_cursorXPos, m_cursorYPos));
+                    AddText("G");
                 else
-                    m_inputText.push_back(std::make_unique<TextString>("g", m_cursorXPos, m_cursorYPos));
-                MoveCursorForward();
+                    AddText("g");
                 break;
             case SDL_SCANCODE_H:
                 if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                    m_inputText.push_back(std::make_unique<TextString>("H", m_cursorXPos, m_cursorYPos));
+                    AddText("H");
                 else
-                    m_inputText.push_back(std::make_unique<TextString>("h", m_cursorXPos, m_cursorYPos));
-                MoveCursorForward();
+                    AddText("h");
                 break;
             case SDL_SCANCODE_I:
                 if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                    m_inputText.push_back(std::make_unique<TextString>("I", m_cursorXPos, m_cursorYPos));
+                    AddText("I");
                 else
-                    m_inputText.push_back(std::make_unique<TextString>("i", m_cursorXPos, m_cursorYPos));
-                MoveCursorForward();
+                    AddText("i");
                 break;
             case SDL_SCANCODE_J:
                 if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                    m_inputText.push_back(std::make_unique<TextString>("J", m_cursorXPos, m_cursorYPos));
+                    AddText("J");
                 else
-                    m_inputText.push_back(std::make_unique<TextString>("j", m_cursorXPos, m_cursorYPos));
-                MoveCursorForward();
+                    AddText("j");
                 break;
             case SDL_SCANCODE_K:
                 if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                    m_inputText.push_back(std::make_unique<TextString>("K", m_cursorXPos, m_cursorYPos));
+                    AddText("K");
                 else
-                    m_inputText.push_back(std::make_unique<TextString>("k", m_cursorXPos, m_cursorYPos));
-                MoveCursorForward();
+                    AddText("k");
                 break;
             case SDL_SCANCODE_L:
                 if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                    m_inputText.push_back(std::make_unique<TextString>("L", m_cursorXPos, m_cursorYPos));
+                    AddText("L");
                 else
-                    m_inputText.push_back(std::make_unique<TextString>("l", m_cursorXPos, m_cursorYPos));
-                MoveCursorForward();
+                    AddText("l");
                 break;
             case SDL_SCANCODE_M:
                 if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                    m_inputText.push_back(std::make_unique<TextString>("M", m_cursorXPos, m_cursorYPos));
+                    AddText("M");
                 else
-                    m_inputText.push_back(std::make_unique<TextString>("m", m_cursorXPos, m_cursorYPos));
-                MoveCursorForward();
+                    AddText("m");
                 break;
             case SDL_SCANCODE_N:
                 if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                    m_inputText.push_back(std::make_unique<TextString>("N", m_cursorXPos, m_cursorYPos));
+                    AddText("N");
                 else
-                    m_inputText.push_back(std::make_unique<TextString>("n", m_cursorXPos, m_cursorYPos));
-                MoveCursorForward();
+                    AddText("n");
                 break;
             case SDL_SCANCODE_O:
                 if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                    m_inputText.push_back(std::make_unique<TextString>("O", m_cursorXPos, m_cursorYPos));
+                    AddText("O");
                 else
-                    m_inputText.push_back(std::make_unique<TextString>("o", m_cursorXPos, m_cursorYPos));
-                MoveCursorForward();
+                    AddText("o");
                 break;
             case SDL_SCANCODE_P:
                 if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                    m_inputText.push_back(std::make_unique<TextString>("P", m_cursorXPos, m_cursorYPos));
+                    AddText("P");
                 else
-                    m_inputText.push_back(std::make_unique<TextString>("p", m_cursorXPos, m_cursorYPos));
-                MoveCursorForward();
+                    AddText("p");
                 break;
             case SDL_SCANCODE_Q:
                 if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                    m_inputText.push_back(std::make_unique<TextString>("Q", m_cursorXPos, m_cursorYPos));
+                    AddText("Q");
                 else
-                    m_inputText.push_back(std::make_unique<TextString>("q", m_cursorXPos, m_cursorYPos));
-                MoveCursorForward();
+                    AddText("q");
                 break;
             case SDL_SCANCODE_R:
                 if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                    m_inputText.push_back(std::make_unique<TextString>("R", m_cursorXPos, m_cursorYPos));
+                    AddText("R");
                 else
-                    m_inputText.push_back(std::make_unique<TextString>("r", m_cursorXPos, m_cursorYPos));
-                MoveCursorForward();
+                    AddText("r");
                 break;
             case SDL_SCANCODE_S:
                 if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                    m_inputText.push_back(std::make_unique<TextString>("S", m_cursorXPos, m_cursorYPos));
+                    AddText("S");
                 else
-                    m_inputText.push_back(std::make_unique<TextString>("s", m_cursorXPos, m_cursorYPos));
-                MoveCursorForward();
+                    AddText("s");
                 break;
             case SDL_SCANCODE_T:
                 if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                    m_inputText.push_back(std::make_unique<TextString>("T", m_cursorXPos, m_cursorYPos));
+                    AddText("T");
                 else
-                    m_inputText.push_back(std::make_unique<TextString>("t", m_cursorXPos, m_cursorYPos));
-                MoveCursorForward();
+                    AddText("t");
                 break;
             case SDL_SCANCODE_U:
                 if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                    m_inputText.push_back(std::make_unique<TextString>("U", m_cursorXPos, m_cursorYPos));
+                    AddText("U");
                 else
-                    m_inputText.push_back(std::make_unique<TextString>("u", m_cursorXPos, m_cursorYPos));
-                MoveCursorForward();
+                    AddText("u");
                 break;
             case SDL_SCANCODE_V:
                 if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                    m_inputText.push_back(std::make_unique<TextString>("V", m_cursorXPos, m_cursorYPos));
+                    AddText("V");
                 else
-                    m_inputText.push_back(std::make_unique<TextString>("v", m_cursorXPos, m_cursorYPos));
-                MoveCursorForward();
+                    AddText("v");
                 break;
             case SDL_SCANCODE_W:
                 if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                    m_inputText.push_back(std::make_unique<TextString>("W", m_cursorXPos, m_cursorYPos));
+                    AddText("W");
                 else
-                    m_inputText.push_back(std::make_unique<TextString>("w", m_cursorXPos, m_cursorYPos));
-                MoveCursorForward();
+                    AddText("w");
                 break;
             case SDL_SCANCODE_X:
                 if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                    m_inputText.push_back(std::make_unique<TextString>("X", m_cursorXPos, m_cursorYPos));
+                    AddText("X");
                 else
-                    m_inputText.push_back(std::make_unique<TextString>("x", m_cursorXPos, m_cursorYPos));
-                MoveCursorForward();
+                    AddText("x");
                 break;
             case SDL_SCANCODE_Y:
                 if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                    m_inputText.push_back(std::make_unique<TextString>("Y", m_cursorXPos, m_cursorYPos));
+                    AddText("Y");
                 else
-                    m_inputText.push_back(std::make_unique<TextString>("y", m_cursorXPos, m_cursorYPos));
-                MoveCursorForward();
+                    AddText("y");
                 break;
             case SDL_SCANCODE_Z:
                 if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                    m_inputText.push_back(std::make_unique<TextString>("Z", m_cursorXPos, m_cursorYPos));
+                    AddText("Z");
                 else
-                    m_inputText.push_back(std::make_unique<TextString>("z", m_cursorXPos, m_cursorYPos));
-                MoveCursorForward();
+                    AddText("z");
                 break;
             case SDL_SCANCODE_0:
                 if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                    m_inputText.push_back(std::make_unique<TextString>(")", m_cursorXPos, m_cursorYPos));
+                    AddText(")");
                 else
-                    m_inputText.push_back(std::make_unique<TextString>("0", m_cursorXPos, m_cursorYPos));
-                MoveCursorForward();
+                    AddText("0");
                 break;
             case SDL_SCANCODE_1:
                 if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                    m_inputText.push_back(std::make_unique<TextString>("!", m_cursorXPos, m_cursorYPos));
+                    AddText("!");
                 else
-                    m_inputText.push_back(std::make_unique<TextString>("1", m_cursorXPos, m_cursorYPos));
-                MoveCursorForward();
+                    AddText("1");
                 break;
             case SDL_SCANCODE_2:
                 if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                    m_inputText.push_back(std::make_unique<TextString>("@", m_cursorXPos, m_cursorYPos));
+                    AddText("@");
                 else
-                    m_inputText.push_back(std::make_unique<TextString>("2", m_cursorXPos, m_cursorYPos));
-                MoveCursorForward();
+                    AddText("2");
                 break;
             case SDL_SCANCODE_3:
                 if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                    m_inputText.push_back(std::make_unique<TextString>("#", m_cursorXPos, m_cursorYPos));
+                    AddText("#");
                 else
-                    m_inputText.push_back(std::make_unique<TextString>("3", m_cursorXPos, m_cursorYPos));
-                MoveCursorForward();
+                    AddText("3");
                 break;
             case SDL_SCANCODE_4:
                 if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                    m_inputText.push_back(std::make_unique<TextString>("$", m_cursorXPos, m_cursorYPos));
+                    AddText("$");
                 else
-                    m_inputText.push_back(std::make_unique<TextString>("4", m_cursorXPos, m_cursorYPos));
-                MoveCursorForward();
+                    AddText("4");
                 break;
             case SDL_SCANCODE_5:
                 if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                    m_inputText.push_back(std::make_unique<TextString>("%", m_cursorXPos, m_cursorYPos));
+                    AddText("%");
                 else
-                    m_inputText.push_back(std::make_unique<TextString>("5", m_cursorXPos, m_cursorYPos));
-                MoveCursorForward();
+                    AddText("5");
                 break;
             case SDL_SCANCODE_6:
                 if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                    m_inputText.push_back(std::make_unique<TextString>("^", m_cursorXPos, m_cursorYPos));
+                    AddText("^");
                 else
-                    m_inputText.push_back(std::make_unique<TextString>("6", m_cursorXPos, m_cursorYPos));
-                MoveCursorForward();
+                    AddText("6");
                 break;
             case SDL_SCANCODE_7:
                 if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                    m_inputText.push_back(std::make_unique<TextString>("&", m_cursorXPos, m_cursorYPos));
+                    AddText("&");
                 else
-                    m_inputText.push_back(std::make_unique<TextString>("7", m_cursorXPos, m_cursorYPos));
-                MoveCursorForward();
+                    AddText("7");
                 break;
             case SDL_SCANCODE_8:
                 if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                    m_inputText.push_back(std::make_unique<TextString>("*", m_cursorXPos, m_cursorYPos));
+                    AddText("*");
                 else
-                    m_inputText.push_back(std::make_unique<TextString>("8", m_cursorXPos, m_cursorYPos));
-                MoveCursorForward();
+                    AddText("8");
                 break;
             case SDL_SCANCODE_9:
                 if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                    m_inputText.push_back(std::make_unique<TextString>("(", m_cursorXPos, m_cursorYPos));
+                    AddText("(");
                 else
-                    m_inputText.push_back(std::make_unique<TextString>("9", m_cursorXPos, m_cursorYPos));
-                MoveCursorForward();
+                    AddText("9");
                 break;
             case SDL_SCANCODE_MINUS:
                 if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                    m_inputText.push_back(std::make_unique<TextString>("_", m_cursorXPos, m_cursorYPos));
+                    AddText("_");
                 else
-                    m_inputText.push_back(std::make_unique<TextString>("-", m_cursorXPos, m_cursorYPos));
-                MoveCursorForward();
+                    AddText("-");
                 break;
             case SDL_SCANCODE_EQUALS:
                 if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                    m_inputText.push_back(std::make_unique<TextString>("+", m_cursorXPos, m_cursorYPos));
+                    AddText("+");
                 else
-                    m_inputText.push_back(std::make_unique<TextString>("=", m_cursorXPos, m_cursorYPos));
-                MoveCursorForward();
+                    AddText("=");
                 break;
             case SDL_SCANCODE_COMMA:
                 if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                    m_inputText.push_back(std::make_unique<TextString>("<", m_cursorXPos, m_cursorYPos));
+                    AddText("<");
                 else
-                    m_inputText.push_back(std::make_unique<TextString>(",", m_cursorXPos, m_cursorYPos));
-                MoveCursorForward();
+                    AddText(",");
                 break;
             case SDL_SCANCODE_PERIOD:
                 if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                    m_inputText.push_back(std::make_unique<TextString>(">", m_cursorXPos, m_cursorYPos));
+                    AddText(">");
                 else
-                    m_inputText.push_back(std::make_unique<TextString>(".", m_cursorXPos, m_cursorYPos));
-                MoveCursorForward();
+                    AddText(".");
                 break;
             case SDL_SCANCODE_SLASH:
                 if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                    m_inputText.push_back(std::make_unique<TextString>("?", m_cursorXPos, m_cursorYPos));
+                    AddText("?");
                 else
-                    m_inputText.push_back(std::make_unique<TextString>("/", m_cursorXPos, m_cursorYPos));
-                MoveCursorForward();
+                    AddText("/");
                 break;
             case SDL_SCANCODE_SEMICOLON:
                 if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                    m_inputText.push_back(std::make_unique<TextString>(":", m_cursorXPos, m_cursorYPos));
+                    AddText(":");
                 else
-                    m_inputText.push_back(std::make_unique<TextString>(";", m_cursorXPos, m_cursorYPos));
-                MoveCursorForward();
+                    AddText(";");
                 break;
             case SDL_SCANCODE_APOSTROPHE:
                 if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                    m_inputText.push_back(std::make_unique<TextString>(std::string("\""), m_cursorXPos, m_cursorYPos));
+                    AddText("\"");
                 else
-                    m_inputText.push_back(std::make_unique<TextString>("'", m_cursorXPos, m_cursorYPos));
-                MoveCursorForward();
+                    AddText("'");
                 break;
             case SDL_SCANCODE_SPACE:
-                m_inputText.push_back(std::make_unique<TextString>(std::string(" "), m_cursorXPos, m_cursorYPos));
-                MoveCursorForward();
+                AddText(std::string(" "));
                 break;
             case SDL_SCANCODE_LEFTBRACKET:
                 if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                    m_inputText.push_back(std::make_unique<TextString>(std::string("\{"), m_cursorXPos, m_cursorYPos));
+                    AddText(std::string("\{"));
                 else
-                    m_inputText.push_back(std::make_unique<TextString>("[", m_cursorXPos, m_cursorYPos));
-                MoveCursorForward();
+                    AddText("[");
                 break;
             case SDL_SCANCODE_RIGHTBRACKET:
                 if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                    m_inputText.push_back(std::make_unique<TextString>(std::string("\}"), m_cursorXPos, m_cursorYPos));
+                    AddText(std::string("\}"));
                 else
-                    m_inputText.push_back(std::make_unique<TextString>("]", m_cursorXPos, m_cursorYPos));
-                MoveCursorForward();
+                    AddText("]");
                 break;
             case SDL_SCANCODE_BACKSLASH:
                 if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                    m_inputText.push_back(std::make_unique<TextString>(std::string("\|"), m_cursorXPos, m_cursorYPos));
+                    AddText(std::string("|"));
                 else
-                    m_inputText.push_back(std::make_unique<TextString>(std::string("\\"), m_cursorXPos, m_cursorYPos));
-                MoveCursorForward();
+                    AddText(std::string("\\"));
                 break;
             case SDL_SCANCODE_GRAVE:
                 if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                    m_inputText.push_back(std::make_unique<TextString>(std::string("\~"), m_cursorXPos, m_cursorYPos));
+                    AddText(std::string("~"));
                 else
-                    m_inputText.push_back(std::make_unique<TextString>(std::string("\`"), m_cursorXPos, m_cursorYPos));
-                MoveCursorForward();
+                    AddText(std::string("`"));
                 break;
             case SDL_SCANCODE_F1:
                 //m_inputText.push_back(std::make_unique<TextString>(std::string("F1"), m_cursorXPos, m_cursorYPos));
@@ -429,7 +425,13 @@ void InputTextBox::RespondToObserved(InputManager* InputMgr)
             case SDL_SCANCODE_BACKSPACE:
                 RemoveLast();
                 break;
-                // Add
+            case SDL_SCANCODE_RETURN:
+                s_textboxText.clear();
+                s_textboxText = GetTextBoxContentsAsString();
+                m_inputText.clear();
+                m_cursorXPos = m_startCursorXPos;
+                m_cursorYPos = m_startCursorYPos;
+                break;
             default:
                 // do nothing
                 break;
