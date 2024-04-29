@@ -43,7 +43,7 @@ bool Game::Initialize()
 	m_window = SDL_CreateWindow(
 	"Kaboom Typer",
 	SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-	800, 600,
+	800, 1000,
 	SDL_WINDOW_OPENGL);
 
 	if (!m_window)
@@ -77,9 +77,9 @@ bool Game::Initialize()
 	}
 
 	// Setup OpenGL state.
-	glViewport(0, 0, 800, 600);
+	glViewport(0, 0, 800, 1000);
 	glMatrixMode(GL_PROJECTION);
-	glOrtho(0, 800, 600, 0, 0, 100);
+	glOrtho(0, 800, 1000, 0, 0, 100);
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -119,7 +119,7 @@ void Game::LoadData()
 	m_headsUpDisplay->Initialize(450, 0);
 
 	m_inputTextBox = std::make_unique<InputTextBox>();
-	m_inputTextBox->InitializeTextBox(10, 500, 400, 32);
+	m_inputTextBox->InitializeTextBox(10, 900, 780, 32);
 
 	// Load game states
 	m_stateManager = std::make_unique<StateManager>();
