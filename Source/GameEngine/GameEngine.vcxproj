@@ -189,6 +189,7 @@
   <ItemGroup>
     <ClCompile Include="AudioGenerator.cpp" />
     <ClCompile Include="Color.cpp" />
+    <ClCompile Include="Common.cpp" />
     <ClCompile Include="ConcreteLevel.cpp" />
     <ClCompile Include="ConcreteSpriteFactory.cpp" />
     <ClCompile Include="DrawUtils.cpp" />
