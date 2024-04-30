@@ -4,12 +4,6 @@
 
 using namespace GameEngine;
 
-// Definition of the static member variable
-std::string InputTextBox::s_textboxText = "";
-std::string InputTextBox::getTextboxText()
-{
-    return s_textboxText;
-}
 
 InputTextBox::InputTextBox()
     : m_textBox(std::make_unique<RectangleDrawable>()), m_cursorXPos(0), m_cursorYPos(0), m_fontWidth(24),m_initialized(false), m_full(false), m_startCursorXPos(0),m_startCursorYPos(0), m_maxCharacters(0)
@@ -426,8 +420,7 @@ void InputTextBox::RespondToObserved(InputManager* InputMgr)
                 RemoveLast();
                 break;
             case SDL_SCANCODE_RETURN:
-                s_textboxText.clear();
-                s_textboxText = GetTextBoxContentsAsString();
+                Common::SubmitText(GetTextBoxContentsAsString());
                 m_inputText.clear();
                 m_cursorXPos = m_startCursorXPos;
                 m_cursorYPos = m_startCursorYPos;

@@ -6,6 +6,7 @@
 #include "Colors.h"
 #include "InputObserver.h"
 #include "InputManager.h"
+#include "Common.h"
 
 namespace GameEngine
 {
@@ -20,7 +21,6 @@ namespace GameEngine
 		void AddText(std::string text);
 		void RemoveLast();
 		void RemoveAll();
-		static std::string getTextboxText();
 
 	private:
 		int m_cursorXPos;
@@ -37,7 +37,6 @@ namespace GameEngine
 		bool m_initialized;
 		bool m_full;
 		int m_maxCharacters;
-		static std::string s_textboxText;
 
 	protected:
 		void RespondToObserved(InputManager* InputMgr) override;
