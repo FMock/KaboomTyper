@@ -16,8 +16,10 @@ namespace GameEngine
 	{
 	private:
 		static std::string s_submittedText;
+		static std::string s_activeText;
 
 	public:
 		static void SubmitText(std::string text);
+		static void SetActiveText(std::string text);
 	};
 }

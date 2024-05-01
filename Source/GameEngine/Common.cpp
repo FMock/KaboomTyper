@@ -4,10 +4,14 @@
 using namespace GameEngine;
 
 std::string Common::s_submittedText = "";
+std::string Common::s_activeText = "";
 
 void Common::SubmitText(std::string text)
 {
 	s_submittedText = text;
+}
 
-	std::cout << s_submittedText << std::endl;
+void Common::SetActiveText(std::string text)
+{
+	s_activeText = text;
 }
