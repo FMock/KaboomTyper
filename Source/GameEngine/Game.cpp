@@ -118,18 +118,10 @@ void Game::LoadData()
 	m_headsUpDisplay = std::make_unique<HeadsUpDisplay>();
 	m_headsUpDisplay->Initialize(450, 0);
 
-	m_inputTextBox = std::make_unique<InputTextBox>();
-	m_inputTextBox->InitializeTextBox(10, 900, 780, 32);
-
 	// Load game states
 	m_stateManager = std::make_unique<StateManager>();
 	InitializeStates();
 	m_stateManager->SwitchState(GameState::SPLASH_SCREEN);
-
-	// Initialize Input Manager
-	m_inputManager = std::make_unique<InputManager>();
-	m_inputManager->RegisterObserver(m_textBlock.get());
-	m_inputManager->RegisterObserver(m_inputTextBox.get()); // so InputTextbox can respond to user key presses
 
 	// Load GameManager
 	m_gameManager = std::make_unique<GameManager>();
@@ -147,8 +139,7 @@ void Game::RunLoop()
 
 void Game::ProcessInput()
 {
-	//m_inputManager->Update();
-	m_shouldExit = m_inputManager->ShouldQuit();
+	m_shouldExit = m_gameManager->ShouldQuit();
 }
 
 void Game::UpdateGame()
@@ -172,7 +163,7 @@ void Game::UpdateGame()
 	m_fps++; // increment frame counter each iteration
 
 	m_stateManager->Update(m_deltaTime);
-	m_inputManager->Update();
+
 	m_textBlock->Update(m_deltaTime);
 	m_textBlock2->Update(m_deltaTime);
 	m_textStr->Update(m_deltaTime);
@@ -196,7 +187,6 @@ void Game::GenerateOutput()
 
 	m_headsUpDisplay->Draw();
 
-	m_inputTextBox->Draw();
 
 	// Generate audio data
 	//float frequency = 440.0f; // 440 Hz (A4)

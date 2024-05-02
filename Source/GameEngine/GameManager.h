@@ -9,6 +9,8 @@
 #include <vector>
 #include <map>
 #include "GameStates.h"
+#include "InputTextBox.h"
+#include "InputManager.h"
 
 namespace GameEngine 
 {
@@ -18,9 +20,13 @@ namespace GameEngine
 		GameManager();
 		~GameManager();
 		void Update(float dt);
+		void ProcessInput();
 		void Render();
+		bool ShouldQuit();
 
 	private:
+		std::unique_ptr<InputTextBox> m_inputTextBox;
+		std::unique_ptr<InputManager> m_inputManager;
 		GameState m_gameState;
 		TextBlockParameters m_textBlockParameters;
 		std::map<std::string, GLuint> m_stringToColoredBlockTextureMap;

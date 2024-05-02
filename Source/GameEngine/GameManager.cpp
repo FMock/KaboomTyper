@@ -9,32 +9,16 @@
 using namespace GameEngine;
 using namespace GameEngine::Utility;
 
+// Loads all the parts of the game
 void GameManager::Initialize()
 {
-	// Load Splash Screen
-	auto gameState = GameState::SPLASH_SCREEN;
-	m_levels[gameState] = new LevelManager();
-	auto levelSplashScreen = std::make_shared<LevelSplashScreen>();
+	// Initialize the InputTextbox
+	m_inputTextBox = std::make_unique<InputTextBox>();
+	m_inputTextBox->InitializeTextBox(10, 900, 780, 32);
 
-	// Access m_spriteFactoryPtr to create a SplashScreen TextBlock
-	auto& spriteFactoryPtr = levelSplashScreen->GetSpriteFactory();
-	if (spriteFactoryPtr)
-	{
-		auto textBlock = spriteFactoryPtr->CreateSprite(SpriteType::TextBlock);
-
-		if (auto* textBlockPtr = dynamic_cast<TextBlock*>(textBlock.get()))
-		{
-			// Access TextBlock-specific methods
-			textBlockPtr->InitializeTextBlock(150, 150, std::string("Splash Screen"));
-		}
-	}
-	m_levels[gameState]->AddLevel(levelSplashScreen);
-
-	// Load Main Menu
-
-	// Load Levels
-
-	// Game Over
+	// Initialize Input Manager
+	m_inputManager = std::make_unique<InputManager>();
+	m_inputManager->RegisterObserver(m_inputTextBox.get()); // so InputTextbox can respond to user key presses
 }
 
 GameEngine::GameManager::GameManager() : m_gameState(GameState::SPLASH_SCREEN)
@@ -56,13 +40,22 @@ GameEngine::GameManager::~GameManager()
 
 void GameManager::Update(float dt)
 {
-	// Updates level depending on current state
+	m_inputManager->Update();
+}
+
+void GameManager::ProcessInput()
+{
+
 }
 
 void GameManager::Render()
 {
-	// Renders level depending on current state
-	m_levels[GameState::SPLASH_SCREEN]->GetLevel(0)->Render();
+	m_inputTextBox->Draw();
+}
+
+bool GameEngine::GameManager::ShouldQuit()
+{
+	return m_inputManager->ShouldQuit();
 }
 
 void GameManager::RespondToObserved(InputManager* InputMgr)
