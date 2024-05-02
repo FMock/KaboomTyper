@@ -201,7 +201,7 @@
     <ClInclude Include="InputTextBox.h">
       <Filter>Header Files\Input</Filter>
     </ClInclude>
-    <ClInclude Include="TextBlockGenerator.h">
+    <ClInclude Include="TextBlockManager.h">
       <Filter>Header Files\Sprite</Filter>
     </ClInclude>
   </ItemGroup>
@@ -293,7 +293,7 @@
     <ClCompile Include="Common.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TextBlockGenerator.cpp">
+    <ClCompile Include="TextBlockManager.cpp">
       <Filter>Source Files\Sprite</Filter>
     </ClCompile>
   </ItemGroup>

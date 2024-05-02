@@ -448,6 +448,44 @@ bool Utilities::ReadXmlFile(const char* fileName, ColorParameters& parameters)
 	return true;
 }
 
+/// <summary>
+/// Reads words from a text file. Function expects each word category name to be preceeded by a # symbol
+/// </summary>
+/// <param name="filename">Text file name</param>
+/// <param name="words">Reference to an unordered map. Key is std::string, Value is std::vector<std::string></param>
+/// <returns></returns>
+bool Utilities::ReadWordsFromFile(const std::string& filename, std::unordered_map<std::string, std::vector<std::string>>& words, std::vector<std::string>& categories)
+{
+	std::ifstream file(filename);
+	if (!file.is_open())
+	{
+		std::cerr << "Failed to open file: " << filename << std::endl;
+		return false;
+	}
+
+	std::string line;
+	std::string currentCategory;
+
+	while (std::getline(file, line))
+	{
+		if (line.empty() || line[0] == '#')
+		{ // Ignore empty lines and comments
+			continue;
+		}
+		else if (line[0] == '#')
+		{ // New category
+			currentCategory = line.substr(1); // Exclude the '#'
+			categories.push_back(currentCategory);
+		}
+		else
+		{ // Items belonging to the current category
+			words[currentCategory].push_back(line);
+		}
+	}
+
+	return true;
+}
+
 ///*
 //*  Reads an .csv file which contains AnimationParameter data
 //*  and loads each animation into a vector.

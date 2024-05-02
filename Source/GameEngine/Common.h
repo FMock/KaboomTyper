@@ -17,6 +17,7 @@ namespace GameEngine
 	private:
 		static std::string s_submittedText;
 		static std::string s_activeText;
+		static std::string s_currentWordCategory;
 
 	public:
 		static void SubmitText(std::string text);
