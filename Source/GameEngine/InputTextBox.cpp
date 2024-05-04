@@ -125,7 +125,7 @@ void InputTextBox::RespondToObserved(InputManager* InputMgr)
                 if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
                     AddText("B");
                 else
-                    AddText("B");
+                    AddText("b");
                 break;
             case SDL_SCANCODE_C:
                 if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
