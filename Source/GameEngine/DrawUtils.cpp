@@ -270,6 +270,126 @@ void DrawUtilities::glDrawSpriteScaled(GLuint tex, int x, int y, int w, int h, f
 	glEnd(); // sends all submitted data to the GPU for rendering
 }
 
+void DrawUtilities::glDrawRectangleOutline(GLuint tex, int x, int y, int w, int h, float scaleX, float scaleY)
+{
+	glBindTexture(GL_TEXTURE_2D, tex);
+	glBegin(GL_LINES);
+	{
+		glColor3ub(255, 255, 255);
+
+		// Top line
+		glTexCoord2f(0.0f, 1.0f); // top left
+		glVertex2i(x, y);
+		glTexCoord2f(scaleX, 1.0f); // top right
+		glVertex2i(x + w * scaleX, y);
+
+		// Right line
+		glTexCoord2f(scaleX, 1.0f); // top right
+		glVertex2i(x + w * scaleX, y);
+		glTexCoord2f(scaleX, 0.0f); // bottom right
+		glVertex2i(x + w * scaleX, y + h * scaleY);
+
+		// Bottom line
+		glTexCoord2f(scaleX, 0.0f); // bottom right
+		glVertex2i(x + w * scaleX, y + h * scaleY);
+		glTexCoord2f(0.0f, 0.0f); // bottom left
+		glVertex2i(x, y + h * scaleY);
+
+		// Left line
+		glTexCoord2f(0.0f, 0.0f); // bottom left
+		glVertex2i(x, y + h * scaleY);
+		glTexCoord2f(0.0f, 1.0f); // top left
+		glVertex2i(x, y);
+	}
+	glEnd();
+}
+
+void DrawUtilities::glDrawRectangleOutline(int x, int y, int w, int h, const RGBColor& outlineColor)
+{
+	glBegin(GL_LINES);
+	{
+		glColor3ub(outlineColor.r, outlineColor.g, outlineColor.b); // Set outline color
+
+		// Top line
+		glVertex2i(x, y);
+		glVertex2i(x + w, y);
+
+		// Right line
+		glVertex2i(x + w, y);
+		glVertex2i(x + w, y + h);
+
+		// Bottom line
+		glVertex2i(x + w, y + h);
+		glVertex2i(x, y + h);
+
+		// Left line
+		glVertex2i(x, y + h);
+		glVertex2i(x, y);
+	}
+	glEnd();
+}
+
+
+void DrawUtilities::glDrawRectangleOutlineFilled(GLuint tex, int x, int y, int w, int h, float scaleX, float scaleY, const RGBColor& fillColor)
+{
+	glBindTexture(GL_TEXTURE_2D, tex);
+	glBegin(GL_LINES);
+	{
+		glColor3ub(255, 255, 255); // Color for the outline
+
+		// Top line
+		glTexCoord2f(0.0f, 1.0f); // top left
+		glVertex2i(x, y);
+		glTexCoord2f(scaleX, 1.0f); // top right
+		glVertex2i(x + w * scaleX, y);
+
+		// Right line
+		glTexCoord2f(scaleX, 1.0f); // top right
+		glVertex2i(x + w * scaleX, y);
+		glTexCoord2f(scaleX, 0.0f); // bottom right
+		glVertex2i(x + w * scaleX, y + h * scaleY);
+
+		// Bottom line
+		glTexCoord2f(scaleX, 0.0f); // bottom right
+		glVertex2i(x + w * scaleX, y + h * scaleY);
+		glTexCoord2f(0.0f, 0.0f); // bottom left
+		glVertex2i(x, y + h * scaleY);
+
+		// Left line
+		glTexCoord2f(0.0f, 0.0f); // bottom left
+		glVertex2i(x, y + h * scaleY);
+		glTexCoord2f(0.0f, 1.0f); // top left
+		glVertex2i(x, y);
+	}
+	glEnd();
+
+	// Fill the rectangle
+	glColor3ub(fillColor.r, fillColor.g, fillColor.b); // Color for filling
+	glBegin(GL_QUADS);
+	{
+		glVertex2i(x, y);
+		glVertex2i(x + w * scaleX, y);
+		glVertex2i(x + w * scaleX, y + h * scaleY);
+		glVertex2i(x, y + h * scaleY);
+	}
+	glEnd();
+}
+
+void DrawUtilities::glDrawFilledRectangle(int x, int y, int w, int h, const RGBColor& fillColor)
+{
+	glBegin(GL_QUADS);
+	{
+		glColor3ub(fillColor.r, fillColor.g, fillColor.b); // Set fill color
+
+		glVertex2i(x, y);
+		glVertex2i(x + w, y);
+		glVertex2i(x + w, y + h);
+		glVertex2i(x, y + h);
+	}
+	glEnd();
+}
+
+
 #include <cmath>
 
 #include <vector>

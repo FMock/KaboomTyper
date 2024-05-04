@@ -14,9 +14,9 @@ InputTextBox::~InputTextBox()
 {
 }
 
-void InputTextBox::InitializeTextBox(int x, int y, int width, int height, Colors rectColor)
+void InputTextBox::InitializeTextBox(int x, int y, int width, int height, Colors rectColor, bool fillTextbox)
 {
-    m_textBox->Initialize(x, y, width, height, rectColor);
+    m_textBox->Initialize(x, y, width, height, rectColor, fillTextbox);
     m_cursorXPos = x;
     m_startCursorXPos = x;
     m_cursorYPos = y + 2;

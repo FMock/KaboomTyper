@@ -15,7 +15,7 @@ namespace GameEngine
 	public:
 		InputTextBox();
 		~InputTextBox();
-		void InitializeTextBox(int x, int y, int width, int height, Colors rectColor = Colors::DEFAULT_COLOR);
+		void InitializeTextBox(int x, int y, int width, int height, Colors rectColor = Colors::DEFAULT_COLOR, bool fillWithColor = false);
 		void Update();
 		void Draw();
 		void AddText(std::string text);

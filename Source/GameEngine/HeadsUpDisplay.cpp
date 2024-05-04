@@ -34,7 +34,7 @@ void GameEngine::HeadsUpDisplay::Initialize(int x, int y)
 	int xPad = 5;
 	int yPad = 5;
 	int column2XOffset = 175;
-	m_background->Initialize(m_x, m_y, m_width, m_height, Colors::RED);
+	m_background->Initialize(m_x, m_y, m_width, m_height, Colors::RED, true);
 
 	/****** Level  ******/
 	m_levelLabel->Initialize("LEVEL:", m_x + xPad, m_y + yPad);
