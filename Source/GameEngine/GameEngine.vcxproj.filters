@@ -204,6 +204,9 @@
     <ClInclude Include="TextBlockManager.h">
       <Filter>Header Files\Sprite</Filter>
     </ClInclude>
+    <ClInclude Include="RGBColor.h">
+      <Filter>Header Files\Draw</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">

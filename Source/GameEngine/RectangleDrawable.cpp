@@ -3,6 +3,7 @@
 #include <cmath>
 #include <vector>
 #include "AudioGenerator.h"
+#include "RGBColor.h"
 
 using namespace DrawUtilities;
 
@@ -15,7 +16,7 @@ namespace GameEngine
         m_color = Colors::DEFAULT_COLOR;
     }
 
-    RectangleDrawable::RectangleDrawable(int x, int y, int width, int height, Colors rectColor)
+    RectangleDrawable::RectangleDrawable(int x, int y, int width, int height, Colors rectColor, bool filled)
         : IDrawable(), m_width(width), m_height(height), m_initialized(true), m_colorTexture(0), m_colorTextureWidth(1), m_colorTextureHeight(1)
     {
         SetX(x);
@@ -28,7 +29,7 @@ namespace GameEngine
         // Destructor implementation if needed
     }
 
-    void RectangleDrawable::Initialize(int x, int y, int width, int height, Colors rectColor)
+    void RectangleDrawable::Initialize(int x, int y, int width, int height, Colors rectColor, bool filled)
     {
         SetX(x);
         SetY(y);
@@ -39,6 +40,7 @@ namespace GameEngine
         m_colorTextureHeight = m_colorPtr->s_colorParameters.textureHeight; // m_colorPtr has GLuint textres that are 1 pixel high
         auto color = m_colorToStringMap[m_color];
         m_colorTexture = m_colorPtr->s_colorParameters.m_stringColorTextureColorMap[color.c_str()];
+        m_filled = filled;
         m_initialized = true;
     }
 
@@ -80,6 +82,9 @@ namespace GameEngine
         if (!m_initialized)
             throw std::exception("RectangleDrawable Not Fully Initialized");
 
-        glDrawSpriteScaled(m_colorTexture, m_x, m_y, m_colorTextureWidth, m_colorTextureHeight, (float)m_width, (float)m_height);
+        if (m_filled)
+            glDrawSpriteScaled(m_colorTexture, m_x, m_y, m_colorTextureWidth, m_colorTextureHeight, (float)m_width, (float)m_height);
+        else
+            glDrawRectangleOutline(m_colorTexture, m_x, m_y, m_colorTextureWidth, m_colorTextureHeight, (float)m_width, (float)m_height);
     }
 }

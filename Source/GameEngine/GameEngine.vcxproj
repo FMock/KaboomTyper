@@ -168,6 +168,7 @@
     <ClInclude Include="Moveable.h" />
     <ClInclude Include="ObjectStates.h" />
     <ClInclude Include="RectangleDrawable.h" />
+    <ClInclude Include="RGBColor.h" />
     <ClInclude Include="Score.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="IState.h" />

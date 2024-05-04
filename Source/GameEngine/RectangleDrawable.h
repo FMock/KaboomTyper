@@ -11,9 +11,9 @@ namespace GameEngine
 	{
 	public:
 		RectangleDrawable();
-		RectangleDrawable(int x, int y, int width, int height, Colors rectColor = DEFAULT_COLOR);
+		RectangleDrawable(int x, int y, int width, int height, Colors rectColor = DEFAULT_COLOR, bool filled = false);
 		~RectangleDrawable();
-		void Initialize(int x, int y, int width, int height, Colors rectColor = DEFAULT_COLOR);
+		void Initialize(int x, int y, int width, int height, Colors rectColor = DEFAULT_COLOR, bool filled = false);
 		void Update() override;
 		void Draw() override;
 
@@ -31,6 +31,7 @@ namespace GameEngine
 		int m_colorTextureWidth;
 		int m_colorTextureHeight;
 		GLuint m_colorTexture;
+		bool m_filled;
 		bool m_initialized;
 	};
 }

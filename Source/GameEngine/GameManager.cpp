@@ -14,7 +14,7 @@ void GameManager::Initialize()
 {
 	// Initialize the InputTextbox
 	m_inputTextBox = std::make_unique<InputTextBox>();
-	m_inputTextBox->InitializeTextBox(10, 900, 780, 32);
+	m_inputTextBox->InitializeTextBox(10, 900, 780, 32, Colors::DEFAULT_COLOR, true);
 
 	// Initialize Input Manager
 	m_inputManager = std::make_unique<InputManager>();
