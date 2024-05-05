@@ -141,6 +141,7 @@
   <ItemGroup>
     <ClInclude Include="AABB.h" />
     <ClInclude Include="AudioGenerator.h" />
+    <ClInclude Include="Button.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="ColorParameters.h" />
     <ClInclude Include="Colors.h" />
@@ -165,6 +166,7 @@
     <ClInclude Include="LevelMainMenu.h" />
     <ClInclude Include="LevelManager.h" />
     <ClInclude Include="LevelSplashScreen.h" />
+    <ClInclude Include="Menu.h" />
     <ClInclude Include="Moveable.h" />
     <ClInclude Include="ObjectStates.h" />
     <ClInclude Include="RectangleDrawable.h" />
@@ -190,6 +192,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AudioGenerator.cpp" />
+    <ClCompile Include="Button.cpp" />
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="Common.cpp" />
     <ClCompile Include="ConcreteLevel.cpp" />
@@ -205,6 +208,7 @@
     <ClCompile Include="LevelMainMenu.cpp" />
     <ClCompile Include="LevelManager.cpp" />
     <ClCompile Include="LevelSplashScreen.cpp" />
+    <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Moveable.cpp" />
     <ClCompile Include="RectangleDrawable.cpp" />
     <ClCompile Include="Score.cpp" />

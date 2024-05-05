@@ -20,22 +20,22 @@ GameEngine::TextBlock::TextBlock() : Sprite(), InputObserver(), m_color(std::mak
 {
 }
 
-TextBlock::TextBlock(int x, int y, std::string str) : Sprite(x, y, 0, 0), m_textString(new TextString(str, x, y)), m_color(std::make_unique<Color>())
+TextBlock::TextBlock(int x, int y, std::string str, Colors color) : Sprite(x, y, 0, 0), m_textString(new TextString(str, x, y)), m_color(std::make_unique<Color>())
 {
-	Initialize(x, y, str);
+	Initialize(x, y, str, color);
 }
 
 GameEngine::TextBlock::~TextBlock()
 {
 }
 
-void TextBlock::InitializeTextBlock(float x, float y, std::string str)
+void TextBlock::InitializeTextBlock(float x, float y, std::string str, Colors color)
 {
-	Initialize(x, y, str);
+	Initialize(x, y, str, color);
 	setPosition(x, y);
 }
 
-void TextBlock::Initialize(float x, float y, std::string str)
+void TextBlock::Initialize(float x, float y, std::string str, Colors color)
 {
 	if(!m_textString)
 		m_textString = std::make_unique<TextString>();
@@ -44,9 +44,10 @@ void TextBlock::Initialize(float x, float y, std::string str)
 	m_fontHeight = (float)m_textString->GetFontHeight();
 
 	LoadColorVector(); // load strings of color names
-	short numberOfColors = m_color->s_colorParameters.numberOfColors;
-	srand(time(0));
-	m_colorStr = m_colors.at(rand() % numberOfColors - 1); // minus one because we don't want any black textblocks
+	//short numberOfColors = m_color->s_colorParameters.numberOfColors;
+	//srand(time(0));
+	//m_colorStr = m_colors.at(rand() % numberOfColors - 1); // minus one because we don't want any black textblocks
+	m_colorStr = m_colors.at((int)color); // minus one because we don't want any black textblocks
 	m_collided = false;
 	m_remove = false;
 	m_isHit = false;
@@ -75,7 +76,7 @@ void TextBlock::Draw()
 		m_fontHeight);
 
 	// Next, draw the text over the colored blocks
-	m_textString->DrawText();
+	m_textString->DrawText(1.0);
 }
 
 void TextBlock::Update(float deltaTime)
@@ -107,11 +108,26 @@ std::string TextBlock::to_string() const
 
 void GameEngine::TextBlock::LoadColorVector()
 {
-	m_colors.push_back("white"), m_colors.push_back("blue"), m_colors.push_back("green");
-	m_colors.push_back("darkBlue"), m_colors.push_back("darkGreen"), m_colors.push_back("yellow");
-	m_colors.push_back("darkYellow"), m_colors.push_back("purple"), m_colors.push_back("red");
-	m_colors.push_back("darkRed"), m_colors.push_back("darkPurple"), m_colors.push_back("brown");
-	m_colors.push_back("orange"), m_colors.push_back("darkGray"), m_colors.push_back("black");
+	m_colors.push_back("red"), // 0
+	m_colors.push_back("darkRed"),  // 1
+	m_colors.push_back("green"); // 2
+
+	m_colors.push_back("darkGreen"), // 3
+	m_colors.push_back("blue"), // 4
+	m_colors.push_back("darkBlue"); // 5
+
+	m_colors.push_back("purple"), // 6
+	m_colors.push_back("Darkpurple"), // 7
+	m_colors.push_back("yellow"); // 8
+
+	m_colors.push_back("darkYellow"), // 9
+	m_colors.push_back("orange"), // 10
+	m_colors.push_back("brown"); // 11
+
+	m_colors.push_back("gray"), // 12
+	m_colors.push_back("darkGray"), // 13
+	m_colors.push_back("white"); // 14
+	m_colors.push_back("black"); // 15
 }
 
 /// <summary>

@@ -31,7 +31,7 @@ namespace GameEngine
 	private:
 		std::unique_ptr<HeadsUpDisplay> m_headsUpDisplay;
 		//std::unique_ptr<AudioGenerator> m_audioGenerator;
-		TextString* m_textStr;
+
 		std::unique_ptr<TextString> m_textStr2;
 		std::unique_ptr<TextBlock> m_textBlock;
 		std::unique_ptr<TextBlock> m_textBlock2;

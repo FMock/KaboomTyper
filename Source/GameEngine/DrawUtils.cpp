@@ -419,6 +419,27 @@ void DrawUtilities::glDrawAudio(GLuint tex, int x, int y, int w, int h, std::vec
 }
 
 
+void DrawUtilities::glDrawFrameScaled(GlDrawFrameParams params)
+{
+	glBindTexture(GL_TEXTURE_2D, params.tex);
+	glBegin(GL_QUADS);
+	{
+		glColor3ub(255, 255, 255);
+
+		glTexCoord2f(params.s1, params.t2);  // A
+		glVertex2i(params.x, params.y);
+
+		glTexCoord2f(params.s2, params.t2);  // B
+		glVertex2i(params.x + params.w * params.scale, params.y);
+
+		glTexCoord2f(params.s2, params.t1); // C
+		glVertex2i(params.x + params.w * params.scale, params.y + params.h * params.scale);
+
+		glTexCoord2f(params.s1, params.t1); // D
+		glVertex2i(params.x, params.y + params.h * params.scale);
+	}
+	glEnd();
+}
 
 
 // Draws a single frame of a GL texture
@@ -521,5 +542,19 @@ void DrawUtilities::DrawTrapezoid()
 	glVertex2i(0.5f, 0.25f); // right corner of the roof
 	glVertex2i(0.5f, 0.5f); // bottom left corner of the house
 	glVertex2i(0.5f, 100.5f); //bottom right corner of the house
+	glEnd();
+}
+
+void DrawUtilities::DrawRectangle(int x, int y, int w, int h, const RGBColor& fillColor)
+{
+	glBegin(GL_QUADS);
+	{
+		glColor3ub(fillColor.r, fillColor.g, fillColor.b); // Set fill color
+
+		glVertex2f(x, y);           // Bottom-left corner
+		glVertex2f(x + w, y);   // Bottom-right corner
+		glVertex2f(x + w, y + h); // Top-right corner
+		glVertex2f(x, y + h);  // Top-left corner
+	}
 	glEnd();
 }

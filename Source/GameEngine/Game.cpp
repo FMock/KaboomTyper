@@ -100,23 +100,20 @@ void Game::LoadData()
 	int x = 20; // x position to draw on screen
 	int y = 20; // y position to draw on screen
 
-	m_textStr = new TextString();
-	m_textStr->Initialize("Kaboom Typer!", x, y); // draw some text to the screen
-
-	m_textStr2 = std::make_unique<TextString>(TextString("Press Spacebar", x, y + 40));
+	m_textStr2 = std::make_unique<TextString>(TextString("Kaboom Typer!", x, y + 40));
 
 	// Create a TextBlock at a radom position in the window
 	srand(time(0));
 	int randomX = rand() % 50;
 	int randomY = rand() % 500;
-	m_textBlock = std::make_unique<TextBlock>(randomX, randomY, std::string("Kaboom Typer!"));
+	m_textBlock = std::make_unique<TextBlock>(randomX, randomY, std::string("Kaboom Typer!"), Colors::ORANGE);
 	m_textBlock2 = std::make_unique<TextBlock>();
-	m_textBlock2->InitializeTextBlock(randomX + 50, randomY + 50, std::string("A Typing Game"));
+	m_textBlock2->InitializeTextBlock(randomX + 50, randomY + 50, std::string("Kaboom Typer!"), Colors::BLUE);
 
 	//m_audioGenerator = std::make_unique<AudioGenerator>();
 
 	m_headsUpDisplay = std::make_unique<HeadsUpDisplay>();
-	m_headsUpDisplay->Initialize(450, 5);
+	m_headsUpDisplay->Initialize(450, 37);
 
 	// Load game states
 	m_stateManager = std::make_unique<StateManager>();
@@ -166,7 +163,7 @@ void Game::UpdateGame()
 
 	m_textBlock->Update(m_deltaTime);
 	m_textBlock2->Update(m_deltaTime);
-	m_textStr->Update(m_deltaTime);
+
 	//fmod_sys->update(); // If you don't update the sound will play once
 
 	m_gameManager->Update(m_deltaTime);
@@ -182,12 +179,11 @@ void Game::GenerateOutput()
 	m_stateManager->Render();
 	m_textBlock->Draw();
 	m_textBlock2->Draw();
-	m_textStr->DrawText();
-	m_textStr2->DrawText();
+
+	m_textStr2->DrawText(1.25f);
 
 	m_headsUpDisplay->Draw();
-
-
+	
 	// Generate audio data
 	//float frequency = 440.0f; // 440 Hz (A4)
 	//float duration = 1.0f;    // 1 second
@@ -211,7 +207,6 @@ void Game::Shutdown()
 
 void Game::UnloadData()
 {
-	delete m_textStr;
 	CleanupStates();
 }
 

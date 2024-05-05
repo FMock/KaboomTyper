@@ -13,6 +13,7 @@
 #include "InputObserver.h"
 #include "InputManager.h"
 #include "Color.h"
+#include "Colors.h"
 
 /// <summary>
 /// A TextBlock is a composite of colored blocks with a TextString 
@@ -24,9 +25,9 @@ namespace GameEngine
 	{
 	public:
 		TextBlock();
-		TextBlock(int x, int y, std::string);
+		TextBlock(int x, int y, std::string, Colors color = Colors::DEFAULT_COLOR);
 		~TextBlock();
-		void InitializeTextBlock(float x, float y, std::string str);
+		void InitializeTextBlock(float x, float y, std::string str, Colors color = Colors::DEFAULT_COLOR);
 
 		std::unique_ptr<TextString> m_textString; // TextString that's drawn over the TextBlock
 		std::vector<std::string> m_colors;
@@ -52,7 +53,7 @@ namespace GameEngine
 		int m_adjustedTextblockWidth;
 		float m_fontHeight;
 		bool m_isActive;
-		void Initialize(float x, float y, std::string str);
+		void Initialize(float x, float y, std::string str, Colors color);
 		void LoadColorVector();
 		int ScaleTextBlockWidth(int textSize, int blockWidth);
 

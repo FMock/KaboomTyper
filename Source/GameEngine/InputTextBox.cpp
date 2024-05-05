@@ -41,7 +41,7 @@ void InputTextBox::Draw()
     // Next draw the text
     for (int i = 0; i < m_inputText.size(); i++)
     {
-        m_inputText[i]->DrawText();
+        m_inputText[i]->DrawText(1.0);
     }
 }
 

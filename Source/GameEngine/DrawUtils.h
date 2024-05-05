@@ -16,6 +16,7 @@ struct GlDrawFrameParams
 	float s2;
 	float t1;
 	float t2;
+	float scale;
 };
 
 namespace DrawUtilities
@@ -68,6 +69,7 @@ namespace DrawUtilities
 	/// 
 	/// </param>
 	void glDrawFrame(GlDrawFrameParams params);
+	void glDrawFrameScaled(GlDrawFrameParams params);
 
 	/*Draws each character image of string*/
 	void drawRasterText(GLuint tex, int x, int y, int w, int h, char string[]);
@@ -75,4 +77,6 @@ namespace DrawUtilities
 	void glDrawSpriteRotate(GLuint tex, int x, int y, int w, int h, GLfloat angle);
 
 	void DrawTrapezoid();
+
+	void DrawRectangle(int x, int y, int w, int h, const RGBColor& fillColor);
 }

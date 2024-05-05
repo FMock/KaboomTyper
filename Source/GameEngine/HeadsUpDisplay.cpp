@@ -34,7 +34,7 @@ void GameEngine::HeadsUpDisplay::Initialize(int x, int y)
 	int xPad = 5;
 	int yPad = 5;
 	int column2XOffset = 175;
-	m_background->Initialize(m_x, m_y, m_width, m_height, Colors::RED, true);
+	m_background->Initialize(m_x, m_y, m_width, m_height, Colors::RED, true); // true because we want to rectangle filled in
 
 	/****** Level  ******/
 	m_levelLabel->Initialize("LEVEL:", m_x + xPad, m_y + yPad);
@@ -85,11 +85,11 @@ void GameEngine::HeadsUpDisplay::Initialize(int x, int y)
 void HeadsUpDisplay::DrawHud()
 {
 	m_background->Draw();
-	m_levelLabel->DrawText();
-	m_levelAsText->DrawText();
-	m_scoreLabel->DrawText();
-	m_scoreAsText->DrawText();
-	m_highScoreLabel->DrawText();
-	m_highScoreAsText->DrawText();
+	m_levelLabel->DrawText(1.0f);
+	m_levelAsText->DrawText(1.0f);
+	m_scoreLabel->DrawText(1.0f);
+	m_scoreAsText->DrawText(1.0f);
+	m_highScoreLabel->DrawText(1.0f);
+	m_highScoreAsText->DrawText(1.0f);
 }
 
