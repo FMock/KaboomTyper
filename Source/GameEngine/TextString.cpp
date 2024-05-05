@@ -120,18 +120,24 @@ size_t GameEngine::TextString::GetFontHeight()
 	return m_fontParameters.m_fontHeight;
 }
 
-/*Draws each character of this objects string
- *Assumes the following raster font image which is 16 characters wide X 6 characters high
- character in the top left corner is a space, ascii character = 32
 
-   !"#$%&'()*+,-./
-  0123456789:;<=>?
-  @ABCDEFGHIJKLMNO
-  PQRSTUVWXYZ[\]^_
-  `abcdefghijklmno
-  qrstuvwxyz{|}~
- * */
-void TextString::DrawText()
+/// <summary>
+/// Draws a scaled version of texture if scaleFactor > 1.0 or < 1.0
+/// 
+///  Draws each character of this object's string m_string
+///  Assumes the following raster font image which is 16 characters wide X 6 characters high
+//   character in the top left corner is a space, ascii character = 32
+//
+//    !"#$%&'()*+,-./
+//   0123456789:; <=> ?
+//   @ABCDEFGHIJKLMNO
+//   PQRSTUVWXYZ[\] ^ _
+//   `abcdefghijklmno
+//   qrstuvwxyz{ | }~
+/// 
+/// </summary>
+/// <param name="scaleFactor">float that determines how much to scale the texture</param>
+void GameEngine::TextString::DrawText(float scaleFactor)
 {
 	if (!s_fontInitialized)
 	{
@@ -146,6 +152,7 @@ void TextString::DrawText()
 	for (short i = 0; i < strLen; i++)
 	{
 		GlDrawFrameParams params; // each character to draw needs a GlDrawFrameParams object
+		params.scale = scaleFactor;
 
 		short asciiValue = m_string[i]; // get ascii value of character
 
@@ -163,15 +170,7 @@ void TextString::DrawText()
 
 		params.tex = s_font.image;
 
-		if (s_font.padding < 1)
-		{
-			params.x = m_x + i * (s_font.frameWidth);
-		}
-		else
-		{
-			params.x = m_x + i * (s_font.padding * 2);
-		}
-
+		params.x = m_x + i * (s_font.frameWidth) * scaleFactor;  // Scales spacing between characters 
 		params.y = m_y;
 		params.w = s_font.frameWidth;
 		params.h = s_font.frameHeight;
@@ -179,8 +178,8 @@ void TextString::DrawText()
 		params.s2 = m_s2;
 		params.t1 = m_t1;
 		params.t2 = m_t2;
-
-		glDrawFrame(params);
+ 
+		glDrawFrameScaled(params); // Has ability to draw a scaled version of texture
 
 		previousAscii = asciiValue; // save copy
 	}

@@ -11,6 +11,7 @@
 #include "GameStates.h"
 #include "InputTextBox.h"
 #include "InputManager.h"
+#include "Menu.h"
 
 namespace GameEngine 
 {
@@ -33,6 +34,7 @@ namespace GameEngine
 		FontParameters m_fontParameters;
 		std::shared_ptr<TextStringFont> m_fontPtr;
 		std::map<GameState, LevelManager*> m_levels;
+		std::unique_ptr<Menu> m_gameMenu;
 		void Initialize();
 
 	protected:

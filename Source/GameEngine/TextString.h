@@ -20,7 +20,7 @@ namespace GameEngine
         size_t GetTextSize();
         size_t GetFontWidth();
         size_t GetFontHeight();
-        void DrawText();
+        void DrawText(float scaleFactor);
         void Update(float dt);
         std::string GetText() const;
 

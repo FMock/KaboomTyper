@@ -19,6 +19,7 @@ void GameManager::Initialize()
 	// Initialize Input Manager
 	m_inputManager = std::make_unique<InputManager>();
 	m_inputManager->RegisterObserver(m_inputTextBox.get()); // so InputTextbox can respond to user key presses
+	m_gameMenu = std::make_unique<Menu>();
 }
 
 GameEngine::GameManager::GameManager() : m_gameState(GameState::SPLASH_SCREEN)
@@ -51,6 +52,7 @@ void GameManager::ProcessInput()
 void GameManager::Render()
 {
 	m_inputTextBox->Draw();
+	m_gameMenu->Draw();
 }
 
 bool GameEngine::GameManager::ShouldQuit()
