@@ -1,4 +1,5 @@
 #include "Menu.h"
+#include <iostream>
 
 using namespace GameEngine;
 
@@ -35,3 +36,35 @@ void GameEngine::Menu::Initialize()
 	m_aboutBtn->Initialize("ABOUT", 290, 8, 0.65f, Colors::DARK_YELLOW);
 
 }
+
+void Menu::RespondToObserved(InputManager* InputMgr)
+{
+    // Access mouse button state information
+    if (InputMgr->m_mouseButtonState[0] && !InputMgr->m_prevMouseButtonState[0])
+    {
+        // Left mouse button clicked
+        std::cout << "Left mouse button clicked" << std::endl;
+    }
+    else if (!InputMgr->m_mouseButtonState[0] && InputMgr->m_prevMouseButtonState[0])
+    {
+        // Left mouse button released
+        std::cout << "Left mouse button released" << std::endl;
+    }
+
+    if (InputMgr->m_mouseButtonState[2] && !InputMgr->m_prevMouseButtonState[2])
+    {
+        // Right mouse button clicked
+        std::cout << "Right mouse button clicked" << std::endl;
+    }
+    else if (!InputMgr->m_mouseButtonState[2] && InputMgr->m_prevMouseButtonState[2])
+    {
+        // Right mouse button released
+        std::cout << "Right mouse button released" << std::endl;
+    }
+
+    // Get mouse position
+    int mouseX, mouseY;
+    InputMgr->GetMousePosition(&mouseX, &mouseY);
+    //std::cout << "Mouse position: (" << mouseX << ", " << mouseY << ")" << std::endl;
+}
+

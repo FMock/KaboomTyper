@@ -1,4 +1,7 @@
 #pragma once
+
+#include "InputObserver.h"
+#include "InputManager.h"
 #include "RectangleDrawable.h"
 #include "TextString.h"
 #include "Button.h"
@@ -6,7 +9,7 @@
 
 namespace GameEngine 
 {
-	class Menu 
+	class Menu : public InputObserver
 	{
 	public:
 		Menu();
@@ -22,5 +25,8 @@ namespace GameEngine
 		std::unique_ptr<Button> m_helpBtn;
 
 		void Initialize();
+
+	protected:
+		void RespondToObserved(InputManager* InputMgr) override;
 	};
 }

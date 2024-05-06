@@ -106,9 +106,9 @@ void Game::LoadData()
 	srand(time(0));
 	int randomX = rand() % 50;
 	int randomY = rand() % 500;
-	m_textBlock = std::make_unique<TextBlock>(randomX, randomY, std::string("Kaboom Typer!"), Colors::ORANGE);
+	m_textBlock = std::make_unique<TextBlock>(randomX, 500, std::string("Kaboom Typer!"), Colors::ORANGE);
 	m_textBlock2 = std::make_unique<TextBlock>();
-	m_textBlock2->InitializeTextBlock(randomX + 50, randomY + 50, std::string("Kaboom Typer!"), Colors::BLUE);
+	m_textBlock2->InitializeTextBlock(randomX + 50, 550, std::string("Kaboom Typer!"), Colors::BLUE);
 
 	//m_audioGenerator = std::make_unique<AudioGenerator>();
 

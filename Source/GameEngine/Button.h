@@ -1,6 +1,5 @@
 #pragma once
 
-#include "InputObserver.h"
 #include "RectangleDrawable.h"
 #include "TextString.h"
 #include "Colors.h"
@@ -9,7 +8,7 @@
 
 namespace GameEngine
 {
-	class Button : public InputObserver
+	class Button
 	{
 	public:
 		Button();
@@ -18,6 +17,8 @@ namespace GameEngine
 		void Initialize(std::string text, int x, int y, float scale = 1.0f, Colors color = Colors::DEFAULT_COLOR);
 		void Update(float dt);
 		void Draw();
+		void ButtonPressed();
+		void ButtonReleased();
 
 	private:
 		std::unique_ptr<RectangleDrawable> m_body;
@@ -25,7 +26,5 @@ namespace GameEngine
 		int m_adjustedWidth;
 		float m_scaler;
 
-	protected:
-		void RespondToObserved(InputManager* InputMgr) override;
 	};
 }

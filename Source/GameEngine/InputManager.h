@@ -20,6 +20,14 @@ namespace GameEngine
 		// The previous frame's keyboard state.
 		unsigned char m_kbPrevState[SDL_NUM_SCANCODES] = { 0 };
 
+		
+
+		bool m_mouseButtonState[3]; // Array to track mouse button states
+		bool m_prevMouseButtonState[3]; // Array to track previous mouse button states
+		void GetMousePosition(int* x, int* y);
+
+		void UpdateMouseButtonState(int button, bool state);
+
 		// The current frame's keyboard state.
 		const unsigned char* m_kbState = NULL;
 

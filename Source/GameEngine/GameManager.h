@@ -28,13 +28,14 @@ namespace GameEngine
 	private:
 		std::unique_ptr<InputTextBox> m_inputTextBox;
 		std::unique_ptr<InputManager> m_inputManager;
+		std::unique_ptr<Menu> m_gameMenu;
 		GameState m_gameState;
 		TextBlockParameters m_textBlockParameters;
 		std::map<std::string, GLuint> m_stringToColoredBlockTextureMap;
 		FontParameters m_fontParameters;
 		std::shared_ptr<TextStringFont> m_fontPtr;
 		std::map<GameState, LevelManager*> m_levels;
-		std::unique_ptr<Menu> m_gameMenu;
+
 		void Initialize();
 
 	protected:
