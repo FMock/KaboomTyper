@@ -45,3 +45,8 @@ void Button::ButtonReleased()
 {
 }
 
+void Button::SetButtonColor(Colors color)
+{
+	m_body->ChangeColor(color);
+}
+

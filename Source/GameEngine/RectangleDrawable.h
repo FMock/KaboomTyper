@@ -16,6 +16,7 @@ namespace GameEngine
 		void Initialize(int x, int y, int width, int height, Colors rectColor = DEFAULT_COLOR, bool filled = false);
 		void Update() override;
 		void Draw() override;
+		void ChangeColor(Colors color);
 
 #pragma region setters_and_getters
 		void SetWidth(int width);
