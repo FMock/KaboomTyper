@@ -1,6 +1,7 @@
 #include "InputManager.h"
 #include <cstring>
 #include <iostream>
+#include <string>
 
 using namespace GameEngine;
 
@@ -12,6 +13,9 @@ GameEngine::InputManager::InputManager()
 void GameEngine::InputManager::PrepareForStateChange()
 {
 	std::memcpy(m_kbPrevState, m_kbState, sizeof(m_kbPrevState)); // copy key states into previous key states array
+
+	// Update previous mouse button state for the next frame
+	std::copy(std::begin(m_mouseButtonState), std::end(m_mouseButtonState), std::begin(m_prevMouseButtonState));
 }
 
 void GameEngine::InputManager::GetNewInputState()
@@ -24,7 +28,27 @@ void GameEngine::InputManager::GetNewInputState()
 		{
 		case SDL_QUIT:
 			m_quit = 1;
+			break;
+		case SDL_MOUSEBUTTONDOWN:
+		case SDL_MOUSEBUTTONUP:
+			// Update mouse button states
+			UpdateMouseButtonState(m_event.button.button, m_event.type == SDL_MOUSEBUTTONDOWN);
+			break;
 		}
+	}
+}
+
+void InputManager::GetMousePosition(int* x, int* y)
+{
+	SDL_GetMouseState(x, y); 
+}
+
+void InputManager::UpdateMouseButtonState(int button, bool state)
+{
+	if (button >= 1 && button <= SDL_BUTTON_X2)
+	{
+		m_prevMouseButtonState[button - 1] = m_mouseButtonState[button - 1];
+		m_mouseButtonState[button - 1] = state;
 	}
 }
 

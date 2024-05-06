@@ -20,6 +20,7 @@ void GameManager::Initialize()
 	m_inputManager = std::make_unique<InputManager>();
 	m_inputManager->RegisterObserver(m_inputTextBox.get()); // so InputTextbox can respond to user key presses
 	m_gameMenu = std::make_unique<Menu>();
+	m_inputManager->RegisterObserver(m_gameMenu.get()); // so menu can respond to mouse clicks
 }
 
 GameEngine::GameManager::GameManager() : m_gameState(GameState::SPLASH_SCREEN)

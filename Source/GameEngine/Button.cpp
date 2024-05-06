@@ -37,7 +37,11 @@ void Button::Draw()
 	m_label->DrawText(m_scaler);
 }
 
-void Button::RespondToObserved(InputManager* InputMgr)
+void Button::ButtonPressed()
 {
-	// TODO: RESPOND APPROPRIATELY
 }
+
+void Button::ButtonReleased()
+{
+}
+
