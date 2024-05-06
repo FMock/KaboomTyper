@@ -44,11 +44,13 @@ void Menu::RespondToObserved(InputManager* InputMgr)
     {
         // Left mouse button clicked
         std::cout << "Left mouse button clicked" << std::endl;
+        m_fileBtn->SetButtonColor(Colors::DEFAULT_COLOR);
     }
     else if (!InputMgr->m_mouseButtonState[0] && InputMgr->m_prevMouseButtonState[0])
     {
         // Left mouse button released
         std::cout << "Left mouse button released" << std::endl;
+        m_fileBtn->SetButtonColor(Colors::DARK_YELLOW);
     }
 
     if (InputMgr->m_mouseButtonState[2] && !InputMgr->m_prevMouseButtonState[2])

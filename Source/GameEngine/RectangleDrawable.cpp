@@ -87,4 +87,11 @@ namespace GameEngine
         else
             glDrawRectangleOutline(m_colorTexture, m_x, m_y, m_colorTextureWidth, m_colorTextureHeight, (float)m_width, (float)m_height);
     }
+
+    void RectangleDrawable::ChangeColor(Colors newColor)
+    {
+        m_color = newColor;
+        auto color = m_colorToStringMap[m_color];
+        m_colorTexture = m_colorPtr->s_colorParameters.m_stringColorTextureColorMap[color.c_str()];
+    }
 }

@@ -19,6 +19,7 @@ namespace GameEngine
 		void Draw();
 		void ButtonPressed();
 		void ButtonReleased();
+		void SetButtonColor(Colors color);
 
 	private:
 		std::unique_ptr<RectangleDrawable> m_body;
