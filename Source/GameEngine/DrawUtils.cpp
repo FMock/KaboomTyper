@@ -485,7 +485,8 @@ void DrawUtilities::drawRasterText(GLuint tex, int x, int y, int w, int h, char 
 	int numberOfRows = 0; //-----------------define just to get it to compile, fix later
 	int currentRow = 0; //-----------------define just to get it to compile, fix later
 
-	for (int i = 0; i < strlen(string); i++)
+	const int N = strlen(string);
+	for (int i = 0; i < N; i++)
 	{
 		int frame = string[i] - 32; //the current frame or letter to draw
 		// Keep currentFrame in range

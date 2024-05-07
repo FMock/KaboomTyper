@@ -50,7 +50,8 @@ void GUI::loadImages(){
 void GUI::update(float deltaTime){
 	options = keyStates->getOptionButtonPressed();
 
-	for(int i = 0; i < selectionItems.size(); i++){
+	const int N = selectionItems.size();
+	for(int i = 0; i < N; i++){
 		if(selectionItems.at(i).selected)
 			menuItemSelected = selectionItems.at(i).categoryName;
 	}
@@ -72,7 +73,7 @@ void GUI::update(float deltaTime){
 			}
 
 			// Check each word category selection options
-			for(int i = 0; i < selectionItems.size(); i++){
+			for(int i = 0; i < N; i++){
 				if(keyStates->mouseX >= selectionItems.at(i).xMin &&
 					keyStates->mouseX <= selectionItems.at(i).xMax &&
 					keyStates->mouseY >= selectionItems.at(i).yMin &&
@@ -141,7 +142,8 @@ void GUI::draw(){
 			musicOptionSelection.draw(); // music play/no-play menu option
 
 		// Word category selection options
-		for(int i = 0; i < selectionItems.size(); i++){
+		const int N = selectionItems.size();
+		for(int i = 0; i < N; i++){
 			selectionItems.at(i).draw();
 		}
 	}

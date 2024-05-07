@@ -23,6 +23,8 @@ namespace GameEngine
 		std::unique_ptr<Button> m_optionsBtn;
 		std::unique_ptr<Button> m_aboutBtn;
 		std::unique_ptr<Button> m_helpBtn;
+		TextString m_title;
+		std::unique_ptr<RectangleDrawable> m_footer;
 
 		void Initialize();
 

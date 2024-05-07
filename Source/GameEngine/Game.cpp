@@ -100,7 +100,7 @@ void Game::LoadData()
 	int x = 20; // x position to draw on screen
 	int y = 20; // y position to draw on screen
 
-	m_textStr2 = std::make_unique<TextString>(TextString("Kaboom Typer!", x, y + 40));
+	//m_textStr2 = std::make_unique<TextString>(TextString("Kaboom Typer!", x, y + 40));
 
 	// Create a TextBlock at a radom position in the window
 	srand(time(0));
@@ -113,7 +113,7 @@ void Game::LoadData()
 	//m_audioGenerator = std::make_unique<AudioGenerator>();
 
 	m_headsUpDisplay = std::make_unique<HeadsUpDisplay>();
-	m_headsUpDisplay->Initialize(450, 37);
+	m_headsUpDisplay->Initialize(450, 45);
 
 	// Load game states
 	m_stateManager = std::make_unique<StateManager>();
@@ -180,7 +180,7 @@ void Game::GenerateOutput()
 	m_textBlock->Draw();
 	m_textBlock2->Draw();
 
-	m_textStr2->DrawText(1.25f);
+	//m_textStr2->DrawText(1.25f);
 
 	m_headsUpDisplay->Draw();
 	
