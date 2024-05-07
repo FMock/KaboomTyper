@@ -452,7 +452,8 @@ int main(void)
 
 			//******* RESET THE GAME ****************************
 			// Flag blocks for removal
-			for(int i = 0; i < blocks.size(); i++){
+			const int N = blocks.size();
+			for(int i = 0; i < N; i++){
 				blocks.at(i).remove = true;
 			}
 

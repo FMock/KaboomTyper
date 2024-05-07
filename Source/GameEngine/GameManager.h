@@ -12,6 +12,7 @@
 #include "InputTextBox.h"
 #include "InputManager.h"
 #include "Menu.h"
+#include "MessageBox.h"
 
 namespace GameEngine 
 {
@@ -29,6 +30,7 @@ namespace GameEngine
 		std::unique_ptr<InputTextBox> m_inputTextBox;
 		std::unique_ptr<InputManager> m_inputManager;
 		std::unique_ptr<Menu> m_gameMenu;
+		std::unique_ptr<MessageBox> m_messageBox;
 		GameState m_gameState;
 		TextBlockParameters m_textBlockParameters;
 		std::map<std::string, GLuint> m_stringToColoredBlockTextureMap;

@@ -39,7 +39,8 @@ void InputTextBox::Draw()
     m_textBox->Draw();
 
     // Next draw the text
-    for (int i = 0; i < m_inputText.size(); i++)
+    const int N = m_inputText.size();
+    for (int i = 0; i < N; i++)
     {
         m_inputText[i]->DrawText(1.0);
     }
@@ -95,7 +96,8 @@ void InputTextBox::MoveCursorBack()
 std::string InputTextBox::GetTextBoxContentsAsString()
 {
     std::string output("");
-    for (int i = 0; i < m_inputText.size(); i++)
+    const int N = m_inputText.size();
+    for (int i = 0; i < N; i++)
     {
         output.append(m_inputText[i]->GetText());
     }

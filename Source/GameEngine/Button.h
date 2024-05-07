@@ -22,7 +22,7 @@ namespace GameEngine
 		void SetButtonColor(Colors color);
 
 	private:
-		std::unique_ptr<RectangleDrawable> m_body;
+		//std::unique_ptr<RectangleDrawable> m_body;
 		std::unique_ptr<RectangleDrawable> m_outline;
 		std::unique_ptr<TextString> m_label;
 		int m_adjustedWidth;
