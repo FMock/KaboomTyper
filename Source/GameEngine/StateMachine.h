@@ -1,25 +1,37 @@
 #pragma once
 
 #include <iostream>
-#include <memory>
+#include <functional>
+#include <unordered_map>
 #include "GameStates.h"
 
-namespace GameEngine
+class StateMachine; // forward declaration for transition function definition
+
+// Define transition function type for convenience
+using TransitionFunction = std::function<void(StateMachine*)>;
+
+class StateMachine 
 {
-    class StateMachine
-    {
-    public:
+public:
+    StateMachine();
+    void TransitionTo(GameEngine::GameState nextState);
+    GameEngine::GameState GetCurrentState() const;
+    std::string GetCurrentStateAsString() const;
 
-        StateMachine() = default;
-        void SetCurrentState(GameState newState);
-        inline GameState GetCurrentState() const { return m_currentState; }
-        void Update();
-        void PromptPlayAgainOrQuit();
+private:
 
-    private:
+    // Define transition table type
+    using TransitionTable = std::unordered_map<GameEngine::GameState, std::unordered_map<GameEngine::GameState, TransitionFunction>>;
 
-        GameState m_currentState;
-        GameState m_previousState;
+    // Define transition functions
+    void StartRunning();
+    void Stop();
+    void Pause();
+    void Reset();
 
-    };
-}
+    // Initialize transition table
+    static TransitionTable InitializeTransitionTable();
+
+    GameEngine::GameState m_currentState;
+    const TransitionTable m_transitionTable;
+};

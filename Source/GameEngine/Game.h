@@ -9,7 +9,6 @@
 #include "TextBlock.h"
 #include "FontParameters.h"
 #include "TextBlockParameters.h"
-#include "StateManager.h"
 #include "GameManager.h"
 #include "RectangleDrawable.h"
 #include "AudioGenerator.h"
@@ -25,9 +24,6 @@ namespace GameEngine
 		void RunLoop();
 		void Shutdown();
 
-		// Add a friend declaration for StateMachine
-		friend class StateMachine;
-
 	private:
 		std::unique_ptr<HeadsUpDisplay> m_headsUpDisplay;
 		//std::unique_ptr<AudioGenerator> m_audioGenerator;
@@ -38,7 +34,6 @@ namespace GameEngine
 		SDL_Window* m_window;
 		SDL_GLContext m_glcontext;
 		
-		std::unique_ptr<StateManager> m_stateManager;
 		std::unique_ptr<GameManager> m_gameManager;
 
 		void ProcessInput();
@@ -46,8 +41,7 @@ namespace GameEngine
 		void GenerateOutput();
 		void LoadData();
 		void UnloadData();
-		void InitializeStates();
-		void CleanupStates();
+
 
 		// The previous frame's keyboard state.
 		unsigned char m_kbPrevState[SDL_NUM_SCANCODES] = { 0 };

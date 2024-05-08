@@ -9,11 +9,7 @@
 #include "TextBlock.h"
 #include "DrawUtils.h"
 #include "Utilities.h"
-#include "StateMachine.h"
-#include "StateMainMenu.h"
-#include "StateSplashScreen.h"
-#include "StateGamePlay.h"
-#include "StateGameOver.h"
+
 
 using namespace GameEngine;
 using namespace GameEngine::Utility;
@@ -115,11 +111,6 @@ void Game::LoadData()
 	m_headsUpDisplay = std::make_unique<HeadsUpDisplay>();
 	m_headsUpDisplay->Initialize(450, 45);
 
-	// Load game states
-	m_stateManager = std::make_unique<StateManager>();
-	InitializeStates();
-	m_stateManager->SwitchState(GameState::SPLASH_SCREEN);
-
 	// Load GameManager
 	m_gameManager = std::make_unique<GameManager>();
 }
@@ -159,7 +150,6 @@ void Game::UpdateGame()
 
 	m_fps++; // increment frame counter each iteration
 
-	m_stateManager->Update(m_deltaTime);
 
 	m_textBlock->Update(m_deltaTime);
 	m_textBlock2->Update(m_deltaTime);
@@ -176,7 +166,7 @@ void Game::GenerateOutput()
 	glClear(GL_COLOR_BUFFER_BIT); // Be sure to always draw objects after this
 
 	// Draw Objects
-	m_stateManager->Render();
+
 	m_textBlock->Draw();
 	m_textBlock2->Draw();
 
@@ -207,21 +197,6 @@ void Game::Shutdown()
 
 void Game::UnloadData()
 {
-	CleanupStates();
+
 }
 
-void Game::InitializeStates()
-{
-	m_stateManager->AddState(GameState::SPLASH_SCREEN, new StateSplashScreen());
-	m_stateManager->AddState(GameState::MAIN_MENU, new StateMainMenu());
-	m_stateManager->AddState(GameState::GAME_PLAY, new StateGamePlay());
-	m_stateManager->AddState(GameState::GAME_OVER, new StateGameOver());
-}
-
-void Game::CleanupStates()
-{
-	delete m_stateManager->GetState(GameState::SPLASH_SCREEN);
-	delete m_stateManager->GetState(GameState::MAIN_MENU);
-	delete m_stateManager->GetState(GameState::GAME_PLAY);
-	delete m_stateManager->GetState(GameState::GAME_OVER);
-}

@@ -1,6 +1,7 @@
 #pragma once
 #include "InputObserver.h"
 #include "GameStates.h"
+#include "StateMachine.h"
 #include "LevelManager.h"
 #include "TextStringFont.h"
 #include "FontParameters.h"
@@ -27,11 +28,12 @@ namespace GameEngine
 		bool ShouldQuit();
 
 	private:
+		std::unique_ptr<StateMachine> m_stateMachine;
 		std::unique_ptr<InputTextBox> m_inputTextBox;
 		std::unique_ptr<InputManager> m_inputManager;
 		std::unique_ptr<Menu> m_gameMenu;
 		std::unique_ptr<MessageBox> m_messageBox;
-		GameState m_gameState;
+
 		TextBlockParameters m_textBlockParameters;
 		std::map<std::string, GLuint> m_stringToColoredBlockTextureMap;
 		FontParameters m_fontParameters;

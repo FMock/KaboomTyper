@@ -1,80 +1,83 @@
-#pragma once
 #include "StateMachine.h"
 
 using namespace GameEngine;
 
-void StateMachine::Update()
+
+/*
+*  Usage:
+*  StateMachine stateMachine;
+*  stateMachine.transitionTo(GameState::RUNNING);
+*  stateMachine.transitionTo(GameState::PAUSED);
+*  etc...
+*/
+
+StateMachine::StateMachine() : m_currentState(GameState::IDLE), m_transitionTable(InitializeTransitionTable()) 
 {
-    switch (m_currentState)
+}
+
+// Initializes the transition table
+StateMachine::TransitionTable StateMachine::InitializeTransitionTable() 
+{
+    TransitionTable table = {
+        { GameState::IDLE, {
+            { GameState::RUNNING, &StateMachine::StartRunning },
+            { GameState::STOPPED, &StateMachine::Stop }
+        }},
+        { GameState::RUNNING, {
+            { GameState::PAUSED, &StateMachine::Pause },
+            { GameState::STOPPED, &StateMachine::Stop }
+        }},
+        { GameState::PAUSED, {
+            { GameState::RUNNING, &StateMachine::StartRunning },
+            { GameState::STOPPED, &StateMachine::Stop }
+        }},
+        { GameState::STOPPED, {
+            { GameState::IDLE, &StateMachine::Reset }
+        }}
+    };
+    return table;
+}
+
+// Transitions the state machine to the next state.
+// If nextState == m_currentState, a state change will not occur
+void StateMachine::TransitionTo(GameEngine::GameState nextState)
+{
+    auto transition = m_transitionTable.find(m_currentState);
+
+    if(transition != m_transitionTable.end())
     {
-    case GameState::MAIN_MENU:
-        std::cout << "Main Menu...\n";
-        break;
-    case GameState::GAME_PLAY:
-        std::cout << "Playing the Game...\n";
-        // Additional code to handle gameplay actions
-        break;
-    case GameState::PAUSED:
-        std::cout << "Game is Paused...\n";
-        // Additional code to handle pause actions
-        break;
-    case GameState::GAME_OVER:
-        std::cout << "Game Over!\n";
-        // Additional code to handle game over actions
-        PromptPlayAgainOrQuit();
-        break;
-    case GameState::VICTORY:
-        std::cout << "Congratulations! You Won!\n";
-        // Additional code to handle victory actions
-        break;
-    case GameState::LOADING:
-        std::cout << "Loading a level...\n";
-        // Additional code to handle loading actions
-        break;
-    case GameState::MENU_SETTINGS:
-        std::cout << "Displaying Settings Menu...\n";
-        // Additional code to handle settings menu actions
-        break;
-    case GameState::MENU_OPTIONS:
-        std::cout << "Displaying Options Menu...\n";
-        // Additional code to handle options menu actions
-        break;
-    case GameState::MENU_INSTRUCTIONS:
-        std::cout << "Displaying Instructions Menu...\n";
-        // Additional code to handle instructions menu actions
-        break;
-    case GameState::MENU_CREDITS:
-        std::cout << "Displaying Credits Menu...\n";
-        // Additional code to handle credits menu actions
-        break;
-    case GameState::QUIT_CONFIRMATION:
-        std::cout << "Quitting the Game...\n";
-        // Additional code to handle quit confirmation actions
-        break;
-    default:
-        std::cout << "Invalid state!\n";
-        break;
+        auto action = transition->second.find(nextState);
+
+        if(action != transition->second.end())
+        {
+            action->second(this);
+            m_currentState = nextState;
+        }
     }
 }
 
-void StateMachine::SetCurrentState(GameState newState) 
-{ 
-    m_previousState = m_currentState;
-    m_currentState = newState; 
+// Returns the current state of the StateMachine
+GameEngine::GameState StateMachine::GetCurrentState() const
+{
+    return m_currentState;
 }
 
-void StateMachine::PromptPlayAgainOrQuit()
+// Returns the current state as a std::string
+// Useful for logging or Debugging
+std::string StateMachine::GetCurrentStateAsString() const
 {
-    std::cout << "Play Again (Y/N)? ";
-    char choice;
-    std::cin >> choice;
-    if (choice == 'Y' || choice == 'y')
+	switch (m_currentState)
     {
-        // Reset the game state to the initial state
-        SetCurrentState(GameState::MAIN_MENU);
-    }
-    else
-    {
-        SetCurrentState(GameState::QUIT_CONFIRMATION);
+        case GameState::IDLE: return "IDLE";
+        case GameState::RUNNING: return "RUNNING";
+        case GameState::PAUSED: return "PAUSED";
+        case GameState::STOPPED: return "STOPPED";
+        default: return "UNKNOWN";
     }
 }
+
+// Transition Functions. TODO: CHANGE THESE TO DO ACTUAL WORK
+void StateMachine::StartRunning(){ std::cout << "Starting to run" << std::endl; }
+void StateMachine::Pause(){ std::cout << "Starting to run" << std::endl; }
+void StateMachine::Stop(){ std::cout << "Starting to run" << std::endl; }
+void StateMachine::Reset(){ std::cout << "Starting to run" << std::endl; }

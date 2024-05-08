@@ -12,19 +12,19 @@ using namespace GameEngine::Utility;
 // Loads all the parts of the game
 void GameManager::Initialize()
 {
-	// Initialize the InputTextbox
 	m_inputTextBox = std::make_unique<InputTextBox>();
 	m_inputTextBox->InitializeTextBox(10, 912, 780, 34, Colors::DEFAULT_COLOR, true);
 
-	// Initialize Input Manager
 	m_inputManager = std::make_unique<InputManager>();
 	m_inputManager->RegisterObserver(m_inputTextBox.get()); // so InputTextbox can respond to user key presses
 	m_gameMenu = std::make_unique<Menu>();
 	m_inputManager->RegisterObserver(m_gameMenu.get()); // so menu can respond to mouse clicks
 	m_messageBox = std::make_unique<MessageBox>();
+
+	m_stateMachine = std::make_unique<StateMachine>();
 }
 
-GameEngine::GameManager::GameManager() : m_gameState(GameState::SPLASH_SCREEN)
+GameEngine::GameManager::GameManager()
 {
 	Initialize();
 }
