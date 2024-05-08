@@ -181,7 +181,6 @@
     <ClInclude Include="StateGamePlay.h" />
     <ClInclude Include="StateMachine.h" />
     <ClInclude Include="StateMainMenu.h" />
-    <ClInclude Include="StateManager.h" />
     <ClInclude Include="StateSplashScreen.h" />
     <ClInclude Include="TextBlock.h" />
     <ClInclude Include="TextBlockManager.h" />
@@ -220,7 +219,6 @@
     <ClCompile Include="StateMainMenu.cpp" />
     <ClCompile Include="StateSplashScreen.cpp" />
     <ClCompile Include="StateMachine.cpp" />
-    <ClCompile Include="StateManager.cpp" />
     <ClCompile Include="TextBlock.cpp" />
     <ClCompile Include="TextBlockManager.cpp" />
     <ClCompile Include="TextString.cpp" />
