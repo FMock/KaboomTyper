@@ -403,6 +403,7 @@ void InputTextBox::RespondToObserved(InputManager* InputMgr)
                     AddText(std::string("`"));
                 break;
             case SDL_SCANCODE_F1:
+                if (InputMgr->m_kbState[SDL_SCANCODE_F1])
                 //m_inputText.push_back(std::make_unique<TextString>(std::string("F1"), m_cursorXPos, m_cursorYPos));
                 //MoveCursorForward();
                 break;

@@ -5,6 +5,7 @@
 #include "LevelGamePlay.h"
 #include "LevelGameOver.h"
 #include "TextBlock.h"
+#include <iostream>
 
 using namespace GameEngine;
 using namespace GameEngine::Utility;
@@ -17,11 +18,17 @@ void GameManager::Initialize()
 
 	m_inputManager = std::make_unique<InputManager>();
 	m_inputManager->RegisterObserver(m_inputTextBox.get()); // so InputTextbox can respond to user key presses
+
 	m_gameMenu = std::make_unique<Menu>();
 	m_inputManager->RegisterObserver(m_gameMenu.get()); // so menu can respond to mouse clicks
+
+	m_inputManager->RegisterObserver(this);
+
 	m_messageBox = std::make_unique<MessageBox>();
 
 	m_stateMachine = std::make_unique<StateMachine>();
+	m_headsUpDisplay = std::make_unique<HeadsUpDisplay>();
+	m_headsUpDisplay->Initialize(450, 45);
 }
 
 GameEngine::GameManager::GameManager()
@@ -53,6 +60,7 @@ void GameManager::ProcessInput()
 
 void GameManager::Render()
 {
+	m_headsUpDisplay->Draw();
 	m_inputTextBox->Draw();
 	m_gameMenu->Draw();
 	m_messageBox->Draw();
@@ -65,5 +73,46 @@ bool GameEngine::GameManager::ShouldQuit()
 
 void GameManager::RespondToObserved(InputManager* InputMgr)
 {
+    GameState currentState = m_stateMachine->GetCurrentState();
 
+    if (InputMgr->m_kbState[SDL_SCANCODE_F1])
+    {
+        if (currentState == GameState::IDLE || currentState == GameState::PAUSED)
+        {
+            m_stateMachine->TransitionTo(GameState::RUNNING);
+            m_messageBox->ChangeMessage(m_stateMachine->GetCurrentStateAsString());
+        }
+        else if (currentState == GameState::PAUSED) // Start game if paused
+        {
+            m_stateMachine->TransitionTo(GameState::RUNNING);
+            m_messageBox->ChangeMessage(m_stateMachine->GetCurrentStateAsString());
+        }
+    }
+    else if (InputMgr->m_kbState[SDL_SCANCODE_F2])
+    {
+        if (currentState == GameState::RUNNING)
+        {
+            m_stateMachine->TransitionTo(GameState::PAUSED);
+            m_messageBox->ChangeMessage(m_stateMachine->GetCurrentStateAsString());
+        }
+    }
+    else if (InputMgr->m_kbState[SDL_SCANCODE_F3])
+    {
+        if (currentState == GameState::PAUSED || currentState == GameState::RUNNING)
+        {
+            m_stateMachine->TransitionTo(GameState::STOPPED);
+            m_messageBox->ChangeMessage(m_stateMachine->GetCurrentStateAsString());
+        }
+    }
+    else if (InputMgr->m_kbState[SDL_SCANCODE_F4])
+    {
+        if (currentState == GameState::STOPPED)
+        {
+            m_stateMachine->TransitionTo(GameState::IDLE);
+            m_messageBox->ChangeMessage(m_stateMachine->GetCurrentStateAsString());
+        }
+    }
 }
+
+
+

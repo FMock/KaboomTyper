@@ -29,11 +29,15 @@ void GameEngine::MessageBox::Initialize(int x, int y, int width, int height, Col
 	m_messageMap["default"] = std::make_unique<TextString>("Press F1 to Start", x + 10, y + 30);
 	m_messageMap["gameover"] = std::make_unique<TextString>("Game Over", x + 10, y + 30);
 
+	m_currentMessage = "";
+
 	m_initialized = true;
 }
 
 void GameEngine::MessageBox::ChangeMessage(std::string message)
 {
+	m_currentMessage = message;
+	m_messageMap[message] = std::make_unique<TextString>(message.c_str(), 0, 45);
 }
 
 void GameEngine::MessageBox::Draw()
@@ -42,5 +46,9 @@ void GameEngine::MessageBox::Draw()
 		throw std::exception("MessageBox not initialized");
 
 	m_body.Draw();
-	m_messageMap["default"]->DrawText(1.0f);
+
+	if(m_currentMessage.empty())
+		m_messageMap["default"]->DrawText(1.0f);
+	else
+		m_messageMap[m_currentMessage]->DrawText(1.0);
 }
