@@ -24,6 +24,7 @@ namespace GameEngine
 	private:
 		RectangleDrawable m_body;
 		std::unordered_map<std::string, std::unique_ptr<TextString>> m_messageMap;
+		std::string m_currentMessage;
 		int m_x, m_y, m_width, m_height;
 		bool m_initialized;
 	};

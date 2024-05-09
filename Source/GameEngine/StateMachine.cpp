@@ -21,7 +21,6 @@ StateMachine::TransitionTable StateMachine::InitializeTransitionTable()
     TransitionTable table = {
         { GameState::IDLE, {
             { GameState::RUNNING, &StateMachine::StartRunning },
-            { GameState::STOPPED, &StateMachine::Stop }
         }},
         { GameState::RUNNING, {
             { GameState::PAUSED, &StateMachine::Pause },
@@ -78,6 +77,6 @@ std::string StateMachine::GetCurrentStateAsString() const
 
 // Transition Functions. TODO: CHANGE THESE TO DO ACTUAL WORK
 void StateMachine::StartRunning(){ std::cout << "Starting to run" << std::endl; }
-void StateMachine::Pause(){ std::cout << "Starting to run" << std::endl; }
-void StateMachine::Stop(){ std::cout << "Starting to run" << std::endl; }
-void StateMachine::Reset(){ std::cout << "Starting to run" << std::endl; }
+void StateMachine::Pause(){ std::cout << "Pause" << std::endl; }
+void StateMachine::Stop(){ std::cout << "Stop" << std::endl; }
+void StateMachine::Reset(){ std::cout << "Reset" << std::endl; }

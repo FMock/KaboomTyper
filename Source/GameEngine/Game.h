@@ -25,7 +25,7 @@ namespace GameEngine
 		void Shutdown();
 
 	private:
-		std::unique_ptr<HeadsUpDisplay> m_headsUpDisplay;
+		//std::unique_ptr<HeadsUpDisplay> m_headsUpDisplay;
 		//std::unique_ptr<AudioGenerator> m_audioGenerator;
 
 		//std::unique_ptr<TextString> m_textStr2;

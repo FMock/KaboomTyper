@@ -93,11 +93,6 @@ bool Game::Initialize()
 /// </summary>
 void Game::LoadData()
 {
-	int x = 20; // x position to draw on screen
-	int y = 20; // y position to draw on screen
-
-	//m_textStr2 = std::make_unique<TextString>(TextString("Kaboom Typer!", x, y + 40));
-
 	// Create a TextBlock at a radom position in the window
 	srand(time(0));
 	int randomX = rand() % 50;
@@ -107,9 +102,6 @@ void Game::LoadData()
 	m_textBlock2->InitializeTextBlock(randomX + 50, 550, std::string("Kaboom Typer!"), Colors::BLUE);
 
 	//m_audioGenerator = std::make_unique<AudioGenerator>();
-
-	m_headsUpDisplay = std::make_unique<HeadsUpDisplay>();
-	m_headsUpDisplay->Initialize(450, 45);
 
 	// Load GameManager
 	m_gameManager = std::make_unique<GameManager>();
@@ -166,13 +158,10 @@ void Game::GenerateOutput()
 	glClear(GL_COLOR_BUFFER_BIT); // Be sure to always draw objects after this
 
 	// Draw Objects
-
 	m_textBlock->Draw();
 	m_textBlock2->Draw();
 
 	//m_textStr2->DrawText(1.25f);
-
-	m_headsUpDisplay->Draw();
 	
 	// Generate audio data
 	//float frequency = 440.0f; // 440 Hz (A4)
