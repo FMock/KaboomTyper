@@ -183,6 +183,7 @@
     <ClInclude Include="StateMainMenu.h" />
     <ClInclude Include="StateSplashScreen.h" />
     <ClInclude Include="TextBlock.h" />
+    <ClInclude Include="TextBlockGenerator.h" />
     <ClInclude Include="TextBlockManager.h" />
     <ClInclude Include="TextBlockParameters.h" />
     <ClInclude Include="TextString.h" />
@@ -220,6 +221,7 @@
     <ClCompile Include="StateSplashScreen.cpp" />
     <ClCompile Include="StateMachine.cpp" />
     <ClCompile Include="TextBlock.cpp" />
+    <ClCompile Include="TextBlockGenerator.cpp" />
     <ClCompile Include="TextBlockManager.cpp" />
     <ClCompile Include="TextString.cpp" />
     <ClCompile Include="Utilities.cpp" />

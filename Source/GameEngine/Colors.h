@@ -1,5 +1,7 @@
 #pragma once
 
+#include <random>
+
 namespace GameEngine
 {
 	enum Colors
@@ -24,4 +26,21 @@ namespace GameEngine
 		UNKNOWN,
 		NONE
 	};
+
+	inline static Colors GetRandomColor()
+	{
+		static std::random_device rd;
+		static std::mt19937 gen(rd());
+
+		// Adjust range to exclude BLACK, UNKNOWN, and NONE
+		static std::uniform_int_distribution<int> dist(0, WHITE);
+
+		Colors color;
+		do
+		{
+			color = static_cast<Colors>(dist(gen));
+		} while (color == BLACK || color == UNKNOWN || color == NONE);
+
+		return color;
+	}
 }

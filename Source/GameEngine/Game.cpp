@@ -95,11 +95,11 @@ void Game::LoadData()
 {
 	// Create a TextBlock at a radom position in the window
 	srand(time(0));
-	int randomX = rand() % 50;
-	int randomY = rand() % 500;
-	m_textBlock = std::make_unique<TextBlock>(randomX, 500, std::string("Kaboom Typer!"), Colors::ORANGE);
-	m_textBlock2 = std::make_unique<TextBlock>();
-	m_textBlock2->InitializeTextBlock(randomX + 50, 550, std::string("Kaboom Typer!"), Colors::BLUE);
+	//int randomX = rand() % 50;
+	//int randomY = rand() % 500;
+	//m_textBlock = std::make_unique<TextBlock>(randomX, 500, std::string("Kaboom Typer!"), Colors::ORANGE);
+	//m_textBlock2 = std::make_unique<TextBlock>();
+	//m_textBlock2->InitializeTextBlock(randomX + 50, 550, std::string("Kaboom Typer!"), Colors::BLUE);
 
 	//m_audioGenerator = std::make_unique<AudioGenerator>();
 
@@ -143,8 +143,8 @@ void Game::UpdateGame()
 	m_fps++; // increment frame counter each iteration
 
 
-	m_textBlock->Update(m_deltaTime);
-	m_textBlock2->Update(m_deltaTime);
+	//m_textBlock->Update(m_deltaTime);
+	//m_textBlock2->Update(m_deltaTime);
 
 	//fmod_sys->update(); // If you don't update the sound will play once
 
@@ -158,8 +158,8 @@ void Game::GenerateOutput()
 	glClear(GL_COLOR_BUFFER_BIT); // Be sure to always draw objects after this
 
 	// Draw Objects
-	m_textBlock->Draw();
-	m_textBlock2->Draw();
+	//m_textBlock->Draw();
+	//m_textBlock2->Draw();
 
 	//m_textStr2->DrawText(1.25f);
 	

@@ -15,6 +15,7 @@
 #include "Menu.h"
 #include "MessageBox.h"
 #include "HeadsUpDisplay.h"
+#include "TextBlockGenerator.h"
 
 namespace GameEngine 
 {
@@ -37,6 +38,7 @@ namespace GameEngine
 		std::unique_ptr<MessageBox> m_messageBox;
 
 		TextBlockParameters m_textBlockParameters;
+		std::unique_ptr<TextBlockGenerator> m_textblockGenerator;
 		std::map<std::string, GLuint> m_stringToColoredBlockTextureMap;
 		FontParameters m_fontParameters;
 		std::shared_ptr<TextStringFont> m_fontPtr;

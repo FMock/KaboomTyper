@@ -213,6 +213,9 @@
     <ClInclude Include="MessageBox.h">
       <Filter>Header Files\UI</Filter>
     </ClInclude>
+    <ClInclude Include="TextBlockGenerator.h">
+      <Filter>Header Files\Sprite</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -310,6 +313,9 @@
     </ClCompile>
     <ClCompile Include="Messagebox.cpp">
       <Filter>Source Files\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="TextBlockGenerator.cpp">
+      <Filter>Source Files\Sprite</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
