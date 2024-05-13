@@ -29,6 +29,8 @@ void GameManager::Initialize()
 	m_stateMachine = std::make_unique<StateMachine>();
 	m_headsUpDisplay = std::make_unique<HeadsUpDisplay>();
 	m_headsUpDisplay->Initialize(450, 45);
+
+    m_textblockGenerator = std::make_unique < TextBlockGenerator>(5.0f);
 }
 
 GameEngine::GameManager::GameManager()
@@ -51,6 +53,7 @@ GameEngine::GameManager::~GameManager()
 void GameManager::Update(float dt)
 {
 	m_inputManager->Update();
+    m_textblockGenerator->Update(dt);
 }
 
 void GameManager::ProcessInput()
@@ -60,6 +63,7 @@ void GameManager::ProcessInput()
 
 void GameManager::Render()
 {
+    m_textblockGenerator->Draw();
 	m_headsUpDisplay->Draw();
 	m_inputTextBox->Draw();
 	m_gameMenu->Draw();
@@ -74,6 +78,7 @@ bool GameEngine::GameManager::ShouldQuit()
 void GameManager::RespondToObserved(InputManager* InputMgr)
 {
     GameState currentState = m_stateMachine->GetCurrentState();
+    bool textblockGeneratorRunning = m_textblockGenerator->IsRunning();
 
     if (InputMgr->m_kbState[SDL_SCANCODE_F1])
     {
@@ -81,11 +86,21 @@ void GameManager::RespondToObserved(InputManager* InputMgr)
         {
             m_stateMachine->TransitionTo(GameState::RUNNING);
             m_messageBox->ChangeMessage(m_stateMachine->GetCurrentStateAsString());
+
+            if(!textblockGeneratorRunning)
+            {
+                m_textblockGenerator->ToggleRunning();
+            }
         }
         else if (currentState == GameState::PAUSED) // Start game if paused
         {
             m_stateMachine->TransitionTo(GameState::RUNNING);
             m_messageBox->ChangeMessage(m_stateMachine->GetCurrentStateAsString());
+
+            if (!textblockGeneratorRunning)
+            {
+                m_textblockGenerator->ToggleRunning();
+            }
         }
     }
     else if (InputMgr->m_kbState[SDL_SCANCODE_F2])
@@ -94,6 +109,9 @@ void GameManager::RespondToObserved(InputManager* InputMgr)
         {
             m_stateMachine->TransitionTo(GameState::PAUSED);
             m_messageBox->ChangeMessage(m_stateMachine->GetCurrentStateAsString());
+
+            if (m_textblockGenerator->IsRunning())
+                m_textblockGenerator->ToggleRunning();
         }
     }
     else if (InputMgr->m_kbState[SDL_SCANCODE_F3])
@@ -102,6 +120,11 @@ void GameManager::RespondToObserved(InputManager* InputMgr)
         {
             m_stateMachine->TransitionTo(GameState::STOPPED);
             m_messageBox->ChangeMessage(m_stateMachine->GetCurrentStateAsString());
+
+            if (textblockGeneratorRunning)
+            {
+                m_textblockGenerator->ToggleRunning();
+            }
         }
     }
     else if (InputMgr->m_kbState[SDL_SCANCODE_F4])
@@ -110,6 +133,13 @@ void GameManager::RespondToObserved(InputManager* InputMgr)
         {
             m_stateMachine->TransitionTo(GameState::IDLE);
             m_messageBox->ChangeMessage(m_stateMachine->GetCurrentStateAsString());
+        }
+    }
+    else if (InputMgr->m_kbState[SDL_SCANCODE_F5])
+    {
+        if (currentState == GameState::IDLE)
+        {
+            m_textblockGenerator->ClearBlockDeque();
         }
     }
 }
