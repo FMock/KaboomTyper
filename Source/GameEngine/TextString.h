@@ -2,6 +2,7 @@
 
 #include <GL/glew.h>
 #include <memory>
+#include <unordered_map>
 #include "DrawUtils.h"
 #include "TextStringFont.h"
 #include "FontParameters.h"
@@ -33,8 +34,15 @@ namespace GameEngine
         FontParameters m_fontParameters; // used to initialize s_font
         std::string m_string;
         int m_textSize;
-        float m_s1, m_s2, m_t1, m_t2; // coords that specify area of image to draw
         int m_x, m_y; // (x, y) = where to start drawing on screen
         std::unique_ptr<Moveable> m_moveable;
+
+        // Cache for storing precomputed values for each ASCII character
+        struct CharMetrics
+        {
+            float s1, s2, t1, t2;
+            short currentCol, currentRow;
+        };
+        static std::unordered_map<short, CharMetrics> s_charMetricsCache;
     };
 }
