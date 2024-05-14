@@ -23,7 +23,7 @@ void TextBlockGenerator::GenerateTextBlock(std::string text)
     static std::random_device rd;
     static std::mt19937 gen(rd());
     static std::uniform_int_distribution<int> x_dist(0, 800 - static_cast<int>(xPadding));
-    static std::uniform_int_distribution<int> y_dist(150, 900 - static_cast<int>(xPadding));
+    static std::uniform_int_distribution<int> y_dist(150, 900 - 40);
 
     int randomX = x_dist(gen);
     int randomY = y_dist(gen);

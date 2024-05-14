@@ -1,6 +1,6 @@
 #include "TextString.h"
-#include<string>
-#include<cmath>
+#include <string>
+#include <cmath>
 #include "Utilities.h"
 #include <stdexcept>
 #include <cstring>
@@ -13,6 +13,7 @@ using namespace GameEngine::Utility;
 // Definition of static members
 TextStringFont TextString::s_font;
 bool TextString::s_fontInitialized = false;
+std::unordered_map<short, TextString::CharMetrics> TextString::s_charMetricsCache;
 
 // Implement the static method to initialize the font
 void TextString::InitializeFont(FontParameters& fontParameters)
@@ -40,14 +41,14 @@ void TextString::InitializeFont(FontParameters& fontParameters)
 	}
 }
 
-TextString::TextString() 
+TextString::TextString()
 	: m_moveable(std::make_unique<Moveable>()),
-	m_s1(0.0f), m_s2(0.0f), m_t1(0.0f), m_t2(0.0f), m_x(0), m_y(0), m_textSize(0)
+	m_x(0), m_y(0), m_textSize(0)
 {
 }
 
 GameEngine::TextString::TextString(std::string text, int x, int y) : TextString(text.c_str(), x, y)
-{	
+{
 }
 
 GameEngine::TextString::TextString(const char* text, int x, int y)
@@ -63,10 +64,6 @@ GameEngine::TextString::TextString(const char* text, int x, int y)
 
 	m_x = x;
 	m_y = y;
-	m_s1 = 0.0f;
-	m_s2 = 0.0f;
-	m_t1 = 0.0f;
-	m_t2 = 0.0f;
 }
 
 /// <summary>
@@ -88,10 +85,6 @@ void TextString::Initialize(const char* str, int x, int y)
 
 	m_x = x;
 	m_y = y;
-	m_s1 = 0.0f;
-	m_s2 = 0.0f;
-	m_t1 = 0.0f;
-	m_t2 = 0.0f;
 }
 
 /// <summary>
@@ -120,7 +113,6 @@ size_t GameEngine::TextString::GetFontHeight()
 	return m_fontParameters.m_fontHeight;
 }
 
-
 /// <summary>
 /// Draws a scaled version of texture if scaleFactor > 1.0 or < 1.0
 /// 
@@ -129,11 +121,11 @@ size_t GameEngine::TextString::GetFontHeight()
 //   character in the top left corner is a space, ascii character = 32
 //
 //    !"#$%&'()*+,-./
-//   0123456789:; <=> ?
+//   0123456789:;<=>?
 //   @ABCDEFGHIJKLMNO
-//   PQRSTUVWXYZ[\] ^ _
+//   PQRSTUVWXYZ[\]^_
 //   `abcdefghijklmno
-//   qrstuvwxyz{ | }~
+//   qrstuvwxyz{|}~
 /// 
 /// </summary>
 /// <param name="scaleFactor">float that determines how much to scale the texture</param>
@@ -144,50 +136,68 @@ void GameEngine::TextString::DrawText(float scaleFactor)
 		throw std::runtime_error("Error: A TextString must be initialized before it can be used.");
 	}
 
-	short currentCol = 0;
-	short currentRow = 0;
-	short previousAscii = -1;
-	short strLen = strlen(m_string.c_str());
+	const char* str = m_string.c_str();
+	short strLen = strlen(str);
+
+	// Precompute font division values
+	float colDivision = s_font.colDivision;
+	float rowDivision = s_font.rowDivision;
+	float frameWidth = s_font.frameWidth;
+	float frameHeight = s_font.frameHeight;
+	auto fontImage = s_font.image;
+
+	GlDrawFrameParams params; // create once and reuse
+	params.scale = scaleFactor;
+	params.tex = fontImage;
+	params.y = m_y;
+	params.w = frameWidth;
+	params.h = frameHeight;
 
 	for (short i = 0; i < strLen; i++)
 	{
-		GlDrawFrameParams params; // each character to draw needs a GlDrawFrameParams object
-		params.scale = scaleFactor;
+		short asciiValue = str[i]; // get ascii value of character
 
-		short asciiValue = m_string[i]; // get ascii value of character
-
-		if (previousAscii != asciiValue) // new ascii character so recalculate values.
+		// Check if values for this asciiValue are already cached
+		auto it = s_charMetricsCache.find(asciiValue);
+		if (it == s_charMetricsCache.end())
 		{
-			currentCol = (asciiValue - 32) % 16;
-			currentRow = abs(((asciiValue - (32 + currentCol)) / 16) - 5);
+			// Calculate values and store in cache
+			short currentCol = (asciiValue - 32) % 16;
+			short currentRow = abs(((asciiValue - (32 + currentCol)) / 16) - 5);
 
-			// update s1, s2, t1, t2
-			m_s1 = currentCol * s_font.colDivision;
-			m_s2 = (currentCol * s_font.colDivision) + s_font.colDivision;
-			m_t1 = currentRow * s_font.rowDivision;
-			m_t2 = (currentRow * s_font.rowDivision) + s_font.rowDivision;
+			CharMetrics metrics;
+			metrics.s1 = currentCol * colDivision;
+			metrics.s2 = metrics.s1 + colDivision;
+			metrics.t1 = currentRow * rowDivision;
+			metrics.t2 = metrics.t1 + rowDivision;
+			metrics.currentCol = currentCol;
+			metrics.currentRow = currentRow;
+
+			s_charMetricsCache[asciiValue] = metrics;
+
+			// Use computed values for params
+			params.s1 = metrics.s1;
+			params.s2 = metrics.s2;
+			params.t1 = metrics.t1;
+			params.t2 = metrics.t2;
+		}
+		else
+		{
+			// Use cached values for params
+			params.s1 = it->second.s1;
+			params.s2 = it->second.s2;
+			params.t1 = it->second.t1;
+			params.t2 = it->second.t2;
 		}
 
-		params.tex = s_font.image;
+		params.x = m_x + i * (frameWidth)*scaleFactor;  // Scales spacing between characters 
 
-		params.x = m_x + i * (s_font.frameWidth) * scaleFactor;  // Scales spacing between characters 
-		params.y = m_y;
-		params.w = s_font.frameWidth;
-		params.h = s_font.frameHeight;
-		params.s1 = m_s1;
-		params.s2 = m_s2;
-		params.t1 = m_t1;
-		params.t2 = m_t2;
- 
 		glDrawFrameScaled(params); // Has ability to draw a scaled version of texture
-
-		previousAscii = asciiValue; // save copy
 	}
 }
 
 void TextString::Update(float deltaTime)
 {
-
 }
 
 std::string GameEngine::TextString::GetText() const
