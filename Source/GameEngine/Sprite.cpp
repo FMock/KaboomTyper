@@ -54,3 +54,8 @@ std::pair<float, float> GameEngine::Sprite::getPosition() const
 {
 	return m_position;
 }
+
+AABB& GameEngine::Sprite::GetBox()
+{
+	return m_box;
+}

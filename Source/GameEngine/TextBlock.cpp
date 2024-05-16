@@ -3,6 +3,7 @@
 #include "AABB.h"
 #include "DrawUtils.h"
 #include "Utilities.h"
+#include "Common.h"
 
 /**
 *
@@ -52,12 +53,16 @@ void TextBlock::Initialize(float x, float y, std::string str, Colors color)
 	m_remove = false;
 	m_isHit = false;
 	m_moveDirection = MoveDirection::DOWN;
-	m_box.setW(m_size.first);
-	m_box.setH(m_size.second);
+
+	m_box.x = x;
+	m_box.y = y;
 	m_scaleFactor = m_textString->GetFontWidth();
 
 	int textBlockWidth = ScaleTextBlockWidth(m_textString->GetTextSize(), m_color->s_colorParameters.textureWidth);
 	setSize(textBlockWidth, m_color->s_colorParameters.textureHeight);
+
+	m_box.setW(m_size.first);
+	m_box.setH(m_fontHeight);
 
 	m_texture = m_color->s_colorParameters.m_stringColorTextureColorMap[m_colorStr];
 }
@@ -77,11 +82,21 @@ void TextBlock::Draw()
 
 	// Next, draw the text over the colored blocks
 	m_textString->DrawText(1.0);
+	//std::cout << this->to_string() << std::endl;
 }
 
 void TextBlock::Update(float deltaTime)
 {
-	// TODO: ADD UPDATE CODE
+	// move 'em down unless they already reached the bottom
+	if (m_position.second < Common::FLOOR)
+	{
+		// move TextBlock down the screen (positive y-directioin)
+		m_textString->Update(deltaTime);
+		float fallDistance = Common::GRAVITY * m_textString->GetTextSize() * deltaTime;
+		m_position.second += fallDistance;
+		m_box.setX(abs(m_position.first));
+		m_box.setY(abs(m_position.second));
+	}
 }
 
 void TextBlock::collision(Sprite &sprite)

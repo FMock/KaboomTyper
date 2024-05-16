@@ -34,7 +34,7 @@ namespace GameEngine
         FontParameters m_fontParameters; // used to initialize s_font
         std::string m_string;
         int m_textSize;
-        int m_x, m_y; // (x, y) = where to start drawing on screen
+        float m_x, m_y; // (x, y) = where to start drawing on screen
         std::unique_ptr<Moveable> m_moveable;
 
         // Cache for storing precomputed values for each ASCII character
