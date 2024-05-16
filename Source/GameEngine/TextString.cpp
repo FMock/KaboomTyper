@@ -2,6 +2,7 @@
 #include <string>
 #include <cmath>
 #include "Utilities.h"
+#include "Common.h"
 #include <stdexcept>
 #include <cstring>
 #include <unordered_map>
@@ -198,6 +199,9 @@ void GameEngine::TextString::DrawText(float scaleFactor)
 
 void TextString::Update(float deltaTime)
 {
+	// Calculate the fall distance based on gravity and mass (m_textSize)
+	float fallDistance = Common::GRAVITY * m_textSize * deltaTime;
+	m_y += fallDistance;
 }
 
 std::string GameEngine::TextString::GetText() const

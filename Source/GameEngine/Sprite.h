@@ -28,6 +28,7 @@ namespace GameEngine
 		void setSize(float width, float height);
 		std::pair<float, float> getPosition() const;
 		std::pair<float, float> getSize() const;
+		AABB& GetBox();
 
 	protected:
 		AABB m_box;
