@@ -27,7 +27,8 @@ namespace GameEngine
 		static bool AABBIntersect(AABB box1, AABB box2);
 		static constexpr float GRAVITY = 9.81f;
 		static constexpr float BASE_SIZE = 1.0f;
-		static constexpr float LOG_BASE = 10.0f; //
+		static constexpr float LOG_BASE = 10.0f;
 		static constexpr float FLOOR = 880.0F; // The y-position the TextBlocks cannot exceed.
+		static constexpr float CEILING = 200.0F;
 	};
 }

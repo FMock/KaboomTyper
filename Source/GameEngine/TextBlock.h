@@ -39,10 +39,10 @@ namespace GameEngine
 		bool m_isHit; // True when hit by any enemy
 		bool m_remove; // If True remove TextBlock from game
 
+		std::string to_string() const;
 		void Update(float deltaTime) override;
 		void Draw() override;
-		void collision(Sprite& sprite);
-		std::string to_string() const;
+		void Collision(Sprite& sprite);
 		void SetMovingState(bool state);
 		bool GetMovingState();
 		void SetVelocity(float velocity);
