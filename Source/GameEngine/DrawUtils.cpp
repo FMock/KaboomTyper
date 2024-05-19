@@ -246,6 +246,61 @@ void DrawUtilities::glDrawSpriteScaled(GLuint tex, int x, int y, int w, int h, f
 	glEnd(); // sends all submitted data to the GPU for rendering
 }
 
+
+// Function to draw a sprite at an angle
+void DrawUtilities::glDrawSpriteScaledRotated(GLuint tex, int x, int y, int w, int h, float scaleX, float scaleY, float angle)
+{
+	// Convert the angle to radians
+	float radians = angle * (3.1415926535897932 / 180.0f);
+
+	// Calculate the half-width and half-height for scaling
+	float halfWidth = w * scaleX * 0.5f;
+	float halfHeight = h * scaleY * 0.5f;
+
+	// Calculate the center of the sprite
+	float centerX = x + halfWidth;
+	float centerY = y + halfHeight;
+
+	// Calculate the four corners of the sprite
+	float corners[4][2] = {
+		{-halfWidth, -halfHeight}, // bottom left
+		{halfWidth, -halfHeight},  // bottom right
+		{halfWidth, halfHeight},   // top right
+		{-halfWidth, halfHeight}   // top left
+	};
+
+	// Rotate each corner around the center
+	for (int i = 0; i < 4; ++i)
+	{
+		float rotatedX = corners[i][0] * cos(radians) - corners[i][1] * sin(radians);
+		float rotatedY = corners[i][0] * sin(radians) + corners[i][1] * cos(radians);
+		corners[i][0] = rotatedX + centerX;
+		corners[i][1] = rotatedY + centerY;
+	}
+
+	// Bind the texture
+	glBindTexture(GL_TEXTURE_2D, tex);
+	glBegin(GL_QUADS);
+	{
+		glColor3ub(255, 255, 255);
+
+		// Draw the sprite with texture coordinates
+		glTexCoord2f(0.0f, 1.0f); // top left
+		glVertex2f(corners[3][0], corners[3][1]);
+
+		glTexCoord2f(scaleX, 1.0f); // top right
+		glVertex2f(corners[2][0], corners[2][1]);
+
+		glTexCoord2f(scaleX, 0.0f); // bottom right
+		glVertex2f(corners[1][0], corners[1][1]);
+
+		glTexCoord2f(0.0f, 0.0f); // bottom left
+		glVertex2f(corners[0][0], corners[0][1]);
+	}
+	glEnd(); // sends all submitted data to the GPU for rendering
+}
+
+
 // TODO: This overload avoids the math in the glVertex2i calls. Use with TextBlock to optimize efficiency.
 //       Figure out correct calculations for xScaled and yScaled for TextBlock to use this overload
 void DrawUtilities::glDrawSpriteScaled(GLuint tex, int x, int y, int w, int h, float scaleX, float scaleY, GLuint xScaled, GLuint yScaled)
@@ -439,6 +494,58 @@ void DrawUtilities::glDrawFrameScaled(GlDrawFrameParams params)
 		glVertex2i(params.x, params.y + params.h * params.scale);
 	}
 	glEnd();
+}
+
+void DrawUtilities::glDrawFrameScaled(GlDrawFrameParams params, float angle)
+{
+	// Convert the angle to radians
+	float radians = angle * (3.1415926535897932 / 180.0f);
+
+	// Calculate the half-width and half-height for scaling
+	float halfWidth = params.w * params.scale * 0.5f;
+	float halfHeight = params.h * params.scale * 0.5f;
+
+	// Calculate the center of the frame
+	float centerX = params.x + halfWidth;
+	float centerY = params.y + halfHeight;
+
+	// Calculate the four corners of the frame
+	float corners[4][2] = {
+		{-halfWidth, -halfHeight}, // bottom left
+		{halfWidth, -halfHeight},  // bottom right
+		{halfWidth, halfHeight},   // top right
+		{-halfWidth, halfHeight}   // top left
+	};
+
+	// Rotate each corner around the center
+	for (int i = 0; i < 4; ++i)
+	{
+		float rotatedX = corners[i][0] * cos(radians) - corners[i][1] * sin(radians);
+		float rotatedY = corners[i][0] * sin(radians) + corners[i][1] * cos(radians);
+		corners[i][0] = rotatedX + centerX;
+		corners[i][1] = rotatedY + centerY;
+	}
+
+	// Bind the texture
+	glBindTexture(GL_TEXTURE_2D, params.tex);
+	glBegin(GL_QUADS);
+	{
+		glColor3ub(255, 255, 255);
+
+		// Draw the frame with texture coordinates
+		glTexCoord2f(params.s1, params.t2); // bottom left
+		glVertex2f(corners[0][0], corners[0][1]);
+
+		glTexCoord2f(params.s2, params.t2); // bottom right
+		glVertex2f(corners[1][0], corners[1][1]);
+
+		glTexCoord2f(params.s2, params.t1); // top right
+		glVertex2f(corners[2][0], corners[2][1]);
+
+		glTexCoord2f(params.s1, params.t1); // top left
+		glVertex2f(corners[3][0], corners[3][1]);
+	}
+	glEnd(); // sends all submitted data to the GPU for rendering
 }
 
 

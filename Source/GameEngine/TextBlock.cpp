@@ -15,7 +15,7 @@ using namespace DrawUtilities;
 using std::ostringstream;
 typedef Game_Data GD;
 
-GameEngine::TextBlock::TextBlock() : Sprite(), InputObserver(), m_color(std::make_unique<Color>()), m_velocity(0.0f),
+GameEngine::TextBlock::TextBlock() : Sprite(), InputObserver(), m_color(std::make_unique<Color>()), m_velocity(0.0f), m_angle(0.0f),
                                    m_adjustedTextblockWidth(0), m_collided(false), m_texture(0),m_scaleFactor(0), m_remove(false),
 	                               m_prev_change_x(0), m_prev_change_y(0), m_isHit(false), m_isMoving(true), m_fontHeight(0)
 {
@@ -66,6 +66,7 @@ void TextBlock::Initialize(float x, float y, std::string str, Colors color)
 
 	m_texture = m_color->s_colorParameters.m_stringColorTextureColorMap[m_colorStr];
 	m_isMoving = true;
+	m_angle = 0.0f;
 }
 
 
@@ -73,16 +74,16 @@ void TextBlock::Initialize(float x, float y, std::string str, Colors color)
 void TextBlock::Draw()
 {
 	// First, draw the colored blocks scaled to fit the textstring
-	glDrawSpriteScaled(m_texture,
+	glDrawSpriteScaledRotated(m_texture,
 		(int)m_position.first,
 		(int)m_position.second,
 		m_size.first,
 		m_size.second,
 		1.0f, // 1.0f because textblock width is already scaled
-		m_fontHeight);
+		m_fontHeight, m_angle);
 
 	// Next, draw the text over the colored blocks
-	m_textString->DrawText(1.0);
+	m_textString->DrawText(1.0, m_angle);
 	//std::cout << this->to_string() << std::endl;
 }
 
