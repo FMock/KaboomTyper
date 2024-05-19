@@ -126,7 +126,7 @@ float TextBlock::GetVelocity() const
 	return m_velocity;
 }
 
-void TextBlock::collision(Sprite &sprite)
+void TextBlock::Collision(Sprite &sprite)
 {
 	m_collided = true;
 }

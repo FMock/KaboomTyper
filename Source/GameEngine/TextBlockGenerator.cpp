@@ -9,7 +9,7 @@
 using namespace GameEngine;
 
 TextBlockGenerator::TextBlockGenerator(float spawnIntervalSeconds)
-    : m_running(false), m_spawnInterval(spawnIntervalSeconds), m_elapsedTime(0)
+    : m_running(false), m_spawnInterval(spawnIntervalSeconds), m_elapsedTime(0), m_limitReached(false)
 {
     m_lastSpawnTime = std::chrono::steady_clock::now();
 }
@@ -35,6 +35,7 @@ void TextBlockGenerator::GenerateTextBlock(std::string text)
     m_blockDeque.push_back(std::make_unique<TextBlock>(randomX, yPos, text, randomColor));
 }
 
+
 void TextBlockGenerator::Update(float dt)
 {
     if (!m_running)
@@ -48,8 +49,14 @@ void TextBlockGenerator::Update(float dt)
     for (size_t i = 0; i < m_blockDeque.size(); ++i)
     {
         auto& blockA = m_blockDeque[i];
-
         auto blockAPosition = blockA->GetPosition();
+
+        if (!blockA->GetMovingState() && blockAPosition.second <= Common::CEILING)
+        {
+            ToggleRunning(); // Game Over
+            m_limitReached = true;
+            break;
+        }
 
         if (blockA->GetMovingState() && blockAPosition.second >= Common::FLOOR)
         {
@@ -82,7 +89,7 @@ void TextBlockGenerator::Update(float dt)
         }
         else
         {
-            GenerateTextBlock("Cat");
+            GenerateTextBlock("Cat in the Hat");
         }
 
         m_elapsedTime = 0.0f;
@@ -113,6 +120,16 @@ void TextBlockGenerator::ToggleRunning()
 bool TextBlockGenerator::IsRunning()
 {
     return m_running;
+}
+
+bool GameEngine::TextBlockGenerator::TextBlockLimitReached()
+{
+    return m_limitReached;
+}
+
+void GameEngine::TextBlockGenerator::SetTextBlockLimitReached(bool b)
+{
+    m_limitReached = b;
 }
 
 void GameEngine::TextBlockGenerator::HandleCollisions(TextBlock& blockA, float& blockAYPosition, TextBlock& blockB)

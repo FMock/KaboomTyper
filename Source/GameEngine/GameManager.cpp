@@ -54,6 +54,12 @@ void GameManager::Update(float dt)
 {
 	m_inputManager->Update();
     m_textblockGenerator->Update(dt);
+
+    if (m_textblockGenerator->TextBlockLimitReached())
+    {
+        m_stateMachine->TransitionTo(GameState::STOPPED);
+        m_messageBox->ChangeMessage(m_stateMachine->GetCurrentStateAsString());
+    }
 }
 
 void GameManager::ProcessInput()
@@ -140,6 +146,7 @@ void GameManager::RespondToObserved(InputManager* InputMgr)
         if (currentState == GameState::IDLE)
         {
             m_textblockGenerator->ClearBlockDeque();
+            m_textblockGenerator->SetTextBlockLimitReached(false);
         }
     }
 }
