@@ -43,8 +43,10 @@ namespace GameEngine
 		void Draw() override;
 		void collision(Sprite& sprite);
 		std::string to_string() const;
-		void SetActiveState(bool state);
-		bool GetActiveState();
+		void SetMovingState(bool state);
+		bool GetMovingState();
+		void SetVelocity(float velocity);
+		float GetVelocity() const;
 
 	private:
 		std::unique_ptr<Color> m_color; // TextBlock colored body
@@ -52,10 +54,12 @@ namespace GameEngine
 		float m_scaleFactor;
 		int m_adjustedTextblockWidth;
 		float m_fontHeight;
-		bool m_isActive;
+		bool m_isMoving;
+		float m_velocity;
 		void Initialize(float x, float y, std::string str, Colors color);
 		void LoadColorVector();
 		int ScaleTextBlockWidth(int textSize, int blockWidth);
+		float GetNormalizedSize(float textSize);
 
 	protected:
 		void RespondToObserved(InputManager* InputMgr) override;

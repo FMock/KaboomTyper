@@ -25,5 +25,6 @@ namespace GameEngine
         void PopTextBlock();
         void ToggleRunning();
         bool IsRunning();
+        void HandleCollisions(TextBlock& blockA, float& blockAYPosition, TextBlock& blockB);
     };
 }

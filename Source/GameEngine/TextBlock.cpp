@@ -15,9 +15,9 @@ using namespace DrawUtilities;
 using std::ostringstream;
 typedef Game_Data GD;
 
-GameEngine::TextBlock::TextBlock() : Sprite(), InputObserver(), m_color(std::make_unique<Color>()),
+GameEngine::TextBlock::TextBlock() : Sprite(), InputObserver(), m_color(std::make_unique<Color>()), m_velocity(0.0f),
                                    m_adjustedTextblockWidth(0), m_collided(false), m_texture(0),m_scaleFactor(0), m_remove(false),
-	                               m_prev_change_x(0), m_prev_change_y(0), m_isHit(false), m_isActive(true), m_fontHeight(0)
+	                               m_prev_change_x(0), m_prev_change_y(0), m_isHit(false), m_isMoving(true), m_fontHeight(0)
 {
 }
 
@@ -33,7 +33,7 @@ GameEngine::TextBlock::~TextBlock()
 void TextBlock::InitializeTextBlock(float x, float y, std::string str, Colors color)
 {
 	Initialize(x, y, str, color);
-	setPosition(x, y);
+	SetPosition(x, y);
 }
 
 void TextBlock::Initialize(float x, float y, std::string str, Colors color)
@@ -53,18 +53,19 @@ void TextBlock::Initialize(float x, float y, std::string str, Colors color)
 	m_remove = false;
 	m_isHit = false;
 	m_moveDirection = MoveDirection::DOWN;
-
+	m_velocity = 0.0f;
 	m_box.x = x;
 	m_box.y = y;
 	m_scaleFactor = m_textString->GetFontWidth();
 
 	int textBlockWidth = ScaleTextBlockWidth(m_textString->GetTextSize(), m_color->s_colorParameters.textureWidth);
-	setSize(textBlockWidth, m_color->s_colorParameters.textureHeight);
+	SetSize(textBlockWidth, m_color->s_colorParameters.textureHeight);
 
 	m_box.setW(m_size.first);
 	m_box.setH(m_fontHeight);
 
 	m_texture = m_color->s_colorParameters.m_stringColorTextureColorMap[m_colorStr];
+	m_isMoving = true;
 }
 
 
@@ -88,15 +89,41 @@ void TextBlock::Draw()
 void TextBlock::Update(float deltaTime)
 {
 	// move 'em down unless they already reached the bottom
-	if (m_position.second < Common::FLOOR)
+	if (m_position.second < Common::FLOOR && m_isMoving)
 	{
-		// move TextBlock down the screen (positive y-directioin)
-		m_textString->Update(deltaTime);
-		float fallDistance = Common::GRAVITY * m_textString->GetTextSize() * deltaTime;
-		m_position.second += fallDistance;
+
+		m_velocity += Common::GRAVITY * deltaTime; // Update the velocity with gravity
+		m_position.second += m_velocity * deltaTime; // Calculate the new position with the current velocity
+
 		m_box.setX(abs(m_position.first));
 		m_box.setY(abs(m_position.second));
+
+		// move TextBlock down the screen (positive y-directioin)
+		m_textString->SetVelocity(m_velocity);
+		m_textString->Update(deltaTime); 
 	}
+	else
+	{
+		if (!m_isMoving)
+		{
+			m_isMoving = false;
+		}
+	}
+}
+
+float TextBlock::GetNormalizedSize(float textSize)
+{
+	return std::log(textSize + Common::BASE_SIZE) / std::log(Common::LOG_BASE);
+}
+
+void TextBlock::SetVelocity(float velocity)
+{
+	m_velocity = velocity;
+}
+
+float TextBlock::GetVelocity() const
+{
+	return m_velocity;
 }
 
 void TextBlock::collision(Sprite &sprite)
@@ -155,7 +182,7 @@ int GameEngine::TextBlock::ScaleTextBlockWidth(int textSize, int blockWidth)
 {
 	m_adjustedTextblockWidth = static_cast<int>((textSize * m_scaleFactor * blockWidth));
 
-	setSize(m_adjustedTextblockWidth, -1); // -1 leaves height unchanged
+	SetSize(m_adjustedTextblockWidth, -1); // -1 leaves height unchanged
 
 	return m_adjustedTextblockWidth;
 }
@@ -188,12 +215,12 @@ void GameEngine::TextBlock::RespondToObserved(InputManager* InputMgr)
 	}
 }
 
-void TextBlock::SetActiveState(bool state)
+void TextBlock::SetMovingState(bool state)
 {
-	this->m_isActive = state;
+	this->m_isMoving = state;
 }
 
-bool GameEngine::TextBlock::GetActiveState()
+bool GameEngine::TextBlock::GetMovingState()
 {
-	return this->m_isActive;
+	return this->m_isMoving;
 }

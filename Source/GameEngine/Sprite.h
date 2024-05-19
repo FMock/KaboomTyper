@@ -24,10 +24,10 @@ namespace GameEngine
 		virtual void Draw() = 0;
 
 		// Getters and setters
-		void setPosition(float x, float y);
-		void setSize(float width, float height);
-		std::pair<float, float> getPosition() const;
-		std::pair<float, float> getSize() const;
+		void SetPosition(float x, float y);
+		void SetSize(float width, float height);
+		std::pair<float, float> GetPosition() const;
+		std::pair<float, float> GetSize() const;
 		AABB& GetBox();
 
 	protected:

@@ -24,6 +24,8 @@ namespace GameEngine
         void DrawText(float scaleFactor);
         void Update(float dt);
         std::string GetText() const;
+        void SetVelocity(float velocity);
+        float GetVelocity() const;
 
         // Static member for TextStringFont shared across all instances
         static TextStringFont s_font;
@@ -36,6 +38,7 @@ namespace GameEngine
         int m_textSize;
         float m_x, m_y; // (x, y) = where to start drawing on screen
         std::unique_ptr<Moveable> m_moveable;
+        float m_velocity;
 
         // Cache for storing precomputed values for each ASCII character
         struct CharMetrics

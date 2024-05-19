@@ -44,12 +44,24 @@ void TextString::InitializeFont(FontParameters& fontParameters)
 
 TextString::TextString()
 	: m_moveable(std::make_unique<Moveable>()),
-	m_x(0), m_y(0), m_textSize(0)
+	m_x(0), m_y(0), m_textSize(0), m_velocity(0.0f)
 {
 }
 
 GameEngine::TextString::TextString(std::string text, int x, int y) : TextString(text.c_str(), x, y)
 {
+	m_string = text;
+	m_textSize = std::strlen(text.c_str());
+
+	// Initialize the static TextStringFont member if it hasn't been initialized yet
+	if (!s_fontInitialized)
+	{
+		InitializeFont(m_fontParameters);
+	}
+
+	m_x = x;
+	m_y = y;
+	m_velocity = 0.0f;
 }
 
 GameEngine::TextString::TextString(const char* text, int x, int y)
@@ -65,6 +77,7 @@ GameEngine::TextString::TextString(const char* text, int x, int y)
 
 	m_x = x;
 	m_y = y;
+	m_velocity = 0.0f;
 }
 
 /// <summary>
@@ -86,6 +99,7 @@ void TextString::Initialize(const char* str, int x, int y)
 
 	m_x = x;
 	m_y = y;
+	m_velocity = 0.0f;
 }
 
 /// <summary>
@@ -197,11 +211,23 @@ void GameEngine::TextString::DrawText(float scaleFactor)
 	}
 }
 
+// Update the position with the current velocity
 void TextString::Update(float deltaTime)
 {
-	// Calculate the fall distance based on gravity and mass (m_textSize)
-	float fallDistance = Common::GRAVITY * m_textSize * deltaTime;
-	m_y += fallDistance;
+	//m_velocity += Common::GRAVITY * deltaTime; // Update the velocity with gravity
+	m_y += m_velocity * deltaTime; // TextBlock calculated the velocity
+}
+
+// Setter for m_velocity
+void TextString::SetVelocity(float velocity)
+{
+	m_velocity = velocity;
+}
+
+// Getter for m_velocity
+float TextString::GetVelocity() const
+{
+	return m_velocity;
 }
 
 std::string GameEngine::TextString::GetText() const

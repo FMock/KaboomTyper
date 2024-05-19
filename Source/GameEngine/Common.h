@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <cmath>  // for std::log
 #include "AABB.h"
 
 /// <summary>
@@ -24,7 +25,9 @@ namespace GameEngine
 		static void SubmitText(std::string text);
 		static void SetActiveText(std::string text);
 		static bool AABBIntersect(AABB box1, AABB box2);
-		static constexpr float GRAVITY = 9.8f;
+		static constexpr float GRAVITY = 9.81f;
+		static constexpr float BASE_SIZE = 1.0f;
+		static constexpr float LOG_BASE = 10.0f; //
 		static constexpr float FLOOR = 880.0F; // The y-position the TextBlocks cannot exceed.
 	};
 }
