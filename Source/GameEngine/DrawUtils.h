@@ -39,6 +39,7 @@ namespace DrawUtilities
 	/// <param name="scaleX"></param>
 	/// <param name="scaleY"></param>
 	void glDrawSpriteScaled(GLuint tex, int x, int y, int w, int h, float scaleX, float scaleY);
+	void glDrawSpriteScaledRotated(GLuint tex, int x, int y, int w, int h, float scaleX, float scaleY, float angle);
 	void glDrawSpriteScaled(GLuint tex, int x, int y, int w, int h, float scaleX, float scaleY, GLuint xScaled, GLuint yScaled);
 	void glDrawRectangleOutline(GLuint tex, int x, int y, int w, int h, float scaleX, float scaleY);
 	void glDrawRectangleOutline(int x, int y, int w, int h, const RGBColor& outlineColor);
@@ -70,6 +71,7 @@ namespace DrawUtilities
 	/// </param>
 	void glDrawFrame(GlDrawFrameParams params);
 	void glDrawFrameScaled(GlDrawFrameParams params);
+	void glDrawFrameScaled(GlDrawFrameParams params, float angle);
 
 	/*Draws each character image of string*/
 	void drawRasterText(GLuint tex, int x, int y, int w, int h, char string[]);

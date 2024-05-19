@@ -1,6 +1,7 @@
 #include "TextString.h"
 #include <string>
 #include <cmath>
+#include <GL/gl.h>
 #include "Utilities.h"
 #include "Common.h"
 #include <stdexcept>
@@ -44,7 +45,7 @@ void TextString::InitializeFont(FontParameters& fontParameters)
 
 TextString::TextString()
 	: m_moveable(std::make_unique<Moveable>()),
-	m_x(0), m_y(0), m_textSize(0), m_velocity(0.0f)
+	m_x(0), m_y(0), m_textSize(0), m_velocity(0.0f), m_angle(0.0f)
 {
 }
 
@@ -62,6 +63,7 @@ GameEngine::TextString::TextString(std::string text, int x, int y) : TextString(
 	m_x = x;
 	m_y = y;
 	m_velocity = 0.0f;
+	m_angle = 0.0f;
 }
 
 GameEngine::TextString::TextString(const char* text, int x, int y)
@@ -78,6 +80,7 @@ GameEngine::TextString::TextString(const char* text, int x, int y)
 	m_x = x;
 	m_y = y;
 	m_velocity = 0.0f;
+	m_angle = 0.0f;
 }
 
 /// <summary>
@@ -144,72 +147,94 @@ size_t GameEngine::TextString::GetFontHeight()
 /// 
 /// </summary>
 /// <param name="scaleFactor">float that determines how much to scale the texture</param>
-void GameEngine::TextString::DrawText(float scaleFactor)
+void GameEngine::TextString::DrawText(float scaleFactor, float angle)
 {
-	if (!s_fontInitialized)
-	{
-		throw std::runtime_error("Error: A TextString must be initialized before it can be used.");
-	}
+    if (!s_fontInitialized)
+    {
+        throw std::runtime_error("Error: A TextString must be initialized before it can be used.");
+    }
 
-	const char* str = m_string.c_str();
-	short strLen = strlen(str);
+    m_angle = angle;
+    const char* str = m_string.c_str();
+    short strLen = strlen(str);
 
-	// Precompute font division values
-	float colDivision = s_font.colDivision;
-	float rowDivision = s_font.rowDivision;
-	float frameWidth = s_font.frameWidth;
-	float frameHeight = s_font.frameHeight;
-	auto fontImage = s_font.image;
+    // Precompute font division values
+    float colDivision = s_font.colDivision;
+    float rowDivision = s_font.rowDivision;
+    float frameWidth = s_font.frameWidth;
+    float frameHeight = s_font.frameHeight;
+    auto fontImage = s_font.image;
 
-	GlDrawFrameParams params; // create once and reuse
-	params.scale = scaleFactor;
-	params.tex = fontImage;
-	params.y = m_y;
-	params.w = frameWidth;
-	params.h = frameHeight;
+    GlDrawFrameParams params; // create once and reuse
+    params.scale = scaleFactor;
+    params.tex = fontImage;
+    params.w = frameWidth;
+    params.h = frameHeight;
 
-	for (short i = 0; i < strLen; i++)
-	{
-		short asciiValue = str[i]; // get ascii value of character
+    // Calculate the center of the text string
+    float totalWidth = strLen * frameWidth * scaleFactor;
+    float centerX = m_x + totalWidth / 2.0f;
+    float centerY = m_y + frameHeight * scaleFactor / 2.0f;
 
-		// Check if values for this asciiValue are already cached
-		auto it = s_charMetricsCache.find(asciiValue);
-		if (it == s_charMetricsCache.end())
-		{
-			// Calculate values and store in cache
-			short currentCol = (asciiValue - 32) % 16;
-			short currentRow = abs(((asciiValue - (32 + currentCol)) / 16) - 5);
+    // Save current matrix state
+    glPushMatrix();
 
-			CharMetrics metrics;
-			metrics.s1 = currentCol * colDivision;
-			metrics.s2 = metrics.s1 + colDivision;
-			metrics.t1 = currentRow * rowDivision;
-			metrics.t2 = metrics.t1 + rowDivision;
-			metrics.currentCol = currentCol;
-			metrics.currentRow = currentRow;
+    // Translate to the center of the text string
+    glTranslatef(centerX, centerY, 0.0f);
 
-			s_charMetricsCache[asciiValue] = metrics;
+    // Apply the rotation
+    glRotatef(angle, 0.0f, 0.0f, 1.0f);
 
-			// Use computed values for params
-			params.s1 = metrics.s1;
-			params.s2 = metrics.s2;
-			params.t1 = metrics.t1;
-			params.t2 = metrics.t2;
-		}
-		else
-		{
-			// Use cached values for params
-			params.s1 = it->second.s1;
-			params.s2 = it->second.s2;
-			params.t1 = it->second.t1;
-			params.t2 = it->second.t2;
-		}
+    // Translate back to the origin
+    glTranslatef(-centerX, -centerY, 0.0f);
 
-		params.x = m_x + i * (frameWidth)*scaleFactor;  // Scales spacing between characters 
+    for (short i = 0; i < strLen; i++)
+    {
+        short asciiValue = str[i]; // get ascii value of character
 
-		glDrawFrameScaled(params); // Has ability to draw a scaled version of texture
-	}
+        // Check if values for this asciiValue are already cached
+        auto it = s_charMetricsCache.find(asciiValue);
+        if (it == s_charMetricsCache.end())
+        {
+            // Calculate values and store in cache
+            short currentCol = (asciiValue - 32) % 16;
+            short currentRow = abs(((asciiValue - (32 + currentCol)) / 16) - 5);
+
+            CharMetrics metrics;
+            metrics.s1 = currentCol * colDivision;
+            metrics.s2 = metrics.s1 + colDivision;
+            metrics.t1 = currentRow * rowDivision;
+            metrics.t2 = metrics.t1 + rowDivision;
+            metrics.currentCol = currentCol;
+            metrics.currentRow = currentRow;
+
+            s_charMetricsCache[asciiValue] = metrics;
+
+            // Use computed values for params
+            params.s1 = metrics.s1;
+            params.s2 = metrics.s2;
+            params.t1 = metrics.t1;
+            params.t2 = metrics.t2;
+        }
+        else
+        {
+            // Use cached values for params
+            params.s1 = it->second.s1;
+            params.s2 = it->second.s2;
+            params.t1 = it->second.t1;
+            params.t2 = it->second.t2;
+        }
+
+        params.x = m_x + i * frameWidth * scaleFactor;  // Scales spacing between characters 
+        params.y = m_y;
+
+        glDrawFrameScaled(params);
+    }
+
+    // Restore previous matrix state
+    glPopMatrix();
 }
+
 
 // Update the position with the current velocity
 void TextString::Update(float deltaTime)
@@ -228,6 +253,16 @@ void TextString::SetVelocity(float velocity)
 float TextString::GetVelocity() const
 {
 	return m_velocity;
+}
+
+void GameEngine::TextString::SetAngle(float angle)
+{
+	m_angle = angle;
+}
+
+float GameEngine::TextString::GetAngle() const
+{
+	return m_angle;
 }
 
 std::string GameEngine::TextString::GetText() const

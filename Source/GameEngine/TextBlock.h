@@ -56,6 +56,7 @@ namespace GameEngine
 		float m_fontHeight;
 		bool m_isMoving;
 		float m_velocity;
+		float m_angle;
 		void Initialize(float x, float y, std::string str, Colors color);
 		void LoadColorVector();
 		int ScaleTextBlockWidth(int textSize, int blockWidth);
