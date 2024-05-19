@@ -2,6 +2,10 @@
 #include "Colors.h"
 #include <iostream>
 
+/// <summary>
+/// TextBlockGenerator creates TextBlock objects and checks for collisions
+/// </summary>
+
 using namespace GameEngine;
 
 TextBlockGenerator::TextBlockGenerator(float spawnIntervalSeconds)
@@ -25,13 +29,11 @@ void TextBlockGenerator::GenerateTextBlock(std::string text)
     static std::mt19937 gen(rd());
     static std::uniform_int_distribution<int> x_dist(0, 800 - static_cast<int>(xPadding));
 
-
     int randomX = x_dist(gen);
     int yPos = 50;
 
     m_blockDeque.push_back(std::make_unique<TextBlock>(randomX, yPos, text, randomColor));
 }
-
 
 void TextBlockGenerator::Update(float dt)
 {
@@ -43,16 +45,25 @@ void TextBlockGenerator::Update(float dt)
         block->Update(dt);
     }
 
-    // Check for collisions
     for (size_t i = 0; i < m_blockDeque.size(); ++i)
     {
-        for (size_t j = i + 1; j < m_blockDeque.size(); ++j)
+        auto& blockA = m_blockDeque[i];
+
+        auto blockAPosition = blockA->GetPosition();
+
+        if (blockA->GetMovingState() && blockAPosition.second >= Common::FLOOR)
         {
-            if (Common::AABBIntersect(m_blockDeque[i]->GetBox(), m_blockDeque[j]->GetBox()))
-            {
-                m_blockDeque[i]->m_isHit = true;
-                m_blockDeque[j]->m_isHit = true;
-            }
+            blockA->SetMovingState(false);
+            blockA->SetPosition(blockAPosition.first, Common::FLOOR);
+            continue;
+        }
+
+        for (size_t j = 0; j < m_blockDeque.size(); ++j)
+        {
+            if (i == j) continue;
+
+            auto& blockB = m_blockDeque[j];
+            HandleCollisions(*blockA, blockAPosition.second, *blockB);
         }
     }
 
@@ -60,7 +71,6 @@ void TextBlockGenerator::Update(float dt)
 
     if (m_elapsedTime >= m_spawnInterval)
     {
-        // Generate Random Number
         static std::random_device rd;
         static std::mt19937 gen(rd());
         static std::uniform_int_distribution<int> num_dist(0, 800);
@@ -75,19 +85,17 @@ void TextBlockGenerator::Update(float dt)
             GenerateTextBlock("Cat");
         }
 
-        m_elapsedTime = 0.0f; // Reset elapsed time
+        m_elapsedTime = 0.0f;
     }
 }
 
-
 void TextBlockGenerator::Draw()
 {
-    // Draw TextBlocks in the stack
     for (const auto& block : m_blockDeque)
     {
         block->Draw();
-        if(block->m_isHit)
-           std::cout << "block hit" << std::endl;
+        if (block->m_isHit)
+            std::cout << "block hit" << std::endl;
     }
 }
 
@@ -105,4 +113,16 @@ void TextBlockGenerator::ToggleRunning()
 bool TextBlockGenerator::IsRunning()
 {
     return m_running;
+}
+
+void GameEngine::TextBlockGenerator::HandleCollisions(TextBlock& blockA, float& blockAYPosition, TextBlock& blockB)
+{
+    if (blockA.GetMovingState() && !blockB.GetMovingState() && Common::AABBIntersect(blockA.GetBox(), blockB.GetBox()))
+    {
+        blockA.SetMovingState(false);
+        auto blockBPosition = blockB.GetPosition();
+        blockAYPosition = blockBPosition.second - blockA.GetBox().h;
+        blockA.SetPosition(blockA.GetPosition().first, blockAYPosition);
+        blockA.SetVelocity(0.0f);
+    }
 }

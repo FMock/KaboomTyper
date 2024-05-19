@@ -30,18 +30,18 @@ void Sprite::Initialize(float x, float y, float w, float h)
 	m_box.setH(h);
 }
 
-std::pair<float, float> GameEngine::Sprite::getSize() const
+std::pair<float, float> GameEngine::Sprite::GetSize() const
 {
 	return m_size;
 }
 
-void GameEngine::Sprite::setPosition(float x, float y)
+void GameEngine::Sprite::SetPosition(float x, float y)
 {
 	m_position.first = x;
 	m_position.second = y;
 }
 
-void GameEngine::Sprite::setSize(float width, float height)
+void GameEngine::Sprite::SetSize(float width, float height)
 {
 	if (width >= 1)
 		m_size.first = width;
@@ -50,7 +50,7 @@ void GameEngine::Sprite::setSize(float width, float height)
 		m_size.second = height;
 }
 
-std::pair<float, float> GameEngine::Sprite::getPosition() const
+std::pair<float, float> GameEngine::Sprite::GetPosition() const
 {
 	return m_position;
 }
