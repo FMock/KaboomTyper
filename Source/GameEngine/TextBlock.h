@@ -47,6 +47,8 @@ namespace GameEngine
 		bool GetMovingState();
 		void SetVelocity(float velocity);
 		float GetVelocity() const;
+		void SetCanMoveHorizontal(bool canMoveHorizontal);
+
 
 	private:
 		std::unique_ptr<Color> m_color; // TextBlock colored body
@@ -57,6 +59,7 @@ namespace GameEngine
 		bool m_isMoving;
 		float m_velocity;
 		float m_angle;
+		bool m_canMoveHorizontal;
 		void Initialize(float x, float y, std::string str, Colors color);
 		void LoadColorVector();
 		int ScaleTextBlockWidth(int textSize, int blockWidth);
