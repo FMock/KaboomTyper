@@ -1,9 +1,11 @@
 #pragma once
 
 #include "TextBlock.h"
+#include "InputManager.h"
 #include <string>
 #include <deque>
 #include <chrono>
+#include <memory>
 
 namespace GameEngine
 {
@@ -16,9 +18,12 @@ namespace GameEngine
         bool m_limitReached;
         float m_spawnInterval; // Time interval between spawning TextBlocks
         float m_elapsedTime = 0;
+        std::shared_ptr<InputManager> m_inputManager;
+        void SetHorizontalMovement(TextBlock* block);
+        TextBlock* m_horizontalMovingBlock; // Pointer to the block that can move horizontally
 
     public:
-        TextBlockGenerator(float spawnIntervalSeconds);
+        TextBlockGenerator(float spawnIntervalSeconds, std::shared_ptr<InputManager> inputManager);
         void ClearBlockDeque();
         void GenerateTextBlock(std::string text);
         void Update(float dt);

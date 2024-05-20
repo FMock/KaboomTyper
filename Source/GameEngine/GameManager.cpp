@@ -16,7 +16,8 @@ void GameManager::Initialize()
 	m_inputTextBox = std::make_unique<InputTextBox>();
 	m_inputTextBox->InitializeTextBox(10, 912, 780, 34, Colors::DEFAULT_COLOR, true);
 
-	m_inputManager = std::make_unique<InputManager>();
+	//m_inputManager = std::make_unique<InputManager>();
+    m_inputManager = std::make_shared<InputManager>();
 	m_inputManager->RegisterObserver(m_inputTextBox.get()); // so InputTextbox can respond to user key presses
 
 	m_gameMenu = std::make_unique<Menu>();
@@ -30,7 +31,7 @@ void GameManager::Initialize()
 	m_headsUpDisplay = std::make_unique<HeadsUpDisplay>();
 	m_headsUpDisplay->Initialize(450, 45);
 
-    m_textblockGenerator = std::make_unique < TextBlockGenerator>(5.0f);
+    m_textblockGenerator = std::make_unique < TextBlockGenerator>(5.0f, m_inputManager);
 }
 
 GameEngine::GameManager::GameManager()
@@ -52,14 +53,7 @@ GameEngine::GameManager::~GameManager()
 
 void GameManager::Update(float dt)
 {
-	m_inputManager->Update();
-    m_textblockGenerator->Update(dt);
-
-    if (m_textblockGenerator->TextBlockLimitReached())
-    {
-        m_stateMachine->TransitionTo(GameState::STOPPED);
-        m_messageBox->ChangeMessage(m_stateMachine->GetCurrentStateAsString());
-    }
+    UpdateGameEntities(dt);
 }
 
 void GameManager::ProcessInput()
@@ -74,6 +68,18 @@ void GameManager::Render()
 	m_inputTextBox->Draw();
 	m_gameMenu->Draw();
 	m_messageBox->Draw();
+}
+
+void GameEngine::GameManager::UpdateGameEntities(float deltaTime)
+{
+    m_inputManager->Update();
+    m_textblockGenerator->Update(deltaTime);
+
+    if (m_textblockGenerator->TextBlockLimitReached()) // Check if game over state reached
+    {
+        m_stateMachine->TransitionTo(GameState::STOPPED);
+        m_messageBox->ChangeMessage(m_stateMachine->GetCurrentStateAsString());
+    }
 }
 
 bool GameEngine::GameManager::ShouldQuit()

@@ -32,7 +32,8 @@ namespace GameEngine
 	private:
 		std::unique_ptr<StateMachine> m_stateMachine;
 		std::unique_ptr<InputTextBox> m_inputTextBox;
-		std::unique_ptr<InputManager> m_inputManager;
+		//std::unique_ptr<InputManager> m_inputManager;
+		std::shared_ptr<InputManager> m_inputManager; // shares with TextBlockGenerator
 		std::unique_ptr<HeadsUpDisplay> m_headsUpDisplay;
 		std::unique_ptr<Menu> m_gameMenu;
 		std::unique_ptr<MessageBox> m_messageBox;
@@ -45,6 +46,7 @@ namespace GameEngine
 		std::map<GameState, LevelManager*> m_levels;
 
 		void Initialize();
+		void UpdateGameEntities(float deltaTime);
 
 	protected:
 		void RespondToObserved(InputManager* InputMgr) override;

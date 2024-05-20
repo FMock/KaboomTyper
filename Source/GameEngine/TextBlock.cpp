@@ -17,7 +17,8 @@ typedef Game_Data GD;
 
 GameEngine::TextBlock::TextBlock() : Sprite(), InputObserver(), m_color(std::make_unique<Color>()), m_velocity(0.0f), m_angle(0.0f),
                                    m_adjustedTextblockWidth(0), m_collided(false), m_texture(0),m_scaleFactor(0), m_remove(false),
-	                               m_prev_change_x(0), m_prev_change_y(0), m_isHit(false), m_isMoving(true), m_fontHeight(0)
+	                               m_prev_change_x(0), m_prev_change_y(0), m_isHit(false), m_isMoving(true), m_fontHeight(0),
+								   m_canMoveHorizontal(false)
 {
 }
 
@@ -67,6 +68,7 @@ void TextBlock::Initialize(float x, float y, std::string str, Colors color)
 	m_texture = m_color->s_colorParameters.m_stringColorTextureColorMap[m_colorStr];
 	m_isMoving = true;
 	m_angle = 0.0f;
+	m_canMoveHorizontal = false;
 }
 
 
@@ -108,6 +110,7 @@ void TextBlock::Update(float deltaTime)
 		if (!m_isMoving)
 		{
 			m_isMoving = false;
+			m_canMoveHorizontal = false;
 		}
 	}
 }
@@ -215,6 +218,12 @@ void GameEngine::TextBlock::RespondToObserved(InputManager* InputMgr)
 		m_moveDirection = GameEngine::MoveDirection::NONE;
 	}
 }
+
+void TextBlock::SetCanMoveHorizontal(bool canMoveHorizontal)
+{
+	m_canMoveHorizontal = canMoveHorizontal;
+}
+
 
 void TextBlock::SetMovingState(bool state)
 {
