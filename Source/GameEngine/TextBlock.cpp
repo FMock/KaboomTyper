@@ -196,28 +196,79 @@ void GameEngine::TextBlock::RespondToObserved(InputManager* InputMgr)
 	if (!InputMgr->m_kbPrevState[SDL_SCANCODE_RIGHT] && InputMgr->m_kbState[SDL_SCANCODE_RIGHT])
 	{
 		m_moveDirection = GameEngine::MoveDirection::RIGHT;
-		std::cout << "TextBlock move right" << std::endl;
+
+		if (m_position.first + 5 < Common::EDGE_RIGHT - m_size.first)
+		{
+			m_textString->MoveHorizontal(Common::HORIZONTAL_STEP);
+			m_position.first += Common::HORIZONTAL_STEP;
+		}
+		else
+		{
+			m_position.first = Common::EDGE_RIGHT - m_size.first;
+			m_textString->SetX(Common::EDGE_RIGHT - m_size.first);
+		}
 	}
 	else if (!InputMgr->m_kbPrevState[SDL_SCANCODE_LEFT] && InputMgr->m_kbState[SDL_SCANCODE_LEFT])
 	{
 		m_moveDirection = GameEngine::MoveDirection::LEFT;
-		std::cout << "TextBlock move left" << std::endl;
+
+		if (m_position.first - Common::HORIZONTAL_STEP > Common::EDGE_LEFT)
+		{
+			m_textString->MoveHorizontal(-Common::HORIZONTAL_STEP);
+			m_position.first -= Common::HORIZONTAL_STEP;
+		}
+		else
+		{
+			m_position.first = -Common::EDGE_LEFT;
+			m_textString->SetX(-Common::EDGE_LEFT);
+		}
 	}
 	else if (!InputMgr->m_kbPrevState[SDL_SCANCODE_UP] && InputMgr->m_kbState[SDL_SCANCODE_UP])
 	{
-		m_moveDirection = GameEngine::MoveDirection::UP;
-		std::cout << "TextBlock move up not allowed!" << std::endl;
+		// Do nothing
 	}
 	else if (!InputMgr->m_kbPrevState[SDL_SCANCODE_DOWN] && InputMgr->m_kbState[SDL_SCANCODE_DOWN])
 	{
-		m_moveDirection = GameEngine::MoveDirection::DOWN;
-		std::cout << "TextBlock move down" << std::endl;
+		// Do nothing
 	}
 	else
 	{
+		// Do nothing
 		m_moveDirection = GameEngine::MoveDirection::NONE;
 	}
 }
+
+
+//void GameEngine::TextBlock::RespondToObserved(InputManager* InputMgr)
+//{
+//	if (!InputMgr->m_kbPrevState[SDL_SCANCODE_RIGHT] && InputMgr->m_kbState[SDL_SCANCODE_RIGHT])
+//	{
+//		m_moveDirection = GameEngine::MoveDirection::RIGHT;
+//		std::cout << "TextBlock move right" << std::endl;
+//		// TextBlock move right, but not past Common::EDGE_RIGHT - m_size.first;
+//
+//	}
+//	else if (!InputMgr->m_kbPrevState[SDL_SCANCODE_LEFT] && InputMgr->m_kbState[SDL_SCANCODE_LEFT])
+//	{
+//		m_moveDirection = GameEngine::MoveDirection::LEFT;
+//		std::cout << "TextBlock move left" << std::endl;
+//		// TextBlock move left, but not past Common::EDGE_LEFT
+//		
+//	}
+//	else if (!InputMgr->m_kbPrevState[SDL_SCANCODE_UP] && InputMgr->m_kbState[SDL_SCANCODE_UP])
+//	{
+//		// Do nothing
+//	}
+//	else if (!InputMgr->m_kbPrevState[SDL_SCANCODE_DOWN] && InputMgr->m_kbState[SDL_SCANCODE_DOWN])
+//	{
+//		// Do nothing
+//	}
+//	else
+//	{
+//		// Do nothing
+//		m_moveDirection = GameEngine::MoveDirection::NONE;
+//	}
+//}
 
 void TextBlock::SetCanMoveHorizontal(bool canMoveHorizontal)
 {

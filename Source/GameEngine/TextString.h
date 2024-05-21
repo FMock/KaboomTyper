@@ -28,6 +28,9 @@ namespace GameEngine
         float GetVelocity() const;
         void SetAngle(float angle);
         float GetAngle() const;
+        void SetX(float x);
+        void SetY(float y);
+        void MoveHorizontal(float n);
 
         // Static member for TextStringFont shared across all instances
         static TextStringFont s_font;

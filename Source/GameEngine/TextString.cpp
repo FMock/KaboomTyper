@@ -265,6 +265,21 @@ float GameEngine::TextString::GetAngle() const
 	return m_angle;
 }
 
+void GameEngine::TextString::SetX(float x)
+{
+    m_x = x;
+}
+
+void GameEngine::TextString::SetY(float y)
+{
+    m_y = y;
+}
+
+void GameEngine::TextString::MoveHorizontal(float n)
+{
+    m_x += n;
+}
+
 std::string GameEngine::TextString::GetText() const
 {
 	return m_string;
