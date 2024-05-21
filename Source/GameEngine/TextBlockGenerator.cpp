@@ -16,6 +16,13 @@ TextBlockGenerator::TextBlockGenerator(float spawnIntervalSeconds, std::shared_p
 
 void TextBlockGenerator::ClearBlockDeque()
 {
+    // they're going bye, bye so unregister them
+    for (size_t i = 0; i < m_blockDeque.size(); ++i)
+    {
+        m_inputManager->UnregisterObserver(m_blockDeque[i].get());
+    }
+
+    // now delete 'em
     m_blockDeque.clear();
 }
 
@@ -46,49 +53,42 @@ void TextBlockGenerator::Update(float dt)
         return;
 
     TextBlock* horizontalMovableBlock = nullptr;
-
-    for (const auto& block : m_blockDeque)
-    {
-        block->Update(dt);
-
-        if (block->GetMovingState() && block->GetPosition().second >= Common::FLOOR)
-        {
-            block->SetMovingState(false);
-            block->SetPosition(block->GetPosition().first, Common::FLOOR);
-            m_inputManager->UnregisterObserver(block.get());
-        }
-        else if (block->GetMovingState())
-        {
-            horizontalMovableBlock = block.get();
-        }
-    }
-
-    // Set the block that can move horizontally, if there is one
-    SetHorizontalMovement(horizontalMovableBlock);
+    bool gameOver = false;
 
     for (size_t i = 0; i < m_blockDeque.size(); ++i)
     {
         auto& blockA = m_blockDeque[i];
+        blockA->Update(dt);
         auto blockAPosition = blockA->GetPosition();
 
-        if (!blockA->GetMovingState() && blockAPosition.second <= Common::CEILING)
+        if (blockA->GetMovingState())
+        {
+            if (blockAPosition.second >= Common::FLOOR)
+            {
+                blockA->SetMovingState(false);
+                blockA->SetPosition(blockAPosition.first, Common::FLOOR);
+                m_inputManager->UnregisterObserver(blockA.get());
+            }
+            else
+            {
+                horizontalMovableBlock = blockA.get();
+            }
+        }
+        else if (blockAPosition.second <= Common::CEILING)
         {
             ToggleRunning(); // Game Over
             m_limitReached = true;
-            
-            // Unregister the TextBlocks from the InputManager
-            for (size_t j = 0; j < m_blockDeque.size(); ++j)
-            {
-                m_inputManager->UnregisterObserver(m_blockDeque[j].get());
-            }
-
-            break;
+            gameOver = true;
         }
+
+        if (gameOver)
+            break;
 
         // Check for collisions with other TextBlocks
         for (size_t j = 0; j < m_blockDeque.size(); ++j)
         {
-            if (i == j) continue;
+            if (i == j)
+                continue;
 
             auto& blockB = m_blockDeque[j];
             HandleCollisions(*blockA, blockAPosition.second, *blockB);
@@ -101,6 +101,20 @@ void TextBlockGenerator::Update(float dt)
         }
     }
 
+    if (gameOver)
+    {
+        // Unregister all TextBlocks from the InputManager
+        for (auto& block : m_blockDeque)
+        {
+            m_inputManager->UnregisterObserver(block.get());
+        }
+    }
+    else
+    {
+        // Set the block that can move horizontally, if there is one
+        SetHorizontalMovement(horizontalMovableBlock);
+    }
+
     m_elapsedTime += dt;
 
     if (m_elapsedTime >= m_spawnInterval)
@@ -109,6 +123,7 @@ void TextBlockGenerator::Update(float dt)
         m_elapsedTime = 0.0f;
     }
 }
+
 
 void TextBlockGenerator::Draw()
 {

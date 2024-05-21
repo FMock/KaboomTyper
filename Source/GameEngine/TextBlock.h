@@ -49,7 +49,6 @@ namespace GameEngine
 		float GetVelocity() const;
 		void SetCanMoveHorizontal(bool canMoveHorizontal);
 
-
 	private:
 		std::unique_ptr<Color> m_color; // TextBlock colored body
 		GLuint m_texture;
