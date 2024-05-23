@@ -3,16 +3,15 @@
 #include <iostream>
 
 /// <summary>
-/// TextBlockGenerator creates TextBlock objects and checks for collisions
+/// TextBlockGenerator manages TextBlock creation and removal
 /// </summary>
 
 using namespace GameEngine;
 
 TextBlockGenerator::TextBlockGenerator(float spawnIntervalSeconds, std::shared_ptr<InputManager> inputManager)
-    : m_running(false), m_spawnInterval(spawnIntervalSeconds), m_inputManager(inputManager), m_elapsedTime(0), m_limitReached(false)
+    : m_running(false), m_spawnInterval(spawnIntervalSeconds), m_inputManager(inputManager), m_elapsedTime(0), m_limitReached(false), m_horizontalMovingBlock(nullptr)
 {
     m_lastSpawnTime = std::chrono::steady_clock::now();
-    GenerateTextBlock("New TextBlock");
 }
 
 void TextBlockGenerator::ClearBlockDeque()
@@ -70,7 +69,8 @@ void TextBlockGenerator::Update(float dt)
                 blockA->SetMovingState(false);
                 blockA->SetPosition(blockAPosition.first, Common::FLOOR);
                 m_inputManager->UnregisterObserver(blockA.get());
-                GenerateTextBlock("New TextBlock");
+
+                GenerateTextBlock("New TextBlock"); // Previous TextBlock reached the botton so create another one
             }
             else
             {
@@ -112,13 +112,15 @@ void TextBlockGenerator::Update(float dt)
         SetHorizontalMovement(horizontalMovableBlock);
     }
 
-    //m_elapsedTime += dt;
+    m_elapsedTime += dt;
 
-    //if (m_elapsedTime >= m_spawnInterval)
-    //{
-    //    GenerateTextBlock("New TextBlock");
-    //    m_elapsedTime = 0.0f;
-    //}
+    if (m_elapsedTime >= m_spawnInterval)
+    {
+        // Do something
+        std::cout << "Timer has elapsed" << std::endl;
+
+        m_elapsedTime = 0.0f;
+    }
 }
 
 
@@ -163,14 +165,14 @@ void GameEngine::TextBlockGenerator::HandleCollisions(TextBlock& blockA, float& 
     if (blockA.GetMovingState() && !blockB.GetMovingState() && Common::AABBIntersect(blockA.GetBox(), blockB.GetBox()))
     {
         blockA.SetMovingState(false);
-        m_inputManager->UnregisterObserver(&blockA); // blockA landed on another TextBlock. Unregister it from m_inputManager
+        m_inputManager->UnregisterObserver(&blockA); // blockA stacked on top of another TextBlock. Unregister it from m_inputManager
 
         auto blockBPosition = blockB.GetPosition();
         blockAYPosition = blockBPosition.second - blockA.GetBox().h;
         blockA.SetPosition(blockA.GetPosition().first, blockAYPosition);
         blockA.SetVelocity(0.0f);
-        GenerateTextBlock("New TextBlock");
 
+        GenerateTextBlock("New TextBlock"); // Give user another TextBlock
     }
 }
 

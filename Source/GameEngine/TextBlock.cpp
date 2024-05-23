@@ -62,9 +62,7 @@ void TextBlock::Initialize(float x, float y, std::string str, Colors color)
 	m_fontHeight = (float)m_textString->GetFontHeight();
 
 	LoadColorVector(); // load strings of color names
-	//short numberOfColors = m_color->s_colorParameters.numberOfColors;
-	//srand(time(0));
-	//m_colorStr = m_colors.at(rand() % numberOfColors - 1); // minus one because we don't want any black textblocks
+
 	m_colorStr = m_colors.at((int)color); // minus one because we don't want any black textblocks
 	m_collided = false;
 	m_remove = false;
@@ -112,7 +110,6 @@ void TextBlock::Draw()
 
 	// Next, draw the text over the colored blocks
 	m_textString->DrawText(1.0, m_angle);
-	//std::cout << this->to_string() << std::endl;
 }
 
 void TextBlock::Update(float deltaTime)
@@ -120,7 +117,6 @@ void TextBlock::Update(float deltaTime)
 	// move 'em down unless they already reached the bottom
 	if (m_position.second < Common::FLOOR && m_isMoving)
 	{
-
 		m_velocity += Common::GRAVITY * deltaTime; // Update the velocity with gravity
 		m_position.second += m_velocity * deltaTime; // Calculate the new position with the current velocity
 
@@ -236,7 +232,6 @@ void GameEngine::TextBlock::RespondToObserved(InputManager* InputMgr)
 				m_textString->SetX(Common::EDGE_RIGHT - m_size.first);
 			}
 		}
-
 	}
 	else if (!InputMgr->m_kbPrevState[SDL_SCANCODE_LEFT] && InputMgr->m_kbState[SDL_SCANCODE_LEFT])
 	{
