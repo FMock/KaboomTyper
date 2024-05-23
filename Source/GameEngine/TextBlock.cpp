@@ -15,11 +15,23 @@ using namespace DrawUtilities;
 using std::ostringstream;
 typedef Game_Data GD;
 
+// initialize static member
+TextBlock* GameEngine::TextBlock::s_activeTextBlock = nullptr;
+
 GameEngine::TextBlock::TextBlock() : Sprite(), InputObserver(), m_color(std::make_unique<Color>()), m_velocity(0.0f), m_angle(0.0f),
                                    m_adjustedTextblockWidth(0), m_collided(false), m_texture(0),m_scaleFactor(0), m_remove(false),
 	                               m_prev_change_x(0), m_prev_change_y(0), m_isHit(false), m_isMoving(true), m_fontHeight(0),
 								   m_canMoveHorizontal(false)
 {
+	if (s_activeTextBlock == nullptr)
+	{
+		m_active = true;
+		s_activeTextBlock = this;
+	}
+	else
+	{
+		m_active = false;
+	}
 }
 
 TextBlock::TextBlock(int x, int y, std::string str, Colors color) : Sprite(x, y, 0, 0), m_textString(new TextString(str, x, y)), m_color(std::make_unique<Color>())
@@ -29,6 +41,10 @@ TextBlock::TextBlock(int x, int y, std::string str, Colors color) : Sprite(x, y,
 
 GameEngine::TextBlock::~TextBlock()
 {
+	if (m_active)
+	{
+		s_activeTextBlock = nullptr;
+	}
 }
 
 void TextBlock::InitializeTextBlock(float x, float y, std::string str, Colors color)
@@ -69,6 +85,16 @@ void TextBlock::Initialize(float x, float y, std::string str, Colors color)
 	m_isMoving = true;
 	m_angle = 0.0f;
 	m_canMoveHorizontal = false;
+
+	if (s_activeTextBlock == nullptr)
+	{
+		m_active = true;
+		s_activeTextBlock = this;
+	}
+	else
+	{
+		m_active = false;
+	}
 }
 
 
@@ -197,30 +223,37 @@ void GameEngine::TextBlock::RespondToObserved(InputManager* InputMgr)
 	{
 		m_moveDirection = GameEngine::MoveDirection::RIGHT;
 
-		if (m_position.first + 5 < Common::EDGE_RIGHT - m_size.first)
+		if (m_active)
 		{
-			m_textString->MoveHorizontal(Common::HORIZONTAL_STEP);
-			m_position.first += Common::HORIZONTAL_STEP;
+			if (m_position.first + 5 < Common::EDGE_RIGHT - m_size.first)
+			{
+				m_textString->MoveHorizontal(Common::HORIZONTAL_STEP);
+				m_position.first += Common::HORIZONTAL_STEP;
+			}
+			else
+			{
+				m_position.first = Common::EDGE_RIGHT - m_size.first;
+				m_textString->SetX(Common::EDGE_RIGHT - m_size.first);
+			}
 		}
-		else
-		{
-			m_position.first = Common::EDGE_RIGHT - m_size.first;
-			m_textString->SetX(Common::EDGE_RIGHT - m_size.first);
-		}
+
 	}
 	else if (!InputMgr->m_kbPrevState[SDL_SCANCODE_LEFT] && InputMgr->m_kbState[SDL_SCANCODE_LEFT])
 	{
 		m_moveDirection = GameEngine::MoveDirection::LEFT;
 
-		if (m_position.first - Common::HORIZONTAL_STEP > Common::EDGE_LEFT)
+		if (m_active)
 		{
-			m_textString->MoveHorizontal(-Common::HORIZONTAL_STEP);
-			m_position.first -= Common::HORIZONTAL_STEP;
-		}
-		else
-		{
-			m_position.first = -Common::EDGE_LEFT;
-			m_textString->SetX(-Common::EDGE_LEFT);
+			if (m_position.first - Common::HORIZONTAL_STEP > Common::EDGE_LEFT)
+			{
+				m_textString->MoveHorizontal(-Common::HORIZONTAL_STEP);
+				m_position.first -= Common::HORIZONTAL_STEP;
+			}
+			else
+			{
+				m_position.first = -Common::EDGE_LEFT;
+				m_textString->SetX(-Common::EDGE_LEFT);
+			}
 		}
 	}
 	else if (!InputMgr->m_kbPrevState[SDL_SCANCODE_UP] && InputMgr->m_kbState[SDL_SCANCODE_UP])
@@ -238,43 +271,26 @@ void GameEngine::TextBlock::RespondToObserved(InputManager* InputMgr)
 	}
 }
 
-
-//void GameEngine::TextBlock::RespondToObserved(InputManager* InputMgr)
-//{
-//	if (!InputMgr->m_kbPrevState[SDL_SCANCODE_RIGHT] && InputMgr->m_kbState[SDL_SCANCODE_RIGHT])
-//	{
-//		m_moveDirection = GameEngine::MoveDirection::RIGHT;
-//		std::cout << "TextBlock move right" << std::endl;
-//		// TextBlock move right, but not past Common::EDGE_RIGHT - m_size.first;
-//
-//	}
-//	else if (!InputMgr->m_kbPrevState[SDL_SCANCODE_LEFT] && InputMgr->m_kbState[SDL_SCANCODE_LEFT])
-//	{
-//		m_moveDirection = GameEngine::MoveDirection::LEFT;
-//		std::cout << "TextBlock move left" << std::endl;
-//		// TextBlock move left, but not past Common::EDGE_LEFT
-//		
-//	}
-//	else if (!InputMgr->m_kbPrevState[SDL_SCANCODE_UP] && InputMgr->m_kbState[SDL_SCANCODE_UP])
-//	{
-//		// Do nothing
-//	}
-//	else if (!InputMgr->m_kbPrevState[SDL_SCANCODE_DOWN] && InputMgr->m_kbState[SDL_SCANCODE_DOWN])
-//	{
-//		// Do nothing
-//	}
-//	else
-//	{
-//		// Do nothing
-//		m_moveDirection = GameEngine::MoveDirection::NONE;
-//	}
-//}
-
 void TextBlock::SetCanMoveHorizontal(bool canMoveHorizontal)
 {
 	m_canMoveHorizontal = canMoveHorizontal;
 }
 
+bool GameEngine::TextBlock::IsActive() const
+{
+	return m_active;
+}
+
+void GameEngine::TextBlock::Activate()
+{
+	if (s_activeTextBlock != nullptr)
+	{
+		s_activeTextBlock->m_active = false;
+	}
+
+	m_active = true;
+	s_activeTextBlock = this;
+}
 
 void TextBlock::SetMovingState(bool state)
 {

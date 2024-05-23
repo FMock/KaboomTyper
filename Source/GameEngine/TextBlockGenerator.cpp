@@ -12,6 +12,7 @@ TextBlockGenerator::TextBlockGenerator(float spawnIntervalSeconds, std::shared_p
     : m_running(false), m_spawnInterval(spawnIntervalSeconds), m_inputManager(inputManager), m_elapsedTime(0), m_limitReached(false)
 {
     m_lastSpawnTime = std::chrono::steady_clock::now();
+    GenerateTextBlock("New TextBlock");
 }
 
 void TextBlockGenerator::ClearBlockDeque()
@@ -45,6 +46,7 @@ void TextBlockGenerator::GenerateTextBlock(std::string text)
     // Register with the InputManager
     m_inputManager->RegisterObserver(newBlock.get());
     m_blockDeque.push_back(std::move(newBlock));
+    m_blockDeque.back()->Activate();
 }
 
 void TextBlockGenerator::Update(float dt)
@@ -68,6 +70,7 @@ void TextBlockGenerator::Update(float dt)
                 blockA->SetMovingState(false);
                 blockA->SetPosition(blockAPosition.first, Common::FLOOR);
                 m_inputManager->UnregisterObserver(blockA.get());
+                GenerateTextBlock("New TextBlock");
             }
             else
             {
@@ -92,12 +95,6 @@ void TextBlockGenerator::Update(float dt)
 
             auto& blockB = m_blockDeque[j];
             HandleCollisions(*blockA, blockAPosition.second, *blockB);
-
-            // Ensure only one block can move horizontally
-            if (blockA->GetMovingState() && !blockB->GetMovingState() && Common::AABBIntersect(blockA->GetBox(), blockB->GetBox()))
-            {
-                SetHorizontalMovement(blockA.get());
-            }
         }
     }
 
@@ -115,13 +112,13 @@ void TextBlockGenerator::Update(float dt)
         SetHorizontalMovement(horizontalMovableBlock);
     }
 
-    m_elapsedTime += dt;
+    //m_elapsedTime += dt;
 
-    if (m_elapsedTime >= m_spawnInterval)
-    {
-        GenerateTextBlock("New TextBlock");
-        m_elapsedTime = 0.0f;
-    }
+    //if (m_elapsedTime >= m_spawnInterval)
+    //{
+    //    GenerateTextBlock("New TextBlock");
+    //    m_elapsedTime = 0.0f;
+    //}
 }
 
 
@@ -172,6 +169,8 @@ void GameEngine::TextBlockGenerator::HandleCollisions(TextBlock& blockA, float& 
         blockAYPosition = blockBPosition.second - blockA.GetBox().h;
         blockA.SetPosition(blockA.GetPosition().first, blockAYPosition);
         blockA.SetVelocity(0.0f);
+        GenerateTextBlock("New TextBlock");
+
     }
 }
 

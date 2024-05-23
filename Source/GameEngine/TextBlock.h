@@ -48,6 +48,8 @@ namespace GameEngine
 		void SetVelocity(float velocity);
 		float GetVelocity() const;
 		void SetCanMoveHorizontal(bool canMoveHorizontal);
+		void Activate();
+		bool IsActive() const;
 
 	private:
 		std::unique_ptr<Color> m_color; // TextBlock colored body
@@ -63,6 +65,8 @@ namespace GameEngine
 		void LoadColorVector();
 		int ScaleTextBlockWidth(int textSize, int blockWidth);
 		float GetNormalizedSize(float textSize);
+		static TextBlock* s_activeTextBlock;
+		bool m_active;
 
 	protected:
 		void RespondToObserved(InputManager* InputMgr) override;
