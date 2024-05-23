@@ -102,6 +102,7 @@ void GameManager::RespondToObserved(InputManager* InputMgr)
             if(!textblockGeneratorRunning)
             {
                 m_textblockGenerator->ToggleRunning();
+                m_textblockGenerator->GenerateTextBlock("New TextBlock");
             }
         }
         else if (currentState == GameState::PAUSED) // Start game if paused
