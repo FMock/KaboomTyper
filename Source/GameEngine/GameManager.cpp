@@ -31,7 +31,7 @@ void GameManager::Initialize()
 	m_headsUpDisplay = std::make_unique<HeadsUpDisplay>();
 	m_headsUpDisplay->Initialize(450, 45);
 
-    m_textblockGenerator = std::make_unique < TextBlockGenerator>(5.0f, m_inputManager);
+    m_textblockGenerator = std::make_unique < TextBlockGenerator>(10.0f, m_inputManager);
 }
 
 GameEngine::GameManager::GameManager()
