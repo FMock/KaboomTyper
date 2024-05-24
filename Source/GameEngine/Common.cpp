@@ -10,11 +10,22 @@ std::string Common::s_currentWordCategory = "";
 void Common::SubmitText(std::string text)
 {
 	s_submittedText = text;
+	std::cout << s_submittedText << std::endl;
+}
+
+std::string GameEngine::Common::GetSubmittedText()
+{
+	return s_submittedText;
 }
 
 void Common::SetActiveText(std::string text)
 {
 	s_activeText = text;
+}
+
+std::string Common::GetActiveText()
+{
+	return s_activeText;
 }
 
 /*

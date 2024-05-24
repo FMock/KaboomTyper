@@ -25,7 +25,7 @@ namespace GameEngine
     public:
         TextBlockGenerator(float spawnIntervalSeconds, std::shared_ptr<InputManager> inputManager);
         void ClearBlockDeque();
-        void GenerateTextBlock(std::string text);
+        void GenerateTextBlock();
         void Update(float dt);
         void Draw();
         void PopTextBlock();

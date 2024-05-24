@@ -72,6 +72,11 @@ void InputTextBox::RemoveAll()
     m_full = false;
 }
 
+void InputTextBox::AddCallback(Callback callback)
+{
+    m_callback = callback;
+}
+
 void InputTextBox::MoveCursorForward()
 {
     if (m_cursorXPos + m_fontWidth > m_startCursorXPos + m_maxCharacters * m_fontWidth)
@@ -106,6 +111,11 @@ std::string InputTextBox::GetTextBoxContentsAsString()
 
 void InputTextBox::Initialize()
 {
+}
+
+void InputTextBox::CheckForMatch()
+{
+    m_callback(); // GameManagers callback that comapares submitted and active string
 }
 
 // Respond to key presses in the InputTextBox
@@ -424,6 +434,7 @@ void InputTextBox::RespondToObserved(InputManager* InputMgr)
                 break;
             case SDL_SCANCODE_RETURN:
                 Common::SubmitText(GetTextBoxContentsAsString());
+                CheckForMatch();
                 m_inputText.clear();
                 m_cursorXPos = m_startCursorXPos;
                 m_cursorYPos = m_startCursorYPos;
