@@ -23,7 +23,9 @@ namespace GameEngine
 
 	public:
 		static void SubmitText(std::string text);
+		static std::string GetSubmittedText();
 		static void SetActiveText(std::string text);
+		static std::string GetActiveText();
 		static bool AABBIntersect(AABB box1, AABB box2);
 		static constexpr float GRAVITY = 9.81f;
 		static constexpr float BASE_SIZE = 1.0f;

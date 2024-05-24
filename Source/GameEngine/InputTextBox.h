@@ -7,6 +7,7 @@
 #include "InputObserver.h"
 #include "InputManager.h"
 #include "Common.h"
+#include "functional"
 
 namespace GameEngine
 {
@@ -21,6 +22,8 @@ namespace GameEngine
 		void AddText(std::string text);
 		void RemoveLast();
 		void RemoveAll();
+		using Callback = std::function<void()>;
+		void AddCallback(Callback callback);
 
 	private:
 		int m_cursorXPos;
@@ -37,6 +40,8 @@ namespace GameEngine
 		bool m_initialized;
 		bool m_full;
 		int m_maxCharacters;
+		Callback m_callback; // callback called when user presses the Enter Key to submit input text
+		void CheckForMatch(); // calls callback funtion
 
 	protected:
 		void RespondToObserved(InputManager* InputMgr) override;

@@ -26,8 +26,13 @@ void TextBlockGenerator::ClearBlockDeque()
     m_blockDeque.clear();
 }
 
-void TextBlockGenerator::GenerateTextBlock(std::string text)
+void GameEngine::TextBlockGenerator::GenerateTextBlock()
 {
+    // Get a string based on the current category
+    std::string text = "New String";
+
+    Common::SetActiveText(text);
+
     auto xPadding = text.size() * 24;
     auto randomColor = GetRandomColor();
 
@@ -70,7 +75,7 @@ void TextBlockGenerator::Update(float dt)
                 blockA->SetPosition(blockAPosition.first, Common::FLOOR);
                 m_inputManager->UnregisterObserver(blockA.get());
 
-                GenerateTextBlock("New TextBlock"); // Previous TextBlock reached the botton so create another one
+                GenerateTextBlock(); // Previous TextBlock reached the botton so create another one
             }
             else
             {
@@ -172,7 +177,7 @@ void GameEngine::TextBlockGenerator::HandleCollisions(TextBlock& blockA, float& 
         blockA.SetPosition(blockA.GetPosition().first, blockAYPosition);
         blockA.SetVelocity(0.0f);
 
-        GenerateTextBlock("New TextBlock"); // Give user another TextBlock
+        GenerateTextBlock(); // Give user another TextBlock
     }
 }
 

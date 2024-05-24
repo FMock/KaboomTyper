@@ -6,6 +6,7 @@
 #include "LevelGameOver.h"
 #include "TextBlock.h"
 #include <iostream>
+#include <functional> // Add this include
 
 using namespace GameEngine;
 using namespace GameEngine::Utility;
@@ -15,6 +16,7 @@ void GameManager::Initialize()
 {
 	m_inputTextBox = std::make_unique<InputTextBox>();
 	m_inputTextBox->InitializeTextBox(10, 912, 780, 34, Colors::DEFAULT_COLOR, true);
+    m_inputTextBox->AddCallback(std::bind(&GameManager::ProcessInput, this)); // Bind ProcessInput() for use as a Callback by InputTextBox
 
 	//m_inputManager = std::make_unique<InputManager>();
     m_inputManager = std::make_shared<InputManager>();
@@ -58,7 +60,18 @@ void GameManager::Update(float dt)
 
 void GameManager::ProcessInput()
 {
+    // compare input and active text
+    std::string activeStr = Common::GetActiveText();
+    std::string submittedStr = Common::GetSubmittedText();
 
+    if (activeStr == submittedStr)
+    {
+        std::cout << "The strings are equal." << std::endl;
+    }
+    else
+    {
+        std::cout << "The strings are not equal." << std::endl;
+    }
 }
 
 void GameManager::Render()
@@ -73,6 +86,7 @@ void GameManager::Render()
 void GameEngine::GameManager::UpdateGameEntities(float deltaTime)
 {
     m_inputManager->Update();
+
     m_textblockGenerator->Update(deltaTime);
 
     if (m_textblockGenerator->TextBlockLimitReached()) // Check if game over state reached
@@ -102,7 +116,7 @@ void GameManager::RespondToObserved(InputManager* InputMgr)
             if(!textblockGeneratorRunning)
             {
                 m_textblockGenerator->ToggleRunning();
-                m_textblockGenerator->GenerateTextBlock("New TextBlock");
+                m_textblockGenerator->GenerateTextBlock();
             }
         }
         else if (currentState == GameState::PAUSED) // Start game if paused
