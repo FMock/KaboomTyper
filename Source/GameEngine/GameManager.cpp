@@ -33,7 +33,7 @@ void GameManager::Initialize()
 	m_headsUpDisplay = std::make_unique<HeadsUpDisplay>();
 	m_headsUpDisplay->Initialize(450, 45);
 
-    m_textblockGenerator = std::make_unique < TextBlockGenerator>(10.0f, m_inputManager);
+    m_textblockGenerator = std::make_unique < TextBlockManager>(10.0f, m_inputManager);
 }
 
 GameEngine::GameManager::GameManager()
@@ -67,6 +67,11 @@ void GameManager::ProcessInput()
     if (activeStr == submittedStr)
     {
         std::cout << "The strings are equal." << std::endl;
+        m_textblockGenerator->DestroyActiveTextBlock();
+
+        // Increase Players Score
+        m_headsUpDisplay->IncreaseScore(10); // TODO: HARD CODED AS 10. SCORE INCREASE SHOULD BE BASED ON THE SIZE OF THE TEXT
+        m_headsUpDisplay->SetUpdateRequired(true); // HUD needs to be updated
     }
     else
     {
@@ -94,6 +99,9 @@ void GameEngine::GameManager::UpdateGameEntities(float deltaTime)
         m_stateMachine->TransitionTo(GameState::STOPPED);
         m_messageBox->ChangeMessage(m_stateMachine->GetCurrentStateAsString());
     }
+
+    if(m_headsUpDisplay->UpdateRequired()) // only update the HUD if needed
+        m_headsUpDisplay->Update();
 }
 
 bool GameEngine::GameManager::ShouldQuit()
@@ -168,6 +176,7 @@ void GameManager::RespondToObserved(InputManager* InputMgr)
         {
             m_textblockGenerator->ClearBlockDeque();
             m_textblockGenerator->SetTextBlockLimitReached(false);
+            m_headsUpDisplay->ResetScore();
         }
     }
 }

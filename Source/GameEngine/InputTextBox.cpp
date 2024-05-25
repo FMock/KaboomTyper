@@ -74,7 +74,7 @@ void InputTextBox::RemoveAll()
 
 void InputTextBox::AddCallback(Callback callback)
 {
-    m_callback = callback;
+    m_checkforMatchCallback = callback;
 }
 
 void InputTextBox::MoveCursorForward()
@@ -115,7 +115,7 @@ void InputTextBox::Initialize()
 
 void InputTextBox::CheckForMatch()
 {
-    m_callback(); // GameManagers callback that comapares submitted and active string
+    m_checkforMatchCallback(); // GameManagers callback that comapares submitted and active string
 }
 
 // Respond to key presses in the InputTextBox

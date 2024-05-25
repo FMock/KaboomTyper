@@ -13,11 +13,17 @@ namespace GameEngine
 		HeadsUpDisplay();
 		~HeadsUpDisplay();
 		void Draw();
+		void Update();
 		void Initialize(int x, int y);
 		Score* GetScore() const; // share the score with rest of game
+		void IncreaseScore(int amount);
+		void SetUpdateRequired(bool updateRequired);
+		bool UpdateRequired();
+		void ResetScore();
 
 	private:
 		void DrawHud();
+		void UpdateScore();
 		std::unique_ptr<RectangleDrawable> m_background;
 		std::unique_ptr<TextString> m_scoreLabel;
 		std::unique_ptr<TextString> m_scoreAsText;
@@ -28,5 +34,6 @@ namespace GameEngine
 		std::unique_ptr<Score> m_score;
 		int m_x, m_y; // HUD Position
 		int m_width, m_height; // HUD Width and Height
+		bool m_updatedRequired;
 	};
 }

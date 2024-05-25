@@ -40,7 +40,7 @@ namespace GameEngine
 		bool m_initialized;
 		bool m_full;
 		int m_maxCharacters;
-		Callback m_callback; // callback called when user presses the Enter Key to submit input text
+		Callback m_checkforMatchCallback; // callback called when user presses the Enter Key to submit input text
 		void CheckForMatch(); // calls callback funtion
 
 	protected:

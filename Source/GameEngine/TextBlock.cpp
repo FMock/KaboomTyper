@@ -276,6 +276,11 @@ bool GameEngine::TextBlock::IsActive() const
 	return m_active;
 }
 
+void GameEngine::TextBlock::SetActiveState(bool isActive)
+{
+	m_active = isActive;
+}
+
 void GameEngine::TextBlock::Activate()
 {
 	if (s_activeTextBlock != nullptr)
