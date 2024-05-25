@@ -1,26 +1,39 @@
 #pragma once
 
 #include "TextBlock.h"
-#include "Common.h"
+#include "InputManager.h"
+#include <string>
+#include <deque>
+#include <chrono>
 #include <memory>
-#include <unordered_map>
-#include <vector>
-#include "Utilities.h"
 
 namespace GameEngine
 {
-	class TextBlockManager
-	{
-	public:
-		TextBlockManager();
-		~TextBlockManager();
-		void NextTextBlock();
+    class TextBlockManager
+    {
+    private:
+        std::deque<std::unique_ptr<TextBlock>> m_blockDeque;
+        std::chrono::steady_clock::time_point m_lastSpawnTime;
+        bool m_running;
+        bool m_limitReached;
+        float m_spawnInterval; // Time interval between spawning TextBlocks
+        float m_elapsedTime = 0;
+        std::shared_ptr<InputManager> m_inputManager;
+        void SetHorizontalMovement(TextBlock* block);
+        TextBlock* m_horizontalMovingBlock; // Pointer to the block that can move horizontally
 
-	private:
-		bool m_initialized;
-		std::vector<std::unique_ptr<TextBlock>> m_textBlockContainer;
-		std::unordered_map<std::string, std::vector<std::string>> m_words;
-		std::vector<std::string> m_categories;
-		std::string GetNextString();
-	};
+    public:
+        TextBlockManager(float spawnIntervalSeconds, std::shared_ptr<InputManager> inputManager);
+        void ClearBlockDeque();
+        void GenerateTextBlock();
+        void Update(float dt);
+        void Draw();
+        void PopTextBlock();
+        void ToggleRunning();
+        bool IsRunning();
+        bool TextBlockLimitReached();
+        void SetTextBlockLimitReached(bool b);
+        void HandleCollisions(TextBlock& blockA, float& blockAYPosition, TextBlock& blockB);
+        void DestroyActiveTextBlock();
+    };
 }

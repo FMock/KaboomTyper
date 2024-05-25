@@ -15,7 +15,7 @@
 #include "Menu.h"
 #include "MessageBox.h"
 #include "HeadsUpDisplay.h"
-#include "TextBlockGenerator.h"
+#include "TextBlockManager.h"
 
 namespace GameEngine 
 {
@@ -32,14 +32,13 @@ namespace GameEngine
 	private:
 		std::unique_ptr<StateMachine> m_stateMachine;
 		std::unique_ptr<InputTextBox> m_inputTextBox;
-		//std::unique_ptr<InputManager> m_inputManager;
-		std::shared_ptr<InputManager> m_inputManager; // shares with TextBlockGenerator
+		std::shared_ptr<InputManager> m_inputManager; // shares with TextBlockManager
 		std::unique_ptr<HeadsUpDisplay> m_headsUpDisplay;
 		std::unique_ptr<Menu> m_gameMenu;
 		std::unique_ptr<MessageBox> m_messageBox;
 
 		TextBlockParameters m_textBlockParameters;
-		std::unique_ptr<TextBlockGenerator> m_textblockGenerator;
+		std::unique_ptr<TextBlockManager> m_textblockGenerator;
 		std::map<std::string, GLuint> m_stringToColoredBlockTextureMap;
 		FontParameters m_fontParameters;
 		std::shared_ptr<TextStringFont> m_fontPtr;

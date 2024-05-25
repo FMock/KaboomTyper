@@ -198,9 +198,6 @@
     <ClInclude Include="InputTextBox.h">
       <Filter>Header Files\Input</Filter>
     </ClInclude>
-    <ClInclude Include="TextBlockManager.h">
-      <Filter>Header Files\Sprite</Filter>
-    </ClInclude>
     <ClInclude Include="RGBColor.h">
       <Filter>Header Files\Draw</Filter>
     </ClInclude>
@@ -213,7 +210,7 @@
     <ClInclude Include="MessageBox.h">
       <Filter>Header Files\UI</Filter>
     </ClInclude>
-    <ClInclude Include="TextBlockGenerator.h">
+    <ClInclude Include="TextBlockManager.h">
       <Filter>Header Files\Sprite</Filter>
     </ClInclude>
   </ItemGroup>
@@ -302,9 +299,6 @@
     <ClCompile Include="Common.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TextBlockManager.cpp">
-      <Filter>Source Files\Sprite</Filter>
-    </ClCompile>
     <ClCompile Include="Menu.cpp">
       <Filter>Source Files\UI</Filter>
     </ClCompile>
@@ -314,7 +308,7 @@
     <ClCompile Include="Messagebox.cpp">
       <Filter>Source Files\UI</Filter>
     </ClCompile>
-    <ClCompile Include="TextBlockGenerator.cpp">
+    <ClCompile Include="TextBlockManager.cpp">
       <Filter>Source Files\Sprite</Filter>
     </ClCompile>
   </ItemGroup>

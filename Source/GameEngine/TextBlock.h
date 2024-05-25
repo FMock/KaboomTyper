@@ -50,6 +50,7 @@ namespace GameEngine
 		void SetCanMoveHorizontal(bool canMoveHorizontal);
 		void Activate();
 		bool IsActive() const;
+		void SetActiveState(bool isActive);
 
 	private:
 		std::unique_ptr<Color> m_color; // TextBlock colored body
