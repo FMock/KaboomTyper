@@ -30,10 +30,10 @@ namespace GameEngine
 		static constexpr float GRAVITY = 9.81f;
 		static constexpr float BASE_SIZE = 1.0f;
 		static constexpr float LOG_BASE = 10.0f;
-		static constexpr float FLOOR = 880.0F; // The y-position the TextBlocks cannot exceed.
+		static constexpr float FLOOR = 885.0F; // The y-position the TextBlocks cannot exceed.
 		static constexpr float CEILING = 200.0F;
-		static constexpr float EDGE_LEFT = 0.0F;
-		static constexpr float EDGE_RIGHT = 800.0F;
+		static constexpr float EDGE_LEFT = 10.0F;
+		static constexpr float EDGE_RIGHT = 790.0F;
 		static constexpr float HORIZONTAL_STEP = 24.0F;
 
 	};

@@ -1,4 +1,5 @@
 #include "Common.h"
+#include "GlobalPreprocessorFlags.h"
 #include <iostream>
 
 using namespace GameEngine;
@@ -10,7 +11,10 @@ std::string Common::s_currentWordCategory = "";
 void Common::SubmitText(std::string text)
 {
 	s_submittedText = text;
+
+#if DEBUG
 	std::cout << s_submittedText << std::endl;
+#endif
 }
 
 std::string GameEngine::Common::GetSubmittedText()

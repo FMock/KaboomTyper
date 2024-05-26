@@ -246,7 +246,6 @@ void DrawUtilities::glDrawSpriteScaled(GLuint tex, int x, int y, int w, int h, f
 	glEnd(); // sends all submitted data to the GPU for rendering
 }
 
-
 // Function to draw a sprite at an angle
 void DrawUtilities::glDrawSpriteScaledRotated(GLuint tex, int x, int y, int w, int h, float scaleX, float scaleY, float angle)
 {

@@ -149,12 +149,14 @@
     <ClInclude Include="ConcreteLevel.h" />
     <ClInclude Include="ConcreteSpriteFactory.h" />
     <ClInclude Include="DrawUtils.h" />
+    <ClInclude Include="Firework.h" />
     <ClInclude Include="FontParameters.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="GameStateComparator.h" />
     <ClInclude Include="GameStates.h" />
     <ClInclude Include="game_data.h" />
+    <ClInclude Include="GlobalPreprocessorFlags.h" />
     <ClInclude Include="HeadsUpDisplay.h" />
     <ClInclude Include="IDrawable.h" />
     <ClInclude Include="ILevel.h" />
@@ -173,6 +175,7 @@
     <ClInclude Include="RectangleDrawable.h" />
     <ClInclude Include="RGBColor.h" />
     <ClInclude Include="Score.h" />
+    <ClInclude Include="SideBar.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="IState.h" />
     <ClInclude Include="SpriteFactory.h" />
@@ -198,6 +201,7 @@
     <ClCompile Include="ConcreteLevel.cpp" />
     <ClCompile Include="ConcreteSpriteFactory.cpp" />
     <ClCompile Include="DrawUtils.cpp" />
+    <ClCompile Include="Firework.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="HeadsUpDisplay.cpp" />
@@ -213,6 +217,8 @@
     <ClCompile Include="Moveable.cpp" />
     <ClCompile Include="RectangleDrawable.cpp" />
     <ClCompile Include="Score.cpp" />
+    <ClCompile Include="SideBar.cpp" />
+    <ClCompile Include="SideBars.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="StateGameOver.cpp" />
     <ClCompile Include="StateGamePlay.cpp" />

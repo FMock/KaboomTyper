@@ -16,6 +16,14 @@
 #include "MessageBox.h"
 #include "HeadsUpDisplay.h"
 #include "TextBlockManager.h"
+#include "SideBar.h"
+#include "Firework.h"
+#include "Color.h"
+
+/// <summary>
+/// GameManager manages the various entities in the game to create a
+/// pleasant and cohesive user experience.
+/// </summary>
 
 namespace GameEngine 
 {
@@ -36,9 +44,15 @@ namespace GameEngine
 		std::unique_ptr<HeadsUpDisplay> m_headsUpDisplay;
 		std::unique_ptr<Menu> m_gameMenu;
 		std::unique_ptr<MessageBox> m_messageBox;
+		SideBar m_leftSideBar;
+		SideBar m_rightSideBar;
+		GLuint m_fireworkColorTexture;
+		std::unique_ptr<Firework> m_firework;
+		std::unique_ptr<Color> m_colorPtr;
+		bool m_blowUpTextBlock;
 
 		TextBlockParameters m_textBlockParameters;
-		std::unique_ptr<TextBlockManager> m_textblockGenerator;
+		std::unique_ptr<TextBlockManager> m_textblockManager;
 		std::map<std::string, GLuint> m_stringToColoredBlockTextureMap;
 		FontParameters m_fontParameters;
 		std::shared_ptr<TextStringFont> m_fontPtr;
