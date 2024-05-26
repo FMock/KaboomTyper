@@ -1,4 +1,5 @@
 #include "Firework.h"
+#include <cmath>
 
 using namespace GameEngine;
 
@@ -6,7 +7,6 @@ Firework::Firework(GLuint texture, int x, int y, int w, int h, int numParticles)
     : m_tex(texture), m_posX(x), m_posY(y), m_width(w), m_height(h), m_particleCount(numParticles), m_timer(0.0f), m_isActive(false)
 {
     std::srand(std::time(0));
-    GenerateParticles();
 }
 
 void GameEngine::Firework::Update(float deltaTime)
@@ -37,6 +37,12 @@ void Firework::Draw()
     }
 }
 
+
+/// <summary>
+/// GenerateParticles generates particels that appear as a firework explosion. This method is using polar coordinates at 
+/// random angles and radii for each particle. The angle ensures the particles are distributed in a circle, and the radius 
+/// determines how far they are from the center.
+/// </summary>
 void Firework::SetIsActive(bool isActive)
 {
     m_isActive = isActive;
@@ -50,10 +56,14 @@ void Firework::GenerateParticles()
     for (int i = 0; i < m_particleCount; ++i)
     {
         Particle p;
-        p.x = m_posX + (std::rand() % 100 - 50); // random offset
-        p.y = m_posY + (std::rand() % 100 - 50); // random offset
-        p.scaleX = 1.0f + static_cast<float>(std::rand()) / RAND_MAX * 2.0f; // random scale between 0 and 2
-        p.scaleY = 1.0f + static_cast<float>(std::rand()) / RAND_MAX * 2.0f; // random scale between 0 and 2
+
+        float angle = static_cast<float>(std::rand()) / RAND_MAX * 2.0f * 3.1415926535897932; // random angle in radians
+        float radius = static_cast<float>(std::rand()) / RAND_MAX * 100.0f; // random radius, adjusted to be twice as large
+
+        p.x = m_posX + static_cast<int>(radius * cos(angle)); // x-coordinate based on polar coordinates
+        p.y = m_posY + static_cast<int>(radius * sin(angle)); // y-coordinate based on polar coordinates
+        p.scaleX = 1.0f + static_cast<float>(std::rand()) / (RAND_MAX / 2.0f); // random scale between 1 and 3
+        p.scaleY = 1.0f + static_cast<float>(std::rand()) / (RAND_MAX / 2.0f); // random scale between 1 and 3
         m_particles.push_back(p);
     }
 }
