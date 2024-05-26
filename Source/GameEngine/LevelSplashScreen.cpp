@@ -20,7 +20,7 @@ void LevelSplashScreen::Update(float dt)
 
 void LevelSplashScreen::Render()
 {
-	//std::cout << "LevelSplashScreen Render" << std::endl;
+
 }
 
 void LevelSplashScreen::Enter()

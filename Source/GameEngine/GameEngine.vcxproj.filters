@@ -213,6 +213,15 @@
     <ClInclude Include="TextBlockManager.h">
       <Filter>Header Files\Sprite</Filter>
     </ClInclude>
+    <ClInclude Include="GlobalPreprocessorFlags.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SideBar.h">
+      <Filter>Header Files\Draw</Filter>
+    </ClInclude>
+    <ClInclude Include="Firework.h">
+      <Filter>Header Files\Draw</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -310,6 +319,15 @@
     </ClCompile>
     <ClCompile Include="TextBlockManager.cpp">
       <Filter>Source Files\Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="SideBar.cpp">
+      <Filter>Source Files\Draw</Filter>
+    </ClCompile>
+    <ClCompile Include="SideBars.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Firework.cpp">
+      <Filter>Source Files\Draw</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

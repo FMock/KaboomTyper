@@ -1,9 +1,10 @@
 #include "TextBlockManager.h"
 #include "Colors.h"
+#include "GlobalPreprocessorFlags.h"
 #include <iostream>
 
 /// <summary>
-/// TextBlockGenerator manages TextBlock creation and removal
+/// TextBlockManager manages TextBlock creation and removal
 /// </summary>
 
 using namespace GameEngine;
@@ -51,10 +52,10 @@ void GameEngine::TextBlockManager::GenerateTextBlock()
     // Generate Random position x
     static std::random_device rd;
     static std::mt19937 gen(rd());
-    static std::uniform_int_distribution<int> x_dist(0, 800 - static_cast<int>(xPadding));
+    static std::uniform_int_distribution<int> x_dist(10, 800 - static_cast<int>(xPadding));
 
     int randomX = x_dist(gen);
-    int yPos = 50;
+    int yPos = 115;
 
     // Create the new TextBlock
     auto newBlock = std::make_unique<TextBlock>(randomX, yPos, text, randomColor);
@@ -135,9 +136,10 @@ void TextBlockManager::Update(float dt)
 
     if (m_elapsedTime >= m_spawnInterval)
     {
+#if DEBUG
         // Do something
         std::cout << "Timer has elapsed" << std::endl;
-
+#endif
         m_elapsedTime = 0.0f;
     }
 }
@@ -148,8 +150,11 @@ void TextBlockManager::Draw()
     for (const auto& block : m_blockDeque)
     {
         block->Draw();
+
+#if DEBUG
         if (block->m_isHit)
             std::cout << "block hit" << std::endl;
+#endif
     }
 }
 

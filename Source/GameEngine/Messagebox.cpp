@@ -4,7 +4,7 @@ using namespace GameEngine;
 
 GameEngine::MessageBox::MessageBox()
 {
-	Initialize(0, 45, 446, 99); // setup
+	Initialize(11, 43, 428, 99); // setup
 }
 
 GameEngine::MessageBox::MessageBox(int x, int y, int width, int height, Colors color)
@@ -37,7 +37,7 @@ void GameEngine::MessageBox::Initialize(int x, int y, int width, int height, Col
 void GameEngine::MessageBox::ChangeMessage(std::string message)
 {
 	m_currentMessage = message;
-	m_messageMap[message] = std::make_unique<TextString>(message.c_str(), 0, 45);
+	m_messageMap[message] = std::make_unique<TextString>(message.c_str(), 15, 50);
 }
 
 void GameEngine::MessageBox::Draw()

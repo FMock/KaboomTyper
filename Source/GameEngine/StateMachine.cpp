@@ -1,4 +1,5 @@
 #include "StateMachine.h"
+#include "GlobalPreprocessorFlags.h"
 
 using namespace GameEngine;
 
@@ -76,7 +77,30 @@ std::string StateMachine::GetCurrentStateAsString() const
 }
 
 // Transition Functions. TODO: CHANGE THESE TO DO ACTUAL WORK
-void StateMachine::StartRunning(){ std::cout << "Starting to run" << std::endl; }
-void StateMachine::Pause(){ std::cout << "Pause" << std::endl; }
-void StateMachine::Stop(){ std::cout << "Stop" << std::endl; }
-void StateMachine::Reset(){ std::cout << "Reset" << std::endl; }
+void StateMachine::StartRunning()
+{
+#if DEBUG
+    std::cout << "Starting to run" << std::endl; 
+#endif
+}
+
+void StateMachine::Pause()
+{
+#if DEBUG
+    std::cout << "Pause" << std::endl; 
+#endif
+}
+
+void StateMachine::Stop()
+{
+#if DEBUG
+    std::cout << "Stop" << std::endl; 
+#endif
+}
+
+void StateMachine::Reset()
+{
+#if DEBUG
+    std::cout << "Reset" << std::endl;
+#endif
+}

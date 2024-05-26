@@ -1,4 +1,5 @@
 #include "Menu.h"
+#include "GlobalPreprocessorFlags.h"
 #include <iostream>
 
 using namespace GameEngine;
@@ -46,30 +47,41 @@ void Menu::RespondToObserved(InputManager* InputMgr)
     if (InputMgr->m_mouseButtonState[0] && !InputMgr->m_prevMouseButtonState[0])
     {
         // Left mouse button clicked
+#if DEBUG
         std::cout << "Left mouse button clicked" << std::endl;
+#endif
         m_fileBtn->SetButtonColor(Colors::DARK_GRAY);
+
     }
     else if (!InputMgr->m_mouseButtonState[0] && InputMgr->m_prevMouseButtonState[0])
     {
         // Left mouse button released
+#if DEBUG
         std::cout << "Left mouse button released" << std::endl;
+#endif
         m_fileBtn->SetButtonColor(Colors::DEFAULT_COLOR);
     }
 
     if (InputMgr->m_mouseButtonState[2] && !InputMgr->m_prevMouseButtonState[2])
     {
         // Right mouse button clicked
+#if DEBUG
         std::cout << "Right mouse button clicked" << std::endl;
+#endif
     }
     else if (!InputMgr->m_mouseButtonState[2] && InputMgr->m_prevMouseButtonState[2])
     {
         // Right mouse button released
+#if DEBUG
         std::cout << "Right mouse button released" << std::endl;
+#endif
     }
 
     // Get mouse position
     int mouseX, mouseY;
     InputMgr->GetMousePosition(&mouseX, &mouseY);
+#if DEBUG
     //std::cout << "Mouse position: (" << mouseX << ", " << mouseY << ")" << std::endl;
+#endif
 }
 

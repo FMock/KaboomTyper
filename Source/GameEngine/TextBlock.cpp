@@ -246,8 +246,8 @@ void GameEngine::TextBlock::RespondToObserved(InputManager* InputMgr)
 			}
 			else
 			{
-				m_position.first = -Common::EDGE_LEFT;
-				m_textString->SetX(-Common::EDGE_LEFT);
+				m_position.first = Common::EDGE_LEFT;
+				m_textString->SetX(Common::EDGE_LEFT);
 			}
 		}
 	}

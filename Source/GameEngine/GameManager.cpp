@@ -5,8 +5,9 @@
 #include "LevelGamePlay.h"
 #include "LevelGameOver.h"
 #include "TextBlock.h"
+#include "GlobalPreprocessorFlags.h"
 #include <iostream>
-#include <functional> // Add this include
+#include <functional>
 
 using namespace GameEngine;
 using namespace GameEngine::Utility;
@@ -15,10 +16,9 @@ using namespace GameEngine::Utility;
 void GameManager::Initialize()
 {
 	m_inputTextBox = std::make_unique<InputTextBox>();
-	m_inputTextBox->InitializeTextBox(10, 912, 780, 34, Colors::DEFAULT_COLOR, true);
+	m_inputTextBox->InitializeTextBox(10, 916, 780, 34, Colors::DEFAULT_COLOR, true);
     m_inputTextBox->AddCallback(std::bind(&GameManager::ProcessInput, this)); // Bind ProcessInput() for use as a Callback by InputTextBox
 
-	//m_inputManager = std::make_unique<InputManager>();
     m_inputManager = std::make_shared<InputManager>();
 	m_inputManager->RegisterObserver(m_inputTextBox.get()); // so InputTextbox can respond to user key presses
 
@@ -31,13 +31,22 @@ void GameManager::Initialize()
 
 	m_stateMachine = std::make_unique<StateMachine>();
 	m_headsUpDisplay = std::make_unique<HeadsUpDisplay>();
-	m_headsUpDisplay->Initialize(450, 45);
+	m_headsUpDisplay->Initialize(440, 43);
 
-    m_textblockGenerator = std::make_unique < TextBlockManager>(10.0f, m_inputManager);
+    m_textblockManager = std::make_unique < TextBlockManager>(10.0f, m_inputManager);
+
+    m_leftSideBar.Initialize(0, 42, 10, 908, Colors::BLUE, true);
+    m_rightSideBar.Initialize(790, 42, 10, 908, Colors::BLUE, true);
+
+    m_colorPtr = std::make_unique<Color>();
+    m_fireworkColorTexture = m_colorPtr->s_colorParameters.m_stringColorTextureColorMap["green"];
+    m_firework = std::make_unique<Firework>(m_fireworkColorTexture, 400, 400, 1, 1, 300);
+    m_blowUpTextBlock = false;
 }
 
 GameEngine::GameManager::GameManager()
 {
+
 	Initialize();
 }
 
@@ -56,6 +65,11 @@ GameEngine::GameManager::~GameManager()
 void GameManager::Update(float dt)
 {
     UpdateGameEntities(dt);
+
+    if (m_firework->IsActive())
+    {
+        m_firework->Update(dt);
+    }
 }
 
 void GameManager::ProcessInput()
@@ -66,35 +80,56 @@ void GameManager::ProcessInput()
 
     if (activeStr == submittedStr)
     {
-        std::cout << "The strings are equal." << std::endl;
-        m_textblockGenerator->DestroyActiveTextBlock();
+        m_textblockManager->DestroyActiveTextBlock();
 
         // Increase Players Score
         m_headsUpDisplay->IncreaseScore(10); // TODO: HARD CODED AS 10. SCORE INCREASE SHOULD BE BASED ON THE SIZE OF THE TEXT
         m_headsUpDisplay->SetUpdateRequired(true); // HUD needs to be updated
+
+        m_blowUpTextBlock = true;
+
+#if DEBUG
+        std::cout << "The strings are equal." << std::endl;
+#endif
     }
     else
     {
+#if DEBUG
         std::cout << "The strings are not equal." << std::endl;
+#endif
     }
 }
 
 void GameManager::Render()
 {
-    m_textblockGenerator->Draw();
+    m_textblockManager->Draw();
 	m_headsUpDisplay->Draw();
 	m_inputTextBox->Draw();
 	m_gameMenu->Draw();
 	m_messageBox->Draw();
+    m_leftSideBar.Draw();
+    m_rightSideBar.Draw();
+
+    if (m_blowUpTextBlock)
+    {
+        m_firework->SetIsActive(true);
+        m_firework->GenerateParticles();
+        m_blowUpTextBlock = false;
+    }
+
+    if (m_firework->IsActive())
+    {
+        m_firework->Draw();
+    }
 }
 
 void GameEngine::GameManager::UpdateGameEntities(float deltaTime)
 {
     m_inputManager->Update();
 
-    m_textblockGenerator->Update(deltaTime);
+    m_textblockManager->Update(deltaTime);
 
-    if (m_textblockGenerator->TextBlockLimitReached()) // Check if game over state reached
+    if (m_textblockManager->TextBlockLimitReached()) // Check if game over state reached
     {
         m_stateMachine->TransitionTo(GameState::STOPPED);
         m_messageBox->ChangeMessage(m_stateMachine->GetCurrentStateAsString());
@@ -112,7 +147,7 @@ bool GameEngine::GameManager::ShouldQuit()
 void GameManager::RespondToObserved(InputManager* InputMgr)
 {
     GameState currentState = m_stateMachine->GetCurrentState();
-    bool textblockGeneratorRunning = m_textblockGenerator->IsRunning();
+    bool textblockGeneratorRunning = m_textblockManager->IsRunning();
 
     if (InputMgr->m_kbState[SDL_SCANCODE_F1])
     {
@@ -123,8 +158,8 @@ void GameManager::RespondToObserved(InputManager* InputMgr)
 
             if(!textblockGeneratorRunning)
             {
-                m_textblockGenerator->ToggleRunning();
-                m_textblockGenerator->GenerateTextBlock();
+                m_textblockManager->ToggleRunning();
+                m_textblockManager->GenerateTextBlock();
             }
         }
         else if (currentState == GameState::PAUSED) // Start game if paused
@@ -134,7 +169,7 @@ void GameManager::RespondToObserved(InputManager* InputMgr)
 
             if (!textblockGeneratorRunning)
             {
-                m_textblockGenerator->ToggleRunning();
+                m_textblockManager->ToggleRunning();
             }
         }
     }
@@ -145,8 +180,8 @@ void GameManager::RespondToObserved(InputManager* InputMgr)
             m_stateMachine->TransitionTo(GameState::PAUSED);
             m_messageBox->ChangeMessage(m_stateMachine->GetCurrentStateAsString());
 
-            if (m_textblockGenerator->IsRunning())
-                m_textblockGenerator->ToggleRunning();
+            if (m_textblockManager->IsRunning())
+                m_textblockManager->ToggleRunning();
         }
     }
     else if (InputMgr->m_kbState[SDL_SCANCODE_F3])
@@ -158,7 +193,7 @@ void GameManager::RespondToObserved(InputManager* InputMgr)
 
             if (textblockGeneratorRunning)
             {
-                m_textblockGenerator->ToggleRunning();
+                m_textblockManager->ToggleRunning();
             }
         }
     }
@@ -174,12 +209,9 @@ void GameManager::RespondToObserved(InputManager* InputMgr)
     {
         if (currentState == GameState::IDLE)
         {
-            m_textblockGenerator->ClearBlockDeque();
-            m_textblockGenerator->SetTextBlockLimitReached(false);
+            m_textblockManager->ClearBlockDeque();
+            m_textblockManager->SetTextBlockLimitReached(false);
             m_headsUpDisplay->ResetScore();
         }
     }
 }
-
-
-
