@@ -25,16 +25,13 @@ namespace GameEngine
 		void Shutdown();
 
 	private:
-		//std::unique_ptr<HeadsUpDisplay> m_headsUpDisplay;
+
 		//std::unique_ptr<AudioGenerator> m_audioGenerator;
 
-		//std::unique_ptr<TextString> m_textStr2;
-		//std::unique_ptr<TextBlock> m_textBlock;
-		//std::unique_ptr<TextBlock> m_textBlock2;
 		SDL_Window* m_window;
 		SDL_GLContext m_glcontext;
 		
-		std::unique_ptr<GameManager> m_gameManager;
+		std::shared_ptr<GameManager> m_gameManager;
 
 		void ProcessInput();
 		void UpdateGame();

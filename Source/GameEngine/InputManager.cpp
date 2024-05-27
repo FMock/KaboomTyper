@@ -64,27 +64,124 @@ bool GameEngine::InputManager::ShouldQuit() const
 	return m_quit;
 }
 
-void GameEngine::InputManager::NotifyObservers()
+void InputManager::RegisterObserver(std::shared_ptr<InputObserver> observer)
 {
-	for (auto observer : m_myObservers)
-	{
-		observer->Notify(this);
-	}
+    m_myObservers.push_back(observer);
 }
 
-void GameEngine::InputManager::RegisterObserver(InputObserver* observer)
+void InputManager::UnregisterObserver(InputObserver* observer)
 {
-	m_myObservers.push_back(observer);
+    m_myObservers.erase(std::remove_if(m_myObservers.begin(), m_myObservers.end(),
+        [observer](const std::weak_ptr<InputObserver>& o)
+        {
+            if (auto shared = o.lock())
+            {
+                return shared.get() == observer;
+            }
+            return false;
+        }), m_myObservers.end());
 }
 
-void GameEngine::InputManager::UnregisterObserver(InputObserver* observer)
+void InputManager::NotifyObservers()
 {
-	for (unsigned int i = 0; i < m_myObservers.size(); i++)
-	{
-		if (m_myObservers.at(i) == observer)
-		{
-			m_myObservers.erase(m_myObservers.begin() + i);
-			return;
-		}
-	}
+    auto observersCopy = m_myObservers;
+
+    for (const auto& weakObserver : observersCopy)
+    {
+        if (auto observer = weakObserver.lock())
+        {
+            try
+            {
+                observer->Notify(this);
+            }
+            catch (const std::exception& e)
+            {
+                std::cerr << "Exception caught during Notify: " << e.what() << std::endl;
+            }
+        }
+        else
+        {
+            std::cerr << "Warning: Null observer in the list" << std::endl;
+        }
+    }
+
+    // Remove expired weak pointers
+    m_myObservers.erase(std::remove_if(m_myObservers.begin(), m_myObservers.end(),
+        [](const std::weak_ptr<InputObserver>& o)
+        {
+            return o.expired();
+        }), m_myObservers.end());
 }
+
+//void GameEngine::InputManager::NotifyObservers()
+//{
+//	for (auto observer : m_myObservers)
+//	{
+//		observer->Notify(this);
+//	}
+//}
+//
+//void InputManager::NotifyObservers()
+//{
+//	// Create a temporary list of observers to notify
+//	auto observersCopy = m_myObservers;
+//
+//	// Notify each observer
+//	for (auto observer : observersCopy)
+//	{
+//		if (observer)
+//		{
+//			try
+//			{
+//				observer->Notify(this);
+//			}
+//			catch (const std::exception& e)
+//			{
+//				std::cerr << "Exception caught during Notify: " << e.what() << std::endl;
+//			}
+//		}
+//		else
+//		{
+//			std::cerr << "Warning: Null observer in the list" << std::endl;
+//		}
+//	}
+//}
+
+
+//void GameEngine::InputManager::RegisterObserver(InputObserver* observer)
+//{
+//	m_myObservers.push_back(observer);
+//}
+
+//void GameEngine::InputManager::UnregisterObserver(InputObserver* observer)
+//{
+//	for (unsigned int i = 0; i < m_myObservers.size(); i++)
+//	{
+//		if (m_myObservers.at(i) == observer)
+//		{
+//			m_myObservers.erase(m_myObservers.begin() + i);
+//			return;
+//		}
+//	}
+//}
+
+//void GameEngine::InputManager::UnregisterObserver(InputObserver* observer)
+//{
+//	if (observer)
+//	{
+//		auto it = std::find(m_myObservers.begin(), m_myObservers.end(), observer);
+//		if (it != m_myObservers.end())
+//		{
+//			m_myObservers.erase(it);
+//		}
+//		else
+//		{
+//			std::cerr << "Warning: Observer not found in the list" << std::endl;
+//			return;
+//		}
+//	}
+//	else
+//	{
+//		std::cerr << "Warning: Attempting to unregister a null pointer" << std::endl;
+//	}
+//}

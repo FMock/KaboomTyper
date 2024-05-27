@@ -17,20 +17,28 @@ TextBlockManager::TextBlockManager(float spawnIntervalSeconds, std::shared_ptr<I
 
 void TextBlockManager::ClearBlockDeque()
 {
-    // they're going bye, bye so unregister them
+    // Unregister them from the InputManager
     for (size_t i = 0; i < m_blockDeque.size(); ++i)
     {
-        m_inputManager->UnregisterObserver(m_blockDeque[i].get());
+        if (m_blockDeque[i])
+        {
+            m_inputManager->UnregisterObserver(m_blockDeque[i].get());
+        }
+        else
+        {
+            std::cerr << "Warning: Attempting to unregister a null pointer" << std::endl;
+        }
     }
 
-    // now delete 'em
+    // Now delete 'em
     m_blockDeque.clear();
 }
+
 
 void GameEngine::TextBlockManager::GenerateTextBlock()
 {
     // Check if there's already an active TextBlock
-    auto it = std::find_if(m_blockDeque.begin(), m_blockDeque.end(), [](const std::unique_ptr<TextBlock>& block)
+    auto it = std::find_if(m_blockDeque.begin(), m_blockDeque.end(), [](const std::shared_ptr<TextBlock>& block)
         {
             return block->IsActive();
         });
@@ -58,10 +66,10 @@ void GameEngine::TextBlockManager::GenerateTextBlock()
     int yPos = 115;
 
     // Create the new TextBlock
-    auto newBlock = std::make_unique<TextBlock>(randomX, yPos, text, randomColor);
+    auto newBlock = std::make_shared<TextBlock>(randomX, yPos, text, randomColor);
 
     // Register with the InputManager
-    m_inputManager->RegisterObserver(newBlock.get());
+    m_inputManager->RegisterObserver(newBlock);
     m_blockDeque.push_back(std::move(newBlock));
     m_blockDeque.back()->Activate();
 }
@@ -206,7 +214,7 @@ void TextBlockManager::DestroyActiveTextBlock()
     if (!m_blockDeque.empty())
     {
         // Find the active TextBlock
-        auto it = std::find_if(m_blockDeque.begin(), m_blockDeque.end(), [](const std::unique_ptr<TextBlock>& block)
+        auto it = std::find_if(m_blockDeque.begin(), m_blockDeque.end(), [](const std::shared_ptr<TextBlock>& block)
             {
                 return block->IsActive();
             });

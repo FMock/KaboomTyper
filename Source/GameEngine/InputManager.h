@@ -3,6 +3,7 @@
 #include <vector>
 #include <map>
 #include "InputObserver.h"
+#include <memory>
 
 namespace GameEngine
 {
@@ -14,7 +15,7 @@ namespace GameEngine
 		bool ShouldQuit() const;
 		bool m_quit = 0;
 		void NotifyObservers();
-		void RegisterObserver(InputObserver*);
+		void RegisterObserver(std::shared_ptr<InputObserver> observer);
 		void UnregisterObserver(InputObserver*);
 
 		// The previous frame's keyboard state.
@@ -35,6 +36,7 @@ namespace GameEngine
 		void PrepareForStateChange();
 		void GetNewInputState();
 		SDL_Event m_event;
-		std::vector<InputObserver*> m_myObservers;
+		//std::vector<InputObserver*> m_myObservers;
+		std::vector<std::weak_ptr<InputObserver>> m_myObservers;
 	};
 }

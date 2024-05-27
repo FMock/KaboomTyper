@@ -15,17 +15,17 @@ using namespace GameEngine::Utility;
 // Loads all the parts of the game
 void GameManager::Initialize()
 {
-	m_inputTextBox = std::make_unique<InputTextBox>();
+	m_inputTextBox = std::make_shared<InputTextBox>();
 	m_inputTextBox->InitializeTextBox(10, 916, 780, 34, Colors::DEFAULT_COLOR, true);
     m_inputTextBox->AddCallback(std::bind(&GameManager::ProcessInput, this)); // Bind ProcessInput() for use as a Callback by InputTextBox
 
     m_inputManager = std::make_shared<InputManager>();
-	m_inputManager->RegisterObserver(m_inputTextBox.get()); // so InputTextbox can respond to user key presses
+	m_inputManager->RegisterObserver(m_inputTextBox); // so InputTextbox can respond to user key presses
 
-	m_gameMenu = std::make_unique<Menu>();
-	m_inputManager->RegisterObserver(m_gameMenu.get()); // so menu can respond to mouse clicks
+	m_gameMenu = std::make_shared<Menu>();
+	m_inputManager->RegisterObserver(m_gameMenu); // so menu can respond to mouse clicks
 
-	m_inputManager->RegisterObserver(this);
+	m_inputManager->RegisterObserver(shared_from_this());
 
 	m_messageBox = std::make_unique<MessageBox>();
 
@@ -47,7 +47,14 @@ void GameManager::Initialize()
 GameEngine::GameManager::GameManager()
 {
 
-	Initialize();
+	//Initialize();
+}
+
+std::shared_ptr<GameManager> GameManager::Create()
+{
+    std::shared_ptr<GameManager> instance(new GameManager());
+    instance->Initialize(); // Call Initialize after creation
+    return instance;
 }
 
 GameEngine::GameManager::~GameManager()
@@ -209,7 +216,7 @@ void GameManager::RespondToObserved(InputManager* InputMgr)
     {
         if (currentState == GameState::IDLE)
         {
-            m_textblockManager->ClearBlockDeque();
+            m_textblockManager->ClearBlockDeque(); // Causing a runtime access violation error
             m_textblockManager->SetTextBlockLimitReached(false);
             m_headsUpDisplay->ResetScore();
         }
