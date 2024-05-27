@@ -104,7 +104,8 @@ void Game::LoadData()
 	//m_audioGenerator = std::make_unique<AudioGenerator>();
 
 	// Load GameManager
-	m_gameManager = std::make_unique<GameManager>();
+	//m_gameManager = std::make_unique<GameManager>();
+	m_gameManager = GameManager::Create(); // must use the factory method
 }
 
 void Game::RunLoop()

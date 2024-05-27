@@ -12,7 +12,7 @@ namespace GameEngine
     class TextBlockManager
     {
     private:
-        std::deque<std::unique_ptr<TextBlock>> m_blockDeque;
+        std::deque<std::shared_ptr<TextBlock>> m_blockDeque;
         std::chrono::steady_clock::time_point m_lastSpawnTime;
         bool m_running;
         bool m_limitReached;

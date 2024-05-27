@@ -27,10 +27,11 @@
 
 namespace GameEngine 
 {
-	class GameManager : public InputObserver
+	class GameManager : public InputObserver, public std::enable_shared_from_this<GameManager>
 	{
 	public:
-		GameManager();
+		//GameManager();
+		static std::shared_ptr<GameManager> Create();
 		~GameManager();
 		void Update(float dt);
 		void ProcessInput();
@@ -38,11 +39,12 @@ namespace GameEngine
 		bool ShouldQuit();
 
 	private:
-		std::unique_ptr<StateMachine> m_stateMachine;
-		std::unique_ptr<InputTextBox> m_inputTextBox;
+		GameManager();
+		std::shared_ptr<StateMachine> m_stateMachine;
+		std::shared_ptr<InputTextBox> m_inputTextBox;
 		std::shared_ptr<InputManager> m_inputManager; // shares with TextBlockManager
 		std::unique_ptr<HeadsUpDisplay> m_headsUpDisplay;
-		std::unique_ptr<Menu> m_gameMenu;
+		std::shared_ptr<Menu> m_gameMenu;
 		std::unique_ptr<MessageBox> m_messageBox;
 		SideBar m_leftSideBar;
 		SideBar m_rightSideBar;
