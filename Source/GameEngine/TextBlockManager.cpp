@@ -1,5 +1,5 @@
 #include "TextBlockManager.h"
-#include "Colors.h"
+#include "Color.h"
 #include "GlobalPreprocessorFlags.h"
 #include <iostream>
 
@@ -56,6 +56,9 @@ void GameEngine::TextBlockManager::GenerateTextBlock()
 
     auto xPadding = text.size() * 24;
     auto randomColor = GetRandomColor();
+
+    Common::s_previousColor = Common::s_currentColor;
+    Common::s_currentColor = randomColor;
 
     // Generate Random position x
     static std::random_device rd;
@@ -222,6 +225,12 @@ void TextBlockManager::DestroyActiveTextBlock()
         // An active TextBlock was found
         if (it != m_blockDeque.end())
         {
+            // Set position for others to use (like Firework)
+            Common::s_currentPosition = it->get()->GetPosition();
+            // How wide is the TextBlock that's about to be destroyed?
+            auto size = it->get()->GetSize();
+            Common::s_currentTextBlockWidth = size.first;
+
             // Unregister the TextBlock from the InputManager
             m_inputManager->UnregisterObserver(it->get());
 

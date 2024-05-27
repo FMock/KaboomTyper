@@ -2,6 +2,7 @@
 #include <string>
 #include <cmath>  // for std::log
 #include "AABB.h"
+#include "Color.h"
 
 /// <summary>
 /// Common.h holds common types used by various different other types
@@ -35,6 +36,9 @@ namespace GameEngine
 		static constexpr float EDGE_LEFT = 10.0F;
 		static constexpr float EDGE_RIGHT = 790.0F;
 		static constexpr float HORIZONTAL_STEP = 24.0F;
-
+		static Colors s_currentColor;
+		static Colors s_previousColor;
+		static std::pair<float, float> s_currentPosition;
+		static int s_currentTextBlockWidth;
 	};
 }

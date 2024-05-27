@@ -3,7 +3,7 @@
 #include <memory>
 #include "TextString.h"
 #include "RectangleDrawable.h"
-#include "Colors.h"
+#include "Color.h"
 #include "InputObserver.h"
 #include "InputManager.h"
 #include "Common.h"

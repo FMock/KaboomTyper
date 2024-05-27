@@ -61,9 +61,7 @@ void TextBlock::Initialize(float x, float y, std::string str, Colors color)
 	m_textString->Initialize(str.c_str(), x, y);
 	m_fontHeight = (float)m_textString->GetFontHeight();
 
-	LoadColorVector(); // load strings of color names
-
-	m_colorStr = m_colors.at((int)color); // minus one because we don't want any black textblocks
+	m_colorStr = Color::s_colorMap[color];
 	m_collided = false;
 	m_remove = false;
 	m_isHit = false;
@@ -174,29 +172,6 @@ std::string TextBlock::to_string() const
 	return oss.str();
 }
 
-void GameEngine::TextBlock::LoadColorVector()
-{
-	m_colors.push_back("red"), // 0
-	m_colors.push_back("darkRed"),  // 1
-	m_colors.push_back("green"); // 2
-
-	m_colors.push_back("darkGreen"), // 3
-	m_colors.push_back("blue"), // 4
-	m_colors.push_back("darkBlue"); // 5
-
-	m_colors.push_back("purple"), // 6
-	m_colors.push_back("Darkpurple"), // 7
-	m_colors.push_back("yellow"); // 8
-
-	m_colors.push_back("darkYellow"), // 9
-	m_colors.push_back("orange"), // 10
-	m_colors.push_back("brown"); // 11
-
-	m_colors.push_back("gray"), // 12
-	m_colors.push_back("darkGray"), // 13
-	m_colors.push_back("white"); // 14
-	m_colors.push_back("black"); // 15
-}
 
 /// <summary>
 /// Sets the size of the TextBlock to the same size as the text size
@@ -269,60 +244,6 @@ void TextBlock::RespondToObserved(InputManager* InputMgr)
 
 	//std::cout << "RespondToObserved completed for TextBlock at address: " << this << std::endl;
 }
-
-
-//void GameEngine::TextBlock::RespondToObserved(InputManager* InputMgr)
-//{
-//	if (!InputMgr->m_kbPrevState[SDL_SCANCODE_RIGHT] && InputMgr->m_kbState[SDL_SCANCODE_RIGHT])
-//	{
-//		m_moveDirection = GameEngine::MoveDirection::RIGHT;
-//
-//		if (m_active)
-//		{
-//			if (m_position.first + 5 < Common::EDGE_RIGHT - m_size.first)
-//			{
-//				m_textString->MoveHorizontal(Common::HORIZONTAL_STEP);
-//				m_position.first += Common::HORIZONTAL_STEP;
-//			}
-//			else
-//			{
-//				m_position.first = Common::EDGE_RIGHT - m_size.first;
-//				m_textString->SetX(Common::EDGE_RIGHT - m_size.first);
-//			}
-//		}
-//	}
-//	else if (!InputMgr->m_kbPrevState[SDL_SCANCODE_LEFT] && InputMgr->m_kbState[SDL_SCANCODE_LEFT])
-//	{
-//		m_moveDirection = GameEngine::MoveDirection::LEFT;
-//
-//		if (m_active)
-//		{
-//			if (m_position.first - Common::HORIZONTAL_STEP > Common::EDGE_LEFT)
-//			{
-//				m_textString->MoveHorizontal(-Common::HORIZONTAL_STEP);
-//				m_position.first -= Common::HORIZONTAL_STEP;
-//			}
-//			else
-//			{
-//				m_position.first = Common::EDGE_LEFT;
-//				m_textString->SetX(Common::EDGE_LEFT);
-//			}
-//		}
-//	}
-//	else if (!InputMgr->m_kbPrevState[SDL_SCANCODE_UP] && InputMgr->m_kbState[SDL_SCANCODE_UP])
-//	{
-//		// Do nothing
-//	}
-//	else if (!InputMgr->m_kbPrevState[SDL_SCANCODE_DOWN] && InputMgr->m_kbState[SDL_SCANCODE_DOWN])
-//	{
-//		// Do nothing
-//	}
-//	else
-//	{
-//		// Do nothing
-//		m_moveDirection = GameEngine::MoveDirection::NONE;
-//	}
-//}
 
 void TextBlock::SetCanMoveHorizontal(bool canMoveHorizontal)
 {

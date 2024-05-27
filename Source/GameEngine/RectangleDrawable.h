@@ -1,7 +1,7 @@
 #pragma once
 
 #include "IDrawable.h"
-#include "Colors.h"
+#include "Color.h"
 #include <memory>
 #include <GL/glew.h>
 

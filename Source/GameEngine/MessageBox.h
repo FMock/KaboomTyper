@@ -2,7 +2,7 @@
 
 #include "RectangleDrawable.h"
 #include "TextString.h"
-#include "Colors.h"
+#include "Color.h"
 #include <string>
 #include <vector>
 #include <memory>

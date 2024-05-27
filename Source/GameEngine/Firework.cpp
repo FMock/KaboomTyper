@@ -1,4 +1,5 @@
 #include "Firework.h"
+#include "Common.h"
 #include <cmath>
 
 using namespace GameEngine;
@@ -46,6 +47,19 @@ void Firework::Draw()
 void Firework::SetIsActive(bool isActive)
 {
     m_isActive = isActive;
+}
+
+void GameEngine::Firework::SetColor(Colors color)
+{
+    auto colorPtr = std::make_unique<Color>();
+    std::string colorString = Color::s_colorMap[color];
+    m_tex = colorPtr->s_colorParameters.m_stringColorTextureColorMap[colorString];
+}
+
+void GameEngine::Firework::SetPosition(int x, int y)
+{
+    m_posX = x;
+    m_posY = y;
 }
 
 void Firework::GenerateParticles()

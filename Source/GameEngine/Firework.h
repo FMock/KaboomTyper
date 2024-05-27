@@ -22,6 +22,8 @@ namespace GameEngine
 
         bool IsActive() const { return m_isActive; }
         void SetIsActive(bool isActive);
+        void SetColor(Colors color);
+        void SetPosition(int x, int y);
         void GenerateParticles();
 
     private:
