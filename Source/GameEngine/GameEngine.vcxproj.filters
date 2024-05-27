@@ -81,9 +81,6 @@
     <ClInclude Include="Utilities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Colors.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="IState.h">
       <Filter>Header Files\State</Filter>
     </ClInclude>

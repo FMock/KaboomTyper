@@ -41,19 +41,19 @@ void GameManager::Initialize()
     m_colorPtr = std::make_unique<Color>();
     m_fireworkColorTexture = m_colorPtr->s_colorParameters.m_stringColorTextureColorMap["green"];
     m_firework = std::make_unique<Firework>(m_fireworkColorTexture, 400, 400, 1, 1, 300);
+
     m_blowUpTextBlock = false;
 }
 
 GameEngine::GameManager::GameManager()
 {
-
 	//Initialize();
 }
 
 std::shared_ptr<GameManager> GameManager::Create()
 {
     std::shared_ptr<GameManager> instance(new GameManager());
-    instance->Initialize(); // Call Initialize after creation
+    instance->Initialize();
     return instance;
 }
 
@@ -94,6 +94,15 @@ void GameManager::ProcessInput()
         m_headsUpDisplay->SetUpdateRequired(true); // HUD needs to be updated
 
         m_blowUpTextBlock = true;
+
+        // Set Firework color and positon
+        m_firework->SetColor(Common::s_previousColor);
+        int x = (int)Common::s_currentPosition.first;
+        int y = (int)Common::s_currentPosition.second;
+        int adjustedX = x + (Common::s_currentTextBlockWidth / 2);
+        int halfFontHeight = 16;
+        int adjustedY = y + halfFontHeight;
+        m_firework->SetPosition(adjustedX, adjustedY);
 
 #if DEBUG
         std::cout << "The strings are equal." << std::endl;
@@ -216,7 +225,7 @@ void GameManager::RespondToObserved(InputManager* InputMgr)
     {
         if (currentState == GameState::IDLE)
         {
-            m_textblockManager->ClearBlockDeque(); // Causing a runtime access violation error
+            m_textblockManager->ClearBlockDeque();
             m_textblockManager->SetTextBlockLimitReached(false);
             m_headsUpDisplay->ResetScore();
         }

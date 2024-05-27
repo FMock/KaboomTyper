@@ -9,6 +9,28 @@ using namespace GameEngine::Utility;
 ColorParameters Color::s_colorParameters;
 bool Color::s_initialized;
 
+std::unordered_map<GameEngine::Colors, std::string> Color::s_colorMap = {
+{GameEngine::RED, "red"},
+{GameEngine::DARK_RED, "darkRed"},
+{GameEngine::GREEN, "green"},
+{GameEngine::DARK_GREEN, "darkGreen"},
+{GameEngine::BLUE, "blue"},
+{GameEngine::DARK_BLUE, "darkBlue"},
+{GameEngine::PURPLE, "purple"},
+{GameEngine::DARK_PURPLE, "darkPurple"},
+{GameEngine::YELLOW, "yellow"},
+{GameEngine::DARK_YELLOW, "darkYellow"},
+{GameEngine::ORANGE, "orange"},
+{GameEngine::BROWN, "brown"},
+{GameEngine::GRAY, "gray"},
+{GameEngine::DARK_GRAY, "darkGray"},
+{GameEngine::WHITE, "white"},
+{GameEngine::DEFAULT_COLOR, "defaultColor"},
+{GameEngine::BLACK, "black"},
+{GameEngine::UNKNOWN, "unknown"},
+{GameEngine::NONE, "none"}
+};
+
 Color::Color()
 {
 	if (!s_initialized)

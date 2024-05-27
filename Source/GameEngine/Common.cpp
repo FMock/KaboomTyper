@@ -7,6 +7,11 @@ using namespace GameEngine;
 std::string Common::s_submittedText = "";
 std::string Common::s_activeText = "";
 std::string Common::s_currentWordCategory = "";
+Colors Common::s_currentColor = DEFAULT_COLOR;
+Colors Common::s_previousColor = DEFAULT_COLOR;
+std::pair<float, float> Common::s_currentPosition = { 0.0f, 0.0f };
+int Common::s_currentTextBlockWidth = 0;
+
 
 void Common::SubmitText(std::string text)
 {

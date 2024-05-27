@@ -144,7 +144,6 @@
     <ClInclude Include="Button.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="ColorParameters.h" />
-    <ClInclude Include="Colors.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="ConcreteLevel.h" />
     <ClInclude Include="ConcreteSpriteFactory.h" />

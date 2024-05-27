@@ -30,7 +30,6 @@ namespace GameEngine
 	class GameManager : public InputObserver, public std::enable_shared_from_this<GameManager>
 	{
 	public:
-		//GameManager();
 		static std::shared_ptr<GameManager> Create();
 		~GameManager();
 		void Update(float dt);
@@ -40,6 +39,9 @@ namespace GameEngine
 
 	private:
 		GameManager();
+		void Initialize();
+		void UpdateGameEntities(float deltaTime);
+
 		std::shared_ptr<StateMachine> m_stateMachine;
 		std::shared_ptr<InputTextBox> m_inputTextBox;
 		std::shared_ptr<InputManager> m_inputManager; // shares with TextBlockManager
@@ -59,9 +61,6 @@ namespace GameEngine
 		FontParameters m_fontParameters;
 		std::shared_ptr<TextStringFont> m_fontPtr;
 		std::map<GameState, LevelManager*> m_levels;
-
-		void Initialize();
-		void UpdateGameEntities(float deltaTime);
 
 	protected:
 		void RespondToObserved(InputManager* InputMgr) override;
