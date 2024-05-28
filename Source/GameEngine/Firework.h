@@ -35,11 +35,18 @@ namespace GameEngine
             float scaleY;
         };
 
+        // Three color textures. Firework explosion is three colors
         GLuint m_tex;
+        GLuint m_texSecond;
+        GLuint m_texThird;
+        std::vector<Particle> m_particles;
+        std::vector<Particle> m_particlesSecond;
+        std::vector<Particle> m_particlesThird;
+
         int m_posX, m_posY;
         int m_width, m_height;
         int m_particleCount;
-        std::vector<Particle> m_particles;
+
         float m_timer;
         bool m_isActive;
     };
