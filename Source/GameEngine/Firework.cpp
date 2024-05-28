@@ -1,6 +1,7 @@
 #include "Firework.h"
 #include "Common.h"
 #include <cmath>
+#include "Color.h"
 
 using namespace GameEngine;
 
@@ -8,6 +9,8 @@ Firework::Firework(GLuint texture, int x, int y, int w, int h, int numParticles)
     : m_tex(texture), m_posX(x), m_posY(y), m_width(w), m_height(h), m_particleCount(numParticles), m_timer(0.0f), m_isActive(false)
 {
     std::srand(std::time(0));
+    m_texSecond = Color::s_colorParameters.whiteTexture;
+    m_texThird = Color::s_colorParameters.yellowTexture;
 }
 
 void GameEngine::Firework::Update(float deltaTime)
@@ -35,6 +38,14 @@ void Firework::Draw()
     for (auto& particle : m_particles) // this draw should occur over many cycles of the game loop
     {
         DrawUtilities::glDrawSpriteScaled(m_tex, particle.x, particle.y, m_width, m_height, particle.scaleX, particle.scaleY);
+    }
+    for (auto& particle : m_particlesSecond)
+    {
+        DrawUtilities::glDrawSpriteScaled(m_texSecond, particle.x, particle.y, m_width, m_height, particle.scaleX, particle.scaleY);
+    }
+    for (auto& particle : m_particlesThird)
+    {
+        DrawUtilities::glDrawSpriteScaled(m_texThird, particle.x, particle.y, m_width, m_height, particle.scaleX, particle.scaleY);
     }
 }
 
@@ -65,8 +76,11 @@ void GameEngine::Firework::SetPosition(int x, int y)
 void Firework::GenerateParticles()
 {
     m_particles.clear();
+    m_particlesSecond.clear();
+    m_particlesThird.clear();
     m_timer = 0.0f;
 
+    // Particles the same color as the TextBlock that is exploding
     for (int i = 0; i < m_particleCount; ++i)
     {
         Particle p;
@@ -79,5 +93,35 @@ void Firework::GenerateParticles()
         p.scaleX = 1.0f + static_cast<float>(std::rand()) / (RAND_MAX / 2.0f); // random scale between 1 and 3
         p.scaleY = 1.0f + static_cast<float>(std::rand()) / (RAND_MAX / 2.0f); // random scale between 1 and 3
         m_particles.push_back(p);
+    }
+
+    // White particles
+    for (int i = 0; i < m_particleCount/4; ++i)
+    {
+        Particle p;
+
+        float angle = static_cast<float>(std::rand()) / RAND_MAX * 2.0f * 3.1415926535897932; // random angle in radians
+        float radius = static_cast<float>(std::rand()) / RAND_MAX * 100.0f; // random radius, adjusted to be twice as large
+
+        p.x = m_posX + static_cast<int>(radius * cos(angle)); // x-coordinate based on polar coordinates
+        p.y = m_posY + static_cast<int>(radius * sin(angle)); // y-coordinate based on polar coordinates
+        p.scaleX = 1.0f + static_cast<float>(std::rand()) / (RAND_MAX / 2.0f); // random scale between 1 and 3
+        p.scaleY = 1.0f + static_cast<float>(std::rand()) / (RAND_MAX / 2.0f); // random scale between 1 and 3
+        m_particlesSecond.push_back(p);
+    }
+
+    // Yellow particles
+    for (int i = 0; i < m_particleCount / 4; ++i)
+    {
+        Particle p;
+
+        float angle = static_cast<float>(std::rand()) / RAND_MAX * 2.0f * 3.1415926535897932; // random angle in radians
+        float radius = static_cast<float>(std::rand()) / RAND_MAX * 100.0f; // random radius, adjusted to be twice as large
+
+        p.x = m_posX + static_cast<int>(radius * cos(angle)); // x-coordinate based on polar coordinates
+        p.y = m_posY + static_cast<int>(radius * sin(angle)); // y-coordinate based on polar coordinates
+        p.scaleX = 1.0f + static_cast<float>(std::rand()) / (RAND_MAX / 2.0f); // random scale between 1 and 3
+        p.scaleY = 1.0f + static_cast<float>(std::rand()) / (RAND_MAX / 2.0f); // random scale between 1 and 3
+        m_particlesThird.push_back(p);
     }
 }
