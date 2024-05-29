@@ -14,6 +14,7 @@ Score::~Score()
 void Score::IncreaseScore(int score)
 {
     m_score += score;
+    SetHighScore(m_score);
 }
 
 void Score::DecreaseScore(int score)
@@ -33,6 +34,7 @@ void Score::DecreaseScore(int score)
 void Score::SetScore(int score)
 {
     m_score = score;
+    SetHighScore(m_score);
 }
 
 int Score::GetScore() const
