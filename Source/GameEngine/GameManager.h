@@ -50,6 +50,8 @@ namespace GameEngine
 		std::unique_ptr<MessageBox> m_messageBox;
 		SideBar m_leftSideBar;
 		SideBar m_rightSideBar;
+		SideBar m_topSideBar;
+		SideBar m_bottomSideBar;
 		GLuint m_fireworkColorTexture;
 		std::unique_ptr<Firework> m_firework;
 		std::unique_ptr<Color> m_colorPtr;

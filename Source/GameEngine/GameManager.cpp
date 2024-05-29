@@ -37,6 +37,8 @@ void GameManager::Initialize()
 
     m_leftSideBar.Initialize(0, 42, 10, 908, Colors::BLUE, true);
     m_rightSideBar.Initialize(790, 42, 10, 908, Colors::BLUE, true);
+    m_topSideBar.Initialize(0, 142, 800, 5, Colors::BLUE, true);
+    m_bottomSideBar.Initialize(0, 910, 800, 5, Colors::BLUE, true);
 
     m_colorPtr = std::make_unique<Color>();
     m_fireworkColorTexture = m_colorPtr->s_colorParameters.m_stringColorTextureColorMap["green"];
@@ -125,6 +127,8 @@ void GameManager::Render()
 	m_messageBox->Draw();
     m_leftSideBar.Draw();
     m_rightSideBar.Draw();
+    m_topSideBar.Draw();
+    m_bottomSideBar.Draw();
 
     if (m_blowUpTextBlock)
     {
