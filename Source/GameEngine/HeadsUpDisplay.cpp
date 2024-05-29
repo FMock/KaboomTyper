@@ -64,7 +64,8 @@ void GameEngine::HeadsUpDisplay::Initialize(int x, int y)
 
 	/****** High Score ******/
 	m_highScoreLabel->Initialize("HIGH:", m_x + xPad, m_y + 32 + 32 + yPad);
-	m_score->SetHighScore(25775);
+	m_score->SetHighScore(0);
+
 	// Retrieve the high score as an integer
 	int highScoreValue = m_score->GetHighScore();
 
@@ -94,6 +95,17 @@ void GameEngine::HeadsUpDisplay::UpdateScore()
 	score = std::string(7 - score.length(), '0') + score;
 
 	m_scoreAsText->Initialize(score, m_x + column2XOffset, m_y + +32 + yPad);
+
+	// Set HighScore
+	int highScoreValue = m_score->GetHighScore();
+	// Ensure the score is limited to 7 digits
+	if (highScoreValue > 9999999)
+		highScoreValue = 9999999;
+
+	std::string highScore = std::to_string(highScoreValue);
+	highScore = std::string(7 - highScore.length(), '0') + highScore;
+
+	m_highScoreAsText->Initialize(highScore, m_x + column2XOffset, m_y + 32 + 32 + yPad);
 }
 
 void GameEngine::HeadsUpDisplay::IncreaseScore(int amount)
