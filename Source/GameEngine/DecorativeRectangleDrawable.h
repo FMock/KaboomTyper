@@ -15,6 +15,7 @@ namespace GameEngine
         void InitializeDecorativeRectangle();
         void Update(float dt) override;
         void SetAnimate(bool animate);
+        void SetAnimateClockwise(bool animate);
 
     private:
         struct Rectangle
@@ -28,9 +29,13 @@ namespace GameEngine
         std::vector<Rectangle> m_smallRectangles;
         GLuint m_secondColorTexture;
         GLuint m_thirdColorTexture;
-        float m_animationTime = 0.0f;
-        float m_animationSpeed = 1.0f; // Speed of the animation
-        int m_currentColorIndex = 0;
+        float m_animationTime;
+        float m_animationSpeed; // Speed of the animation
+        float m_clockWiseAnimationSpeed;
+        int m_lap;
+        int m_currentColorIndex;
         bool m_animate;
+        bool m_animateClockWise;
+        float m_deltaTime;
     };
 }

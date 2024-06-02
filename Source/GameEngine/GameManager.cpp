@@ -49,6 +49,7 @@ void GameManager::Initialize()
     m_rectangleOfRectangles = std::make_unique<DecorativeRectangle>();
     m_rectangleOfRectangles->Initialize(13, 45, 430, 100, Colors::DARK_GRAY);
     m_rectangleOfRectangles->SetAnimate(true);
+    m_rectangleOfRectangles->SetAnimateClockwise(false);
 }
 
 GameEngine::GameManager::GameManager()
@@ -183,6 +184,7 @@ void GameManager::RespondToObserved(InputManager* InputMgr)
             m_messageBox->ChangeMessage(m_stateMachine->GetCurrentStateAsString());
             m_rectangleOfRectangles->SetAnimate(false);
 
+
             if(!textblockGeneratorRunning)
             {
                 m_textblockManager->ToggleRunning();
@@ -199,9 +201,14 @@ void GameManager::RespondToObserved(InputManager* InputMgr)
                 m_textblockManager->ToggleRunning();
             }
         }
+        else if (currentState == GameState::RUNNING)
+        {
+            m_rectangleOfRectangles->SetAnimateClockwise(true);
+        }
     }
     else if (InputMgr->m_kbState[SDL_SCANCODE_F2])
     {
+        m_rectangleOfRectangles->SetAnimateClockwise(false);
         if (currentState == GameState::RUNNING)
         {
             m_stateMachine->TransitionTo(GameState::PAUSED);
@@ -213,6 +220,7 @@ void GameManager::RespondToObserved(InputManager* InputMgr)
     }
     else if (InputMgr->m_kbState[SDL_SCANCODE_F3])
     {
+        m_rectangleOfRectangles->SetAnimateClockwise(false);
         if (currentState == GameState::PAUSED || currentState == GameState::RUNNING)
         {
             m_stateMachine->TransitionTo(GameState::STOPPED);
