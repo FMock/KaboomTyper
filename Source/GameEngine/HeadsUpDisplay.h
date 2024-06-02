@@ -32,8 +32,12 @@ namespace GameEngine
 		std::unique_ptr<TextString> m_levelLabel;
 		std::unique_ptr<TextString> m_levelAsText;
 		std::unique_ptr<Score> m_score;
+
 		int m_x, m_y; // HUD Position
 		int m_width, m_height; // HUD Width and Height
 		bool m_updatedRequired;
+		int m_column2XOffset;
+		int m_xPad;
+		int m_yPad;
 	};
 }

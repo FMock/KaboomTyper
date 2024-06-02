@@ -19,6 +19,7 @@
 #include "SideBar.h"
 #include "Firework.h"
 #include "Color.h"
+#include "DecorativeRectangleDrawable.h"
 
 /// <summary>
 /// GameManager manages the various entities in the game to create a
@@ -63,6 +64,7 @@ namespace GameEngine
 		FontParameters m_fontParameters;
 		std::shared_ptr<TextStringFont> m_fontPtr;
 		std::map<GameState, LevelManager*> m_levels;
+		std::unique_ptr<DecorativeRectangle> m_rectangleOfRectangles;
 
 	protected:
 		void RespondToObserved(InputManager* InputMgr) override;

@@ -358,6 +358,43 @@ void DrawUtilities::glDrawRectangleOutline(GLuint tex, int x, int y, int w, int 
 	glEnd();
 }
 
+void DrawUtilities::glDrawRectangleOutline(GLuint tex, int x, int y, float width, float height)
+{
+	GLuint w = 1;
+	GLuint h = 1;
+
+	glBindTexture(GL_TEXTURE_2D, tex);
+	glBegin(GL_LINES);
+	{
+		glColor3ub(255, 255, 255);
+
+		// Top line
+		glTexCoord2f(0.0f, 1.0f); // top left
+		glVertex2i(x, y);
+		glTexCoord2f(width, 1.0f); // top right
+		glVertex2i(x + w * width, y);
+
+		// Right line
+		glTexCoord2f(width, 1.0f); // top right
+		glVertex2i(x + w * width, y);
+		glTexCoord2f(width, 0.0f); // bottom right
+		glVertex2i(x + w * width, y + h * height);
+
+		// Bottom line
+		glTexCoord2f(width, 0.0f); // bottom right
+		glVertex2i(x + w * width, y + h * height);
+		glTexCoord2f(0.0f, 0.0f); // bottom left
+		glVertex2i(x, y + h * height);
+
+		// Left line
+		glTexCoord2f(0.0f, 0.0f); // bottom left
+		glVertex2i(x, y + h * height);
+		glTexCoord2f(0.0f, 1.0f); // top left
+		glVertex2i(x, y);
+	}
+	glEnd();
+}
+
 void DrawUtilities::glDrawRectangleOutline(int x, int y, int w, int h, const RGBColor& outlineColor)
 {
 	glBegin(GL_LINES);
