@@ -46,6 +46,11 @@ namespace GameEngine
 
     void RectangleDrawable::Update()
     {
+  
+    }
+
+    void RectangleDrawable::Update(float dt)
+    {
         // Update logic for RectangleDrawable
     }
 
@@ -83,7 +88,7 @@ namespace GameEngine
             throw std::exception("RectangleDrawable Not Fully Initialized");
 
         if (m_filled)
-            glDrawSpriteScaled(m_colorTexture, m_x, m_y, m_colorTextureWidth, m_colorTextureHeight, (float)m_width, (float)m_height);
+            glDrawTexture(m_colorTexture, m_x, m_y, (float)m_width, (float)m_height);
         else
             glDrawRectangleOutline(m_colorTexture, m_x, m_y, m_colorTextureWidth, m_colorTextureHeight, (float)m_width, (float)m_height);
     }

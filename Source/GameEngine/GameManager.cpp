@@ -48,6 +48,7 @@ void GameManager::Initialize()
 
     m_rectangleOfRectangles = std::make_unique<DecorativeRectangle>();
     m_rectangleOfRectangles->Initialize(13, 45, 430, 100, Colors::DARK_GRAY);
+    m_rectangleOfRectangles->SetAnimate(true);
 }
 
 GameEngine::GameManager::GameManager()
@@ -82,6 +83,7 @@ void GameManager::Update(float dt)
     {
         m_firework->Update(dt);
     }
+    m_rectangleOfRectangles->Update(dt);
 }
 
 void GameManager::ProcessInput()
@@ -123,16 +125,6 @@ void GameManager::ProcessInput()
 
 void GameManager::Render()
 {
-    m_textblockManager->Draw();
-	m_headsUpDisplay->Draw();
-	m_inputTextBox->Draw();
-	m_gameMenu->Draw();
-	m_messageBox->Draw();
-    m_leftSideBar.Draw();
-    m_rightSideBar.Draw();
-    m_topSideBar.Draw();
-    m_bottomSideBar.Draw();
-
     if (m_blowUpTextBlock)
     {
         m_firework->SetIsActive(true);
@@ -145,6 +137,15 @@ void GameManager::Render()
         m_firework->Draw();
     }
 
+    m_textblockManager->Draw();
+	m_headsUpDisplay->Draw();
+	m_inputTextBox->Draw();
+	m_gameMenu->Draw();
+	m_messageBox->Draw();
+    m_leftSideBar.Draw();
+    m_rightSideBar.Draw();
+    m_topSideBar.Draw();
+    m_bottomSideBar.Draw();
     m_rectangleOfRectangles->DrawRectangleWithRectangles();
 }
 
@@ -180,6 +181,7 @@ void GameManager::RespondToObserved(InputManager* InputMgr)
         {
             m_stateMachine->TransitionTo(GameState::RUNNING);
             m_messageBox->ChangeMessage(m_stateMachine->GetCurrentStateAsString());
+            m_rectangleOfRectangles->SetAnimate(false);
 
             if(!textblockGeneratorRunning)
             {
@@ -235,6 +237,7 @@ void GameManager::RespondToObserved(InputManager* InputMgr)
         if (currentState == GameState::IDLE)
         {
             m_messageBox->ChangeMessage("Press F1 to Start");
+            m_rectangleOfRectangles->SetAnimate(true);
             m_textblockManager->ClearBlockDeque();
             m_textblockManager->SetTextBlockLimitReached(false);
             m_headsUpDisplay->ResetScore();

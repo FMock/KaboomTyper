@@ -42,6 +42,7 @@ namespace DrawUtilities
 	void glDrawSpriteScaled(GLuint tex, int x, int y, int w, int h, float scaleX, float scaleY);
 	void glDrawSpriteScaledRotated(GLuint tex, int x, int y, int w, int h, float scaleX, float scaleY, float angle);
 	void glDrawSpriteScaled(GLuint tex, int x, int y, int w, int h, float scaleX, float scaleY, GLuint xScaled, GLuint yScaled);
+	void glDrawTexture(GLuint tex, int x, int y, float width, float height); // assumes the texture w = 1 and h = 1
 	void glDrawRectangleOutline(GLuint tex, int x, int y, int w, int h, float scaleX, float scaleY);
 	void glDrawRectangleOutline(int x, int y, int w, int h, const RGBColor& outlineColor);
 	void glDrawRectangleOutline(GLuint tex, int x, int y, float width, float height); // assumes a texture w and h of 1
