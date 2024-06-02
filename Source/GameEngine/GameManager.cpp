@@ -31,13 +31,13 @@ void GameManager::Initialize()
 
 	m_stateMachine = std::make_unique<StateMachine>();
 	m_headsUpDisplay = std::make_unique<HeadsUpDisplay>();
-	m_headsUpDisplay->Initialize(440, 43);
+	m_headsUpDisplay->Initialize(445, 43);
 
     m_textblockManager = std::make_unique < TextBlockManager>(10.0f, m_inputManager);
 
     m_leftSideBar.Initialize(0, 42, 10, 908, Colors::BLUE, true);
     m_rightSideBar.Initialize(790, 42, 10, 908, Colors::BLUE, true);
-    m_topSideBar.Initialize(0, 142, 800, 5, Colors::BLUE, true);
+    m_topSideBar.Initialize(0, 146, 800, 5, Colors::BLUE, true);
     m_bottomSideBar.Initialize(0, 910, 800, 5, Colors::BLUE, true);
 
     m_colorPtr = std::make_unique<Color>();
@@ -45,6 +45,9 @@ void GameManager::Initialize()
     m_firework = std::make_unique<Firework>(m_fireworkColorTexture, 400, 400, 1, 1, 300);
 
     m_blowUpTextBlock = false;
+
+    m_rectangleOfRectangles = std::make_unique<DecorativeRectangle>();
+    m_rectangleOfRectangles->Initialize(13, 45, 430, 100, Colors::DARK_GRAY);
 }
 
 GameEngine::GameManager::GameManager()
@@ -141,6 +144,8 @@ void GameManager::Render()
     {
         m_firework->Draw();
     }
+
+    m_rectangleOfRectangles->DrawRectangleWithRectangles();
 }
 
 void GameEngine::GameManager::UpdateGameEntities(float deltaTime)
@@ -229,6 +234,7 @@ void GameManager::RespondToObserved(InputManager* InputMgr)
     {
         if (currentState == GameState::IDLE)
         {
+            m_messageBox->ChangeMessage("Press F1 to Start");
             m_textblockManager->ClearBlockDeque();
             m_textblockManager->SetTextBlockLimitReached(false);
             m_headsUpDisplay->ResetScore();

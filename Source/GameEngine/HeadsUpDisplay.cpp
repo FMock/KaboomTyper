@@ -13,6 +13,7 @@ HeadsUpDisplay::HeadsUpDisplay()
 	  m_score(std::make_unique<Score>()),
 	  m_x(0), m_y(0), m_width(0), m_height(0), m_updatedRequired(false)
 {
+
 }
 
 HeadsUpDisplay::~HeadsUpDisplay()
@@ -35,16 +36,16 @@ void GameEngine::HeadsUpDisplay::Initialize(int x, int y)
 	/****** HUD Background ******/
 	m_x = x;
 	m_y = y;
-	m_width = 350; // TODO: fix. magic number
-	m_height = 100; // TODO: fix. magic number
-	int xPad = 5; // TODO: fix. magic number
-	int yPad = 5; // TODO: fix. magic number
-	int column2XOffset = 175;// TODO: fix. magic number
+	m_width = 345; // TODO: fix. magic number
+	m_height = 104; // TODO: fix. magic number
+	m_xPad = 10; // TODO: fix. magic number
+	m_yPad = 5; // TODO: fix. magic number
+	m_column2XOffset = 165;// TODO: fix. magic number
 
 	m_background->Initialize(m_x, m_y, m_width, m_height, Colors::RED, true); // true because we want to rectangle filled in
 
 	/****** Level  ******/
-	m_levelLabel->Initialize("LEVEL:", m_x + xPad, m_y + yPad);
+	m_levelLabel->Initialize("LEVEL:", m_x + m_xPad, m_y + m_yPad);
 
 	int levelValue = 1;
 
@@ -56,14 +57,14 @@ void GameEngine::HeadsUpDisplay::Initialize(int x, int y)
 	std::string level = std::to_string(levelValue);
 	level = std::string(7 - level.length(), '0') + level;
 
-	m_levelAsText->Initialize(level, m_x + column2XOffset, m_y + 5);
+	m_levelAsText->Initialize(level, m_x + m_column2XOffset, m_y + 5);
 
 	/****** Score ******/
-	m_scoreLabel->Initialize("SCORE:", m_x + xPad, m_y + 32 + yPad);
+	m_scoreLabel->Initialize("SCORE:", m_x + m_xPad, m_y + 32 + m_yPad);
 	UpdateScore();
 
 	/****** High Score ******/
-	m_highScoreLabel->Initialize("HIGH:", m_x + xPad, m_y + 32 + 32 + yPad);
+	m_highScoreLabel->Initialize("HIGH:", m_x + m_xPad, m_y + 32 + 32 + m_yPad);
 	m_score->SetHighScore(0);
 
 	// Retrieve the high score as an integer
@@ -76,14 +77,11 @@ void GameEngine::HeadsUpDisplay::Initialize(int x, int y)
 	std::string highScore = std::to_string(highScoreValue);
 	highScore = std::string(7 - highScore.length(), '0') + highScore;
 
-	m_highScoreAsText->Initialize(highScore, m_x + column2XOffset, m_y + 32 + 32 + yPad);
+	m_highScoreAsText->Initialize(highScore, m_x + m_column2XOffset, m_y + 32 + 32 + m_yPad);
 }
 
 void GameEngine::HeadsUpDisplay::UpdateScore()
 {
-	int column2XOffset = 175; // TODO: fix. magic number
-	int yPad = 5; // TODO: fix. magic number
-
 	int scoreValue = m_score->GetScore();
 
 	// Ensure the score is limited to 7 digits
@@ -94,7 +92,7 @@ void GameEngine::HeadsUpDisplay::UpdateScore()
 	std::string score = std::to_string(scoreValue);
 	score = std::string(7 - score.length(), '0') + score;
 
-	m_scoreAsText->Initialize(score, m_x + column2XOffset, m_y + +32 + yPad);
+	m_scoreAsText->Initialize(score, m_x + m_column2XOffset, m_y + +32 + m_yPad);
 
 	// Set HighScore
 	int highScoreValue = m_score->GetHighScore();
@@ -105,7 +103,7 @@ void GameEngine::HeadsUpDisplay::UpdateScore()
 	std::string highScore = std::to_string(highScoreValue);
 	highScore = std::string(7 - highScore.length(), '0') + highScore;
 
-	m_highScoreAsText->Initialize(highScore, m_x + column2XOffset, m_y + 32 + 32 + yPad);
+	m_highScoreAsText->Initialize(highScore, m_x + m_column2XOffset, m_y + 32 + 32 + m_yPad);
 }
 
 void GameEngine::HeadsUpDisplay::IncreaseScore(int amount)

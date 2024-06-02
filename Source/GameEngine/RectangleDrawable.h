@@ -12,8 +12,8 @@ namespace GameEngine
 	public:
 		RectangleDrawable();
 		RectangleDrawable(int x, int y, int width, int height, Colors rectColor = DEFAULT_COLOR, bool filled = false);
-		~RectangleDrawable();
-		void Initialize(int x, int y, int width, int height, Colors rectColor = DEFAULT_COLOR, bool filled = false);
+		virtual ~RectangleDrawable();
+		virtual void Initialize(int x, int y, int width, int height, Colors rectColor = DEFAULT_COLOR, bool filled = false);
 		void Update() override;
 		void Draw() override;
 		void ChangeColor(Colors color);
@@ -25,7 +25,7 @@ namespace GameEngine
 		int GetHeight() const;
 #pragma endregion
 
-	private:
+	protected:
 		void DrawRectangle();
 		int m_width;
 		int m_height;

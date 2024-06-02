@@ -4,6 +4,7 @@
 #include<string>
 #include<vector>
 #include "RGBColor.h"
+#include "Color.h"
 
 struct GlDrawFrameParams
 {
@@ -43,6 +44,7 @@ namespace DrawUtilities
 	void glDrawSpriteScaled(GLuint tex, int x, int y, int w, int h, float scaleX, float scaleY, GLuint xScaled, GLuint yScaled);
 	void glDrawRectangleOutline(GLuint tex, int x, int y, int w, int h, float scaleX, float scaleY);
 	void glDrawRectangleOutline(int x, int y, int w, int h, const RGBColor& outlineColor);
+	void glDrawRectangleOutline(GLuint tex, int x, int y, float width, float height); // assumes a texture w and h of 1
 	void glDrawRectangleOutlineFilled(GLuint tex, int x, int y, int w, int h, float scaleX, float scaleY, const RGBColor& fillColor);
 	void glDrawFilledRectangle(int x, int y, int w, int h, const RGBColor& fillColor);
 	void glDrawAudio(GLuint tex, int x, int y, int w, int h, std::vector<float> audio);

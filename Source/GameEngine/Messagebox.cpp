@@ -4,7 +4,7 @@ using namespace GameEngine;
 
 GameEngine::MessageBox::MessageBox()
 {
-	Initialize(11, 43, 428, 99); // setup
+	Initialize(11, 43, 433, 103); // setup
 }
 
 GameEngine::MessageBox::MessageBox(int x, int y, int width, int height, Colors color)
@@ -26,8 +26,8 @@ void GameEngine::MessageBox::Initialize(int x, int y, int width, int height, Col
 	bool fillMessageBox = true;
 	m_body.Initialize(x, y, width, height, color, fillMessageBox);
 
-	m_messageMap["default"] = std::make_unique<TextString>("Press F1 to Start", x + 10, y + 30);
-	m_messageMap["gameover"] = std::make_unique<TextString>("Game Over", x + 10, y + 30);
+	m_messageMap["default"] = std::make_unique<TextString>("Press F1 to Start", m_x + 20, m_y + 20);
+	m_messageMap["gameover"] = std::make_unique<TextString>("Game Over", m_x + 10, m_y + 30);
 
 	m_currentMessage = "";
 
@@ -37,7 +37,7 @@ void GameEngine::MessageBox::Initialize(int x, int y, int width, int height, Col
 void GameEngine::MessageBox::ChangeMessage(std::string message)
 {
 	m_currentMessage = message;
-	m_messageMap[message] = std::make_unique<TextString>(message.c_str(), 15, 50);
+	m_messageMap[message] = std::make_unique<TextString>(message.c_str(), m_x + 20, m_y + 20);
 }
 
 void GameEngine::MessageBox::Draw()
@@ -48,7 +48,7 @@ void GameEngine::MessageBox::Draw()
 	m_body.Draw();
 
 	if(m_currentMessage.empty())
-		m_messageMap["default"]->DrawText(1.0f);
+		m_messageMap["default"]->DrawText(0.80f);
 	else
-		m_messageMap[m_currentMessage]->DrawText(1.0);
+		m_messageMap[m_currentMessage]->DrawText(0.80);
 }
