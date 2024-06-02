@@ -13,6 +13,8 @@ namespace GameEngine
         void Initialize(int x, int y, int width, int height, Colors rectColor = DEFAULT_COLOR, bool filled = false) override;
         void DrawRectangleWithRectangles();
         void InitializeDecorativeRectangle();
+        void Update(float dt) override;
+        void SetAnimate(bool animate);
 
     private:
         struct Rectangle
@@ -24,5 +26,11 @@ namespace GameEngine
         };
 
         std::vector<Rectangle> m_smallRectangles;
+        GLuint m_secondColorTexture;
+        GLuint m_thirdColorTexture;
+        float m_animationTime = 0.0f;
+        float m_animationSpeed = 1.0f; // Speed of the animation
+        int m_currentColorIndex = 0;
+        bool m_animate;
     };
 }

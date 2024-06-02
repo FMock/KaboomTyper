@@ -14,7 +14,8 @@ namespace GameEngine
 		RectangleDrawable(int x, int y, int width, int height, Colors rectColor = DEFAULT_COLOR, bool filled = false);
 		virtual ~RectangleDrawable();
 		virtual void Initialize(int x, int y, int width, int height, Colors rectColor = DEFAULT_COLOR, bool filled = false);
-		void Update() override;
+		void Update();
+		virtual void Update(float dt);
 		void Draw() override;
 		void ChangeColor(Colors color);
 

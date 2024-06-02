@@ -246,6 +246,32 @@ void DrawUtilities::glDrawSpriteScaled(GLuint tex, int x, int y, int w, int h, f
 	glEnd(); // sends all submitted data to the GPU for rendering
 }
 
+// Assumes the tex w = 1, and h = 1
+void DrawUtilities::glDrawTexture(GLuint tex, int x, int y, float width, float height)
+{
+	int w = 1;
+	int h = 1;
+
+	glBindTexture(GL_TEXTURE_2D, tex);
+	glBegin(GL_QUADS);
+	{
+		glColor3ub(255, 255, 255);
+
+		glTexCoord2f(0.0f, 1.0f); // top left
+		glVertex2i(x, y);
+
+		glTexCoord2f(width, 1.0f); // top right
+		glVertex2i(x + w * width, y);
+
+		glTexCoord2f(width, 0.0f); // bottom right
+		glVertex2i(x + w * width, y + h * height);
+
+		glTexCoord2f(0.0f, 0.0f); // bottom left
+		glVertex2i(x, y + h * height);
+	}
+	glEnd(); // sends all submitted data to the GPU for rendering
+}
+
 // Function to draw a sprite at an angle
 void DrawUtilities::glDrawSpriteScaledRotated(GLuint tex, int x, int y, int w, int h, float scaleX, float scaleY, float angle)
 {
