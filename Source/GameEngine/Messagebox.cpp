@@ -26,29 +26,40 @@ void GameEngine::MessageBox::Initialize(int x, int y, int width, int height, Col
 	bool fillMessageBox = true;
 	m_body.Initialize(x, y, width, height, color, fillMessageBox);
 
-	m_messageMap["default"] = std::make_unique<TextString>("Press F1 to Start", m_x + 20, m_y + 20);
+	m_messageMap["default"] = std::make_unique<TextString>("F1: START GAME", m_x + 20, m_y + 16);
 	m_messageMap["gameover"] = std::make_unique<TextString>("Game Over", m_x + 10, m_y + 30);
 
-	m_currentMessage = "";
+	m_message_01 = "";
+	m_message_02 = "";
+	m_message_03 = "";
 
 	m_initialized = true;
 }
 
-void GameEngine::MessageBox::ChangeMessage(std::string message)
-{
-	m_currentMessage = message;
-	m_messageMap[message] = std::make_unique<TextString>(message.c_str(), m_x + 20, m_y + 20);
-}
-
 void GameEngine::MessageBox::Draw()
 {
-	if (!m_initialized)
-		throw std::exception("MessageBox not initialized");
+    if (!m_initialized)
+        throw std::exception("MessageBox not initialized");
 
-	m_body.Draw();
+    m_body.Draw();
 
-	if(m_currentMessage.empty())
-		m_messageMap["default"]->DrawText(0.80f);
-	else
-		m_messageMap[m_currentMessage]->DrawText(0.80);
+    if (m_message_01.empty() && m_message_02.empty() && m_message_03.empty())
+    {
+        m_messageMap["default"]->DrawText(0.80f);
+    }
+    else
+    {
+        if (!m_message_01.empty())
+        {
+            m_messageMap[m_message_01]->DrawText(0.80f);
+        }
+        if (!m_message_02.empty())
+        {
+            m_messageMap[m_message_02]->DrawText(0.80f);
+        }
+        if (!m_message_03.empty())
+        {
+            m_messageMap[m_message_03]->DrawText(0.80f);
+        }
+    }
 }

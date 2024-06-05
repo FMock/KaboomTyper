@@ -1,4 +1,3 @@
-// DecorativeRectangle.h
 #pragma once
 
 #include "RectangleDrawable.h"
