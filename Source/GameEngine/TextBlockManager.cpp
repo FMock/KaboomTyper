@@ -93,15 +93,10 @@ void TextBlockManager::Update(float dt)
 
         if (blockA->GetMovingState())
         {
-            if (blockAPosition.second >= Common::FLOOR) //TextBlock landed on the bottom
+            if (blockAPosition.second >= Common::FLOOR) // TextBlock landed on the bottom
             {
-                blockA->SetMovingState(false);
-                blockA->SetPosition(blockAPosition.first, Common::FLOOR);
-                blockA->SetActiveState(false);
-
-                m_inputManager->UnregisterObserver(blockA.get());
-
-                GenerateTextBlock(); // Previous TextBlock reached the botton so create another one
+                HandleLanding(blockA);
+                GenerateTextBlock(); // Previous TextBlock reached the bottom so create another one
             }
             else
             {
@@ -113,10 +108,8 @@ void TextBlockManager::Update(float dt)
             ToggleRunning(); // Game Over
             m_limitReached = true;
             gameOver = true;
-        }
-
-        if (gameOver)
             break;
+        }
 
         // Check for collisions with other TextBlocks
         for (size_t j = 0; j < m_blockDeque.size(); ++j)
@@ -127,15 +120,14 @@ void TextBlockManager::Update(float dt)
             auto& blockB = m_blockDeque[j];
             HandleCollisions(*blockA, blockAPosition.second, *blockB);
         }
+
+        if (gameOver)
+            break;
     }
 
     if (gameOver)
     {
-        // Unregister all TextBlocks from the InputManager
-        for (auto& block : m_blockDeque)
-        {
-            m_inputManager->UnregisterObserver(block.get());
-        }
+        UnregisterAllTextBlocks();
     }
     else
     {
@@ -143,6 +135,103 @@ void TextBlockManager::Update(float dt)
         SetHorizontalMovement(horizontalMovableBlock);
     }
 
+    UpdateTimer(dt);
+
+//    if (!m_running)
+//        return;
+//
+//    TextBlock* horizontalMovableBlock = nullptr;
+//    bool gameOver = false;
+//
+//    for (size_t i = 0; i < m_blockDeque.size(); ++i)
+//    {
+//        auto& blockA = m_blockDeque[i];
+//        blockA->Update(dt);
+//        auto blockAPosition = blockA->GetPosition();
+//
+//        if (blockA->GetMovingState())
+//        {
+//            if (blockAPosition.second >= Common::FLOOR) //TextBlock landed on the bottom
+//            {
+//                blockA->SetMovingState(false);
+//                blockA->SetPosition(blockAPosition.first, Common::FLOOR);
+//                blockA->SetActiveState(false);
+//
+//                m_inputManager->UnregisterObserver(blockA.get());
+//
+//                GenerateTextBlock(); // Previous TextBlock reached the botton so create another one
+//            }
+//            else
+//            {
+//                horizontalMovableBlock = blockA.get();
+//            }
+//        }
+//        else if (blockAPosition.second <= Common::CEILING)
+//        {
+//            ToggleRunning(); // Game Over
+//            m_limitReached = true;
+//            gameOver = true;
+//        }
+//
+//        if (gameOver)
+//            break;
+//
+//        // Check for collisions with other TextBlocks
+//        for (size_t j = 0; j < m_blockDeque.size(); ++j)
+//        {
+//            if (i == j)
+//                continue;
+//
+//            auto& blockB = m_blockDeque[j];
+//            HandleCollisions(*blockA, blockAPosition.second, *blockB);
+//        }
+//    }
+//
+//    if (gameOver)
+//    {
+//        // Unregister all TextBlocks from the InputManager
+//        for (auto& block : m_blockDeque)
+//        {
+//            m_inputManager->UnregisterObserver(block.get());
+//        }
+//    }
+//    else
+//    {
+//        // Set the block that can move horizontally, if there is one
+//        SetHorizontalMovement(horizontalMovableBlock);
+//    }
+//
+//    m_elapsedTime += dt;
+//
+//    if (m_elapsedTime >= m_spawnInterval)
+//    {
+//#if DEBUG
+//        // Do something
+//        std::cout << "Timer has elapsed" << std::endl;
+//#endif
+//        m_elapsedTime = 0.0f;
+//    }
+}
+
+
+void TextBlockManager::HandleLanding(std::shared_ptr<TextBlock>& block)
+{
+    block->SetMovingState(false);
+    block->SetPosition(block->GetPosition().first, Common::FLOOR);
+    block->SetActiveState(false);
+    m_inputManager->UnregisterObserver(block.get());
+}
+
+void TextBlockManager::UnregisterAllTextBlocks()
+{
+    for (auto& block : m_blockDeque)
+    {
+        m_inputManager->UnregisterObserver(block.get());
+    }
+}
+
+void TextBlockManager::UpdateTimer(float dt)
+{
     m_elapsedTime += dt;
 
     if (m_elapsedTime >= m_spawnInterval)

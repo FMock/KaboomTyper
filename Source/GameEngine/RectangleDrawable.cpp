@@ -90,7 +90,7 @@ namespace GameEngine
         if (m_filled)
             glDrawTexture(m_colorTexture, m_x, m_y, (float)m_width, (float)m_height);
         else
-            glDrawRectangleOutline(m_colorTexture, m_x, m_y, m_colorTextureWidth, m_colorTextureHeight, (float)m_width, (float)m_height);
+            glDrawRectangleOutline(m_colorTexture, m_x, m_y, (float)m_width, (float)m_height);
     }
 
     void RectangleDrawable::ChangeColor(Colors newColor)

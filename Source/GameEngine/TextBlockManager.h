@@ -21,6 +21,9 @@ namespace GameEngine
         std::shared_ptr<InputManager> m_inputManager;
         void SetHorizontalMovement(TextBlock* block);
         TextBlock* m_horizontalMovingBlock; // Pointer to the block that can move horizontally
+        void HandleLanding(std::shared_ptr<TextBlock>& block);
+        void UnregisterAllTextBlocks();
+        void UpdateTimer(float dt);
 
     public:
         TextBlockManager(float spawnIntervalSeconds, std::shared_ptr<InputManager> inputManager);
