@@ -184,7 +184,7 @@ void GameManager::RespondToObserved(InputManager* InputMgr)
             m_stateMachine->TransitionTo(GameState::RUNNING);
             m_messageBox->ChangeMessage("F2: PAUSE", "F3: END GAME");
             m_rectangleOfRectangles->SetAnimate(false);
-
+            m_rectangleOfRectangles->SetAnimateRandom(false);
 
             if(!textblockGeneratorRunning)
             {
@@ -234,7 +234,8 @@ void GameManager::RespondToObserved(InputManager* InputMgr)
         {
             m_stateMachine->TransitionTo(GameState::STOPPED);
             m_messageBox->ChangeMessage("GAME OVER", "F1:  NEW GAME", "ESC: EXIT GAME");
-            m_rectangleOfRectangles->SetAnimate(true);
+            //m_rectangleOfRectangles->SetAnimate(true);
+            m_rectangleOfRectangles->SetAnimateRandom(true);
 
             if (textblockGeneratorRunning)
             {

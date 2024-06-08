@@ -4,7 +4,7 @@ using namespace GameEngine;
 
 GameEngine::MessageBox::MessageBox()
 {
-	Initialize(11, 43, 433, 103); // setup
+	Initialize(11, 43, 433, 103, Colors::BLACK); // setup
 }
 
 GameEngine::MessageBox::MessageBox(int x, int y, int width, int height, Colors color)
