@@ -54,9 +54,9 @@ namespace GameEngine
 		unsigned int m_currentTime = 0;
 		unsigned int m_f_previousTime = 0;
 		unsigned int m_f_currentTime = 0;
-		float m_deltaTime = 0.0f;
-		float m_noKeyPressTime = 0.0f;
-		float m_msPerFrame = 0.0f;
+		double m_deltaTime = 0.0f;
+		double m_noKeyPressTime = 0.0f;
+		double m_msPerFrame = 0.0f;
 		unsigned int m_seconds = 0;
 		unsigned int m_fps = 0;
 	};

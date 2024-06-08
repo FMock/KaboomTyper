@@ -119,7 +119,7 @@ void Game::UpdateGame()
 	// Compute deltaTime - the time difference between each frame
 	m_currentTime = SDL_GetTicks();
 	m_msPerFrame = m_currentTime - m_previousTime; // ~14 ms
-	m_deltaTime = (m_msPerFrame) / 1000.0f; // ~ 0.014
+	m_deltaTime = m_msPerFrame / 1000.0f; // ~ 0.014
 	m_previousTime = m_currentTime;
 
 	// Calculate FPS and print
