@@ -31,19 +31,24 @@ namespace GameEngine
 
         GLuint GetRandomTexture(const std::vector<GLuint>& textures);
         int GetRandomIndex(const std::vector<Rectangle>& rectangles);
+        std::mt19937& GetRng();
         void UpdateRandomIndicesAndColors(std::vector<int>& randomIndices, std::vector<GLuint>& randomColorTextures, const std::vector<Rectangle>& m_smallRectangles, const std::vector<GLuint>& textures);
 
         std::vector<Rectangle> m_smallRectangles;
+        std::vector<GLuint> m_colorTextures;
         GLuint m_blueTexture;
         GLuint m_redTexture;
         GLuint m_yellowTexture;
         GLuint m_greenTexture;
         GLuint m_orangeTexture;
+        GLuint m_purpleTexture;
 
         float m_animationTime;
         float m_animationSpeed; // Speed of the animation
-        float m_clockWiseAnimationSpeed;
-        float m_randomAnimationSpeed;
+        float m_clockWiseAnimationSpeed; // determines how fast the threshold is exceeded to trigger next frame
+        float m_clockWiseAnimationThreshold;
+        float m_randomAnimationSpeed; // determines how fast the threshold will be exceeded an the next frame render is triggered
+        float m_randomAnimationThreshold;
         double m_randomAnimationTime;
         int m_lap;
         int m_currentColorIndex;

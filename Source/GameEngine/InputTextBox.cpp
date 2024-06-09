@@ -6,7 +6,7 @@ using namespace GameEngine;
 
 
 InputTextBox::InputTextBox()
-    : m_textBox(std::make_unique<RectangleDrawable>()), m_cursorXPos(0), m_cursorYPos(0), m_fontWidth(24),m_initialized(false), m_full(false), m_startCursorXPos(0),m_startCursorYPos(0), m_maxCharacters(0)
+    : m_textBox(std::make_unique<RectangleDrawable>()), m_cursor(std::make_unique<Cursor>()), m_cursorXPos(0), m_cursorYPos(0), m_fontWidth(24),m_initialized(false), m_full(false), m_startCursorXPos(0),m_startCursorYPos(0), m_maxCharacters(0)
 {
 }
 
@@ -17,17 +17,22 @@ InputTextBox::~InputTextBox()
 void InputTextBox::InitializeTextBox(int x, int y, int width, int height, Colors rectColor, bool fillTextbox)
 {
     m_textBox->Initialize(x, y, width, height, rectColor, fillTextbox);
+
     m_cursorXPos = x;
-    m_startCursorXPos = x;
+    m_startCursorXPos = x + 2;
     m_cursorYPos = y + 2;
     m_startCursorYPos = y + 2;
     m_maxCharacters = width / m_fontWidth;
     m_full = false;
+
+    m_cursor->Initialize(m_startCursorXPos, m_cursorYPos, 3, height - 4, Colors::DARK_GRAY, true);
+
     m_initialized = true;
 }
 
-void InputTextBox::Update()
+void InputTextBox::Update(float dt)
 {
+    m_cursor->Update(dt);
 }
 
 void InputTextBox::Draw()
@@ -37,6 +42,7 @@ void InputTextBox::Draw()
 
     // First draw the textbox rectangle
     m_textBox->Draw();
+    m_cursor->Draw();
 
     // Next draw the text
     const int N = m_inputText.size();
@@ -86,6 +92,8 @@ void InputTextBox::MoveCursorForward()
     }  
     else
         m_cursorXPos += m_fontWidth;
+
+    m_cursor->SetXPos(m_cursorXPos);
 }
 
 void InputTextBox::MoveCursorBack()
@@ -96,6 +104,8 @@ void InputTextBox::MoveCursorBack()
         m_cursorXPos -= m_fontWidth;
 
     m_full = false;
+
+    m_cursor->SetXPos(m_cursorXPos);
 }
 
 std::string InputTextBox::GetTextBoxContentsAsString()
@@ -438,6 +448,7 @@ void InputTextBox::RespondToObserved(InputManager* InputMgr)
                 m_inputText.clear();
                 m_cursorXPos = m_startCursorXPos;
                 m_cursorYPos = m_startCursorYPos;
+                m_cursor->SetXPos(m_cursorXPos);
                 break;
             default:
                 // do nothing

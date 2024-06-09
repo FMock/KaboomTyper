@@ -7,8 +7,10 @@ namespace GameEngine
 	class SideBar : public RectangleDrawable
 	{
 	public:
+		using RectangleDrawable::RectangleDrawable; // Inherit constructors
 
-		SideBar();
-		~SideBar();
+		void Initialize(int x, int y, int width, int height, Colors rectColor, bool filled) override;
+		void Update(float dt) override;
+		void Draw() override;
 	};
 }

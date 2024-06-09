@@ -51,15 +51,15 @@ void GameEngine::MessageBox::Draw()
     {
         if (!m_message_01.empty())
         {
-            m_messageMap[m_message_01]->DrawText(0.80f);
+            m_messageMap[m_message_01]->DrawText(0.64f);
         }
         if (!m_message_02.empty())
         {
-            m_messageMap[m_message_02]->DrawText(0.80f);
+            m_messageMap[m_message_02]->DrawText(0.64f);
         }
         if (!m_message_03.empty())
         {
-            m_messageMap[m_message_03]->DrawText(0.80f);
+            m_messageMap[m_message_03]->DrawText(0.64f);
         }
     }
 }

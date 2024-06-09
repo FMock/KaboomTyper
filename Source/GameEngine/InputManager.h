@@ -21,8 +21,6 @@ namespace GameEngine
 		// The previous frame's keyboard state.
 		unsigned char m_kbPrevState[SDL_NUM_SCANCODES] = { 0 };
 
-		
-
 		bool m_mouseButtonState[3]; // Array to track mouse button states
 		bool m_prevMouseButtonState[3]; // Array to track previous mouse button states
 		void GetMousePosition(int* x, int* y);
@@ -36,7 +34,6 @@ namespace GameEngine
 		void PrepareForStateChange();
 		void GetNewInputState();
 		SDL_Event m_event;
-		//std::vector<InputObserver*> m_myObservers;
 		std::vector<std::weak_ptr<InputObserver>> m_myObservers;
 	};
 }

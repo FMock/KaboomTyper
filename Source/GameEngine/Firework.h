@@ -16,8 +16,7 @@ namespace GameEngine
     public:
         Firework(GLuint texture, int x, int y, int w, int h, int numParticles);
 
-        void Update(float deltaTime);
-        void Update() override;
+        void Update(float deltaTime) override;
         void Draw() override;
 
         bool IsActive() const { return m_isActive; }
