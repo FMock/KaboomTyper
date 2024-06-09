@@ -12,10 +12,9 @@ namespace GameEngine
 	public:
 		RectangleDrawable();
 		RectangleDrawable(int x, int y, int width, int height, Colors rectColor = DEFAULT_COLOR, bool filled = false);
-		virtual ~RectangleDrawable();
+		virtual ~RectangleDrawable() = default;
 		virtual void Initialize(int x, int y, int width, int height, Colors rectColor = DEFAULT_COLOR, bool filled = false);
-		void Update();
-		virtual void Update(float dt);
+		virtual void Update(float dt) override;
 		void Draw() override;
 		void ChangeColor(Colors color);
 
@@ -24,6 +23,7 @@ namespace GameEngine
 		int GetWidth() const;
 		void SetHeight(int height);
 		int GetHeight() const;
+		void SetXPos(int x);
 #pragma endregion
 
 	protected:

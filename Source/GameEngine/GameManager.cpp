@@ -152,6 +152,7 @@ void GameManager::Render()
 void GameEngine::GameManager::UpdateGameEntities(float deltaTime)
 {
     m_inputManager->Update();
+    m_inputTextBox->Update(deltaTime);
 
     m_textblockManager->Update(deltaTime);
 

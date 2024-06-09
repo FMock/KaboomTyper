@@ -147,6 +147,7 @@
     <ClInclude Include="Common.h" />
     <ClInclude Include="ConcreteLevel.h" />
     <ClInclude Include="ConcreteSpriteFactory.h" />
+    <ClInclude Include="Cursor.h" />
     <ClInclude Include="DecorativeRectangleDrawable.h" />
     <ClInclude Include="DrawUtils.h" />
     <ClInclude Include="Firework.h" />
@@ -200,6 +201,7 @@
     <ClCompile Include="Common.cpp" />
     <ClCompile Include="ConcreteLevel.cpp" />
     <ClCompile Include="ConcreteSpriteFactory.cpp" />
+    <ClCompile Include="Cursor.cpp" />
     <ClCompile Include="DecorativeRectangleDrawable.cpp" />
     <ClCompile Include="DrawUtils.cpp" />
     <ClCompile Include="Firework.cpp" />

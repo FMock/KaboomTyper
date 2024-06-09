@@ -19,9 +19,15 @@ void DecorativeRectangle::InitializeDecorativeRectangle()
 {
     m_animationTime = 0.0f;
     m_animationSpeed = 1.50f; // Speed of the animation
-    m_clockWiseAnimationSpeed = 1.5f;
-    m_randomAnimationSpeed = 1.1f;
-    m_randomAnimationTime = 0.0;
+
+    // clock-wise animation settings
+    m_clockWiseAnimationSpeed = 1.0f; // increase speed to exceed threshold faster and move animation to next frame
+    m_clockWiseAnimationThreshold = 1.0f;
+
+    // random animation settings
+    m_randomAnimationSpeed = 2.0f; // increase speed to exceed threshold faster and move animation to next frame
+    m_randomAnimationThreshold = 1.0f;
+
     m_threshold = 0.001f;
     m_currentColorIndex = 0;
     m_animate = false;
@@ -34,12 +40,16 @@ void DecorativeRectangle::InitializeDecorativeRectangle()
     auto color_3 = m_colorToStringMap[Colors::YELLOW];
     auto color_4 = m_colorToStringMap[Colors::GREEN];
     auto color_5 = m_colorToStringMap[Colors::ORANGE];
+    auto color_6 = m_colorToStringMap[Colors::PURPLE];
 
     m_blueTexture = m_colorPtr->s_colorParameters.m_stringColorTextureColorMap[color_1.c_str()];
     m_redTexture = m_colorPtr->s_colorParameters.m_stringColorTextureColorMap[color_2.c_str()];
     m_yellowTexture = m_colorPtr->s_colorParameters.m_stringColorTextureColorMap[color_3.c_str()];
     m_greenTexture = m_colorPtr->s_colorParameters.m_stringColorTextureColorMap[color_4.c_str()];
     m_orangeTexture = m_colorPtr->s_colorParameters.m_stringColorTextureColorMap[color_5.c_str()];
+    m_purpleTexture = m_colorPtr->s_colorParameters.m_stringColorTextureColorMap[color_6.c_str()];
+
+    m_colorTextures = { m_blueTexture, m_redTexture, m_yellowTexture, m_greenTexture, m_orangeTexture, m_purpleTexture };
 
     int smallWidth = 10; // width of smaller rectangles
     int smallHeight = 10; // height of smaller rectangles
@@ -79,8 +89,9 @@ void DecorativeRectangle::InitializeDecorativeRectangle()
 
 void DecorativeRectangle::Update(float dt)
 {
-
+    m_deltaTime = dt; // Update delta time with the passed dt
     m_elapsedTime += dt;
+
 
     // Toggle visibility every 0.5 seconds
     if (m_elapsedTime >= 0.5f)
@@ -88,10 +99,6 @@ void DecorativeRectangle::Update(float dt)
         m_isVisible = !m_isVisible;
         m_elapsedTime = 0.0f;
     }
-
-
-    m_deltaTime += dt; // Update delta time with the passed dt
-
 
     if (m_animate)
     {
@@ -108,28 +115,8 @@ void DecorativeRectangle::Update(float dt)
     if (m_animateClockWise)
     {
         static int currentIndex = 0; // Index of the current small rectangle
-        static float elapsedTime = 0.0f; // Time elapsed since the last change
 
-        // Use delta time to control the animation speed
-        elapsedTime += dt * m_clockWiseAnimationSpeed;
-
-        // Adjust the threshold for when to move to the next rectangle
-        float threshold = 1.0f;
-
-        if (elapsedTime >= threshold)
-        {
-            elapsedTime = 0.0f;
-            currentIndex = (currentIndex + 1) % m_smallRectangles.size();
-
-            // Check if we've completed a full lap
-            if (currentIndex == 0)
-            {
-                ++m_lap;
-            }
-        }
     }
-
-   m_randomAnimationTime += m_randomAnimationSpeed * dt;
 }
 
 void DecorativeRectangle::SetAnimate(bool animate)
@@ -150,22 +137,18 @@ void GameEngine::DecorativeRectangle::SetAnimateRandom(bool animate)
 void DecorativeRectangle::DrawRectangleWithRectangles()
 {
     static int currentIndex = 0; // Index of the current small rectangle
-
-    static std::vector<int> randomIndices(15, 0);
-    static std::vector<GLuint> randomColorTextures(15);
-    static float elapsedTimeB = 0.0f; // Time elapsed since the last change
-
-    static float elapsedTime = 0.0f; // Time elapsed since the last change
-
-    std::vector<GLuint> textures = { m_blueTexture, m_redTexture, m_yellowTexture, m_greenTexture, m_orangeTexture };
+    static std::vector<int> randomIndices(10, 0);   // TODO: TURN THESE INTO STATIC MEMBERS AND PLACE UPDATE LOGIC IN UPDATE METHOD
+    static std::vector<GLuint> randomColorTextures(10);   // TODO: TURN THESE INTO STATIC MEMBERS AND PLACE UPDATE LOGIC IN UPDATE METHOD
+    static float elapsedTimeRandom = 0.0f; // Time elapsed since the last change   // TODO: TURN THESE INTO STATIC MEMBERS AND PLACE UPDATE LOGIC IN UPDATE METHOD
+    static float elapsedTimeClockwise = 0.0f; // Time elapsed since the last change  // TODO: TURN THESE INTO STATIC MEMBERS AND PLACE UPDATE LOGIC IN UPDATE METHOD
 
     if (m_animateClockWise)
     {
-        elapsedTime += 0.001f * m_clockWiseAnimationSpeed;
+        elapsedTimeClockwise += m_deltaTime * m_clockWiseAnimationSpeed;
 
-        if (elapsedTime >= 0.75f)
+        if (elapsedTimeClockwise >= m_clockWiseAnimationThreshold) // if the elapsed time is greater than the threshold
         {
-            elapsedTime = 0.0f;
+            elapsedTimeClockwise -= m_clockWiseAnimationThreshold; // Subtract the threshold to handle any overflow
             currentIndex = (currentIndex + 1) % m_smallRectangles.size();
 
             // Check if we've completed a full lap
@@ -188,10 +171,9 @@ void DecorativeRectangle::DrawRectangleWithRectangles()
     {
         for (const auto& rect : m_smallRectangles)
         {
-
             GLuint textureToUse = (m_currentColorIndex == 0) ? m_blueTexture : m_redTexture;
-            DrawUtilities::glDrawTexture(textureToUse, rect.x, rect.y, (float)rect.width, (float)rect.height);
 
+            DrawUtilities::glDrawTexture(textureToUse, rect.x, rect.y, (float)rect.width, (float)rect.height);
             DrawUtilities::glDrawRectangleOutline(m_colorTexture, rect.x, rect.y, (float)rect.width, (float)rect.height);
         }
     }
@@ -204,17 +186,17 @@ void DecorativeRectangle::DrawRectangleWithRectangles()
         }
 
         // Draw the randomly colored rectangles at random positions
-        elapsedTimeB += 0.001f * m_clockWiseAnimationSpeed;
+        elapsedTimeRandom += m_deltaTime * m_randomAnimationSpeed;
 
-        if (elapsedTimeB >= 1.0f) // every second
+        if (elapsedTimeRandom >= m_randomAnimationThreshold)
         {
-            elapsedTimeB = 0.0f;
+            elapsedTimeRandom -= m_randomAnimationThreshold; // subtract the threshold to handle any overflow
 
-            UpdateRandomIndicesAndColors(randomIndices, randomColorTextures, m_smallRectangles, textures);
+            UpdateRandomIndicesAndColors(randomIndices, randomColorTextures, m_smallRectangles, m_colorTextures);
         }
 
         // Draw 15 small rectangles at random positions and random colors
-        for (int i = 0; i < 15; ++i)
+        for (int i = 0; i < 10; ++i)
         {
             const auto& rect = m_smallRectangles[randomIndices[i]];
             DrawUtilities::glDrawTexture(randomColorTextures[i], rect.x, rect.y, (float)rect.width, (float)rect.height);
@@ -228,9 +210,9 @@ void DecorativeRectangle::DrawRectangleWithRectangles()
             DrawUtilities::glDrawRectangleOutline(m_colorTexture, rect.x, rect.y, (float)rect.width, (float)rect.height);
         }
 
-        if (m_isVisible) // Is set for every 1/2 second
+        if (m_isVisible) // Set for every 1/2 second in Update
         {
-            // Do something
+            // Do something evey 1/2 second
         }
     }
 }
@@ -252,21 +234,22 @@ int DecorativeRectangle::GetRandomIndex(const std::vector<Rectangle>& rectangles
 {
     if (rectangles.empty())
     {
-        throw std::out_of_range("The vector is empty.");
+        throw std::out_of_range("DecorativeRectangle::GetRandomIndex() The Rectangle vector is empty.");
     }
 
-    // Seed with a real random value, if available
-    std::random_device rd;
-
-    // Choose a random number between 0 and rectangles.size() - 1
-    std::mt19937 gen(rd()); // Standard mersenne_twister_engine seeded with rd()
     std::uniform_int_distribution<> dis(0, rectangles.size() - 1);
-
-    // Return the randomly chosen index
-    return dis(gen);
+    return dis(GetRng());
 }
 
-void DecorativeRectangle::UpdateRandomIndicesAndColors(std::vector<int>& randomIndices, std::vector<GLuint>& randomColorTextures, const std::vector<Rectangle>& m_smallRectangles, const std::vector<GLuint>& textures)
+std::mt19937& DecorativeRectangle::GetRng()
+{
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
+    return gen;
+}
+
+void DecorativeRectangle::UpdateRandomIndicesAndColors(std::vector<int>& randomIndices, std::vector<GLuint>& randomColorTextures, 
+                                                       const std::vector<Rectangle>& m_smallRectangles, const std::vector<GLuint>& textures)
 {
     std::unordered_set<int> usedIndices;  // To track already used indices
     int previousIndex = -2;  // Initialize with a value that cannot be adjacent
@@ -277,7 +260,8 @@ void DecorativeRectangle::UpdateRandomIndicesAndColors(std::vector<int>& randomI
         do
         {
             newIndex = GetRandomIndex(m_smallRectangles);
-        } while (usedIndices.count(newIndex) || std::abs(newIndex - previousIndex) == 1);
+        } 
+        while (usedIndices.count(newIndex) || std::abs(newIndex - previousIndex) == 1);
 
         randomIndices[i] = newIndex;
         randomColorTextures[i] = GetRandomTexture(textures);

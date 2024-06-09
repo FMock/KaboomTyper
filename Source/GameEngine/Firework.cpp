@@ -26,10 +26,6 @@ void GameEngine::Firework::Update(float deltaTime)
     }
 }
 
-void GameEngine::Firework::Update()
-{
-}
-
 void Firework::Draw()
 {
     if (!m_isActive)

@@ -24,11 +24,6 @@ namespace GameEngine
         m_color = rectColor;
     }
 
-    RectangleDrawable::~RectangleDrawable()
-    {
-        // Destructor implementation if needed
-    }
-
     void RectangleDrawable::Initialize(int x, int y, int width, int height, Colors rectColor, bool filled)
     {
         SetX(x);
@@ -42,11 +37,6 @@ namespace GameEngine
         m_colorTexture = m_colorPtr->s_colorParameters.m_stringColorTextureColorMap[color.c_str()];
         m_filled = filled;
         m_initialized = true;
-    }
-
-    void RectangleDrawable::Update()
-    {
-  
     }
 
     void RectangleDrawable::Update(float dt)
@@ -80,6 +70,11 @@ namespace GameEngine
     int RectangleDrawable::GetHeight() const
     {
         return m_height;
+    }
+
+    void RectangleDrawable::SetXPos(int x)
+    {
+        m_x = x;
     }
 
     void RectangleDrawable::DrawRectangle()

@@ -8,6 +8,7 @@
 #include "InputManager.h"
 #include "Common.h"
 #include "functional"
+#include "Cursor.h"
 
 namespace GameEngine
 {
@@ -17,7 +18,7 @@ namespace GameEngine
 		InputTextBox();
 		~InputTextBox();
 		void InitializeTextBox(int x, int y, int width, int height, Colors rectColor = Colors::DEFAULT_COLOR, bool fillWithColor = false);
-		void Update();
+		void Update(float dt);
 		void Draw();
 		void AddText(std::string text);
 		void RemoveLast();
@@ -36,6 +37,7 @@ namespace GameEngine
 		std::string GetTextBoxContentsAsString();
 		void Initialize();
 		std::unique_ptr<RectangleDrawable> m_textBox;
+		std::unique_ptr<RectangleDrawable> m_cursor;
 		std::vector<std::unique_ptr<TextString>> m_inputText;
 		bool m_initialized;
 		bool m_full;
