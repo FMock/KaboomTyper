@@ -25,7 +25,7 @@ void InputTextBox::InitializeTextBox(int x, int y, int width, int height, Colors
     m_maxCharacters = width / m_fontWidth;
     m_full = false;
 
-    m_cursor->Initialize(m_startCursorXPos, m_cursorYPos, 3, height - 4, Colors::DARK_GRAY, true);
+    m_cursor->Initialize(m_startCursorXPos, m_cursorYPos, 3, height - 4, Colors::BLUE, true);
 
     m_initialized = true;
 }

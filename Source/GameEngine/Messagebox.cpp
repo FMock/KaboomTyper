@@ -32,7 +32,7 @@ void GameEngine::MessageBox::Initialize(int x, int y, int width, int height, Col
 	m_message_01 = "";
 	m_message_02 = "";
 	m_message_03 = "";
-
+    this->ChangeMessage(" ", "F1: START GAME");
 	m_initialized = true;
 }
 
