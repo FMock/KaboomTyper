@@ -48,8 +48,9 @@ void GameManager::Initialize()
 
     m_rectangleOfRectangles = std::make_unique<DecorativeRectangle>();
     m_rectangleOfRectangles->Initialize(13, 45, 430, 100, Colors::DARK_GRAY);
-    m_rectangleOfRectangles->SetAnimate(true);
+    m_rectangleOfRectangles->SetAnimate(false);
     m_rectangleOfRectangles->SetAnimateClockwise(false);
+    m_rectangleOfRectangles->SetAnimateRandom(true);
 }
 
 GameEngine::GameManager::GameManager()
