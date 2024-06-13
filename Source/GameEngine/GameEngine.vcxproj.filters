@@ -225,6 +225,9 @@
     <ClInclude Include="Cursor.h">
       <Filter>Header Files\Draw</Filter>
     </ClInclude>
+    <ClInclude Include="GameAudio.h">
+      <Filter>Header Files\Audio</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -337,6 +340,9 @@
     </ClCompile>
     <ClCompile Include="Cursor.cpp">
       <Filter>Source Files\Draw</Filter>
+    </ClCompile>
+    <ClCompile Include="GameAudio.cpp">
+      <Filter>Source Files\Audio</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
