@@ -51,6 +51,16 @@ void GameManager::Initialize()
     m_rectangleOfRectangles->SetAnimate(false);
     m_rectangleOfRectangles->SetAnimateClockwise(false);
     m_rectangleOfRectangles->SetAnimateRandom(true);
+
+    m_explosion = std::make_shared<GameAudio>();
+
+    if (!m_explosion->Initialize())
+    {
+        std::cerr << "Failed to initialize audio!" << std::endl;
+    }
+
+    m_explosionPath = R"(C:\Users\rockr\source\repos\KaboomTyper\Resources\sounds\explosion_stereo.wav)";
+    m_explosion->LoadWAV("explosion_stereo", m_explosionPath);
 }
 
 GameEngine::GameManager::GameManager()
@@ -111,6 +121,8 @@ void GameManager::ProcessInput()
         int halfFontHeight = 16;
         int adjustedY = y + halfFontHeight;
         m_firework->SetPosition(adjustedX, adjustedY);
+        m_explosion->PlaySound("explosion_stereo");
+        SDL_Delay(10); // slight pause to hear the sound
 
 #if DEBUG
         std::cout << "The strings are equal." << std::endl;

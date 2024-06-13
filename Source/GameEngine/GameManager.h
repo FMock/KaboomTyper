@@ -20,6 +20,7 @@
 #include "Firework.h"
 #include "Color.h"
 #include "DecorativeRectangleDrawable.h"
+#include "GameAudio.h"
 
 /// <summary>
 /// GameManager manages the various entities in the game to create a
@@ -65,6 +66,10 @@ namespace GameEngine
 		std::shared_ptr<TextStringFont> m_fontPtr;
 		std::map<GameState, LevelManager*> m_levels;
 		std::unique_ptr<DecorativeRectangle> m_rectangleOfRectangles;
+
+		// Audio
+		std::shared_ptr<GameAudio> m_explosion;
+		std::string m_explosionPath;
 
 	protected:
 		void RespondToObserved(InputManager* InputMgr) override;

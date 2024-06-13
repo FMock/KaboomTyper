@@ -153,6 +153,7 @@
     <ClInclude Include="Firework.h" />
     <ClInclude Include="FontParameters.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GameAudio.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="GameStateComparator.h" />
     <ClInclude Include="GameStates.h" />
@@ -206,6 +207,7 @@
     <ClCompile Include="DrawUtils.cpp" />
     <ClCompile Include="Firework.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameAudio.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="HeadsUpDisplay.cpp" />
     <ClCompile Include="InputManager.cpp" />
