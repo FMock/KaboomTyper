@@ -344,5 +344,8 @@
     <ClCompile Include="GameAudio.cpp">
       <Filter>Source Files\Audio</Filter>
     </ClCompile>
+    <ClCompile Include="RGBColor.cpp">
+      <Filter>Source Files\Draw</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

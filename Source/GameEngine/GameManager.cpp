@@ -8,9 +8,11 @@
 #include "GlobalPreprocessorFlags.h"
 #include <iostream>
 #include <functional>
+#include "DrawUtils.h"
 
 using namespace GameEngine;
 using namespace GameEngine::Utility;
+using namespace DrawUtilities;
 
 // Loads all the parts of the game
 void GameManager::Initialize()
@@ -138,6 +140,11 @@ void GameManager::ProcessInput()
 
 void GameManager::Render()
 {
+    // Background color of the play area
+    RGBColor color = RGBColor::GetRGBColor(RGBColor::DarkBlue); // TODO: MOVE OUT OF GameManager
+    glDrawFilledRectangle(10, 152, 780, 760, 1.0f, 1.0f, color);
+
+
     if (m_blowUpTextBlock)
     {
         m_firework->SetIsActive(true);
@@ -171,14 +178,21 @@ void GameEngine::GameManager::UpdateGameEntities(float deltaTime)
 
     if (m_textblockManager->TextBlockLimitReached()) // Check if game over state reached
     {
-        m_stateMachine->TransitionTo(GameState::STOPPED);
-        m_messageBox->ChangeMessage(m_stateMachine->GetCurrentStateAsString());
+        GameOver();
     }
 
     if(m_headsUpDisplay->UpdateRequired()) // only update the HUD if needed
         m_headsUpDisplay->Update();
 
     m_rectangleOfRectangles->Update(deltaTime);
+}
+
+void GameEngine::GameManager::GameOver()
+{
+    m_stateMachine->TransitionTo(GameState::STOPPED);
+    m_messageBox->ChangeMessage("GAME OVER", "F1:  NEW GAME", "ESC: EXIT GAME");
+    m_rectangleOfRectangles->SetAnimateClockwise(false);
+    m_rectangleOfRectangles->SetAnimateRandom(true);
 }
 
 bool GameEngine::GameManager::ShouldQuit()
@@ -246,10 +260,7 @@ void GameManager::RespondToObserved(InputManager* InputMgr)
         m_rectangleOfRectangles->SetAnimateClockwise(false);
         if (currentState == GameState::PAUSED || currentState == GameState::RUNNING)
         {
-            m_stateMachine->TransitionTo(GameState::STOPPED);
-            m_messageBox->ChangeMessage("GAME OVER", "F1:  NEW GAME", "ESC: EXIT GAME");
-            //m_rectangleOfRectangles->SetAnimate(true);
-            m_rectangleOfRectangles->SetAnimateRandom(true);
+            GameOver();
 
             if (textblockGeneratorRunning)
             {

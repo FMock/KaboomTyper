@@ -1,16 +1,8 @@
-#pragma once
+#ifndef RGBCOLOR_H
+#define RGBCOLOR_H
 
-/*
-* This RGBColor class defines a color using the RGB (Red, Green, Blue) components, 
-* each represented by an unsigned char (r, g, b). 
-* You can create instances of this class by passing the red, green, and blue values to the constructor.
-* 
-* RGBColor red(255, 0, 0); // Pure red color
-* RGBColor green(0, 255, 0); // Pure green color
-* RGBColor blue(0, 0, 255); // Pure blue color
-* RGBColor custom(128, 64, 255); // Custom color with specified RGB values
-
-*/
+#include <array>
+#include <string>
 
 class RGBColor
 {
@@ -21,4 +13,43 @@ public:
         : r(red), g(green), b(blue)
     {
     }
+
+    enum ColorName
+    {
+        White,
+        Black,
+        Red,
+        Green,
+        Blue,
+        Yellow,
+        Cyan,
+        Magenta,
+        Gray,
+        DarkRed,
+        DarkGreen,
+        DarkBlue,
+        Orange,
+        Pink,
+        Purple,
+        Brown,
+        Lime,
+        Olive,
+        Navy,
+        Teal,
+        Maroon,
+        Silver,
+        Gold,
+        LightBlue,
+        LightGreen,
+        LightGray,
+        DarkGray,
+        ColorCount // This should always be the last element to count the number of colors
+    };
+
+    static const RGBColor& GetRGBColor(ColorName colorName);
+
+private:
+    static const std::array<RGBColor, ColorCount> colors;
 };
+
+#endif // RGBCOLOR_H

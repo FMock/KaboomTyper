@@ -221,6 +221,7 @@
     <ClCompile Include="Messagebox.cpp" />
     <ClCompile Include="Moveable.cpp" />
     <ClCompile Include="RectangleDrawable.cpp" />
+    <ClCompile Include="RGBColor.cpp" />
     <ClCompile Include="Score.cpp" />
     <ClCompile Include="SideBar.cpp" />
     <ClCompile Include="SideBars.cpp" />

@@ -48,6 +48,8 @@ namespace DrawUtilities
 	void glDrawRectangleOutline(GLuint tex, int x, int y, float width, float height); // assumes a texture w and h of 1
 	void glDrawRectangleOutlineFilled(GLuint tex, int x, int y, int w, int h, float scaleX, float scaleY, const RGBColor& fillColor);
 	void glDrawFilledRectangle(int x, int y, int w, int h, const RGBColor& fillColor);
+	void glDrawRectangleOutline(int x, int y, int w, int h, float scaleX, float scaleY, const RGBColor& color);
+	void glDrawFilledRectangle(int x, int y, int w, int h, float scaleX, float scaleY, const RGBColor& color);
 	void glDrawAudio(GLuint tex, int x, int y, int w, int h, std::vector<float> audio);
 
 	/// <summary>
