@@ -506,6 +506,76 @@ void DrawUtilities::glDrawFilledRectangle(int x, int y, int w, int h, const RGBC
 	glEnd();
 }
 
+void DrawUtilities::glDrawRectangleOutline(int x, int y, int w, int h, float scaleX, float scaleY, const RGBColor& color)
+{
+	// Save current state
+	glPushAttrib(GL_CURRENT_BIT | GL_ENABLE_BIT);
+	glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
+
+	// Disable texturing and set color
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glColor3ub(color.r, color.g, color.b); // Set color to specified RGB
+
+	glBegin(GL_LINES);
+	{
+		// Top line
+		glVertex2i(x, y); // Top left
+		glVertex2i(x + w * scaleX, y); // Top right (scaled width)
+
+		// Right line
+		glVertex2i(x + w * scaleX, y); // Top right (scaled width)
+		glVertex2i(x + w * scaleX, y + h * scaleY); // Bottom right (scaled width and height)
+
+		// Bottom line
+		glVertex2i(x + w * scaleX, y + h * scaleY); // Bottom right (scaled width and height)
+		glVertex2i(x, y + h * scaleY); // Bottom left (scaled height)
+
+		// Left line
+		glVertex2i(x, y + h * scaleY); // Bottom left (scaled height)
+		glVertex2i(x, y); // Top left
+	}
+	glEnd();
+
+	// Restore previous state
+	glPopClientAttrib();
+	glPopAttrib();
+}
+
+
+void DrawUtilities::glDrawFilledRectangle(int x, int y, int w, int h, float scaleX, float scaleY, const RGBColor& color)
+{
+	// Save current state
+	glPushAttrib(GL_CURRENT_BIT | GL_ENABLE_BIT);
+	glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
+
+	// Disable texturing and set color
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glColor3ub(color.r, color.g, color.b); // Set color to specified RGB
+
+	glBegin(GL_QUADS);
+	{
+		// Top left vertex
+		glVertex2i(x, y);
+
+		// Top right vertex (scaled width)
+		glVertex2i(x + w * scaleX, y);
+
+		// Bottom right vertex (scaled width and height)
+		glVertex2i(x + w * scaleX, y + h * scaleY);
+
+		// Bottom left vertex (scaled height)
+		glVertex2i(x, y + h * scaleY);
+	}
+	glEnd();
+
+	// Restore previous state
+	glPopClientAttrib();
+	glPopAttrib();
+}
+
+
+
+
 
 #include <cmath>
 

@@ -43,6 +43,7 @@ namespace GameEngine
 		GameManager();
 		void Initialize();
 		void UpdateGameEntities(float deltaTime);
+		void GameOver();
 
 		std::shared_ptr<StateMachine> m_stateMachine;
 		std::shared_ptr<InputTextBox> m_inputTextBox;
