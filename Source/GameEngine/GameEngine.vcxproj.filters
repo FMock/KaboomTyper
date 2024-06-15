@@ -228,6 +228,9 @@
     <ClInclude Include="GameAudio.h">
       <Filter>Header Files\Audio</Filter>
     </ClInclude>
+    <ClInclude Include="GamePlayArea.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -346,6 +349,9 @@
     </ClCompile>
     <ClCompile Include="RGBColor.cpp">
       <Filter>Source Files\Draw</Filter>
+    </ClCompile>
+    <ClCompile Include="GamePlayArea.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

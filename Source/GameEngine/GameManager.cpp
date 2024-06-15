@@ -8,11 +8,11 @@
 #include "GlobalPreprocessorFlags.h"
 #include <iostream>
 #include <functional>
-#include "DrawUtils.h"
+//#include "DrawUtils.h"
 
 using namespace GameEngine;
 using namespace GameEngine::Utility;
-using namespace DrawUtilities;
+//using namespace DrawUtilities;
 
 // Loads all the parts of the game
 void GameManager::Initialize()
@@ -37,10 +37,7 @@ void GameManager::Initialize()
 
     m_textblockManager = std::make_unique < TextBlockManager>(10.0f, m_inputManager);
 
-    m_leftSideBar.Initialize(0, 42, 10, 908, Colors::BLUE, true);
-    m_rightSideBar.Initialize(790, 42, 10, 908, Colors::BLUE, true);
-    m_topSideBar.Initialize(0, 146, 800, 5, Colors::BLUE, true);
-    m_bottomSideBar.Initialize(0, 910, 800, 5, Colors::BLUE, true);
+    m_gamePlayArea.Initialize();
 
     m_colorPtr = std::make_unique<Color>();
     m_fireworkColorTexture = m_colorPtr->s_colorParameters.m_stringColorTextureColorMap["green"];
@@ -140,10 +137,8 @@ void GameManager::ProcessInput()
 
 void GameManager::Render()
 {
-    // Background color of the play area
-    RGBColor color = RGBColor::GetRGBColor(RGBColor::DarkBlue); // TODO: MOVE OUT OF GameManager
-    glDrawFilledRectangle(10, 152, 780, 760, 1.0f, 1.0f, color);
-
+    // Render first to not hide TextBlocks
+    m_gamePlayArea.Render();
 
     if (m_blowUpTextBlock)
     {
@@ -162,10 +157,7 @@ void GameManager::Render()
 	m_inputTextBox->Draw();
 	m_gameMenu->Draw();
 	m_messageBox->Draw();
-    m_leftSideBar.Draw();
-    m_rightSideBar.Draw();
-    m_topSideBar.Draw();
-    m_bottomSideBar.Draw();
+
     m_rectangleOfRectangles->DrawRectangleWithRectangles();
 }
 
