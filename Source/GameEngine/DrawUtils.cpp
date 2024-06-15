@@ -574,12 +574,52 @@ void DrawUtilities::glDrawFilledRectangle(int x, int y, int w, int h, float scal
 }
 
 
+void DrawUtilities::glDrawFilledTriangle(int x, int y, int size, float scaleX, float scaleY, const RGBColor& color, float rotation)
+{
+	// Save current state
+	glPushAttrib(GL_CURRENT_BIT | GL_ENABLE_BIT);
+	glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
 
+	// Disable texturing and set color
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glColor3ub(color.r, color.g, color.b); // Set color to specified RGB
 
+	// Convert rotation angle from degrees to radians
+	float angle = rotation * PI / 180.0f;
 
-#include <cmath>
+	// Calculate half size for centering
+	float halfSize = size / 2.0f;
 
-#include <vector>
+	// Calculate triangle vertices
+	float vertices[3][2] = {
+		{0.0f, halfSize},       // Top vertex
+		{-halfSize, -halfSize}, // Bottom left vertex
+		{halfSize, -halfSize}   // Bottom right vertex
+	};
+
+	// Apply scaling and rotation to vertices
+	for (int i = 0; i < 3; ++i)
+	{
+		float scaledX = vertices[i][0] * scaleX;
+		float scaledY = vertices[i][1] * scaleY;
+		vertices[i][0] = scaledX * cos(angle) - scaledY * sin(angle);
+		vertices[i][1] = scaledX * sin(angle) + scaledY * cos(angle);
+	}
+
+	// Translate to the specified position
+	glBegin(GL_TRIANGLES);
+	{
+		glVertex2f(x + vertices[0][0], y + vertices[0][1]);
+		glVertex2f(x + vertices[1][0], y + vertices[1][1]);
+		glVertex2f(x + vertices[2][0], y + vertices[2][1]);
+	}
+	glEnd();
+
+	// Restore previous state
+	glPopClientAttrib();
+	glPopAttrib();
+}
+
 
 void DrawUtilities::glDrawAudio(GLuint tex, int x, int y, int w, int h, std::vector<float> audioData)
 {

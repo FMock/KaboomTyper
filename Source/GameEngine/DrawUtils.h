@@ -5,6 +5,9 @@
 #include<vector>
 #include "RGBColor.h"
 #include "Color.h"
+#include <cmath>
+
+#define PI 3.14159265
 
 struct GlDrawFrameParams
 {
@@ -50,6 +53,7 @@ namespace DrawUtilities
 	void glDrawFilledRectangle(int x, int y, int w, int h, const RGBColor& fillColor);
 	void glDrawRectangleOutline(int x, int y, int w, int h, float scaleX, float scaleY, const RGBColor& color);
 	void glDrawFilledRectangle(int x, int y, int w, int h, float scaleX, float scaleY, const RGBColor& color);
+	void glDrawFilledTriangle(int x, int y, int size, float scaleX, float scaleY, const RGBColor& color, float rotation = 0.0f);
 	void glDrawAudio(GLuint tex, int x, int y, int w, int h, std::vector<float> audio);
 
 	/// <summary>

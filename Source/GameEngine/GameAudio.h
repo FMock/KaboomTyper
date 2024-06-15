@@ -1,5 +1,4 @@
-#ifndef GAMEAUDIO_H
-#define GAMEAUDIO_H
+#pragma once
 
 #include <SDL.h>
 #include <vector>
@@ -36,4 +35,3 @@ private:
     static void AudioCallback(void* userdata, Uint8* stream, int len);
 };
 
-#endif // GAMEAUDIO_H
