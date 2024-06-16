@@ -45,9 +45,13 @@ bool DBMessanger::GetWords(std::vector<std::string>& container, WordCategories c
 
     sqlite3_stmt* stmt;
 
-    //const char* sampleQuery = "SELECT TYPE FROM mammal LIMIT 5;"; // Query to select only TYPE column
-    const char* sampleQuery = "SELECT TYPE FROM mammal;"; // Query to select only TYPE column
-    rc = sqlite3_prepare_v2(db, sampleQuery, -1, &stmt, nullptr);
+    // Get the category string
+    std::string categoryString = GetCategoryString(category);
+
+    // Build the query string
+    std::string query = "SELECT TYPE FROM " + categoryString + ";";
+
+    rc = sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr);
     if (rc == SQLITE_OK)
     {
         while (sqlite3_step(stmt) == SQLITE_ROW)
@@ -69,6 +73,37 @@ bool DBMessanger::GetWords(std::vector<std::string>& container, WordCategories c
     // Close the database connection
     sqlite3_close(db);
     return true;
+}
+
+std::string DBMessanger::GetCategoryString(DBMessanger::WordCategories category)
+{
+    switch (category)
+    {
+    case KaboomTyperDB::DBMessanger::Mammal:
+        return "Mammal";
+    case KaboomTyperDB::DBMessanger::Reptile:
+        return "Reptile";
+    case KaboomTyperDB::DBMessanger::Amphibian:
+        return "Amphibian";
+    case KaboomTyperDB::DBMessanger::Bird:
+        return "Bird";
+    case KaboomTyperDB::DBMessanger::Fish:
+        return "Fish";
+    case KaboomTyperDB::DBMessanger::Insect:
+        return "Insect";
+    case KaboomTyperDB::DBMessanger::Arachnid:
+        return "Arachnid";
+    case KaboomTyperDB::DBMessanger::Crustacean:
+        return "Crustacean";
+    case KaboomTyperDB::DBMessanger::Myriapod:
+        return "Myriapod";
+    case KaboomTyperDB::DBMessanger::Annelid:
+        return "Annelid";
+    case KaboomTyperDB::DBMessanger::Mollusk:
+        return "Mollusk";
+    default:
+        return "Unknown";
+    }
 }
 
 
