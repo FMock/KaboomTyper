@@ -17,19 +17,24 @@ namespace KaboomTyperDB
 	public:
 		enum WordCategories
 		{
-			ANIME,
-			ANIMALS,
-			PEOPLE,
-			PLACES,
-			PHRASES,
-			THINGS,
+			Mammal,
+			Reptile,
+			Amphibian,
+			Bird,
+			Fish,
+			Insect,
+			Arachnid,
+			Crustacean,
+			Myriapod,
+			Annelid,
+			Mollusk,
 			WORDCATEGORIESCOUNT
 		};
 
 		DBMessanger();
 		~DBMessanger() = default;
 
-		bool GetWords(std::vector<std::string>& container, WordCategories = WordCategories::ANIMALS);
+		bool GetWords(std::vector<std::string>& container, WordCategories = WordCategories::Mammal);
 
 	private:
 		std::string m_configFilePath;
@@ -37,5 +42,6 @@ namespace KaboomTyperDB
 		std::string ReadConfigFile(const std::string& filePath);
 		void ExecuteSQL(sqlite3* db, const std::string& sql);
 		std::string Trim(const std::string& str);
+		std::string GetCategoryString(KaboomTyperDB::DBMessanger::WordCategories category);
 	};
 }
