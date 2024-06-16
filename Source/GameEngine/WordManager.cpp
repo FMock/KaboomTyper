@@ -1,0 +1,34 @@
+#include "WordManager.h"
+#include <algorithm>
+#include <random>
+#include <chrono>
+
+using namespace GameEngine;
+using namespace KaboomTyperDB;
+
+GameEngine::WordManager::WordManager() : m_currentWordIndex(0), m_dbMessanger(std::make_unique<DBMessanger>())
+{
+    m_currentCategory = DBMessanger::WordCategories::ANIMALS; // default word category
+    m_dbMessanger->GetWords(m_words, m_currentCategory);
+
+    // Now shuffle the words in the container. First, obtain a time-based seed:
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+
+    // Next, use the default random engine and the seed to shuffle the vector
+    std::shuffle(m_words.begin(), m_words.end(), std::default_random_engine(seed));
+}
+
+void WordManager::ChangeWordCategory(DBMessanger::WordCategories category)
+{
+    m_currentCategory = category;
+}
+
+std::string WordManager::GetNextWord()
+{
+    if (m_currentWordIndex + 1 < m_words.size() - 1)
+        m_currentWordIndex += 1;
+    else
+        m_currentWordIndex = 0;
+
+    return m_words[m_currentWordIndex];
+}

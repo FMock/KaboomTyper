@@ -2,6 +2,7 @@
 
 #include "TextBlock.h"
 #include "InputManager.h"
+#include "WordManager.h"
 #include <string>
 #include <deque>
 #include <chrono>
@@ -24,6 +25,7 @@ namespace GameEngine
         void HandleLanding(std::shared_ptr<TextBlock>& block);
         void UnregisterAllTextBlocks();
         void UpdateTimer(float dt);
+        std::unique_ptr<WordManager> m_wordManager;
 
     public:
         TextBlockManager(float spawnIntervalSeconds, std::shared_ptr<InputManager> inputManager);
