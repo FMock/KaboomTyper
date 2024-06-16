@@ -104,7 +104,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\Libraries\libraries_used\FMOD\inc;..\..\Libraries\libraries_used\SDL2\include;..\..\Libraries\libraries_used\GLEW\glew-2.2.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\Libraries\libraries_used\FMOD\inc;..\..\Libraries\libraries_used\SDL2\include;..\..\Libraries\libraries_used\GLEW\glew-2.2.0\include;..\..\Source\KaboomTyperDB;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
@@ -112,8 +112,8 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>..\..\Libraries\libraries_used\FMOD\lib;..\..\Libraries\libraries_used\SDL2\lib\x64;..\..\Libraries\libraries_used\GLEW\glew-2.2.0\lib\Debug\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>fmodL64_vc.lib;glew32d.lib;glu32.lib;SDL2.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\Libraries\libraries_used\FMOD\lib;..\..\Libraries\libraries_used\SDL2\lib\x64;..\..\Libraries\libraries_used\GLEW\glew-2.2.0\lib\Debug\x64;..\..\Bin\$(Configuration)\$(Platform)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>fmodL64_vc.lib;glew32d.lib;glu32.lib;SDL2.lib;opengl32.lib;KaboomTyperDB.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
@@ -130,8 +130,8 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>..\..\Libraries\libraries_used\FMOD\lib;..\..\Libraries\libraries_used\SDL2\lib\x64;..\..\Libraries\libraries_used\GLEW\glew-2.2.0\lib\Release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>fmod64_vc.lib;glew32.lib;glu32.lib;SDL2.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\Libraries\libraries_used\FMOD\lib;..\..\Libraries\libraries_used\SDL2\lib\x64;..\..\Libraries\libraries_used\GLEW\glew-2.2.0\lib\Release\x64;..\..\Bin\$(Configuration)\$(Platform)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>fmod64_vc.lib;glew32.lib;glu32.lib;SDL2.lib;opengl32.lib;KaboomTyperDB.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
@@ -195,6 +195,7 @@
     <ClInclude Include="TextStringFont.h" />
     <ClInclude Include="Utilities.h" />
     <ClInclude Include="Vector2D.h" />
+    <ClInclude Include="WordManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AudioGenerator.cpp" />
@@ -237,6 +238,12 @@
     <ClCompile Include="TextBlockManager.cpp" />
     <ClCompile Include="TextString.cpp" />
     <ClCompile Include="Utilities.cpp" />
+    <ClCompile Include="WordManager.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\KaboomTyperDB\KaboomTyperDB.vcxproj">
+      <Project>{cda84934-3b29-4f58-9b42-454ceda099f7}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

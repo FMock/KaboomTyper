@@ -8,11 +8,10 @@
 #include "GlobalPreprocessorFlags.h"
 #include <iostream>
 #include <functional>
-//#include "DrawUtils.h"
 
 using namespace GameEngine;
 using namespace GameEngine::Utility;
-//using namespace DrawUtilities;
+using namespace KaboomTyperDB;
 
 // Loads all the parts of the game
 void GameManager::Initialize()

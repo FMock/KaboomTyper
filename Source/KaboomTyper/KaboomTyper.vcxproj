@@ -104,7 +104,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\GameEngine\;..\..\Libraries\libraries_used\FMOD\inc;..\..\Libraries\libraries_used\SDL2\include;..\..\Libraries\libraries_used\GLEW\glew-2.2.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\GameEngine\;..\..\Libraries\libraries_used\FMOD\inc;..\..\Libraries\libraries_used\SDL2\include;..\..\Libraries\libraries_used\GLEW\glew-2.2.0\include;..\..\Source\KaboomTyperDB;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -112,15 +112,15 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>..\..\Bin\$(Configuration)\$(Platform)\;..\..\Libraries\libraries_used\FMOD\lib;..\..\Libraries\libraries_used\SDL2\lib\x64;..\..\Libraries\libraries_used\GLEW\glew-2.2.0\lib\Debug\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>GameEngine.lib;fmodL64_vc.lib;glew32d.lib;glu32.lib;SDL2.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\Bin\$(Configuration)\$(Platform)\;..\..\Libraries\libraries_used\FMOD\lib;..\..\Libraries\libraries_used\SDL2\lib\x64;..\..\Libraries\libraries_used\GLEW\glew-2.2.0\lib\Debug\x64;..\..\Bin\$(Configuration)\$(Platform)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>GameEngine.lib;fmodL64_vc.lib;glew32d.lib;glu32.lib;SDL2.lib;opengl32.lib;KaboomTyperDB.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\GameEngine\;..\..\Libraries\libraries_used\FMOD\inc;..\..\Libraries\libraries_used\SDL2\include;..\..\Libraries\libraries_used\GLEW\glew-2.2.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\GameEngine\;..\..\Libraries\libraries_used\FMOD\inc;..\..\Libraries\libraries_used\SDL2\include;..\..\Libraries\libraries_used\GLEW\glew-2.2.0\include;..\..\Source\KaboomTyperDB;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -130,8 +130,8 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>..\..\Bin\$(Configuration)\$(Platform)\;..\..\Libraries\libraries_used\FMOD\lib;..\..\Libraries\libraries_used\SDL2\lib\x64;..\..\Libraries\libraries_used\GLEW\glew-2.2.0\lib\Release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>GameEngine.lib;fmod64_vc.lib;glew32.lib;glu32.lib;SDL2.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\Bin\$(Configuration)\$(Platform)\;..\..\Libraries\libraries_used\FMOD\lib;..\..\Libraries\libraries_used\SDL2\lib\x64;..\..\Libraries\libraries_used\GLEW\glew-2.2.0\lib\Release\x64;..\..\Bin\$(Configuration)\$(Platform)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>GameEngine.lib;fmod64_vc.lib;glew32.lib;glu32.lib;SDL2.lib;opengl32.lib;KaboomTyperDB.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>

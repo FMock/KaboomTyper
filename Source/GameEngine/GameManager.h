@@ -21,6 +21,8 @@
 #include "DecorativeRectangleDrawable.h"
 #include "GameAudio.h"
 #include "GamePlayArea.h"
+#include <memory>
+
 /// <summary>
 /// GameManager manages the various entities in the game to create a
 /// pleasant and cohesive user experience.

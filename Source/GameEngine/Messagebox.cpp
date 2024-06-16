@@ -1,6 +1,8 @@
 #include "MessageBox.h"
+#include "DrawUtils.h"
 
 using namespace GameEngine;
+using namespace DrawUtilities;
 
 GameEngine::MessageBox::MessageBox()
 {
@@ -42,6 +44,10 @@ void GameEngine::MessageBox::Draw()
         throw std::exception("MessageBox not initialized");
 
     m_body.Draw();
+
+    // Background color of the MessageBox
+    RGBColor color = RGBColor::GetRGBColor(RGBColor::DarkBlue);
+    glDrawFilledRectangle(m_x, m_y, m_width, m_height, 1.0f, 1.0f, color);
 
     if (m_message_01.empty() && m_message_02.empty() && m_message_03.empty())
     {

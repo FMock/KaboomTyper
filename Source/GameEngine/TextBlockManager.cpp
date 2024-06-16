@@ -10,7 +10,7 @@
 using namespace GameEngine;
 
 TextBlockManager::TextBlockManager(float spawnIntervalSeconds, std::shared_ptr<InputManager> inputManager)
-    : m_running(false), m_spawnInterval(spawnIntervalSeconds), m_inputManager(inputManager), m_elapsedTime(0), m_limitReached(false), m_horizontalMovingBlock(nullptr)
+    : m_running(false), m_spawnInterval(spawnIntervalSeconds), m_inputManager(inputManager), m_elapsedTime(0), m_limitReached(false), m_horizontalMovingBlock(nullptr), m_wordManager(std::make_unique<WordManager>())
 {
     m_lastSpawnTime = std::chrono::steady_clock::now();
 }
@@ -49,8 +49,8 @@ void GameEngine::TextBlockManager::GenerateTextBlock()
         return;
     }
 
-    // Get a string based on the current category
-    std::string text = "New String";
+    // Get a string based on the current word category
+    std::string text = m_wordManager->GetNextWord();
 
     Common::SetActiveText(text);
 
