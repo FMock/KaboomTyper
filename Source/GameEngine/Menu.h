@@ -28,7 +28,7 @@ namespace GameEngine
 		void Draw();
 		void Update();
 
-		using Callback = std::function<void()>;
+		using Callback = std::function<void(Menu::MenuButtons)>;
 		void AddCallback(Callback callback, Menu::MenuButtons button);
 
 	private:
@@ -50,6 +50,7 @@ namespace GameEngine
 		void HelpButtonClicked();
 		Callback m_aboutBtnCallback;
 		void AboutButtonClicked();
+		void HandleButton(InputManager* InputMgr, Button* button, const std::string& buttonName, std::function<void()> callback);
 
 	protected:
 		void RespondToObserved(InputManager* InputMgr) override;

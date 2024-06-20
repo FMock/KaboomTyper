@@ -65,68 +65,54 @@ void GameEngine::Menu::Initialize()
 void GameEngine::Menu::OptionsButtonClicked()
 {
     // call the Options button callback
-    m_optionsBtnCallback();
+    m_optionsBtnCallback(Menu::MenuButtons::Options);
 }
 
 void GameEngine::Menu::FileButtonClicked()
 {
     // call the File button callback
-    m_fileBtnCallback();
+    m_fileBtnCallback(Menu::MenuButtons::File);
 }
 
 void GameEngine::Menu::HelpButtonClicked()
 {
     // call the Help button callback
-    m_helpBtnCallback();
+    m_helpBtnCallback(Menu::MenuButtons::Help);
 }
 
 void GameEngine::Menu::AboutButtonClicked()
 {
     // call the About button callback
-    m_aboutBtnCallback();
+    m_aboutBtnCallback(Menu::MenuButtons::About);
+}
+
+void Menu::HandleButton(InputManager* InputMgr, Button* button, const std::string& buttonName, std::function<void()> callback)
+{
+    int mouseX, mouseY;
+    InputMgr->GetMousePosition(&mouseX, &mouseY);
+
+    if (InputMgr->m_mouseButtonState[0] && !InputMgr->m_prevMouseButtonState[0] && button->IsMouseOverButton(mouseX, mouseY))
+    {
+#if DEBUG
+        std::cout << buttonName << " button clicked" << std::endl;
+#endif
+        button->SetButtonColor(Colors::DARK_GRAY);
+        callback();
+    }
+    else if (!InputMgr->m_mouseButtonState[0] && InputMgr->m_prevMouseButtonState[0] && button->IsMouseOverButton(mouseX, mouseY))
+    {
+#if DEBUG
+        std::cout << buttonName << " button released" << std::endl;
+#endif
+        button->SetButtonColor(Colors::DEFAULT_COLOR);
+    }
 }
 
 void Menu::RespondToObserved(InputManager* InputMgr)
 {
-    // Access mouse button state information
-    if (InputMgr->m_mouseButtonState[0] && !InputMgr->m_prevMouseButtonState[0])
-    {
-        // Left mouse button clicked
-#if DEBUG
-        std::cout << "Left mouse button clicked" << std::endl;
-#endif
-        m_fileBtn->SetButtonColor(Colors::DARK_GRAY);
-
-    }
-    else if (!InputMgr->m_mouseButtonState[0] && InputMgr->m_prevMouseButtonState[0])
-    {
-        // Left mouse button released
-#if DEBUG
-        std::cout << "Left mouse button released" << std::endl;
-#endif
-        m_fileBtn->SetButtonColor(Colors::DEFAULT_COLOR);
-    }
-
-    if (InputMgr->m_mouseButtonState[2] && !InputMgr->m_prevMouseButtonState[2])
-    {
-        // Right mouse button clicked
-#if DEBUG
-        std::cout << "Right mouse button clicked" << std::endl;
-#endif
-    }
-    else if (!InputMgr->m_mouseButtonState[2] && InputMgr->m_prevMouseButtonState[2])
-    {
-        // Right mouse button released
-#if DEBUG
-        std::cout << "Right mouse button released" << std::endl;
-#endif
-    }
-
-    // Get mouse position
-    int mouseX, mouseY;
-    InputMgr->GetMousePosition(&mouseX, &mouseY);
-#if DEBUG
-    //std::cout << "Mouse position: (" << mouseX << ", " << mouseY << ")" << std::endl;
-#endif
+    HandleButton(InputMgr, m_fileBtn.get(), "File", [this]() { FileButtonClicked(); });
+    HandleButton(InputMgr, m_optionsBtn.get(), "Options", [this]() { OptionsButtonClicked(); });
+    HandleButton(InputMgr, m_helpBtn.get(), "Help", [this]() { HelpButtonClicked(); });
+    HandleButton(InputMgr, m_aboutBtn.get(), "About", [this]() { AboutButtonClicked(); });
 }
 
