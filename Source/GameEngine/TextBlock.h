@@ -49,6 +49,8 @@ namespace GameEngine
 		void Activate();
 		bool IsActive() const;
 		void SetActiveState(bool isActive);
+		void SetTextBlockWidth(int x);
+		int GetTextBlockWidth() const;
 
 	private:
 		std::unique_ptr<Color> m_color; // TextBlock colored body
@@ -63,6 +65,7 @@ namespace GameEngine
 		void Initialize(float x, float y, std::string str, Colors color);
 		int ScaleTextBlockWidth(int textSize, int blockWidth);
 		float GetNormalizedSize(float textSize);
+		int m_textBlockWidth;
 		static TextBlock* s_activeTextBlock;
 		bool m_active;
 

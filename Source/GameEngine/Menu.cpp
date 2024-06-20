@@ -30,6 +30,27 @@ void Menu::Update()
 {
 }
 
+void GameEngine::Menu::AddCallback(Callback callback, Menu::MenuButtons button)
+{
+    switch (button)
+    {
+    case GameEngine::Menu::File:
+        m_fileBtnCallback = callback;
+        break;
+    case GameEngine::Menu::Options:
+        m_optionsBtnCallback = callback;
+        break;
+    case GameEngine::Menu::Help:
+        m_helpBtnCallback = callback;
+        break;
+    case GameEngine::Menu::About:
+        m_aboutBtnCallback = callback;
+        break;
+    default:
+        break;
+    }
+}
+
 void GameEngine::Menu::Initialize()
 {
 	m_menuBar->Initialize(0, 0, 900, 42, Colors::BLUE, true);
@@ -39,6 +60,30 @@ void GameEngine::Menu::Initialize()
 	m_aboutBtn->Initialize("ABOUT", 317, 12, 0.65f, Colors::DARK_YELLOW);
     m_title = TextString("Kaboom Typer!", 480, 8);
     m_footer->Initialize(0, 950, 900, 42, Colors::BLUE, true);
+}
+
+void GameEngine::Menu::OptionsButtonClicked()
+{
+    // call the Options button callback
+    m_optionsBtnCallback();
+}
+
+void GameEngine::Menu::FileButtonClicked()
+{
+    // call the File button callback
+    m_fileBtnCallback();
+}
+
+void GameEngine::Menu::HelpButtonClicked()
+{
+    // call the Help button callback
+    m_helpBtnCallback();
+}
+
+void GameEngine::Menu::AboutButtonClicked()
+{
+    // call the About button callback
+    m_aboutBtnCallback();
 }
 
 void Menu::RespondToObserved(InputManager* InputMgr)

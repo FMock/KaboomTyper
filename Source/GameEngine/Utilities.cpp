@@ -486,6 +486,34 @@ bool Utilities::ReadWordsFromFile(const std::string& filename, std::unordered_ma
 	return true;
 }
 
+std::string Utilities::ReadConfigFileGetPath(const std::string& filePath, const std::string& target)
+{
+	std::ifstream file(filePath);
+	if (!file.is_open())
+	{
+		std::cerr << "Could not open config file: " << filePath << std::endl;
+		return "";
+	}
+
+	std::string line;
+	std::string targetValue;
+	while (std::getline(file, line))
+	{
+		std::istringstream ss(line);
+		std::string key, value;
+		if (std::getline(ss, key, '=') && std::getline(ss, value))
+		{
+			if (key == target)
+			{
+				targetValue = value;
+				break;
+			}
+		}
+	}
+	file.close();
+	return targetValue.empty() ? "" : targetValue;
+}
+
 ///*
 //*  Reads an .csv file which contains AnimationParameter data
 //*  and loads each animation into a vector.

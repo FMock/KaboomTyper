@@ -54,7 +54,7 @@ void GameEngine::TextBlockManager::GenerateTextBlock()
 
     Common::SetActiveText(text);
 
-    auto xPadding = text.size() * 24;
+    int xPadding = static_cast<int>(text.size()) * 24; // 24 is the texture width
     auto randomColor = GetRandomColor();
 
     Common::s_previousColor = Common::s_currentColor;
@@ -63,13 +63,17 @@ void GameEngine::TextBlockManager::GenerateTextBlock()
     // Generate Random position x
     static std::random_device rd;
     static std::mt19937 gen(rd());
-    static std::uniform_int_distribution<int> x_dist(10, 800 - static_cast<int>(xPadding));
+    static std::uniform_int_distribution<int> x_dist(Common::EDGE_LEFT, Common::EDGE_RIGHT - xPadding);
 
-    int randomX = x_dist(gen);
-    int yPos = 115;
+    int xPos = x_dist(gen);
+    if (xPos + xPadding >= Common::EDGE_RIGHT)
+        xPos = Common::EDGE_LEFT;
+
+    int yPos = Common::TEXTBLOCK_VERTICAL_START_POSITION;
 
     // Create the new TextBlock
-    auto newBlock = std::make_shared<TextBlock>(randomX, yPos, text, randomColor);
+    auto newBlock = std::make_shared<TextBlock>(xPos, yPos, text, randomColor);
+    newBlock->SetTextBlockWidth(xPadding);
 
     // Register with the InputManager
     m_inputManager->RegisterObserver(newBlock);

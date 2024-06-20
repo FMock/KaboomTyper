@@ -6,17 +6,17 @@
 using namespace GameEngine;
 using namespace KaboomTyperDB;
 
-GameEngine::WordManager::WordManager() : m_currentWordIndex(0), m_dbMessanger(std::make_unique<DBMessanger>())
+WordManager::WordManager() : m_currentWordIndex(0), m_dbMessanger(std::make_unique<DBMessanger>())
 {
     m_currentCategory = DBMessanger::WordCategories::Bird; // default word category
 
     if (!m_dbMessanger->GetWords(m_words, m_currentCategory))
         throw std::exception("WordManager(): Error GetWords returned false");
 
-    // Now shuffle the words in the container. First, obtain a time-based seed:
+    // Obtain a time-based seed
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 
-    // Next, use the default random engine and the seed to shuffle the vector
+    // Use the default random engine and the seed to shuffle the vector
     std::shuffle(m_words.begin(), m_words.end(), std::default_random_engine(seed));
 }
 

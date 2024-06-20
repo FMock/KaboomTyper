@@ -1,0 +1,1 @@
+explosionWavFilePath=..\..\Resources\sounds\explosion_stereo.wav

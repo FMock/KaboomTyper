@@ -33,12 +33,14 @@ namespace GameEngine
 		static constexpr float LOG_BASE = 10.0f;
 		static constexpr float FLOOR = 878.0F; // The y-position the TextBlocks cannot exceed.
 		static constexpr float CEILING = 200.0F;
-		static constexpr float EDGE_LEFT = 10.0F;
-		static constexpr float EDGE_RIGHT = 790.0F;
-		static constexpr float HORIZONTAL_STEP = 24.0F;
+		static constexpr int EDGE_LEFT = 10;
+		static constexpr int EDGE_RIGHT = 789;
+		static constexpr float HORIZONTAL_STEP = 24.0F; //24.0
+		static constexpr int TEXTBLOCK_VERTICAL_START_POSITION = 115;
 		static Colors s_currentColor;
 		static Colors s_previousColor;
 		static std::pair<float, float> s_currentPosition;
 		static int s_currentTextBlockWidth;
+		inline static const std::string GAME_CONFIG_FILE = R"(..\..\Config\GameEngineConfig.txt)"; // must be inline for C++17 and later to define in header
 	};
 }
