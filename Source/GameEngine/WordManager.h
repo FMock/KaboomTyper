@@ -1,4 +1,7 @@
 #pragma once
+
+/* WordManager uses a KaboomTyperDB to get words from the database*/
+
 #include "../KaboomTyperDB/DBMessanger.h"
 #include <memory>
 #include <vector>
@@ -16,7 +19,6 @@ namespace GameEngine
 		std::string GetNextWord();
 
 	private:
-		// Database Access
 		std::unique_ptr<KaboomTyperDB::DBMessanger> m_dbMessanger;
 		std::vector<std::string> m_words;
 		DBMessanger::WordCategories m_currentCategory;

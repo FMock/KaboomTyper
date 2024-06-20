@@ -50,15 +50,23 @@ void GameManager::Initialize()
     m_rectangleOfRectangles->SetAnimateClockwise(false);
     m_rectangleOfRectangles->SetAnimateRandom(true);
 
-    m_explosion = std::make_shared<GameAudio>();
+    { // TODO PUT IN AUDIO MANAGER
+        m_explosion = std::make_shared<GameAudio>();
 
-    if (!m_explosion->Initialize())
-    {
-        std::cerr << "Failed to initialize audio!" << std::endl;
+        if (!m_explosion->Initialize())
+        {
+            std::cerr << "Failed to initialize audio!" << std::endl;
+        }
+
+        m_explosionPath = Utilities::ReadConfigFileGetPath(Common::GAME_CONFIG_FILE, "explosionWavFilePath");
+        if (m_explosionPath.empty())
+        {
+            std::cout << "Target not found or error reading the config file." << std::endl;
+            // TODO: HANDLE THIS ERROR
+        }
+
+        m_explosion->LoadWAV("explosion_stereo", m_explosionPath);
     }
-
-    m_explosionPath = R"(C:\Users\rockr\source\repos\KaboomTyper\Resources\sounds\explosion_stereo.wav)";
-    m_explosion->LoadWAV("explosion_stereo", m_explosionPath);
 }
 
 GameEngine::GameManager::GameManager()

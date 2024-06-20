@@ -198,15 +198,15 @@ void TextBlock::RespondToObserved(InputManager* InputMgr)
 
 		if (m_active)
 		{
-			if (m_position.first + 5 < Common::EDGE_RIGHT - m_size.first)
+			if (m_position.first + m_textBlockWidth + Common::HORIZONTAL_STEP < Common::EDGE_RIGHT)
 			{
 				m_textString->MoveHorizontal(Common::HORIZONTAL_STEP);
 				m_position.first += Common::HORIZONTAL_STEP;
 			}
 			else
 			{
-				m_position.first = Common::EDGE_RIGHT - m_size.first;
-				m_textString->SetX(Common::EDGE_RIGHT - m_size.first);
+				m_position.first = Common::EDGE_RIGHT - m_textBlockWidth;
+				m_textString->SetX(Common::EDGE_RIGHT - m_textBlockWidth);
 			}
 		}
 	}
@@ -258,6 +258,16 @@ bool GameEngine::TextBlock::IsActive() const
 void GameEngine::TextBlock::SetActiveState(bool isActive)
 {
 	m_active = isActive;
+}
+
+void GameEngine::TextBlock::SetTextBlockWidth(int x)
+{
+	m_textBlockWidth = x;
+}
+
+int GameEngine::TextBlock::GetTextBlockWidth() const
+{
+	return m_textBlockWidth;
 }
 
 void GameEngine::TextBlock::Activate()

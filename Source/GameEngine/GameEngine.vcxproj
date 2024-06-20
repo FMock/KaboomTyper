@@ -172,6 +172,7 @@
     <ClInclude Include="LevelManager.h" />
     <ClInclude Include="LevelSplashScreen.h" />
     <ClInclude Include="Menu.h" />
+    <ClInclude Include="MenuManager.h" />
     <ClInclude Include="MessageBox.h" />
     <ClInclude Include="Moveable.h" />
     <ClInclude Include="ObjectStates.h" />
@@ -221,6 +222,7 @@
     <ClCompile Include="LevelManager.cpp" />
     <ClCompile Include="LevelSplashScreen.cpp" />
     <ClCompile Include="Menu.cpp" />
+    <ClCompile Include="MenuManager.cpp" />
     <ClCompile Include="Messagebox.cpp" />
     <ClCompile Include="Moveable.cpp" />
     <ClCompile Include="RectangleDrawable.cpp" />

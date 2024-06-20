@@ -6,16 +6,30 @@
 #include "TextString.h"
 #include "Button.h"
 #include <memory>
+#include <functional>
 
 namespace GameEngine 
 {
 	class Menu : public InputObserver
 	{
 	public:
+
+		enum MenuButtons
+		{
+			File,
+			Options,
+			Help,
+			About,
+			ButtonCount
+		};
+
 		Menu();
 		~Menu();
 		void Draw();
 		void Update();
+
+		using Callback = std::function<void()>;
+		void AddCallback(Callback callback, Menu::MenuButtons button);
 
 	private:
 		std::unique_ptr<RectangleDrawable> m_menuBar;
@@ -27,6 +41,15 @@ namespace GameEngine
 		std::unique_ptr<RectangleDrawable> m_footer;
 
 		void Initialize();
+
+		Callback m_optionsBtnCallback;
+		void OptionsButtonClicked();
+		Callback m_fileBtnCallback;
+		void FileButtonClicked();
+		Callback m_helpBtnCallback;
+		void HelpButtonClicked();
+		Callback m_aboutBtnCallback;
+		void AboutButtonClicked();
 
 	protected:
 		void RespondToObserved(InputManager* InputMgr) override;
