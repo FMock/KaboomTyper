@@ -1,3 +1,4 @@
+#include <SDL.h>
 #include "GameManager.h"
 #include "Utilities.h"
 #include "LevelSplashScreen.h"
@@ -25,6 +26,11 @@ void GameManager::Initialize()
 
 	m_gameMenu = std::make_shared<Menu>();
 	m_inputManager->RegisterObserver(m_gameMenu); // so menu can respond to mouse clicks
+
+    m_gameMenu->AddCallback([this](Menu::MenuButtons button) { this->DisplayMenuChoices(button); }, Menu::File);
+    m_gameMenu->AddCallback([this](Menu::MenuButtons button) { this->DisplayMenuChoices(button); }, Menu::Options);
+    m_gameMenu->AddCallback([this](Menu::MenuButtons button) { this->DisplayMenuChoices(button); }, Menu::Help);
+    m_gameMenu->AddCallback([this](Menu::MenuButtons button) { this->DisplayMenuChoices(button); }, Menu::About);
 
 	m_inputManager->RegisterObserver(shared_from_this());
 
@@ -139,6 +145,41 @@ void GameManager::ProcessInput()
 #if DEBUG
         std::cout << "The strings are not equal." << std::endl;
 #endif
+    }
+}
+
+void GameEngine::GameManager::DisplayMenuChoices(Menu::MenuButtons button)
+{
+    switch (button)
+    {
+    case GameEngine::Menu::File:
+#if DEBUG
+        std::cout << "Display File Menu Choices" << std::endl;
+#endif
+        break;
+    case GameEngine::Menu::Options:
+#if DEBUG
+        std::cout << "Display Options Menu Choices" << std::endl;
+#endif
+        break;
+    case GameEngine::Menu::Help:
+#if DEBUG
+        std::cout << "Display Help Menu Choices" << std::endl;
+#endif
+        break;
+    case GameEngine::Menu::About:
+#if DEBUG
+        std::cout << "Display About Menu Choices" << std::endl;
+#endif
+
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION,
+            "About",
+            "Kaboom Typer\n A retro inspired typing game by Frank Mock\n https://www.frankmock.com/software/kaboomtyper\n Copyright 2024 All Rights Reserved",
+            NULL);
+
+        break;
+    default:
+        break;
     }
 }
 

@@ -37,6 +37,7 @@ namespace GameEngine
 		~GameManager();
 		void Update(float dt);
 		void ProcessInput();
+		void DisplayMenuChoices(Menu::MenuButtons);
 		void Render();
 		bool ShouldQuit();
 

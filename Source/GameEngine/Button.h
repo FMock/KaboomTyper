@@ -18,15 +18,23 @@ namespace GameEngine
 		void Update(float dt);
 		void Draw();
 		void ButtonPressed();
+		bool IsMouseOverButton(const int& x, const int& y);
 		void ButtonReleased();
 		void SetButtonColor(Colors color);
+		int GetXPosition() const;
+		int GetYPostion() const;
+		int GetWidth() const;
+		int GetHeight() const;
 
 	private:
-		//std::unique_ptr<RectangleDrawable> m_body;
 		std::unique_ptr<RectangleDrawable> m_outline;
 		std::unique_ptr<TextString> m_label;
 		int m_adjustedWidth;
 		float m_scaler;
+		int m_xPos;
+		int m_yPos;
+		int m_width;
+		int m_height;
 
 	};
 }
