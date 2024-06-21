@@ -32,6 +32,12 @@ void GameManager::Initialize()
     m_gameMenu->AddCallback([this](Menu::MenuButtons button) { this->DisplayMenuChoices(button); }, Menu::Help);
     m_gameMenu->AddCallback([this](Menu::MenuButtons button) { this->DisplayMenuChoices(button); }, Menu::About);
 
+    m_fileContextMenu = std::make_shared<FileContextMenu>();
+    m_inputManager->RegisterObserver(m_fileContextMenu);
+
+    m_fileContextMenu->AddCallback([this](FileContextMenu::Choices button) { this->DisplayFileMenuChoices(button); }, FileContextMenu::IMPORT);
+    m_fileContextMenu->AddCallback([this](FileContextMenu::Choices button) { this->DisplayFileMenuChoices(button); }, FileContextMenu::EXIT);
+
 	m_inputManager->RegisterObserver(shared_from_this());
 
 	m_messageBox = std::make_unique<MessageBox>();
@@ -153,18 +159,21 @@ void GameEngine::GameManager::DisplayMenuChoices(Menu::MenuButtons button)
     switch (button)
     {
     case GameEngine::Menu::File:
+
+        m_fileContextMenu->SetIsActive(!m_fileContextMenu->GetIsActive());
+
 #if DEBUG
-        std::cout << "Display File Menu Choices" << std::endl;
+        std::cout << "Display FileContextMenu" << std::endl;
 #endif
         break;
     case GameEngine::Menu::Options:
 #if DEBUG
-        std::cout << "Display Options Menu Choices" << std::endl;
+        std::cout << "Display OptionsContextMenu" << std::endl;
 #endif
         break;
     case GameEngine::Menu::Help:
 #if DEBUG
-        std::cout << "Display Help Menu Choices" << std::endl;
+        std::cout << "Display HelpContextMenu" << std::endl;
 #endif
         break;
     case GameEngine::Menu::About:
@@ -177,6 +186,26 @@ void GameEngine::GameManager::DisplayMenuChoices(Menu::MenuButtons button)
             "Kaboom Typer\n A retro inspired typing game by Frank Mock\n https://www.frankmock.com/software/kaboomtyper\n Copyright 2024 All Rights Reserved",
             NULL);
 
+        break;
+    default:
+        break;
+    }
+}
+
+void GameManager::DisplayFileMenuChoices(FileContextMenu::Choices button)
+{
+    switch (button)
+    {
+    case FileContextMenu::IMPORT:
+
+#if DEBUG
+        std::cout << "Display Import Options" << std::endl;
+#endif
+        break;
+    case FileContextMenu::EXIT:
+#if DEBUG
+        std::cout << "Exit The Game" << std::endl;
+#endif
         break;
     default:
         break;
@@ -205,8 +234,10 @@ void GameManager::Render()
 	m_inputTextBox->Draw();
 	m_gameMenu->Draw();
 	m_messageBox->Draw();
+    m_fileContextMenu->Draw();
 
     m_rectangleOfRectangles->DrawRectangleWithRectangles();
+    m_fileContextMenu->Draw();
 }
 
 void GameEngine::GameManager::UpdateGameEntities(float deltaTime)

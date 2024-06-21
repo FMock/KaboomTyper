@@ -22,6 +22,7 @@
 #include "GameAudio.h"
 #include "GamePlayArea.h"
 #include <memory>
+#include "FileContextMenu.h"
 
 /// <summary>
 /// GameManager manages the various entities in the game to create a
@@ -38,6 +39,7 @@ namespace GameEngine
 		void Update(float dt);
 		void ProcessInput();
 		void DisplayMenuChoices(Menu::MenuButtons);
+		void DisplayFileMenuChoices(FileContextMenu::Choices button);
 		void Render();
 		bool ShouldQuit();
 
@@ -52,6 +54,7 @@ namespace GameEngine
 		std::shared_ptr<InputManager> m_inputManager; // shares with TextBlockManager
 		std::unique_ptr<HeadsUpDisplay> m_headsUpDisplay;
 		std::shared_ptr<Menu> m_gameMenu;
+		std::shared_ptr<FileContextMenu> m_fileContextMenu;
 		std::unique_ptr<MessageBox> m_messageBox;
 		GamePlayArea m_gamePlayArea;
 		GLuint m_fireworkColorTexture;
