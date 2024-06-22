@@ -2,7 +2,8 @@
 
 #include "ContextMenu.h"
 #include "RectangleDrawable.h"
-#include "Button.h"
+//#include "MenuItem.h"
+#include "MenuItem.h"
 #include "InputManager.h"
 #include <memory>
 #include <functional>
@@ -35,18 +36,18 @@ namespace GameEngine
         void SetIsActive(bool);
 
         using Callback = std::function<void(FileContextMenu::Choices)>;
-        void AddCallback(Callback callback, FileContextMenu::Choices button);
+        void AddCallback(Callback callback, FileContextMenu::Choices MenuItem);
 
     private:
         std::unique_ptr<RectangleDrawable> m_menuBody;
-        std::unique_ptr<Button> m_importBtn;
-        std::unique_ptr<Button> m_exitBtn;
+        std::unique_ptr<MenuItem> m_importBtn;
+        std::unique_ptr<MenuItem> m_exitBtn;
         void Initialize();
         Callback m_importBtnCallback;
-        void ImportButtonClicked();
+        void ImportMenuItemClicked();
         Callback m_exitBtnCallback;
-        void ExitButtonClicked();
-        void HandleButton(InputManager* InputMgr, Button* button, const std::string& buttonName, std::function<void()> callback);
+        void ExitMenuItemClicked();
+        void HandleMenuItem(InputManager* InputMgr, MenuItem* MenuItem, const std::string& MenuItemName, std::function<void()> callback);
 
     protected:
         void RespondToObserved(InputManager* InputMgr) override;

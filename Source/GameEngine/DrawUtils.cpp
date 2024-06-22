@@ -573,6 +573,43 @@ void DrawUtilities::glDrawFilledRectangle(int x, int y, int w, int h, float scal
 	glPopAttrib();
 }
 
+void DrawUtilities::glDrawFilledRectangle(int x, int y, int w, int h, float scaleX, float scaleY, const RGBColor& color, unsigned char opacity)
+{
+	// Save current state
+	glPushAttrib(GL_CURRENT_BIT | GL_ENABLE_BIT);
+	glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
+
+	// Enable blending for transparency
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	// Disable texturing and set color with opacity
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glColor4ub(color.r, color.g, color.b, opacity); // Set color to specified RGB and opacity
+
+	glBegin(GL_QUADS);
+	{
+		// Top left vertex
+		glVertex2i(x, y);
+
+		// Top right vertex (scaled width)
+		glVertex2i(x + w * scaleX, y);
+
+		// Bottom right vertex (scaled width and height)
+		glVertex2i(x + w * scaleX, y + h * scaleY);
+
+		// Bottom left vertex (scaled height)
+		glVertex2i(x, y + h * scaleY);
+	}
+	glEnd();
+
+	// Restore previous state
+	glDisable(GL_BLEND);
+	glPopClientAttrib();
+	glPopAttrib();
+}
+
+
 
 void DrawUtilities::glDrawFilledTriangle(int x, int y, int size, float scaleX, float scaleY, const RGBColor& color, float rotation)
 {
