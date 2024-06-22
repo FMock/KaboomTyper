@@ -42,6 +42,7 @@ namespace GameEngine
 		static std::pair<float, float> s_currentPosition;
 		static int s_currentTextBlockWidth;
 		static constexpr int BUTTON_POSTION_OFFSET = 4;
+		static constexpr int MENUITEM_POSTION_OFFSET = 4;
 		inline static const std::string GAME_CONFIG_FILE = R"(..\..\Config\GameEngineConfig.txt)"; // must be inline for C++17 and later to define in header
 	};
 }

@@ -53,6 +53,7 @@ namespace DrawUtilities
 	void glDrawFilledRectangle(int x, int y, int w, int h, const RGBColor& fillColor);
 	void glDrawRectangleOutline(int x, int y, int w, int h, float scaleX, float scaleY, const RGBColor& color);
 	void glDrawFilledRectangle(int x, int y, int w, int h, float scaleX, float scaleY, const RGBColor& color);
+	void glDrawFilledRectangle(int x, int y, int w, int h, float scaleX, float scaleY, const RGBColor& color, unsigned char opacity);
 	void glDrawFilledTriangle(int x, int y, int size, float scaleX, float scaleY, const RGBColor& color, float rotation = 0.0f);
 	void glDrawAudio(GLuint tex, int x, int y, int w, int h, std::vector<float> audio);
 
