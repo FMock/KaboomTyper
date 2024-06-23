@@ -45,8 +45,8 @@ void MenuItem::Draw()
 	{
 		m_outline->Draw();
 
-		RGBColor testColor = RGBColor::GetRGBColor(RGBColor::White);
-		glDrawFilledRectangle(m_xPos, m_yPos, m_outlineWidth, m_outlineHeight, 1.0f, 1.0f, testColor, 50);
+		RGBColor color = RGBColor::GetRGBColor(RGBColor::White);
+		glDrawFilledRectangle(m_xPos, m_yPos, m_outlineWidth, m_outlineHeight, 1.0f, 1.0f, color, 50);
 	}
 
 	m_label->DrawText(m_scaler);

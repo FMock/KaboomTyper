@@ -3,26 +3,21 @@
 #include "Game.h"
 #include <GL/glew.h>
 #include <time.h>
-#include "Sprite.h"
-#include "TextString.h"
-#include "TextStringFont.h"
-#include "TextBlock.h"
-#include "DrawUtils.h"
-#include "Utilities.h"
-
 
 using namespace GameEngine;
-using namespace GameEngine::Utility;
 
 Game::Game()
 {
+	m_window = nullptr;
+	m_glcontext = NULL;
+
 	// empty constructor to ensure that members are created after the OpenGL context is set up
 }
 	
 /// <summary>
 /// Creates an SDL2 game windows with an OpenGL context
 /// </summary>
-/// <returns></returns>
+/// <returns>true if success, and false otherwise</returns>
 bool Game::Initialize()
 {
 	// Initialize SDL.
@@ -82,7 +77,7 @@ bool Game::Initialize()
 
 	srand(time(NULL));
 
-	// Load the game characters and other graphics
+	// Load the game objects
 	LoadData();
 
 	return true;
@@ -93,8 +88,6 @@ bool Game::Initialize()
 /// </summary>
 void Game::LoadData()
 {
-	//m_audioGenerator = std::make_unique<AudioGenerator>();
-
 	// Load GameManager
 	m_gameManager = GameManager::Create(); // must use the factory method
 }
@@ -104,8 +97,8 @@ void Game::RunLoop()
 	while (!m_shouldExit)
 	{
 		ProcessInput();
-		UpdateGame();
-		GenerateOutput();
+		Update();
+		Draw();
 	}
 }
 
@@ -114,48 +107,33 @@ void Game::ProcessInput()
 	m_shouldExit = m_gameManager->ShouldQuit();
 }
 
-void Game::UpdateGame()
+void Game::Update()
 {
 	// Compute deltaTime - the time difference between each frame
 	m_currentTime = SDL_GetTicks();
-	m_msPerFrame = m_currentTime - m_previousTime; // ~14 ms
-	m_deltaTime = m_msPerFrame / 1000.0f; // ~ 0.014
+	m_deltaTime = (m_currentTime - m_previousTime) / 1000.0f;
 	m_previousTime = m_currentTime;
 
 	// Calculate FPS and print
-	m_f_currentTime = SDL_GetTicks();
-	if (m_f_currentTime > m_f_previousTime + 1000)
+	if (m_currentTime > m_f_previousTime + 1000)
 	{
-		m_seconds++;
 		printf("FPS: %i\n", m_fps);
 		m_fps = 0;
-		m_f_previousTime = m_f_currentTime;
+		m_f_previousTime = m_currentTime;
 	}
 
 	m_fps++; // increment frame counter each iteration
 
-	//fmod_sys->update(); // If you don't update the sound will play once
-
 	m_gameManager->Update(m_deltaTime);
 }
 
-void Game::GenerateOutput()
+void Game::Draw()
 {
 	// Draw Frame
 	glClearColor(0, 0, 0, 1);
 	glClear(GL_COLOR_BUFFER_BIT); // Be sure to always draw objects after this
 
-	// Draw Objects
-
-	//m_textStr2->DrawText(1.25f);
-	
-	// Generate audio data
-	//float frequency = 440.0f; // 440 Hz (A4)
-	//float duration = 1.0f;    // 1 second
-	//float sampleRate = 44100.0f; // CD quality sample rate
-	//std::vector<float> audioData = m_audioGenerator->GenerateSineWave(frequency, duration, sampleRate);
-	//m_audioGenerator->DrawAudio(0, 150, 150, 1, 1, audioData);
-
+	// Draw Game
 	m_gameManager->Render();
 
 	// Swap Window
@@ -164,14 +142,7 @@ void Game::GenerateOutput()
 
 void Game::Shutdown()
 {
-	UnloadData();
 	// Once finished with OpenGL functions, the SDL_GLContext can be deleted.
 	SDL_GL_DeleteContext(m_glcontext);
 	SDL_Quit();
 }
-
-void Game::UnloadData()
-{
-
-}
-

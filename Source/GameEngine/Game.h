@@ -3,16 +3,8 @@
 #include <string>
 #include <vector>
 #include <memory>
-#include "InputManager.h"
-#include "Sprite.h"
-#include "TextString.h"
-#include "TextBlock.h"
-#include "FontParameters.h"
-#include "TextBlockParameters.h"
 #include "GameManager.h"
-#include "RectangleDrawable.h"
-#include "AudioGenerator.h"
-#include "HeadsUpDisplay.h"
+
 
 namespace GameEngine
 {
@@ -25,39 +17,25 @@ namespace GameEngine
 		void Shutdown();
 
 	private:
-
-		//std::unique_ptr<AudioGenerator> m_audioGenerator;
-
 		SDL_Window* m_window;
 		SDL_GLContext m_glcontext;
 		
+		void ProcessInput();
+		void Update();
+		void Draw();
+		void LoadData();
+
+		// Manages child game managers
 		std::shared_ptr<GameManager> m_gameManager;
 
-		void ProcessInput();
-		void UpdateGame();
-		void GenerateOutput();
-		void LoadData();
-		void UnloadData();
-
-
-		// The previous frame's keyboard state.
-		unsigned char m_kbPrevState[SDL_NUM_SCANCODES] = { 0 };
-
-		// The current frame's keyboard state.
-		const unsigned char* m_kbState = NULL;
-
-		// Set this to true to make the game loop exit.
+		// Set this to true to exit the game loop
 		char m_shouldExit = 0;
 
 		// To regulate frame rate
 		unsigned int m_previousTime = 0;
 		unsigned int m_currentTime = 0;
 		unsigned int m_f_previousTime = 0;
-		unsigned int m_f_currentTime = 0;
-		double m_deltaTime = 0.0f;
-		double m_noKeyPressTime = 0.0f;
-		double m_msPerFrame = 0.0f;
-		unsigned int m_seconds = 0;
 		unsigned int m_fps = 0;
+		double m_deltaTime = 0.0f;
 	};
 }

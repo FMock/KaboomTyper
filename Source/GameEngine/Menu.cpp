@@ -91,6 +91,8 @@ void Menu::HandleButton(InputManager* InputMgr, Button* button, const std::strin
     int mouseX, mouseY;
     InputMgr->GetMousePosition(&mouseX, &mouseY);
 
+    button->SetIsActive(button->IsMouseOverButton(mouseX, mouseY)); // toggle current Button active state
+
     if (InputMgr->m_mouseButtonState[0] && !InputMgr->m_prevMouseButtonState[0] && button->IsMouseOverButton(mouseX, mouseY))
     {
 #if DEBUG

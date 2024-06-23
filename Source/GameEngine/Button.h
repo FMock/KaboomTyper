@@ -25,6 +25,7 @@ namespace GameEngine
 		int GetYPostion() const;
 		int GetWidth() const;
 		int GetHeight() const;
+		void SetIsActive(bool isActive);
 
 	private:
 		std::unique_ptr<RectangleDrawable> m_outline;
@@ -35,6 +36,8 @@ namespace GameEngine
 		int m_yPos;
 		int m_width;
 		int m_height;
-
+		int m_outlineWidth;
+		int m_outlineHeight;
+		bool m_active; // true when mouse hover present
 	};
 }
