@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <utility> //for std::forward 
+#include "GamePlayArea.h"
 #include "HeadsUpDisplay.h"
 #include "MessageBox.h"
 #include "Menu.h"
@@ -31,6 +32,7 @@ namespace GameEngine
 
 
 	private:
+		std::shared_ptr<GamePlayArea> m_gamePlayArea;
 		std::shared_ptr<HeadsUpDisplay> m_headsUpDisplay;
 		std::shared_ptr<MessageBox> m_messageBox;
 		std::shared_ptr<FileContextMenu> m_fileContextMenu;

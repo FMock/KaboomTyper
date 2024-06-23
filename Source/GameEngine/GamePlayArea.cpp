@@ -30,3 +30,12 @@ void GamePlayArea::Render()
     m_topSideBar.Draw();
     m_bottomSideBar.Draw();
 }
+
+void GameEngine::GamePlayArea::Draw()
+{
+    Render();
+}
+
+void GameEngine::GamePlayArea::Update(float dt)
+{
+}

@@ -3,6 +3,7 @@
 #include "TextBlock.h"
 #include "InputManager.h"
 #include "WordManager.h"
+#include "IDrawable.h"
 #include <string>
 #include <deque>
 #include <chrono>
@@ -10,7 +11,7 @@
 
 namespace GameEngine
 {
-    class TextBlockManager
+    class TextBlockManager : public IDrawable
     {
     private:
         std::deque<std::shared_ptr<TextBlock>> m_blockDeque;
@@ -26,13 +27,14 @@ namespace GameEngine
         void UnregisterAllTextBlocks();
         void UpdateTimer(float dt);
         std::unique_ptr<WordManager> m_wordManager;
+        int m_priority;// draw priority
 
     public:
         TextBlockManager(float spawnIntervalSeconds, std::shared_ptr<InputManager> inputManager);
         void ClearBlockDeque();
         void GenerateTextBlock();
-        void Update(float dt);
-        void Draw();
+        void Update(float dt) override;
+        void Draw() override;
         void PopTextBlock();
         void ToggleRunning();
         bool IsRunning();
@@ -40,5 +42,7 @@ namespace GameEngine
         void SetTextBlockLimitReached(bool b);
         void HandleCollisions(TextBlock& blockA, float& blockAYPosition, TextBlock& blockB);
         void DestroyActiveTextBlock();
+        int GetPriority() const override { return m_priority; }
+        void SetPriority(int priority) override { m_priority = priority; }
     };
 }

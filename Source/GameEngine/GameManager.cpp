@@ -17,34 +17,35 @@ using namespace KaboomTyperDB;
 // Loads all the parts of the game
 void GameManager::Initialize()
 {
+    // User Input
 	m_inputTextBox = std::make_shared<InputTextBox>();
 	m_inputTextBox->InitializeTextBox(10, 916, 780, 34, Colors::DEFAULT_COLOR, true);
     m_inputTextBox->AddCallback(std::bind(&GameManager::ProcessInput, this)); // Bind ProcessInput() for use as a Callback by InputTextBox
-
     m_inputManager = std::make_shared<InputManager>();
 	m_inputManager->RegisterObserver(m_inputTextBox); // so InputTextbox can respond to user key presses
 	m_inputManager->RegisterObserver(shared_from_this());
 
+    // State Machine
 	m_stateMachine = std::make_unique<StateMachine>();
 
+    // UI Manager
     m_uiManager = std::make_unique<UIManager>(m_inputManager);
 
-    m_textblockManager = std::make_unique < TextBlockManager>(10.0f, m_inputManager);
+    // TextBlock Manager
+    m_textblockManager = std::make_shared<TextBlockManager>(10.0f, m_inputManager);
 
-    m_gamePlayArea.Initialize();
+    // Firework Explosion Manager
+    m_fireworkExplosionManager = std::make_shared<FireworkExplosionManager>();
+    m_fireworkExplosionManager->SetShouldFireworkExplode(false);
 
-    m_colorPtr = std::make_unique<Color>();
-    m_fireworkColorTexture = m_colorPtr->s_colorParameters.m_stringColorTextureColorMap["green"];
-    m_firework = std::make_unique<Firework>(m_fireworkColorTexture, 400, 400, 1, 1, 300);
-
-    m_blowUpTextBlock = false;
-
+    // Rectangle of Rectangles
     m_rectangleOfRectangles = std::make_shared<DecorativeRectangle>();
     m_rectangleOfRectangles->Initialize(13, 45, 430, 100, Colors::DARK_GRAY);
     m_rectangleOfRectangles->SetAnimate(false);
     m_rectangleOfRectangles->SetAnimateClockwise(false);
     m_rectangleOfRectangles->SetAnimateRandom(true);
 
+    // Audio
     { // TODO PUT IN AUDIO MANAGER
         m_explosion = std::make_shared<GameAudio>();
 
@@ -80,13 +81,11 @@ std::shared_ptr<GameManager> GameManager::Create()
 
 GameEngine::GameManager::~GameManager()
 {
-	// Delete LevelManager objects from the map
 	for (auto& pair : m_levels)
 	{
 		delete pair.second;
 	}
 
-	// Clear the map after deleting the objects
 	m_levels.clear();
 }
 
@@ -94,9 +93,16 @@ void GameManager::Update(float dt)
 {
     UpdateGameEntities(dt);
 
-    if (m_firework->IsActive())
+    if (m_fireworkExplosionManager->IsFireworkActive())
     {
-        m_firework->Update(dt);
+        m_fireworkExplosionManager->Update(dt);
+    }
+
+    if(m_fireworkExplosionManager->GetShouldFireworkExplode())
+    {
+        m_fireworkExplosionManager->SetIsFireworkActive(true);
+        m_fireworkExplosionManager->GenerateFireworkParticles();
+        m_fireworkExplosionManager->SetShouldFireworkExplode(false);
     }
 }
 
@@ -106,56 +112,24 @@ void GameManager::ProcessInput()
     std::string activeStr = Common::GetActiveText();
     std::string submittedStr = Common::GetSubmittedText();
 
-    if (activeStr == submittedStr) // Leave this check here
+    if (activeStr == submittedStr) // Leave this check in GameManager
     {
         m_textblockManager->DestroyActiveTextBlock();
-
         m_uiManager->IncreaseScore();
-
-        m_blowUpTextBlock = true;
-
-        // Set Firework color and positon
-        m_firework->SetColor(Common::s_previousColor);
-        int x = (int)Common::s_currentPosition.first;
-        int y = (int)Common::s_currentPosition.second;
-        int adjustedX = x + (Common::s_currentTextBlockWidth / 2);
-        int halfFontHeight = 16;
-        int adjustedY = y + halfFontHeight;
-        m_firework->SetPosition(adjustedX, adjustedY);
+        m_fireworkExplosionManager->SetShouldFireworkExplode(true);
+        m_fireworkExplosionManager->ProcessInput();
         m_explosion->PlaySound("explosion_stereo");
         SDL_Delay(10); // slight pause to hear the sound
+    }
 
 #if DEBUG
-        std::cout << "The strings are equal." << std::endl;
+    std::cout << "The strings are " << (activeStr == submittedStr ? "equal" : "not equal") << "." << std::endl;
 #endif
-    }
-    else
-    {
-#if DEBUG
-        std::cout << "The strings are not equal." << std::endl;
-#endif
-    }
+
 }
-
 
 void GameManager::Render()
 {
-    // Render first to not hide TextBlocks
-    m_gamePlayArea.Render();
-
-    if (m_blowUpTextBlock)
-    {
-        m_firework->SetIsActive(true);
-        m_firework->GenerateParticles();
-        m_blowUpTextBlock = false;
-    }
-
-    if (m_firework->IsActive())
-    {
-        m_firework->Draw();
-    }
-
-    m_textblockManager->Draw();
     m_drawOrderManager.RenderAll();
 	m_inputTextBox->Draw();
 }
@@ -187,12 +161,19 @@ void GameEngine::GameManager::GameOver()
 
 void GameManager::RegisterDrawables()
 {
+    // Firework Manager
+    m_fireworkExplosionManager->SetPriority(1);
+    m_drawOrderManager.AddDrawable(m_fireworkExplosionManager);
+
+    // Textblock Manager
+    m_textblockManager->SetPriority(1);
+    m_drawOrderManager.AddDrawable(m_textblockManager);
+
+    // Rectangle of Rectangles
     m_rectangleOfRectangles->SetPriority(8);
     m_drawOrderManager.AddDrawable(m_rectangleOfRectangles);
 
     m_uiManager->UIManager::RegisterDrawables(m_drawOrderManager);
-
-    // consider adding m_firework here
 }
 
 bool GameEngine::GameManager::ShouldQuit()

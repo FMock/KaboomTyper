@@ -11,7 +11,8 @@ HeadsUpDisplay::HeadsUpDisplay()
 	  m_highScoreLabel(std::make_unique<TextString>()),
 	  m_highScoreAsText(std::make_unique<TextString>()),
 	  m_score(std::make_unique<Score>()),
-	  m_x(0), m_y(0), m_width(0), m_height(0), m_updatedRequired(false)
+	  m_x(0), m_y(0), m_width(0), m_height(0), m_updatedRequired(false),
+	  m_priority(0)
 {
 
 }

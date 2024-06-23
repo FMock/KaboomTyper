@@ -12,19 +12,13 @@
 #include "GameStates.h"
 #include "InputTextBox.h"
 #include "InputManager.h"
-//#include "Menu.h"
-//#include "MessageBox.h"
-//#include "HeadsUpDisplay.h"
 #include "TextBlockManager.h"
-#include "Firework.h"
 #include "Color.h"
 #include "DecorativeRectangleDrawable.h"
 #include "GameAudio.h"
-#include "GamePlayArea.h"
-#include <memory>
-//#include "FileContextMenu.h"
 #include "UIManager.h"
 #include "DrawOrderManager.h"
+#include "FireworkExplosionManager.h"
 
 /// <summary>
 /// GameManager manages the various entities in the game to create a
@@ -55,21 +49,12 @@ namespace GameEngine
 		std::shared_ptr<StateMachine> m_stateMachine;
 		std::shared_ptr<InputTextBox> m_inputTextBox;
 		std::shared_ptr<InputManager> m_inputManager; // shares with TextBlockManager
-		std::unique_ptr<UIManager> m_uiManager;
-		//std::shared_ptr<DrawOrderManager> m_drawOrderManager;
-		DrawOrderManager m_drawOrderManager;
-		//std::unique_ptr<HeadsUpDisplay> m_headsUpDisplay;
-		//std::shared_ptr<Menu> m_gameMenu;
-		//std::shared_ptr<FileContextMenu> m_fileContextMenu;
-		//std::unique_ptr<MessageBox> m_messageBox;
-		GamePlayArea m_gamePlayArea;
-		GLuint m_fireworkColorTexture;
-		std::unique_ptr<Firework> m_firework;
-		std::unique_ptr<Color> m_colorPtr;
-		bool m_blowUpTextBlock;
 
+		std::unique_ptr<UIManager> m_uiManager;
+		DrawOrderManager m_drawOrderManager;
+		std::shared_ptr<FireworkExplosionManager> m_fireworkExplosionManager;
 		TextBlockParameters m_textBlockParameters;
-		std::unique_ptr<TextBlockManager> m_textblockManager;
+		std::shared_ptr<TextBlockManager> m_textblockManager;
 		std::map<std::string, GLuint> m_stringToColoredBlockTextureMap;
 		FontParameters m_fontParameters;
 		std::shared_ptr<TextStringFont> m_fontPtr;
