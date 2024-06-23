@@ -9,6 +9,9 @@ namespace GameEngine
 {
 	class RectangleDrawable : public IDrawable
 	{
+	private:
+		int m_priority = 0; // draw priority;
+
 	public:
 		RectangleDrawable();
 		RectangleDrawable(int x, int y, int width, int height, Colors rectColor = DEFAULT_COLOR, bool filled = false);
@@ -17,7 +20,8 @@ namespace GameEngine
 		virtual void Update(float dt) override;
 		void Draw() override;
 		void ChangeColor(Colors color);
-
+		int GetPriority() const override { return m_priority; }
+		void SetPriority(int priority) override { m_priority = priority; }
 #pragma region setters_and_getters
 		void SetWidth(int width);
 		int GetWidth() const;

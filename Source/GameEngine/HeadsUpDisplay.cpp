@@ -25,7 +25,7 @@ void HeadsUpDisplay::Draw()
 	DrawHud();
 }
 
-void GameEngine::HeadsUpDisplay::Update()
+void GameEngine::HeadsUpDisplay::Update(float dt)
 {
 	UpdateScore();
 	m_updatedRequired = false;

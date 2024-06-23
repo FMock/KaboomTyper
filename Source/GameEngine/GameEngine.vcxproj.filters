@@ -246,6 +246,12 @@
     <ClInclude Include="MenuItem.h">
       <Filter>Header Files\UI</Filter>
     </ClInclude>
+    <ClInclude Include="UIManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawOrderManager.h">
+      <Filter>Header Files\Draw</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -379,6 +385,12 @@
     </ClCompile>
     <ClCompile Include="MenuItem.cpp">
       <Filter>Source Files\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UIManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DrawOrderManager.cpp">
+      <Filter>Source Files\Draw</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -1,25 +1,29 @@
 #pragma once
 
 #include "RectangleDrawable.h"
+#include "IDrawable.h"
 #include "TextString.h"
 #include "Score.h"
 #include <memory>
 
 namespace GameEngine
 {
-	class HeadsUpDisplay
+	class HeadsUpDisplay : public IDrawable
 	{
 	public:
 		HeadsUpDisplay();
 		~HeadsUpDisplay();
-		void Draw();
-		void Update();
+
+		void Draw() override;
+		void Update(float dt) override;
 		void Initialize(int x, int y);
 		Score* GetScore() const; // share the score with rest of game
 		void IncreaseScore(int amount);
 		void SetUpdateRequired(bool updateRequired);
 		bool UpdateRequired();
 		void ResetScore();
+		int GetPriority() const override { return m_priority; }
+		void SetPriority(int priority) override { m_priority = priority; }
 
 	private:
 		void DrawHud();
@@ -39,5 +43,6 @@ namespace GameEngine
 		int m_column2XOffset;
 		int m_xPad;
 		int m_yPad;
+		int m_priority = 1; // draw priority
 	};
 }

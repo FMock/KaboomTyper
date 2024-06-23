@@ -12,9 +12,9 @@
 #include "GameStates.h"
 #include "InputTextBox.h"
 #include "InputManager.h"
-#include "Menu.h"
-#include "MessageBox.h"
-#include "HeadsUpDisplay.h"
+//#include "Menu.h"
+//#include "MessageBox.h"
+//#include "HeadsUpDisplay.h"
 #include "TextBlockManager.h"
 #include "Firework.h"
 #include "Color.h"
@@ -22,7 +22,9 @@
 #include "GameAudio.h"
 #include "GamePlayArea.h"
 #include <memory>
-#include "FileContextMenu.h"
+//#include "FileContextMenu.h"
+#include "UIManager.h"
+#include "DrawOrderManager.h"
 
 /// <summary>
 /// GameManager manages the various entities in the game to create a
@@ -48,14 +50,18 @@ namespace GameEngine
 		void Initialize();
 		void UpdateGameEntities(float deltaTime);
 		void GameOver();
+		void RegisterDrawables();
 
 		std::shared_ptr<StateMachine> m_stateMachine;
 		std::shared_ptr<InputTextBox> m_inputTextBox;
 		std::shared_ptr<InputManager> m_inputManager; // shares with TextBlockManager
-		std::unique_ptr<HeadsUpDisplay> m_headsUpDisplay;
-		std::shared_ptr<Menu> m_gameMenu;
-		std::shared_ptr<FileContextMenu> m_fileContextMenu;
-		std::unique_ptr<MessageBox> m_messageBox;
+		std::unique_ptr<UIManager> m_uiManager;
+		//std::shared_ptr<DrawOrderManager> m_drawOrderManager;
+		DrawOrderManager m_drawOrderManager;
+		//std::unique_ptr<HeadsUpDisplay> m_headsUpDisplay;
+		//std::shared_ptr<Menu> m_gameMenu;
+		//std::shared_ptr<FileContextMenu> m_fileContextMenu;
+		//std::unique_ptr<MessageBox> m_messageBox;
 		GamePlayArea m_gamePlayArea;
 		GLuint m_fireworkColorTexture;
 		std::unique_ptr<Firework> m_firework;
@@ -68,7 +74,7 @@ namespace GameEngine
 		FontParameters m_fontParameters;
 		std::shared_ptr<TextStringFont> m_fontPtr;
 		std::map<GameState, LevelManager*> m_levels;
-		std::unique_ptr<DecorativeRectangle> m_rectangleOfRectangles;
+		std::shared_ptr<DecorativeRectangle> m_rectangleOfRectangles;
 
 		// Audio
 		std::shared_ptr<GameAudio> m_explosion;

@@ -134,6 +134,11 @@ void GameEngine::DecorativeRectangle::SetAnimateRandom(bool animate)
     m_animateRandom = animate;
 }
 
+void GameEngine::DecorativeRectangle::Draw()
+{
+    DrawRectangleWithRectangles();
+}
+
 void DecorativeRectangle::DrawRectangleWithRectangles()
 {
     static int currentIndex = 0; // Index of the current small rectangle

@@ -26,7 +26,7 @@ void Menu::Draw()
     m_footer->Draw();
 }
 
-void Menu::Update()
+void Menu::Update(float dt)
 {
 }
 
