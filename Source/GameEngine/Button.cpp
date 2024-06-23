@@ -1,10 +1,12 @@
 #include "Button.h"
+#include "DrawUtils.h"
 
 using namespace GameEngine;
+using namespace DrawUtilities;
 
 
 Button::Button() : m_outline(std::make_unique<RectangleDrawable>()), m_label(std::make_unique<TextString>()), 
-                   m_adjustedWidth(0), m_scaler(1.0f), m_xPos(0), m_yPos(0), m_width(0), m_height(0)
+                   m_adjustedWidth(0), m_scaler(1.0f), m_xPos(0), m_yPos(0), m_width(0), m_height(0), m_active(false)
 {
 
 }
@@ -26,7 +28,9 @@ void Button::Initialize(std::string text, int x, int y, float scaler, Colors col
 	m_adjustedWidth = static_cast<int>((text.size() * 24 * 1 * m_scaler)); // 24 is font texture width
 	m_width = m_adjustedWidth + (2 * Common::BUTTON_POSTION_OFFSET);
 	m_height = 32 * m_scaler + (2 * Common::BUTTON_POSTION_OFFSET); // 32 is font texture height
-	m_outline->Initialize(m_xPos, m_yPos, m_adjustedWidth + 8, 32 * m_scaler + 8, Colors::DEFAULT_COLOR);
+	m_outlineWidth = m_adjustedWidth + 8;
+	m_outlineHeight = 32 * m_scaler + 8;
+	m_outline->Initialize(m_xPos, m_yPos, m_outlineWidth, m_outlineHeight, Colors::DEFAULT_COLOR);
 	m_label->Initialize(text, x, y);
 }
 
@@ -36,6 +40,12 @@ void Button::Update(float dt)
 
 void Button::Draw()
 {
+	if (m_active)
+	{
+		RGBColor color = RGBColor::GetRGBColor(RGBColor::White);
+		glDrawFilledRectangle(m_xPos, m_yPos, m_outlineWidth, m_outlineHeight, 1.0f, 1.0f, color, 50);
+	}
+
 	m_outline->Draw();
 	m_label->DrawText(m_scaler);
 }
@@ -77,5 +87,10 @@ int GameEngine::Button::GetWidth() const
 int GameEngine::Button::GetHeight() const
 {
 	return m_height;
+}
+
+void GameEngine::Button::SetIsActive(bool isActive)
+{
+	m_active = isActive;
 }
 

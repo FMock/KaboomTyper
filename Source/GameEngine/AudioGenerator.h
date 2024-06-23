@@ -1,3 +1,16 @@
+/*
+* AudioGenerator can generate audio data and draw it to screen
+* 
+* 	// Generate audio data and draw it
+* 
+*   auto m_audioGenerator = std::make_unique<AudioGenerator>();
+	float frequency = 440.0f; // 440 Hz (A4)
+	float duration = 1.0f;    // 1 second
+	float sampleRate = 44100.0f; // CD quality sample rate
+	std::vector<float> audioData = m_audioGenerator->GenerateSineWave(frequency, duration, sampleRate);
+	m_audioGenerator->DrawAudio(0, 150, 150, 1, 1, audioData);
+*/
+
 #pragma once
 #include <vector>
 #include <cmath>
