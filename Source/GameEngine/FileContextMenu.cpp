@@ -29,7 +29,7 @@ void FileContextMenu::Draw()
     }
 }
 
-void FileContextMenu::Update()
+void FileContextMenu::Update(float dt)
 {
 }
 

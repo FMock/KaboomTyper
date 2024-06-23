@@ -12,6 +12,8 @@ namespace GameEngine
         virtual ~IDrawable() = default;
         virtual void Update(float dt) = 0;
         virtual void Draw() = 0;
+        virtual int GetPriority() const = 0;
+        virtual void SetPriority(int priority) = 0;
 
     protected:
         IDrawable() : m_x(0), m_y(0), m_color(GameEngine::Colors::DEFAULT_COLOR)

@@ -23,28 +23,11 @@ void GameManager::Initialize()
 
     m_inputManager = std::make_shared<InputManager>();
 	m_inputManager->RegisterObserver(m_inputTextBox); // so InputTextbox can respond to user key presses
-
-	m_gameMenu = std::make_shared<Menu>();
-	m_inputManager->RegisterObserver(m_gameMenu); // so menu can respond to mouse clicks
-
-    m_gameMenu->AddCallback([this](Menu::MenuButtons button) { this->DisplayMenuChoices(button); }, Menu::File);
-    m_gameMenu->AddCallback([this](Menu::MenuButtons button) { this->DisplayMenuChoices(button); }, Menu::Options);
-    m_gameMenu->AddCallback([this](Menu::MenuButtons button) { this->DisplayMenuChoices(button); }, Menu::Help);
-    m_gameMenu->AddCallback([this](Menu::MenuButtons button) { this->DisplayMenuChoices(button); }, Menu::About);
-
-    m_fileContextMenu = std::make_shared<FileContextMenu>();
-    m_inputManager->RegisterObserver(m_fileContextMenu);
-
-    m_fileContextMenu->AddCallback([this](FileContextMenu::Choices button) { this->DisplayFileMenuChoices(button); }, FileContextMenu::IMPORT);
-    m_fileContextMenu->AddCallback([this](FileContextMenu::Choices button) { this->DisplayFileMenuChoices(button); }, FileContextMenu::EXIT);
-
 	m_inputManager->RegisterObserver(shared_from_this());
 
-	m_messageBox = std::make_unique<MessageBox>();
-
 	m_stateMachine = std::make_unique<StateMachine>();
-	m_headsUpDisplay = std::make_unique<HeadsUpDisplay>();
-	m_headsUpDisplay->Initialize(445, 43);
+
+    m_uiManager = std::make_unique<UIManager>(m_inputManager);
 
     m_textblockManager = std::make_unique < TextBlockManager>(10.0f, m_inputManager);
 
@@ -56,7 +39,7 @@ void GameManager::Initialize()
 
     m_blowUpTextBlock = false;
 
-    m_rectangleOfRectangles = std::make_unique<DecorativeRectangle>();
+    m_rectangleOfRectangles = std::make_shared<DecorativeRectangle>();
     m_rectangleOfRectangles->Initialize(13, 45, 430, 100, Colors::DARK_GRAY);
     m_rectangleOfRectangles->SetAnimate(false);
     m_rectangleOfRectangles->SetAnimateClockwise(false);
@@ -79,11 +62,13 @@ void GameManager::Initialize()
 
         m_explosion->LoadWAV("explosion_stereo", m_explosionPath);
     }
+
+    RegisterDrawables();
 }
 
 GameEngine::GameManager::GameManager()
 {
-	//Initialize();
+	// factory method Create() calls Initialize
 }
 
 std::shared_ptr<GameManager> GameManager::Create()
@@ -121,13 +106,11 @@ void GameManager::ProcessInput()
     std::string activeStr = Common::GetActiveText();
     std::string submittedStr = Common::GetSubmittedText();
 
-    if (activeStr == submittedStr)
+    if (activeStr == submittedStr) // Leave this check here
     {
         m_textblockManager->DestroyActiveTextBlock();
 
-        // Increase Players Score
-        m_headsUpDisplay->IncreaseScore(10); // TODO: HARD CODED AS 10. SCORE INCREASE SHOULD BE BASED ON THE SIZE OF THE TEXT
-        m_headsUpDisplay->SetUpdateRequired(true); // HUD needs to be updated
+        m_uiManager->IncreaseScore();
 
         m_blowUpTextBlock = true;
 
@@ -154,63 +137,6 @@ void GameManager::ProcessInput()
     }
 }
 
-void GameEngine::GameManager::DisplayMenuChoices(Menu::MenuButtons button)
-{
-    switch (button)
-    {
-    case GameEngine::Menu::File:
-
-        m_fileContextMenu->SetIsActive(!m_fileContextMenu->GetIsActive());
-
-#if DEBUG
-        std::cout << "Display FileContextMenu" << std::endl;
-#endif
-        break;
-    case GameEngine::Menu::Options:
-#if DEBUG
-        std::cout << "Display OptionsContextMenu" << std::endl;
-#endif
-        break;
-    case GameEngine::Menu::Help:
-#if DEBUG
-        std::cout << "Display HelpContextMenu" << std::endl;
-#endif
-        break;
-    case GameEngine::Menu::About:
-#if DEBUG
-        std::cout << "Display About Menu Choices" << std::endl;
-#endif
-
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION,
-            "About",
-            "Kaboom Typer\n A retro inspired typing game by Frank Mock\n https://www.frankmock.com/software/kaboomtyper\n Copyright 2024 All Rights Reserved",
-            NULL);
-
-        break;
-    default:
-        break;
-    }
-}
-
-void GameManager::DisplayFileMenuChoices(FileContextMenu::Choices button)
-{
-    switch (button)
-    {
-    case FileContextMenu::IMPORT:
-
-#if DEBUG
-        std::cout << "Display Import Options" << std::endl;
-#endif
-        break;
-    case FileContextMenu::EXIT:
-#if DEBUG
-        std::cout << "Exit The Game" << std::endl;
-#endif
-        break;
-    default:
-        break;
-    }
-}
 
 void GameManager::Render()
 {
@@ -230,14 +156,8 @@ void GameManager::Render()
     }
 
     m_textblockManager->Draw();
-	m_headsUpDisplay->Draw();
+    m_drawOrderManager.RenderAll();
 	m_inputTextBox->Draw();
-	m_gameMenu->Draw();
-	m_messageBox->Draw();
-    m_fileContextMenu->Draw();
-
-    m_rectangleOfRectangles->DrawRectangleWithRectangles();
-    m_fileContextMenu->Draw();
 }
 
 void GameEngine::GameManager::UpdateGameEntities(float deltaTime)
@@ -252,18 +172,27 @@ void GameEngine::GameManager::UpdateGameEntities(float deltaTime)
         GameOver();
     }
 
-    if(m_headsUpDisplay->UpdateRequired()) // only update the HUD if needed
-        m_headsUpDisplay->Update();
-
+    m_uiManager->Update(deltaTime);
     m_rectangleOfRectangles->Update(deltaTime);
 }
 
 void GameEngine::GameManager::GameOver()
 {
     m_stateMachine->TransitionTo(GameState::STOPPED);
-    m_messageBox->ChangeMessage("GAME OVER", "F1:  NEW GAME", "ESC: EXIT GAME");
+    m_uiManager->GameOver();
+
     m_rectangleOfRectangles->SetAnimateClockwise(false);
     m_rectangleOfRectangles->SetAnimateRandom(true);
+}
+
+void GameManager::RegisterDrawables()
+{
+    m_rectangleOfRectangles->SetPriority(8);
+    m_drawOrderManager.AddDrawable(m_rectangleOfRectangles);
+
+    m_uiManager->UIManager::RegisterDrawables(m_drawOrderManager);
+
+    // consider adding m_firework here
 }
 
 bool GameEngine::GameManager::ShouldQuit()
@@ -281,7 +210,7 @@ void GameManager::RespondToObserved(InputManager* InputMgr)
         if (currentState == GameState::IDLE || currentState == GameState::PAUSED)
         {
             m_stateMachine->TransitionTo(GameState::RUNNING);
-            m_messageBox->ChangeMessage("F2: PAUSE", "F3: END GAME");
+            m_uiManager->ChangeMessageBoxMessage("F2: PAUSE", "F3: END GAME");
             m_rectangleOfRectangles->SetAnimate(false);
             m_rectangleOfRectangles->SetAnimateRandom(false);
 
@@ -294,7 +223,7 @@ void GameManager::RespondToObserved(InputManager* InputMgr)
         else if (currentState == GameState::PAUSED) // Start game if paused
         {
             m_stateMachine->TransitionTo(GameState::RUNNING);
-            m_messageBox->ChangeMessage("F1: PAUSE", "F3: END GAME");
+            m_uiManager->ChangeMessageBoxMessage("F1: PAUSE", "F3: END GAME");
 
             if (!textblockGeneratorRunning)
             {
@@ -311,7 +240,7 @@ void GameManager::RespondToObserved(InputManager* InputMgr)
             m_rectangleOfRectangles->SetAnimate(true);
             m_textblockManager->ClearBlockDeque();
             m_textblockManager->SetTextBlockLimitReached(false);
-            m_headsUpDisplay->ResetScore();
+            m_uiManager->ResetScore();
         }
     }
     else if (InputMgr->m_kbState[SDL_SCANCODE_F2])
@@ -320,7 +249,7 @@ void GameManager::RespondToObserved(InputManager* InputMgr)
         if (currentState == GameState::RUNNING)
         {
             m_stateMachine->TransitionTo(GameState::PAUSED);
-            m_messageBox->ChangeMessage("F1: UNPAUSE", "F3: END GAME");
+            m_uiManager->ChangeMessageBoxMessage("F1: UNPAUSE", "F3: END GAME");
 
             if (m_textblockManager->IsRunning())
                 m_textblockManager->ToggleRunning();

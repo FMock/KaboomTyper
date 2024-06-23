@@ -24,6 +24,8 @@ namespace GameEngine
         void SetColor(Colors color);
         void SetPosition(int x, int y);
         void GenerateParticles();
+        int GetPriority() const override { return m_priority; }
+        void SetPriority(int priority) override { m_priority = priority; }
 
     private:
         struct Particle
@@ -48,5 +50,6 @@ namespace GameEngine
 
         float m_timer;
         bool m_isActive;
+        int m_priority = 0; // draw priority
     };
 }

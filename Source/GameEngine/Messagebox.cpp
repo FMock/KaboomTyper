@@ -38,6 +38,10 @@ void GameEngine::MessageBox::Initialize(int x, int y, int width, int height, Col
 	m_initialized = true;
 }
 
+void GameEngine::MessageBox::Update(float dt)
+{
+}
+
 void GameEngine::MessageBox::Draw()
 {
     if (!m_initialized)

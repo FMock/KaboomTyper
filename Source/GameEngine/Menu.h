@@ -3,6 +3,7 @@
 #include "InputObserver.h"
 #include "InputManager.h"
 #include "RectangleDrawable.h"
+#include "IDrawable.h"
 #include "TextString.h"
 #include "Button.h"
 #include <memory>
@@ -10,7 +11,7 @@
 
 namespace GameEngine 
 {
-	class Menu : public InputObserver
+	class Menu : public InputObserver, public IDrawable
 	{
 	public:
 
@@ -25,9 +26,10 @@ namespace GameEngine
 
 		Menu();
 		~Menu();
-		void Draw();
-		void Update();
-
+		void Draw() override;
+		void Update(float dt) override;
+		int GetPriority() const override { return m_priority; }
+		void SetPriority(int priority) override { m_priority = priority; }
 		using Callback = std::function<void(Menu::MenuButtons)>;
 		void AddCallback(Callback callback, Menu::MenuButtons button);
 
@@ -39,6 +41,7 @@ namespace GameEngine
 		std::unique_ptr<Button> m_helpBtn;
 		TextString m_title;
 		std::unique_ptr<RectangleDrawable> m_footer;
+		int m_priority = 0; // draw priority
 
 		void Initialize();
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "RectangleDrawable.h"
+#include "IDrawable.h"
 #include "TextString.h"
 #include "Color.h"
 #include <string>
@@ -11,19 +12,20 @@
 
 namespace GameEngine 
 {
-	class MessageBox
+	class MessageBox : public IDrawable
 	{
 	public:
 		MessageBox();
 		MessageBox(int x, int y, int width, int height, Colors color = Colors::DEFAULT_COLOR);
 		~MessageBox();
-
 		void Initialize(int x, int y, int width, int height, Colors color = Colors::DEFAULT_COLOR);
+		void Update(float dt) override;
+		void Draw() override;
+		int GetPriority() const override { return m_priority; }
+		void SetPriority(int priority) override { m_priority = priority; }
 
 		template<typename... Args>
 		void ChangeMessage(Args&&... args);
-
-		void Draw();
 
 	private:
 		RectangleDrawable m_body;
@@ -32,6 +34,7 @@ namespace GameEngine
 		std::string m_message_02;
 		std::string m_message_03;
 		int m_x, m_y, m_width, m_height;
+		int m_priority = 1; // draw priority
 		bool m_initialized;
 	};
 

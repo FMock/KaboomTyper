@@ -19,7 +19,7 @@ namespace GameEngine
         void SetAnimate(bool animate);
         void SetAnimateClockwise(bool animate);
         void SetAnimateRandom(bool animate);
-
+        void Draw() override;
     private:
         struct Rectangle
         {
