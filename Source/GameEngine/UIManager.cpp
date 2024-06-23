@@ -6,7 +6,8 @@
 using namespace GameEngine;
 
 UIManager::UIManager(std::shared_ptr<InputManager> inputManager) : 
-    m_inputManager(inputManager), 
+    m_inputManager(inputManager),
+    m_gamePlayArea(std::make_shared<GamePlayArea>()),
     m_headsUpDisplay(std::make_shared<HeadsUpDisplay>()), 
     m_messageBox(std::make_shared<MessageBox>()), 
     m_gameMenu(std::make_shared<Menu>()), 
@@ -22,6 +23,7 @@ UIManager::~UIManager()
 
 void UIManager::Initialize()
 {
+    m_gamePlayArea->Initialize();
     m_headsUpDisplay->Initialize(445, 43);
 
     // Register with InputManger to get user updates
@@ -60,12 +62,14 @@ void UIManager::Render()
 void UIManager::RegisterDrawables(DrawOrderManager& manager)
 {
     // Example priorities
+    m_gamePlayArea->SetPriority(0);
     m_headsUpDisplay->SetPriority(2);
     m_gameMenu->SetPriority(3);
     m_messageBox->SetPriority(4);
     m_fileContextMenu->SetPriority(9);
 
     // Sharing IDrawables with DrawOrderManager
+    manager.AddDrawable(m_gamePlayArea);
     manager.AddDrawable(m_headsUpDisplay);
     manager.AddDrawable(m_gameMenu);
     manager.AddDrawable(m_messageBox);

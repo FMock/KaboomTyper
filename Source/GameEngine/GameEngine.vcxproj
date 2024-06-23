@@ -154,6 +154,7 @@
     <ClInclude Include="DrawUtils.h" />
     <ClInclude Include="FileContextMenu.h" />
     <ClInclude Include="Firework.h" />
+    <ClInclude Include="FireworkExplosionManager.h" />
     <ClInclude Include="FontParameters.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameAudio.h" />
@@ -216,6 +217,7 @@
     <ClCompile Include="DrawUtils.cpp" />
     <ClCompile Include="FileContextMenu.cpp" />
     <ClCompile Include="Firework.cpp" />
+    <ClCompile Include="FireworkExplosionManager.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameAudio.cpp" />
     <ClCompile Include="GameManager.cpp" />

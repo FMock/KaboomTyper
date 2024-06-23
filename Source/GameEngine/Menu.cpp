@@ -6,7 +6,7 @@ using namespace GameEngine;
 
 Menu::Menu() 
 	: m_menuBar(std::make_unique<RectangleDrawable>()), m_optionsBtn(std::make_unique<Button>()), m_aboutBtn(std::make_unique<Button>()), m_helpBtn(std::make_unique<Button>()),
-      m_fileBtn(std::make_unique<Button>()), m_footer(std::make_unique<RectangleDrawable>())
+      m_fileBtn(std::make_unique<Button>()), m_footer(std::make_unique<RectangleDrawable>()), m_priority(0)
 {
 	Initialize();
 }

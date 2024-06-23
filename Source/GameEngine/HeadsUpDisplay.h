@@ -43,6 +43,6 @@ namespace GameEngine
 		int m_column2XOffset;
 		int m_xPad;
 		int m_yPad;
-		int m_priority = 1; // draw priority
+		int m_priority; // draw priority
 	};
 }

@@ -41,7 +41,7 @@ namespace GameEngine
 		std::unique_ptr<Button> m_helpBtn;
 		TextString m_title;
 		std::unique_ptr<RectangleDrawable> m_footer;
-		int m_priority = 0; // draw priority
+		int m_priority; // draw priority
 
 		void Initialize();
 
