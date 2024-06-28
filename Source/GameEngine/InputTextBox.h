@@ -12,19 +12,33 @@
 
 namespace GameEngine
 {
-	class InputTextBox : public InputObserver
+	class InputTextBox : public InputObserver, public IDrawable
 	{
 	public:
 		InputTextBox();
 		~InputTextBox();
+		InputTextBox(int x, int y, int width, int height, Colors rectColor = Colors::DEFAULT_COLOR, bool fillWithColor = false);
 		void InitializeTextBox(int x, int y, int width, int height, Colors rectColor = Colors::DEFAULT_COLOR, bool fillWithColor = false);
-		void Update(float dt);
-		void Draw();
+		void Update(float dt) override;
+		void Draw() override;
+		int GetPriority() const override { return m_priority; }
+		void SetPriority(int priority) override { m_priority = priority; }
 		void AddText(std::string text);
 		void RemoveLast();
 		void RemoveAll();
+		void MoveCursorForward();
+		void MoveCursorBack();
 		using Callback = std::function<void()>;
 		void AddCallback(Callback callback);
+		std::string GetTextBoxContentsAsString();
+		void RespondToObserved(InputManager* InputMgr) override;
+		void SetCursorXPosition(int x);
+		void SetCursorYPosition(int y);
+		void ClearInputText();
+		int GetCursorStartingXPosition();
+		int GetCursorStartingYPosition();
+		void SetIsActive(bool isActive);
+		bool GetIsActive() const;
 
 	private:
 		int m_cursorXPos;
@@ -32,9 +46,6 @@ namespace GameEngine
 		int m_startCursorXPos;
 		int m_startCursorYPos;
 		int m_fontWidth;
-		void MoveCursorForward();
-		void MoveCursorBack();
-		std::string GetTextBoxContentsAsString();
 		void Initialize();
 		std::unique_ptr<RectangleDrawable> m_textBox;
 		std::unique_ptr<RectangleDrawable> m_cursor;
@@ -44,8 +55,7 @@ namespace GameEngine
 		int m_maxCharacters;
 		Callback m_checkforMatchCallback; // callback called when user presses the Enter Key to submit input text
 		void CheckForMatch(); // calls callback funtion
-
-	protected:
-		void RespondToObserved(InputManager* InputMgr) override;
+		bool m_isActive;
+		int m_priority; // draw priority
 	};
 }

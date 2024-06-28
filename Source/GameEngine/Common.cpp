@@ -11,7 +11,7 @@ Colors Common::s_currentColor = DEFAULT_COLOR;
 Colors Common::s_previousColor = DEFAULT_COLOR;
 std::pair<float, float> Common::s_currentPosition = { 0.0f, 0.0f };
 int Common::s_currentTextBlockWidth = 0;
-
+GameState Common::CurrentState = GameState::STOPPED;
 
 void Common::SubmitText(std::string text)
 {

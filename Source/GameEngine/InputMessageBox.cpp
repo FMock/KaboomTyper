@@ -1,144 +1,101 @@
-#include "InputTextBox.h"
-#include <SDL.h>
+#include "InputMessageBox.h"
+#include "Common.h"
+#include "DrawUtils.h"
 #include <iostream>
 
+#define DEBUG_INPUT_MESSAGEBOX 1
+
+using namespace DrawUtilities;
 using namespace GameEngine;
 
-
-InputTextBox::InputTextBox()
-    : m_textBox(std::make_unique<RectangleDrawable>()), m_cursor(std::make_unique<Cursor>()),
-      m_cursorXPos(0), m_cursorYPos(0), m_fontWidth(24),m_initialized(false), m_full(false), 
-      m_startCursorXPos(0),m_startCursorYPos(0), m_maxCharacters(0), m_isActive(false)
+InputMessageBox::InputMessageBox(int x, int y, int width, int height)
+    : m_x(x), m_y(y), m_width(width), m_height(height), m_priority(0), m_isActive(false), m_nextYPosition(y + 50) // Initialize next Y position with a starting offset
 {
+    m_inputManager = std::make_shared<InputManager>();
+    //m_messageBoxBody = std::make_shared<RectangleDrawable>(x, y, width, height, Colors::YELLOW, true); // BROKEN. TODO: FIX
+    m_messageBoxBody = std::make_shared<RectangleDrawable>();
+    m_messageBoxBody->Initialize(x, y, width, height, Colors::YELLOW, true);
+    m_cancelButton = std::make_shared<Button>("Cancel", x + 15, y + 105, 0.7f, Colors::BLUE);
+    m_submitButton = std::make_shared<Button>("Submit", x + 145, y + 105, 0.7f, Colors::BLUE);
+    AddTextString(std::make_shared<TextString>("Enter Name", x + 10, y + 10));
+
 }
 
-InputTextBox::~InputTextBox()
+void InputMessageBox::Update(float dt)
 {
-}
-
-GameEngine::InputTextBox::InputTextBox(int x, int y, int width, int height, Colors rectColor, bool fillWithColor) :
-    m_textBox(std::make_unique<RectangleDrawable>()), m_cursor(std::make_unique<Cursor>()), m_cursorXPos(0), m_cursorYPos(0), 
-    m_fontWidth(24), m_initialized(false), m_full(false), m_startCursorXPos(0), m_startCursorYPos(0), m_maxCharacters(0)
-{
-    InitializeTextBox(x, y, width, height);
-}
-
-void InputTextBox::InitializeTextBox(int x, int y, int width, int height, Colors rectColor, bool fillTextbox)
-{
-    m_textBox->Initialize(x, y, width, height, rectColor, fillTextbox);
-
-    m_cursorXPos = x;
-    m_startCursorXPos = x + 2;
-    m_cursorYPos = y + 2;
-    m_startCursorYPos = y + 2;
-    m_maxCharacters = width / m_fontWidth;
-    m_full = false;
-
-    m_cursor->Initialize(m_startCursorXPos, m_cursorYPos, 3, height - 4, Colors::BLUE, true);
-
-    m_initialized = true;
-}
-
-void InputTextBox::Update(float dt)
-{
-    m_cursor->Update(dt);
-}
-
-void InputTextBox::Draw()
-{
-    if (!m_initialized)
-        throw std::exception("InputTextBox not initialized!\n");
-
-    // First draw the textbox rectangle
-    m_textBox->Draw();
-    m_cursor->Draw();
-
-    // Next draw the text
-    const int N = m_inputText.size();
-    for (int i = 0; i < N; i++)
+    for (auto& inputTextBox : m_inputTextBoxes)
     {
-        m_inputText[i]->DrawText(1.0);
+        // Update each InputTextBox
+    }
+
+    for (auto& textString : m_textStrings)
+    {
+        // Update each TextString
     }
 }
 
-void InputTextBox::AddText(std::string text)
+void InputMessageBox::Draw()
 {
-    if (!m_full && m_cursorXPos + m_fontWidth < m_startCursorXPos + m_fontWidth + m_maxCharacters * m_fontWidth)
+    if (Common::CurrentState == GameState::IDLE && m_isActive == true)
     {
-        m_inputText.push_back(std::make_unique<TextString>(text, m_cursorXPos, m_cursorYPos));
-        MoveCursorForward();
+        RGBColor color = RGBColor::GetRGBColor(RGBColor::Blue);
+        glDrawFilledRectangle(m_x, m_y, m_width, m_height, 1.0f, 1.0f, color);
+
+        m_cancelButton->Draw();
+        m_submitButton->Draw();
+
+
+        for (auto& inputTextBox : m_inputTextBoxes)
+        {
+            inputTextBox->Draw();
+        }
+
+        for (auto& textString : m_textStrings)
+        {
+            textString->DrawText(1.0f);
+        }
     }
 }
 
-void InputTextBox::RemoveLast()
+void InputMessageBox::AddInputTextBox(Callback callback)
 {
-    if (!m_inputText.empty())
-    {
-        m_inputText.pop_back();
-    }
-    MoveCursorBack();
+    m_callback = callback;
+
+    auto inputTextBox = std::make_shared<InputTextBox>();
+
+    int yPosition = m_nextYPosition;
+
+    // Initialize the new InputTextBox with the calculated Y position
+    inputTextBox->InitializeTextBox(m_x + 10, yPosition, m_width - 20, Common::FONT_HEIGHT, Colors::DEFAULT_COLOR, true);
+
+    // Increment the next Y position by the height of the InputTextBox plus the spacing
+    m_nextYPosition += Common::FONT_HEIGHT + 20;
+
+    // Adjust the height of the InputMessageBox to fit the new InputTextBox
+    int newHeight = m_nextYPosition - m_messageBoxBody->GetYPosition();
+    m_messageBoxBody->SetHeight(newHeight);
+
+    inputTextBox->AddCallback(m_callback);
+
+    m_inputTextBoxes.push_back(inputTextBox);
 }
 
-void InputTextBox::RemoveAll()
+void InputMessageBox::AddTextString(const std::shared_ptr<TextString>& textString)
 {
-    m_inputText.clear();
-
-    MoveCursorBack();
-    m_full = false;
+    m_textStrings.push_back(textString);
 }
 
-void InputTextBox::AddCallback(Callback callback)
+bool InputMessageBox::GetIsActive() const
 {
-    m_checkforMatchCallback = callback;
+    return m_isActive;
 }
 
-void InputTextBox::MoveCursorForward()
+void InputMessageBox::SetIsActive(bool isActive)
 {
-    if (m_cursorXPos + m_fontWidth > m_startCursorXPos + m_maxCharacters * m_fontWidth)
-    {
-        m_cursorXPos = m_textBox->GetWidth();
-        m_full = true;
-    }  
-    else
-        m_cursorXPos += m_fontWidth;
-
-    m_cursor->SetXPos(m_cursorXPos);
+    m_isActive = isActive;
 }
 
-void InputTextBox::MoveCursorBack()
-{
-    if (m_cursorXPos - m_fontWidth < m_startCursorXPos)
-        m_cursorXPos = m_startCursorXPos;
-    else
-        m_cursorXPos -= m_fontWidth;
-
-    m_full = false;
-
-    m_cursor->SetXPos(m_cursorXPos);
-}
-
-std::string InputTextBox::GetTextBoxContentsAsString()
-{
-    std::string output("");
-    const int N = m_inputText.size();
-    for (int i = 0; i < N; i++)
-    {
-        output.append(m_inputText[i]->GetText());
-    }
-    return output;
-}
-
-void InputTextBox::Initialize()
-{
-}
-
-void InputTextBox::CheckForMatch()
-{
-    m_checkforMatchCallback(); // UIManager's callback - ProcessInput()
-}
-
-// Respond to key presses in the InputTextBox
-void InputTextBox::RespondToObserved(InputManager* InputMgr)
+void InputMessageBox::RespondToObserved(InputManager* InputMgr)
 {
     if (m_isActive)
     {
@@ -150,288 +107,288 @@ void InputTextBox::RespondToObserved(InputManager* InputMgr)
                 {
                 case SDL_SCANCODE_A:
                     if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                        AddText("A");
+                        m_inputTextBoxes[0]->AddText("A");
                     else
-                        AddText("a");
+                        m_inputTextBoxes[0]->AddText("a");
                     break;
                 case SDL_SCANCODE_B:
                     if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                        AddText("B");
+                        m_inputTextBoxes[0]->AddText("B");
                     else
-                        AddText("b");
+                        m_inputTextBoxes[0]->AddText("b");
                     break;
                 case SDL_SCANCODE_C:
                     if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                        AddText("C");
+                        m_inputTextBoxes[0]->AddText("C");
                     else
-                        AddText("c");
+                        m_inputTextBoxes[0]->AddText("c");
                     break;
                 case SDL_SCANCODE_D:
                     if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                        AddText("D");
+                        m_inputTextBoxes[0]->AddText("D");
                     else
-                        AddText("d");
+                        m_inputTextBoxes[0]->AddText("d");
                     break;
                 case SDL_SCANCODE_E:
                     if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                        AddText("E");
+                        m_inputTextBoxes[0]->AddText("E");
                     else
-                        AddText("e");
+                        m_inputTextBoxes[0]->AddText("e");
                     break;
                 case SDL_SCANCODE_F:
                     if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                        AddText("F");
+                        m_inputTextBoxes[0]->AddText("F");
                     else
-                        AddText("f");
+                        m_inputTextBoxes[0]->AddText("f");
                     break;
                 case SDL_SCANCODE_G:
                     if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                        AddText("G");
+                        m_inputTextBoxes[0]->AddText("G");
                     else
-                        AddText("g");
+                        m_inputTextBoxes[0]->AddText("g");
                     break;
                 case SDL_SCANCODE_H:
                     if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                        AddText("H");
+                        m_inputTextBoxes[0]->AddText("H");
                     else
-                        AddText("h");
+                        m_inputTextBoxes[0]->AddText("h");
                     break;
                 case SDL_SCANCODE_I:
                     if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                        AddText("I");
+                        m_inputTextBoxes[0]->AddText("I");
                     else
-                        AddText("i");
+                        m_inputTextBoxes[0]->AddText("i");
                     break;
                 case SDL_SCANCODE_J:
                     if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                        AddText("J");
+                        m_inputTextBoxes[0]->AddText("J");
                     else
-                        AddText("j");
+                        m_inputTextBoxes[0]->AddText("j");
                     break;
                 case SDL_SCANCODE_K:
                     if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                        AddText("K");
+                        m_inputTextBoxes[0]->AddText("K");
                     else
-                        AddText("k");
+                        m_inputTextBoxes[0]->AddText("k");
                     break;
                 case SDL_SCANCODE_L:
                     if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                        AddText("L");
+                        m_inputTextBoxes[0]->AddText("L");
                     else
-                        AddText("l");
+                        m_inputTextBoxes[0]->AddText("l");
                     break;
                 case SDL_SCANCODE_M:
                     if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                        AddText("M");
+                        m_inputTextBoxes[0]->AddText("M");
                     else
-                        AddText("m");
+                        m_inputTextBoxes[0]->AddText("m");
                     break;
                 case SDL_SCANCODE_N:
                     if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                        AddText("N");
+                        m_inputTextBoxes[0]->AddText("N");
                     else
-                        AddText("n");
+                        m_inputTextBoxes[0]->AddText("n");
                     break;
                 case SDL_SCANCODE_O:
                     if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                        AddText("O");
+                        m_inputTextBoxes[0]->AddText("O");
                     else
-                        AddText("o");
+                        m_inputTextBoxes[0]->AddText("o");
                     break;
                 case SDL_SCANCODE_P:
                     if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                        AddText("P");
+                        m_inputTextBoxes[0]->AddText("P");
                     else
-                        AddText("p");
+                        m_inputTextBoxes[0]->AddText("p");
                     break;
                 case SDL_SCANCODE_Q:
                     if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                        AddText("Q");
+                        m_inputTextBoxes[0]->AddText("Q");
                     else
-                        AddText("q");
+                        m_inputTextBoxes[0]->AddText("q");
                     break;
                 case SDL_SCANCODE_R:
                     if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                        AddText("R");
+                        m_inputTextBoxes[0]->AddText("R");
                     else
-                        AddText("r");
+                        m_inputTextBoxes[0]->AddText("r");
                     break;
                 case SDL_SCANCODE_S:
                     if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                        AddText("S");
+                        m_inputTextBoxes[0]->AddText("S");
                     else
-                        AddText("s");
+                        m_inputTextBoxes[0]->AddText("s");
                     break;
                 case SDL_SCANCODE_T:
                     if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                        AddText("T");
+                        m_inputTextBoxes[0]->AddText("T");
                     else
-                        AddText("t");
+                        m_inputTextBoxes[0]->AddText("t");
                     break;
                 case SDL_SCANCODE_U:
                     if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                        AddText("U");
+                        m_inputTextBoxes[0]->AddText("U");
                     else
-                        AddText("u");
+                        m_inputTextBoxes[0]->AddText("u");
                     break;
                 case SDL_SCANCODE_V:
                     if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                        AddText("V");
+                        m_inputTextBoxes[0]->AddText("V");
                     else
-                        AddText("v");
+                        m_inputTextBoxes[0]->AddText("v");
                     break;
                 case SDL_SCANCODE_W:
                     if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                        AddText("W");
+                        m_inputTextBoxes[0]->AddText("W");
                     else
-                        AddText("w");
+                        m_inputTextBoxes[0]->AddText("w");
                     break;
                 case SDL_SCANCODE_X:
                     if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                        AddText("X");
+                        m_inputTextBoxes[0]->AddText("X");
                     else
-                        AddText("x");
+                        m_inputTextBoxes[0]->AddText("x");
                     break;
                 case SDL_SCANCODE_Y:
                     if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                        AddText("Y");
+                        m_inputTextBoxes[0]->AddText("Y");
                     else
-                        AddText("y");
+                        m_inputTextBoxes[0]->AddText("y");
                     break;
                 case SDL_SCANCODE_Z:
                     if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                        AddText("Z");
+                        m_inputTextBoxes[0]->AddText("Z");
                     else
-                        AddText("z");
+                        m_inputTextBoxes[0]->AddText("z");
                     break;
                 case SDL_SCANCODE_0:
                     if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                        AddText(")");
+                        m_inputTextBoxes[0]->AddText(")");
                     else
-                        AddText("0");
+                        m_inputTextBoxes[0]->AddText("0");
                     break;
                 case SDL_SCANCODE_1:
                     if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                        AddText("!");
+                        m_inputTextBoxes[0]->AddText("!");
                     else
-                        AddText("1");
+                        m_inputTextBoxes[0]->AddText("1");
                     break;
                 case SDL_SCANCODE_2:
                     if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                        AddText("@");
+                        m_inputTextBoxes[0]->AddText("@");
                     else
-                        AddText("2");
+                        m_inputTextBoxes[0]->AddText("2");
                     break;
                 case SDL_SCANCODE_3:
                     if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                        AddText("#");
+                        m_inputTextBoxes[0]->AddText("#");
                     else
-                        AddText("3");
+                        m_inputTextBoxes[0]->AddText("3");
                     break;
                 case SDL_SCANCODE_4:
                     if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                        AddText("$");
+                        m_inputTextBoxes[0]->AddText("$");
                     else
-                        AddText("4");
+                        m_inputTextBoxes[0]->AddText("4");
                     break;
                 case SDL_SCANCODE_5:
                     if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                        AddText("%");
+                        m_inputTextBoxes[0]->AddText("%");
                     else
-                        AddText("5");
+                        m_inputTextBoxes[0]->AddText("5");
                     break;
                 case SDL_SCANCODE_6:
                     if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                        AddText("^");
+                        m_inputTextBoxes[0]->AddText("^");
                     else
-                        AddText("6");
+                        m_inputTextBoxes[0]->AddText("6");
                     break;
                 case SDL_SCANCODE_7:
                     if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                        AddText("&");
+                        m_inputTextBoxes[0]->AddText("&");
                     else
-                        AddText("7");
+                        m_inputTextBoxes[0]->AddText("7");
                     break;
                 case SDL_SCANCODE_8:
                     if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                        AddText("*");
+                        m_inputTextBoxes[0]->AddText("*");
                     else
-                        AddText("8");
+                        m_inputTextBoxes[0]->AddText("8");
                     break;
                 case SDL_SCANCODE_9:
                     if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                        AddText("(");
+                        m_inputTextBoxes[0]->AddText("(");
                     else
-                        AddText("9");
+                        m_inputTextBoxes[0]->AddText("9");
                     break;
                 case SDL_SCANCODE_MINUS:
                     if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                        AddText("_");
+                        m_inputTextBoxes[0]->AddText("_");
                     else
-                        AddText("-");
+                        m_inputTextBoxes[0]->AddText("-");
                     break;
                 case SDL_SCANCODE_EQUALS:
                     if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                        AddText("+");
+                        m_inputTextBoxes[0]->AddText("+");
                     else
-                        AddText("=");
+                        m_inputTextBoxes[0]->AddText("=");
                     break;
                 case SDL_SCANCODE_COMMA:
                     if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                        AddText("<");
+                        m_inputTextBoxes[0]->AddText("<");
                     else
-                        AddText(",");
+                        m_inputTextBoxes[0]->AddText(",");
                     break;
                 case SDL_SCANCODE_PERIOD:
                     if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                        AddText(">");
+                        m_inputTextBoxes[0]->AddText(">");
                     else
-                        AddText(".");
+                        m_inputTextBoxes[0]->AddText(".");
                     break;
                 case SDL_SCANCODE_SLASH:
                     if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                        AddText("?");
+                        m_inputTextBoxes[0]->AddText("?");
                     else
-                        AddText("/");
+                        m_inputTextBoxes[0]->AddText("/");
                     break;
                 case SDL_SCANCODE_SEMICOLON:
                     if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                        AddText(":");
+                        m_inputTextBoxes[0]->AddText(":");
                     else
-                        AddText(";");
+                        m_inputTextBoxes[0]->AddText(";");
                     break;
                 case SDL_SCANCODE_APOSTROPHE:
                     if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                        AddText("\"");
+                        m_inputTextBoxes[0]->AddText("\"");
                     else
-                        AddText("'");
+                        m_inputTextBoxes[0]->AddText("'");
                     break;
                 case SDL_SCANCODE_SPACE:
-                    AddText(std::string(" "));
+                    m_inputTextBoxes[0]->AddText(std::string(" "));
                     break;
                 case SDL_SCANCODE_LEFTBRACKET:
                     if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                        AddText(std::string("\{"));
+                        m_inputTextBoxes[0]->AddText(std::string("\{"));
                     else
-                        AddText("[");
+                        m_inputTextBoxes[0]->AddText("[");
                     break;
                 case SDL_SCANCODE_RIGHTBRACKET:
                     if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                        AddText(std::string("\}"));
+                        m_inputTextBoxes[0]->AddText(std::string("\}"));
                     else
-                        AddText("]");
+                        m_inputTextBoxes[0]->AddText("]");
                     break;
                 case SDL_SCANCODE_BACKSLASH:
                     if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                        AddText(std::string("|"));
+                        m_inputTextBoxes[0]->AddText(std::string("|"));
                     else
-                        AddText(std::string("\\"));
+                        m_inputTextBoxes[0]->AddText(std::string("\\"));
                     break;
                 case SDL_SCANCODE_GRAVE:
                     if (InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT])
-                        AddText(std::string("~"));
+                        m_inputTextBoxes[0]->AddText(std::string("~"));
                     else
-                        AddText(std::string("`"));
+                        m_inputTextBoxes[0]->AddText(std::string("`"));
                     break;
                 case SDL_SCANCODE_F1:
                     if (InputMgr->m_kbState[SDL_SCANCODE_F1])
@@ -451,15 +408,15 @@ void InputTextBox::RespondToObserved(InputManager* InputMgr)
                     //MoveCursorForward();
                     break;
                 case SDL_SCANCODE_BACKSPACE:
-                    RemoveLast();
+                    m_inputTextBoxes[0]->RemoveLast();
                     break;
                 case SDL_SCANCODE_RETURN:
-                    Common::SubmitText(GetTextBoxContentsAsString());
-                    CheckForMatch();
-                    m_inputText.clear();
-                    m_cursorXPos = m_startCursorXPos;
-                    m_cursorYPos = m_startCursorYPos;
-                    m_cursor->SetXPos(m_cursorXPos);
+                    Common::SubmitText(m_inputTextBoxes[0]->GetTextBoxContentsAsString());
+                    m_callback();
+                    m_inputTextBoxes[0]->ClearInputText();
+                    m_inputTextBoxes[0]->SetCursorXPosition(m_inputTextBoxes[0]->GetCursorStartingXPosition());
+                    m_inputTextBoxes[0]->SetCursorYPosition(m_inputTextBoxes[0]->GetCursorStartingYPosition());
+
                     break;
                 default:
                     // do nothing
@@ -468,40 +425,4 @@ void InputTextBox::RespondToObserved(InputManager* InputMgr)
             }
         }
     }
-}
-
-void GameEngine::InputTextBox::SetCursorXPosition(int x)
-{
-    m_cursorXPos = x;
-    m_cursor->SetXPos(m_cursorXPos);
-}
-
-void GameEngine::InputTextBox::SetCursorYPosition(int y)
-{
-    m_cursorYPos = y;
-}
-
-void GameEngine::InputTextBox::ClearInputText()
-{
-    m_inputText.clear();
-}
-
-int GameEngine::InputTextBox::GetCursorStartingXPosition()
-{
-    return m_startCursorXPos;
-}
-
-int GameEngine::InputTextBox::GetCursorStartingYPosition()
-{
-    return m_startCursorYPos;
-}
-
-void GameEngine::InputTextBox::SetIsActive(bool isActive)
-{
-    m_isActive = isActive;
-}
-
-bool GameEngine::InputTextBox::GetIsActive() const
-{
-    return m_isActive;
 }

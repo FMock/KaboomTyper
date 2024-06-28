@@ -104,7 +104,7 @@ void Game::RunLoop()
 
 void Game::ProcessInput()
 {
-	m_shouldExit = m_gameManager->ShouldQuit();
+	m_shouldExit = m_gameManager->GetExitGame();
 }
 
 void Game::Update()

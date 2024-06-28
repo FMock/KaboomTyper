@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <functional>
 #include <utility> //for std::forward 
 #include "GamePlayArea.h"
 #include "HeadsUpDisplay.h"
@@ -9,6 +10,7 @@
 #include "FileContextMenu.h"
 #include "InputManager.h"
 #include "DrawOrderManager.h"
+#include "InputMessageBox.h"
 
 namespace GameEngine
 {
@@ -26,19 +28,25 @@ namespace GameEngine
 		void DisplayMenuChoices(Menu::MenuButtons button);
 		void DisplayFileMenuChoices(FileContextMenu::Choices button);
 		void RegisterDrawables(DrawOrderManager&  manager);
+		void GetUserNamePromptCallback();
+		using Callback = std::function<void()>;
+		void AddCallback(Callback callback);
 
 		template<typename... Args> // Wrapper for MessageBox::ChangeMessage(Args&&... args)
 		void ChangeMessageBoxMessage(Args&&... args);
 
 
 	private:
+		std::shared_ptr<InputTextBox> m_inputTextBox;
 		std::shared_ptr<GamePlayArea> m_gamePlayArea;
 		std::shared_ptr<HeadsUpDisplay> m_headsUpDisplay;
 		std::shared_ptr<MessageBox> m_messageBox;
 		std::shared_ptr<FileContextMenu> m_fileContextMenu;
 		std::shared_ptr<Menu> m_gameMenu;
 		std::shared_ptr<InputManager> m_inputManager;
-
+		std::shared_ptr<InputMessageBox> m_inputMessageBox;
+		Callback m_processInputCallback;
+		int m_priority; // draw priority
 		bool m_initialized;
 		void Initialize();
 	};

@@ -10,11 +10,12 @@ HeadsUpDisplay::HeadsUpDisplay()
 	  m_scoreAsText(std::make_unique<TextString>()),
 	  m_highScoreLabel(std::make_unique<TextString>()),
 	  m_highScoreAsText(std::make_unique<TextString>()),
-	  m_score(std::make_unique<Score>()),
+	  m_score(std::make_shared<Score>()),
+	  m_user(std::make_shared<User>()),
 	  m_x(0), m_y(0), m_width(0), m_height(0), m_updatedRequired(false),
 	  m_priority(0)
 {
-
+	m_user->SetName("Frank");
 }
 
 HeadsUpDisplay::~HeadsUpDisplay()
@@ -45,20 +46,15 @@ void GameEngine::HeadsUpDisplay::Initialize(int x, int y)
 
 	m_background->Initialize(m_x, m_y, m_width, m_height, Colors::RED, true); // true because we want to rectangle filled in
 
-	/****** Level  ******/
-	m_levelLabel->Initialize("LEVEL:", m_x + m_xPad, m_y + m_yPad);
+	/****** User  ******/
+	m_levelLabel->Initialize("USER:", m_x + m_xPad, m_y + m_yPad);
 
 	int levelValue = 1;
 
-	// Ensure the score is limited to 7 digits
-	if (levelValue > 9999999)
-		levelValue = 9999999;
+	// Ensure the user name is limited to 7 characters
+	auto name = m_user->GetName().substr(0, 7);
 
-	// Convert the integer score to a string with leading zeros and a width of 7 characters
-	std::string level = std::to_string(levelValue);
-	level = std::string(7 - level.length(), '0') + level;
-
-	m_levelAsText->Initialize(level, m_x + m_column2XOffset, m_y + 5);
+	m_levelAsText->Initialize(name, m_x + m_column2XOffset, m_y + 5);
 
 	/****** Score ******/
 	m_scoreLabel->Initialize("SCORE:", m_x + m_xPad, m_y + 32 + m_yPad);
@@ -79,6 +75,11 @@ void GameEngine::HeadsUpDisplay::Initialize(int x, int y)
 	highScore = std::string(7 - highScore.length(), '0') + highScore;
 
 	m_highScoreAsText->Initialize(highScore, m_x + m_column2XOffset, m_y + 32 + 32 + m_yPad);
+}
+
+std::shared_ptr<Score> GameEngine::HeadsUpDisplay::GetScore() const
+{
+	return m_score;
 }
 
 void GameEngine::HeadsUpDisplay::UpdateScore()
@@ -127,6 +128,14 @@ void GameEngine::HeadsUpDisplay::ResetScore()
 	m_score->SetScore(0);
 	UpdateScore();
 	m_updatedRequired = true;
+}
+
+void GameEngine::HeadsUpDisplay::SetUserName(std::string& name)
+{
+	// Ensure the user name is limited to 7 characters
+	m_user->SetName(name);
+	auto nameTruncated = m_user->GetName().substr(0, 7);
+	m_levelAsText->Initialize(nameTruncated, m_x + m_column2XOffset, m_y + 5);
 }
 
 void HeadsUpDisplay::DrawHud()
