@@ -28,6 +28,8 @@ namespace GameEngine
 		void SetHeight(int height);
 		int GetHeight() const;
 		void SetXPos(int x);
+		int GetXPosition() const;
+		int GetYPosition() const;
 #pragma endregion
 
 	protected:

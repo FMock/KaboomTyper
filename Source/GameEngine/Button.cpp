@@ -11,7 +11,7 @@ Button::Button() : m_outline(std::make_unique<RectangleDrawable>()), m_label(std
 
 }
 
-Button::Button(std::string text, int x, int y, float scaler, Colors color) : m_outline(std::make_unique<RectangleDrawable>()), m_adjustedWidth(0)
+Button::Button(std::string text, int x, int y, float scaler, Colors color) : m_outline(std::make_unique<RectangleDrawable>()), m_adjustedWidth(0), m_label(std::make_unique<TextString>())
 {
 	Initialize(text, x, y, scaler, color);
 }

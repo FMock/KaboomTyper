@@ -4,6 +4,7 @@
 #include "IDrawable.h"
 #include "TextString.h"
 #include "Score.h"
+#include "User.h"
 #include <memory>
 
 namespace GameEngine
@@ -17,13 +18,15 @@ namespace GameEngine
 		void Draw() override;
 		void Update(float dt) override;
 		void Initialize(int x, int y);
-		Score* GetScore() const; // share the score with rest of game
+		std::shared_ptr<Score> GetScore() const; // share the score with rest of game
 		void IncreaseScore(int amount);
 		void SetUpdateRequired(bool updateRequired);
 		bool UpdateRequired();
 		void ResetScore();
+		void SetUserName(std::string& name);
 		int GetPriority() const override { return m_priority; }
 		void SetPriority(int priority) override { m_priority = priority; }
+
 
 	private:
 		void DrawHud();
@@ -35,7 +38,8 @@ namespace GameEngine
 		std::unique_ptr<TextString> m_highScoreAsText;
 		std::unique_ptr<TextString> m_levelLabel;
 		std::unique_ptr<TextString> m_levelAsText;
-		std::unique_ptr<Score> m_score;
+		std::shared_ptr<Score> m_score;
+		std::shared_ptr<User> m_user;
 
 		int m_x, m_y; // HUD Position
 		int m_width, m_height; // HUD Width and Height

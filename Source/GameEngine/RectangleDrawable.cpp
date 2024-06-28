@@ -77,6 +77,16 @@ namespace GameEngine
         m_x = x;
     }
 
+    int RectangleDrawable::GetXPosition() const
+    {
+        return m_x;
+    }
+
+    int RectangleDrawable::GetYPosition() const
+    {
+        return m_y;
+    }
+
     void RectangleDrawable::DrawRectangle()
     {
         if (!m_initialized)

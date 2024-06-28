@@ -166,8 +166,10 @@
     <ClInclude Include="GlobalPreprocessorFlags.h" />
     <ClInclude Include="HeadsUpDisplay.h" />
     <ClInclude Include="IDrawable.h" />
+    <ClInclude Include="IInputMessageBox.h" />
     <ClInclude Include="ILevel.h" />
     <ClInclude Include="InputManager.h" />
+    <ClInclude Include="InputMessageBox.h" />
     <ClInclude Include="InputObserver.h" />
     <ClInclude Include="InputTextBox.h" />
     <ClInclude Include="LevelGameOver.h" />
@@ -200,6 +202,7 @@
     <ClInclude Include="TextString.h" />
     <ClInclude Include="TextStringFont.h" />
     <ClInclude Include="UIManager.h" />
+    <ClInclude Include="User.h" />
     <ClInclude Include="Utilities.h" />
     <ClInclude Include="Vector2D.h" />
     <ClInclude Include="WordManager.h" />
@@ -223,7 +226,9 @@
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="GamePlayArea.cpp" />
     <ClCompile Include="HeadsUpDisplay.cpp" />
+    <ClCompile Include="IInputMessageBox.cpp" />
     <ClCompile Include="InputManager.cpp" />
+    <ClCompile Include="InputMessageBox.cpp" />
     <ClCompile Include="InputTextBox.cpp" />
     <ClCompile Include="LevelGameOver.cpp" />
     <ClCompile Include="LevelGamePlay.cpp" />
@@ -250,6 +255,7 @@
     <ClCompile Include="TextBlockManager.cpp" />
     <ClCompile Include="TextString.cpp" />
     <ClCompile Include="UIManager.cpp" />
+    <ClCompile Include="User.cpp" />
     <ClCompile Include="Utilities.cpp" />
     <ClCompile Include="WordManager.cpp" />
   </ItemGroup>

@@ -64,6 +64,11 @@ bool GameEngine::InputManager::ShouldQuit() const
 	return m_quit;
 }
 
+void GameEngine::InputManager::SetShouldQuit(bool shouldQuit)
+{
+    m_quit = shouldQuit;
+}
+
 void InputManager::RegisterObserver(std::shared_ptr<InputObserver> observer)
 {
     m_myObservers.push_back(observer);

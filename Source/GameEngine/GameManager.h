@@ -9,7 +9,6 @@
 #include <memory>
 #include <vector>
 #include <map>
-#include "GameStates.h"
 #include "InputTextBox.h"
 #include "InputManager.h"
 #include "TextBlockManager.h"
@@ -33,9 +32,10 @@ namespace GameEngine
 		static std::shared_ptr<GameManager> Create();
 		~GameManager();
 		void Update(float dt);
-		void ProcessInput();
+		void UserScored();
 		void Render();
-		bool ShouldQuit();
+		bool GetExitGame() const;
+		void SetExitGame(bool exitGame);
 
 	private:
 		GameManager();
@@ -47,13 +47,13 @@ namespace GameEngine
 		DrawOrderManager m_drawOrderManager;
 
 		std::shared_ptr<StateMachine> m_stateMachine;
-		std::shared_ptr<InputTextBox> m_inputTextBox;
 		std::shared_ptr<InputManager> m_inputManager; // shares with TextBlockManager
 		std::unique_ptr<UIManager> m_uiManager;
 		std::shared_ptr<FireworkExplosionManager> m_fireworkExplosionManager;
 		std::shared_ptr<DecorativeRectangle> m_rectangleOfRectangles;
 		std::shared_ptr<TextBlockManager> m_textblockManager;
-		std::map<GameState, LevelManager*> m_levels;
+
+		bool m_exitGame;
 		
 		// Audio
 		std::shared_ptr<GameAudio> m_explosion;

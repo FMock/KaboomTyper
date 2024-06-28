@@ -5,13 +5,14 @@
 
 using namespace GameEngine;
 
-UIManager::UIManager(std::shared_ptr<InputManager> inputManager) : 
+UIManager::UIManager(std::shared_ptr<InputManager> inputManager) :
     m_inputManager(inputManager),
     m_gamePlayArea(std::make_shared<GamePlayArea>()),
-    m_headsUpDisplay(std::make_shared<HeadsUpDisplay>()), 
-    m_messageBox(std::make_shared<MessageBox>()), 
-    m_gameMenu(std::make_shared<Menu>()), 
-    m_fileContextMenu(std::make_shared<FileContextMenu>()), 
+    m_headsUpDisplay(std::make_shared<HeadsUpDisplay>()),
+    m_messageBox(std::make_shared<MessageBox>()),
+    m_gameMenu(std::make_shared<Menu>()),
+    m_fileContextMenu(std::make_shared<FileContextMenu>()),
+    m_inputMessageBox(std::make_shared<InputMessageBox>()),
     m_initialized(false)
 {
 	Initialize();
@@ -23,12 +24,20 @@ UIManager::~UIManager()
 
 void UIManager::Initialize()
 {
+    // User Input
+    m_inputTextBox = std::make_shared<InputTextBox>();
+    m_inputTextBox->InitializeTextBox(10, 916, 780, 34, Colors::DEFAULT_COLOR, true);
+    m_inputTextBox->AddCallback(std::bind(&UIManager::ProcessInput, this)); // Bind ProcessInput() for use as a Callback by InputTextBox
+    m_inputManager->RegisterObserver(m_inputTextBox); // so InputTextbox can respond to user key presses
+
+    // GUI
     m_gamePlayArea->Initialize();
     m_headsUpDisplay->Initialize(445, 43);
 
     // Register with InputManger to get user updates
     m_inputManager->RegisterObserver(m_gameMenu); // so menu can respond to mouse clicks
     m_inputManager->RegisterObserver(m_fileContextMenu);
+    m_inputManager->RegisterObserver(m_inputMessageBox);
 
     // Register callbacks for main menu
     m_gameMenu->AddCallback([this](Menu::MenuButtons button) { this->DisplayMenuChoices(button); }, Menu::File);
@@ -39,19 +48,36 @@ void UIManager::Initialize()
     // Register callbacks for sub menus
     m_fileContextMenu->AddCallback([this](FileContextMenu::Choices button) { this->DisplayFileMenuChoices(button); }, FileContextMenu::IMPORT);
     m_fileContextMenu->AddCallback([this](FileContextMenu::Choices button) { this->DisplayFileMenuChoices(button); }, FileContextMenu::EXIT);
-    
+
+    // Input Messagebox to get user name
+    // Bind the callback and add the InputTextBox
+    m_inputMessageBox->AddInputTextBox(std::bind(&UIManager::GetUserNamePromptCallback, this));
+    m_inputMessageBox->SetIsActive(true); // ask user for name at start of game
     m_initialized = true;
 }
 
 void UIManager::Update(float dt)
 {
+    m_inputTextBox->Update(dt);
 	if (m_headsUpDisplay->UpdateRequired()) // only update the HUD if needed
 		m_headsUpDisplay->Update(dt);
 }
 
 void UIManager::ProcessInput()
 {
+    // compare input and active text
+    std::string activeStr = Common::GetActiveText();
+    std::string submittedStr = Common::GetSubmittedText();
 
+    // Did user score?
+    if (activeStr == submittedStr)
+    {
+        m_processInputCallback(); // Call GameManager's UserScored()
+    }
+
+#if DEBUG
+    std::cout << "The strings are " << (activeStr == submittedStr ? "equal" : "not equal") << "." << std::endl;
+#endif
 }
 
 void UIManager::Render()
@@ -62,18 +88,36 @@ void UIManager::Render()
 void UIManager::RegisterDrawables(DrawOrderManager& manager)
 {
     // Example priorities
+    m_inputTextBox->SetPriority(0);
     m_gamePlayArea->SetPriority(0);
     m_headsUpDisplay->SetPriority(2);
     m_gameMenu->SetPriority(3);
     m_messageBox->SetPriority(4);
     m_fileContextMenu->SetPriority(9);
+    m_inputMessageBox->SetPriority(13);
 
     // Sharing IDrawables with DrawOrderManager
+    manager.AddDrawable(m_inputTextBox);
     manager.AddDrawable(m_gamePlayArea);
     manager.AddDrawable(m_headsUpDisplay);
     manager.AddDrawable(m_gameMenu);
     manager.AddDrawable(m_messageBox);
     manager.AddDrawable(m_fileContextMenu);
+    manager.AddDrawable(m_inputMessageBox);
+}
+
+void GameEngine::UIManager::GetUserNamePromptCallback()
+{
+    std::cout << "GetUserNamePromptCallback() = " << Common::GetSubmittedText() << std::endl;
+    std::string name = Common::GetSubmittedText();
+    m_headsUpDisplay->SetUserName(name);
+    m_inputMessageBox->SetIsActive(false);
+    m_inputTextBox->SetIsActive(true);
+}
+
+void GameEngine::UIManager::AddCallback(Callback callback)
+{
+    m_processInputCallback = callback;
 }
 
 void UIManager::ResetScore()
@@ -141,6 +185,7 @@ void GameEngine::UIManager::DisplayFileMenuChoices(FileContextMenu::Choices butt
 #endif
         break;
     case FileContextMenu::EXIT:
+        m_inputManager->SetShouldQuit(true); // user pressed Exit sub-menu item
 #if DEBUG
         std::cout << "Exit The Game" << std::endl;
 #endif

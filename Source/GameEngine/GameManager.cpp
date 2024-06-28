@@ -9,6 +9,8 @@
 #include "GlobalPreprocessorFlags.h"
 #include <iostream>
 #include <functional>
+#include "Common.h"
+#include "GameStates.h"
 
 using namespace GameEngine;
 using namespace GameEngine::Utility;
@@ -17,12 +19,10 @@ using namespace KaboomTyperDB;
 // Loads all the parts of the game
 void GameManager::Initialize()
 {
+    m_exitGame = false;
+
     // User Input
-	m_inputTextBox = std::make_shared<InputTextBox>();
-	m_inputTextBox->InitializeTextBox(10, 916, 780, 34, Colors::DEFAULT_COLOR, true);
-    m_inputTextBox->AddCallback(std::bind(&GameManager::ProcessInput, this)); // Bind ProcessInput() for use as a Callback by InputTextBox
     m_inputManager = std::make_shared<InputManager>();
-	m_inputManager->RegisterObserver(m_inputTextBox); // so InputTextbox can respond to user key presses
 	m_inputManager->RegisterObserver(shared_from_this());
 
     // State Machine
@@ -30,6 +30,7 @@ void GameManager::Initialize()
 
     // UI Manager
     m_uiManager = std::make_unique<UIManager>(m_inputManager);
+    m_uiManager->AddCallback(std::bind(&GameManager::UserScored, this));
 
     // TextBlock Manager
     m_textblockManager = std::make_shared<TextBlockManager>(10.0f, m_inputManager);
@@ -81,12 +82,7 @@ std::shared_ptr<GameManager> GameManager::Create()
 
 GameEngine::GameManager::~GameManager()
 {
-	for (auto& pair : m_levels)
-	{
-		delete pair.second;
-	}
 
-	m_levels.clear();
 }
 
 void GameManager::Update(float dt)
@@ -104,40 +100,29 @@ void GameManager::Update(float dt)
         m_fireworkExplosionManager->GenerateFireworkParticles();
         m_fireworkExplosionManager->SetShouldFireworkExplode(false);
     }
+
+    m_exitGame = m_inputManager->ShouldQuit(); // user wishes to exit?
 }
 
-void GameManager::ProcessInput()
+// User successfully typed target word/s, Destroy TextBlock and increase score
+void GameManager::UserScored()
 {
-    // compare input and active text
-    std::string activeStr = Common::GetActiveText();
-    std::string submittedStr = Common::GetSubmittedText();
-
-    if (activeStr == submittedStr) // Leave this check in GameManager
-    {
-        m_textblockManager->DestroyActiveTextBlock();
-        m_uiManager->IncreaseScore();
-        m_fireworkExplosionManager->SetShouldFireworkExplode(true);
-        m_fireworkExplosionManager->ProcessInput();
-        m_explosion->PlaySound("explosion_stereo");
-        SDL_Delay(10); // slight pause to hear the sound
-    }
-
-#if DEBUG
-    std::cout << "The strings are " << (activeStr == submittedStr ? "equal" : "not equal") << "." << std::endl;
-#endif
-
+    m_textblockManager->DestroyActiveTextBlock();
+    m_uiManager->IncreaseScore();
+    m_fireworkExplosionManager->SetShouldFireworkExplode(true);
+    m_fireworkExplosionManager->ProcessInput();
+    m_explosion->PlaySound("explosion_stereo");
+    SDL_Delay(10); // slight pause to hear the sound
 }
 
 void GameManager::Render()
 {
     m_drawOrderManager.RenderAll();
-	m_inputTextBox->Draw();
 }
 
 void GameEngine::GameManager::UpdateGameEntities(float deltaTime)
 {
     m_inputManager->Update();
-    m_inputTextBox->Update(deltaTime);
 
     m_textblockManager->Update(deltaTime);
 
@@ -176,14 +161,22 @@ void GameManager::RegisterDrawables()
     m_uiManager->UIManager::RegisterDrawables(m_drawOrderManager);
 }
 
-bool GameEngine::GameManager::ShouldQuit()
+
+bool GameEngine::GameManager::GetExitGame() const
 {
-	return m_inputManager->ShouldQuit();
+    return m_exitGame;
 }
+
+void GameEngine::GameManager::SetExitGame(bool exitGame)
+{  
+    m_exitGame = exitGame;
+}
+
 
 void GameManager::RespondToObserved(InputManager* InputMgr)
 {
     GameState currentState = m_stateMachine->GetCurrentState();
+    Common::CurrentState = currentState;
     bool textblockGeneratorRunning = m_textblockManager->IsRunning();
 
     if (InputMgr->m_kbState[SDL_SCANCODE_F1])
@@ -256,5 +249,9 @@ void GameManager::RespondToObserved(InputManager* InputMgr)
     else if (InputMgr->m_kbState[SDL_SCANCODE_F5])
     {
 
+    }
+    else
+    {
+        //std::cout << m_stateMachine->GetCurrentStateAsString() << std::endl;
     }
 }

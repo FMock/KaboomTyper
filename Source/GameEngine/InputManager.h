@@ -13,6 +13,7 @@ namespace GameEngine
 		InputManager();
 		void Update();
 		bool ShouldQuit() const;
+		void SetShouldQuit(bool shouldQuit);
 		bool m_quit = 0;
 		void NotifyObservers();
 		void RegisterObserver(std::shared_ptr<InputObserver> observer);
