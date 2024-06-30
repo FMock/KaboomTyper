@@ -5,8 +5,10 @@
 #include "RectangleDrawable.h"
 #include "TextString.h"
 #include "Button.h"
+#include "KeyPressHandler.h"
 #include <memory>
 #include <vector>
+#include <string>
 #include <functional>
 
 namespace GameEngine
@@ -28,29 +30,37 @@ namespace GameEngine
         void SetPriority(int priority) override { m_priority = priority; }
 
         using Callback = std::function<void()>;
-
-        void AddInputTextBox(Callback);
         void AddTextString(const std::shared_ptr<TextString>& textString);
         bool GetIsActive() const;
         void SetIsActive(bool isActive);
         void AddButtonCallback(Callback callback, InputMessageBox::Buttons buttonName);
+        void AddInputTextBoxCallback(Callback callback);
 
     protected:
         void RespondToObserved(InputManager* InputMgr) override;
 
     private:
+        void InitInputTextBox();
+        void HandleButtonClick(InputManager* InputMgr, Button* button, const std::string& buttonName, std::function<void()> callback);
         Callback m_enterPressedCallback;
         Callback m_cancelBtnCallback;
         Callback m_submitBtnCallback;
-        void HandleButtonClick(InputManager* InputMgr, Button* button, const std::string& buttonName, std::function<void()> callback);
-        int m_nextYPosition; // To keep track of the next Y position for InputTextBox
         std::shared_ptr<RectangleDrawable> m_messageBoxBody;
-        std::vector<std::shared_ptr<InputTextBox>> m_inputTextBoxes;
+        std::shared_ptr<InputTextBox> m_inputTextBox;
+        std::vector<std::unique_ptr<TextString>> m_inputText;
         std::vector<std::shared_ptr<TextString>> m_textStrings;
         std::shared_ptr<Button> m_cancelButton;
         std::shared_ptr<Button> m_submitButton;
         bool m_isActive;
+        int m_nextYPosition; // To keep track of the next Y position for InputTextBox
         int m_priority; // draw priority
         int m_x, m_y, m_width, m_height;
+        std::shared_ptr<KeyPressHandler> m_keyPressHandler;
+        KeyPressHandler::KeyPressCallback m_keyPressCallback;
+        KeyPressHandler::EnterKeyCallback m_enterCallback;
+        KeyPressHandler::BackSpaceCallback m_backSpaceCallback;
+        void OnEnter();
+        void OnBackspace();
+        void OnKeyPress(std::string);
     };
 }

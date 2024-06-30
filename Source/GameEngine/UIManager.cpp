@@ -51,7 +51,8 @@ void UIManager::Initialize()
 
     // Input Messagebox to get user name
     // Bind the callback and add the InputTextBox
-    m_inputMessageBox->AddInputTextBox(std::bind(&UIManager::GetUserNamePromptCallback, this));
+    //m_inputMessageBox->AddInputTextBox(std::bind(&UIManager::GetUserNamePromptCallback, this));
+    m_inputMessageBox->AddInputTextBoxCallback(std::bind(&UIManager::GetUserNamePromptCallback, this));
     m_inputMessageBox->AddButtonCallback(std::bind(&UIManager::GetUserNamePromptCallback, this), InputMessageBox::Buttons::SUBMIT);
     m_inputMessageBox->AddButtonCallback(std::bind(&UIManager::CancelButtonCallback, this), InputMessageBox::Buttons::CANCEL);
     m_inputMessageBox->SetIsActive(true); // ask user for name at start of game

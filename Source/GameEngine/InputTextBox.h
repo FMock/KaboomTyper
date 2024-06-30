@@ -9,6 +9,7 @@
 #include "Common.h"
 #include "functional"
 #include "Cursor.h"
+#include "KeypressHandler.h"
 
 namespace GameEngine
 {
@@ -57,5 +58,12 @@ namespace GameEngine
 		void CheckForMatch(); // calls callback funtion
 		bool m_isActive;
 		int m_priority; // draw priority
+		std::shared_ptr<KeyPressHandler> m_keyPressHandler;
+		KeyPressHandler::KeyPressCallback m_keyPressCallback;
+		KeyPressHandler::EnterKeyCallback m_enterCallback;
+		KeyPressHandler::BackSpaceCallback m_backSpaceCallback;
+		void OnEnter();
+		void OnBackspace();
+		void OnKeyPress(std::string);
 	};
 }

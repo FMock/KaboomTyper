@@ -5,8 +5,8 @@ using namespace GameEngine;
 using namespace DrawUtilities;
 
 
-Button::Button() : m_outline(std::make_unique<RectangleDrawable>()), m_label(std::make_unique<TextString>()), 
-                   m_adjustedWidth(0), m_scaler(1.0f), m_xPos(0), m_yPos(0), m_width(0), m_height(0), m_active(false)
+Button::Button() : m_outline(std::make_unique<RectangleDrawable>()), m_label(std::make_unique<TextString>()), m_outlineWidth(0), 
+                   m_outlineHeight(0), m_adjustedWidth(0), m_scaler(1.0f), m_xPos(0), m_yPos(0), m_width(0), m_height(0), m_active(false)
 {
 
 }
@@ -43,7 +43,7 @@ void Button::Draw()
 	if (m_active)
 	{
 		RGBColor color = RGBColor::GetRGBColor(RGBColor::White);
-		glDrawFilledRectangle(m_xPos, m_yPos, m_outlineWidth, m_outlineHeight, 1.0f, 1.0f, color, 50);
+		glDrawFilledRectangle(m_xPos, m_yPos, m_outlineWidth, m_outlineHeight, 1.0f, 1.0f, color, 128); // 128 == hover opacity
 	}
 
 	m_outline->Draw();
