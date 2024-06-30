@@ -109,6 +109,7 @@ void InputMessageBox::HandleButtonClick(InputManager* InputMgr, Button* button, 
         std::cout << buttonName << " button clicked" << std::endl;
 #endif
         button->SetButtonColor(Colors::DARK_GRAY);
+        Common::SubmitText(m_inputTextBoxes[0]->GetTextBoxContentsAsString());
         callback();
     }
     else if (!InputMgr->m_mouseButtonState[0] && InputMgr->m_prevMouseButtonState[0] && button->IsMouseOverButton(mouseX, mouseY))
