@@ -264,6 +264,9 @@
     <ClInclude Include="InputMessageBox.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="KeyPressHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -414,6 +417,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="InputMessageBox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="KeyPressHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

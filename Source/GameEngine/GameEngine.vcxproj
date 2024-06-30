@@ -172,6 +172,7 @@
     <ClInclude Include="InputMessageBox.h" />
     <ClInclude Include="InputObserver.h" />
     <ClInclude Include="InputTextBox.h" />
+    <ClInclude Include="KeyPressHandler.h" />
     <ClInclude Include="LevelGameOver.h" />
     <ClInclude Include="LevelGamePlay.h" />
     <ClInclude Include="LevelMainMenu.h" />
@@ -230,6 +231,7 @@
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="InputMessageBox.cpp" />
     <ClCompile Include="InputTextBox.cpp" />
+    <ClCompile Include="KeyPressHandler.cpp" />
     <ClCompile Include="LevelGameOver.cpp" />
     <ClCompile Include="LevelGamePlay.cpp" />
     <ClCompile Include="LevelMainMenu.cpp" />
