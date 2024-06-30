@@ -29,12 +29,12 @@ namespace GameEngine
 		void DisplayFileMenuChoices(FileContextMenu::Choices button);
 		void RegisterDrawables(DrawOrderManager&  manager);
 		void GetUserNamePromptCallback();
+		void CancelButtonCallback();
 		using Callback = std::function<void()>;
 		void AddCallback(Callback callback);
 
 		template<typename... Args> // Wrapper for MessageBox::ChangeMessage(Args&&... args)
 		void ChangeMessageBoxMessage(Args&&... args);
-
 
 	private:
 		std::shared_ptr<InputTextBox> m_inputTextBox;

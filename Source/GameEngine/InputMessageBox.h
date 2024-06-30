@@ -16,6 +16,12 @@ namespace GameEngine
     public:
         InputMessageBox(int x = 250, int y = 300, int width = 260, int height = 150);
 
+        enum Buttons
+        {
+            CANCEL = 0,
+            SUBMIT
+        };
+
         void Update(float dt) override;
         void Draw() override;
         int GetPriority() const override { return m_priority; }
@@ -27,12 +33,16 @@ namespace GameEngine
         void AddTextString(const std::shared_ptr<TextString>& textString);
         bool GetIsActive() const;
         void SetIsActive(bool isActive);
+        void AddButtonCallback(Callback callback, InputMessageBox::Buttons buttonName);
 
     protected:
         void RespondToObserved(InputManager* InputMgr) override;
 
     private:
-        Callback m_callback;
+        Callback m_enterPressedCallback;
+        Callback m_cancelBtnCallback;
+        Callback m_submitBtnCallback;
+        void HandleButtonClick(InputManager* InputMgr, Button* button, const std::string& buttonName, std::function<void()> callback);
         int m_nextYPosition; // To keep track of the next Y position for InputTextBox
         std::shared_ptr<RectangleDrawable> m_messageBoxBody;
         std::vector<std::shared_ptr<InputTextBox>> m_inputTextBoxes;

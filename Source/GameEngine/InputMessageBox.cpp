@@ -59,7 +59,7 @@ void InputMessageBox::Draw()
 
 void InputMessageBox::AddInputTextBox(Callback callback)
 {
-    m_callback = callback;
+    m_enterPressedCallback = callback;
 
     auto inputTextBox = std::make_shared<InputTextBox>();
 
@@ -75,7 +75,7 @@ void InputMessageBox::AddInputTextBox(Callback callback)
     int newHeight = m_nextYPosition - m_messageBoxBody->GetYPosition();
     m_messageBoxBody->SetHeight(newHeight);
 
-    inputTextBox->AddCallback(m_callback);
+    inputTextBox->AddCallback(m_enterPressedCallback);
 
     m_inputTextBoxes.push_back(inputTextBox);
 }
@@ -95,10 +95,56 @@ void InputMessageBox::SetIsActive(bool isActive)
     m_isActive = isActive;
 }
 
+void InputMessageBox::HandleButtonClick(InputManager* InputMgr, Button* button, const std::string& buttonName, std::function<void()> callback)
+{
+    int mouseX, mouseY;
+
+    InputMgr->GetMousePosition(&mouseX, &mouseY);
+
+    button->SetIsActive(button->IsMouseOverButton(mouseX, mouseY)); // toggle current button state
+
+    if (InputMgr->m_mouseButtonState[0] && !InputMgr->m_prevMouseButtonState[0] && button->IsMouseOverButton(mouseX, mouseY))
+    {
+#if DEBUG_INPUT_MESSAGEBOX
+        std::cout << buttonName << " button clicked" << std::endl;
+#endif
+        button->SetButtonColor(Colors::DARK_GRAY);
+        callback();
+    }
+    else if (!InputMgr->m_mouseButtonState[0] && InputMgr->m_prevMouseButtonState[0] && button->IsMouseOverButton(mouseX, mouseY))
+    {
+#if DEBUG_INPUT_MESSAGEBOX
+        std::cout << buttonName << " button released" << std::endl;
+#endif
+        button->SetButtonColor(Colors::DEFAULT_COLOR);
+    }
+}
+
+void InputMessageBox::AddButtonCallback(Callback callback, InputMessageBox::Buttons buttonName)
+{
+    switch (buttonName)
+    {
+    case GameEngine::InputMessageBox::CANCEL:
+        m_cancelBtnCallback = callback;
+        break;
+    case GameEngine::InputMessageBox::SUBMIT:
+        m_submitBtnCallback = callback;
+        break;
+    default:
+        break;
+    }
+}
+
+
 void InputMessageBox::RespondToObserved(InputManager* InputMgr)
 {
     if (m_isActive)
     {
+        // Handle button clicks
+        HandleButtonClick(InputMgr, m_cancelButton.get(), "Cancel", [this]() { m_cancelBtnCallback(); });
+        HandleButtonClick(InputMgr, m_submitButton.get(), "Submit", [this]() { m_submitBtnCallback(); });
+
+        // Handle Key presses
         for (int i = 0; i < SDL_NUM_SCANCODES; ++i)
         {
             if (!InputMgr->m_kbPrevState[i] && InputMgr->m_kbState[i])
@@ -412,7 +458,7 @@ void InputMessageBox::RespondToObserved(InputManager* InputMgr)
                     break;
                 case SDL_SCANCODE_RETURN:
                     Common::SubmitText(m_inputTextBoxes[0]->GetTextBoxContentsAsString());
-                    m_callback();
+                    m_enterPressedCallback();
                     m_inputTextBoxes[0]->ClearInputText();
                     m_inputTextBoxes[0]->SetCursorXPosition(m_inputTextBoxes[0]->GetCursorStartingXPosition());
                     m_inputTextBoxes[0]->SetCursorYPosition(m_inputTextBoxes[0]->GetCursorStartingYPosition());
