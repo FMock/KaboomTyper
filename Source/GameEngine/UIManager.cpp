@@ -52,6 +52,8 @@ void UIManager::Initialize()
     // Input Messagebox to get user name
     // Bind the callback and add the InputTextBox
     m_inputMessageBox->AddInputTextBox(std::bind(&UIManager::GetUserNamePromptCallback, this));
+    m_inputMessageBox->AddButtonCallback(std::bind(&UIManager::GetUserNamePromptCallback, this), InputMessageBox::Buttons::SUBMIT);
+    m_inputMessageBox->AddButtonCallback(std::bind(&UIManager::CancelButtonCallback, this), InputMessageBox::Buttons::CANCEL);
     m_inputMessageBox->SetIsActive(true); // ask user for name at start of game
     m_initialized = true;
 }
@@ -111,6 +113,12 @@ void GameEngine::UIManager::GetUserNamePromptCallback()
     std::cout << "GetUserNamePromptCallback() = " << Common::GetSubmittedText() << std::endl;
     std::string name = Common::GetSubmittedText();
     m_headsUpDisplay->SetUserName(name);
+    m_inputMessageBox->SetIsActive(false);
+    m_inputTextBox->SetIsActive(true);
+}
+
+void GameEngine::UIManager::CancelButtonCallback()
+{
     m_inputMessageBox->SetIsActive(false);
     m_inputTextBox->SetIsActive(true);
 }
