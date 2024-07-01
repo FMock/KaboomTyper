@@ -68,8 +68,8 @@ void MenuItem::MenuItemPressed()
 
 bool MenuItem::IsMouseOverMenuItem(const int& x, const int& y)
 {
-	return (x >= m_xPos && x <= m_xPos + m_outlineWidth &&
-		y >= m_yPos && y <= m_yPos + m_outlineHeight);
+	return x >= m_xPos && x <= m_xPos + m_outlineWidth &&
+		y >= m_yPos && y <= m_yPos + m_outlineHeight;
 }
 
 void MenuItem::MenuItemReleased()

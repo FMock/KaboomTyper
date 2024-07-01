@@ -36,7 +36,7 @@ namespace GameEngine
 		std::unique_ptr<TextString> m_scoreAsText;
 		std::unique_ptr<TextString> m_highScoreLabel;
 		std::unique_ptr<TextString> m_highScoreAsText;
-		std::unique_ptr<TextString> m_levelLabel;
+		std::unique_ptr<TextString> m_playerLabel;
 		std::unique_ptr<TextString> m_levelAsText;
 		std::shared_ptr<Score> m_score;
 		std::shared_ptr<User> m_user;

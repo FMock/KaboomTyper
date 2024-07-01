@@ -237,10 +237,10 @@
     <ClInclude Include="MenuManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ContextMenu.h">
+    <ClInclude Include="DropDownMenu.h">
       <Filter>Header Files\UI</Filter>
     </ClInclude>
-    <ClInclude Include="FileContextMenu.h">
+    <ClInclude Include="FileDropDownMenu.h">
       <Filter>Header Files\UI</Filter>
     </ClInclude>
     <ClInclude Include="MenuItem.h">
@@ -266,6 +266,9 @@
     </ClInclude>
     <ClInclude Include="KeyPressHandler.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OptionsDropDownMenu.h">
+      <Filter>Header Files\UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -395,7 +398,7 @@
     <ClCompile Include="MenuManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FileContextMenu.cpp">
+    <ClCompile Include="FileDropDownMenu.cpp">
       <Filter>Source Files\UI</Filter>
     </ClCompile>
     <ClCompile Include="MenuItem.cpp">
@@ -421,6 +424,9 @@
     </ClCompile>
     <ClCompile Include="KeyPressHandler.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="OptionsDropDownMenu.cpp">
+      <Filter>Source Files\UI</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
