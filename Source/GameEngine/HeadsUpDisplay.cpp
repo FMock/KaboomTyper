@@ -4,7 +4,7 @@ using namespace GameEngine;
 
 HeadsUpDisplay::HeadsUpDisplay() 
 	: m_background(std::make_unique<RectangleDrawable>()),
-	  m_levelLabel(std::make_unique<TextString>()),
+	  m_playerLabel(std::make_unique<TextString>()),
 	  m_levelAsText(std::make_unique<TextString>()),
 	  m_scoreLabel(std::make_unique<TextString>()),
 	  m_scoreAsText(std::make_unique<TextString>()),
@@ -46,8 +46,8 @@ void GameEngine::HeadsUpDisplay::Initialize(int x, int y)
 
 	m_background->Initialize(m_x, m_y, m_width, m_height, Colors::RED, true); // true because we want to rectangle filled in
 
-	/****** User  ******/
-	m_levelLabel->Initialize("USER:", m_x + m_xPad, m_y + m_yPad);
+	/****** Player  ******/
+	m_playerLabel->Initialize("PLAYER:", m_x + m_xPad, m_y + m_yPad);
 
 	int levelValue = 1;
 
@@ -57,11 +57,11 @@ void GameEngine::HeadsUpDisplay::Initialize(int x, int y)
 	m_levelAsText->Initialize(name, m_x + m_column2XOffset, m_y + 5);
 
 	/****** Score ******/
-	m_scoreLabel->Initialize("SCORE:", m_x + m_xPad, m_y + 32 + m_yPad);
+	m_scoreLabel->Initialize(" SCORE:", m_x + m_xPad, m_y + 32 + m_yPad);
 	UpdateScore();
 
 	/****** High Score ******/
-	m_highScoreLabel->Initialize("HIGH:", m_x + m_xPad, m_y + 32 + 32 + m_yPad);
+	m_highScoreLabel->Initialize("  HIGH:", m_x + m_xPad, m_y + 32 + 32 + m_yPad);
 	m_score->SetHighScore(0);
 
 	// Retrieve the high score as an integer
@@ -141,11 +141,11 @@ void GameEngine::HeadsUpDisplay::SetUserName(std::string& name)
 void HeadsUpDisplay::DrawHud()
 {
 	m_background->Draw();
-	m_levelLabel->DrawText(1.0f);
-	m_levelAsText->DrawText(1.0f);
-	m_scoreLabel->DrawText(1.0f);
-	m_scoreAsText->DrawText(1.0f);
-	m_highScoreLabel->DrawText(1.0f);
-	m_highScoreAsText->DrawText(1.0f);
+	m_playerLabel->DrawText(0.9f);
+	m_levelAsText->DrawText(0.9f);
+	m_scoreLabel->DrawText(0.9f);
+	m_scoreAsText->DrawText(0.9f);
+	m_highScoreLabel->DrawText(0.9f);
+	m_highScoreAsText->DrawText(0.9f);
 }
 

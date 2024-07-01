@@ -7,7 +7,8 @@
 #include "HeadsUpDisplay.h"
 #include "MessageBox.h"
 #include "Menu.h"
-#include "FileContextMenu.h"
+#include "FileDropDownMenu.h"
+#include "OptionsDropDownMenu.h"
 #include "InputManager.h"
 #include "DrawOrderManager.h"
 #include "InputMessageBox.h"
@@ -26,7 +27,8 @@ namespace GameEngine
 		void IncreaseScore();
 		void GameOver();
 		void DisplayMenuChoices(Menu::MenuButtons button);
-		void DisplayFileMenuChoices(FileContextMenu::Choices button);
+		void DisplayFileMenuChoices(FileDropDownMenu::Choices button);
+		void DisplayOptionsMenuChoices(OptionsDropDownMenu::Choices button);
 		void RegisterDrawables(DrawOrderManager&  manager);
 		void GetUserNamePromptCallback();
 		void CancelButtonCallback();
@@ -41,7 +43,8 @@ namespace GameEngine
 		std::shared_ptr<GamePlayArea> m_gamePlayArea;
 		std::shared_ptr<HeadsUpDisplay> m_headsUpDisplay;
 		std::shared_ptr<MessageBox> m_messageBox;
-		std::shared_ptr<FileContextMenu> m_fileContextMenu;
+		std::shared_ptr<FileDropDownMenu> m_fileDropDownMenu;
+		std::shared_ptr<OptionsDropDownMenu> m_optionsDropDownMenu;
 		std::shared_ptr<Menu> m_gameMenu;
 		std::shared_ptr<InputManager> m_inputManager;
 		std::shared_ptr<InputMessageBox> m_inputMessageBox;

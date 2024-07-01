@@ -11,7 +11,8 @@ UIManager::UIManager(std::shared_ptr<InputManager> inputManager) :
     m_headsUpDisplay(std::make_shared<HeadsUpDisplay>()),
     m_messageBox(std::make_shared<MessageBox>()),
     m_gameMenu(std::make_shared<Menu>()),
-    m_fileContextMenu(std::make_shared<FileContextMenu>()),
+    m_fileDropDownMenu(std::make_shared<FileDropDownMenu>()),
+    m_optionsDropDownMenu(std::make_shared<OptionsDropDownMenu>()),
     m_inputMessageBox(std::make_shared<InputMessageBox>()),
     m_initialized(false)
 {
@@ -36,7 +37,8 @@ void UIManager::Initialize()
 
     // Register with InputManger to get user updates
     m_inputManager->RegisterObserver(m_gameMenu); // so menu can respond to mouse clicks
-    m_inputManager->RegisterObserver(m_fileContextMenu);
+    m_inputManager->RegisterObserver(m_fileDropDownMenu);
+    m_inputManager->RegisterObserver(m_optionsDropDownMenu);
     m_inputManager->RegisterObserver(m_inputMessageBox);
 
     // Register callbacks for main menu
@@ -46,8 +48,10 @@ void UIManager::Initialize()
     m_gameMenu->AddCallback([this](Menu::MenuButtons button) { this->DisplayMenuChoices(button); }, Menu::About);
 
     // Register callbacks for sub menus
-    m_fileContextMenu->AddCallback([this](FileContextMenu::Choices button) { this->DisplayFileMenuChoices(button); }, FileContextMenu::IMPORT);
-    m_fileContextMenu->AddCallback([this](FileContextMenu::Choices button) { this->DisplayFileMenuChoices(button); }, FileContextMenu::EXIT);
+    m_fileDropDownMenu->AddCallback([this](FileDropDownMenu::Choices choice) { this->DisplayFileMenuChoices(choice); }, FileDropDownMenu::IMPORT);
+    m_fileDropDownMenu->AddCallback([this](FileDropDownMenu::Choices choice) { this->DisplayFileMenuChoices(choice); }, FileDropDownMenu::EXIT);
+    m_optionsDropDownMenu->AddCallback([this](OptionsDropDownMenu::Choices choice) { this->DisplayOptionsMenuChoices(choice); }, OptionsDropDownMenu::WORD_CATEGORY);
+    m_optionsDropDownMenu->AddCallback([this](OptionsDropDownMenu::Choices choice) { this->DisplayOptionsMenuChoices(choice); }, OptionsDropDownMenu::AUDIO);
 
     // Input Messagebox to get user name
     // Bind the callback and add the InputTextBox
@@ -96,7 +100,8 @@ void UIManager::RegisterDrawables(DrawOrderManager& manager)
     m_headsUpDisplay->SetPriority(2);
     m_gameMenu->SetPriority(3);
     m_messageBox->SetPriority(4);
-    m_fileContextMenu->SetPriority(9);
+    m_fileDropDownMenu->SetPriority(9);
+    m_optionsDropDownMenu->SetPriority(9);
     m_inputMessageBox->SetPriority(13);
 
     // Sharing IDrawables with DrawOrderManager
@@ -105,7 +110,8 @@ void UIManager::RegisterDrawables(DrawOrderManager& manager)
     manager.AddDrawable(m_headsUpDisplay);
     manager.AddDrawable(m_gameMenu);
     manager.AddDrawable(m_messageBox);
-    manager.AddDrawable(m_fileContextMenu);
+    manager.AddDrawable(m_fileDropDownMenu);
+    manager.AddDrawable(m_optionsDropDownMenu);
     manager.AddDrawable(m_inputMessageBox);
 }
 
@@ -151,20 +157,22 @@ void GameEngine::UIManager::DisplayMenuChoices(Menu::MenuButtons button)
     {
     case GameEngine::Menu::File:
 
-        m_fileContextMenu->SetIsActive(!m_fileContextMenu->GetIsActive());
+        m_fileDropDownMenu->SetIsActive(!m_fileDropDownMenu->GetIsActive());
 
 #if DEBUG
-        std::cout << "Display FileContextMenu" << std::endl;
+        std::cout << "Display File Drop Down Menu" << std::endl;
 #endif
         break;
     case GameEngine::Menu::Options:
+
+        m_optionsDropDownMenu->SetIsActive(!m_optionsDropDownMenu->GetIsActive());
 #if DEBUG
-        std::cout << "Display OptionsContextMenu" << std::endl;
+        std::cout << "Display Options Drop Down Menu" << std::endl;
 #endif
         break;
     case GameEngine::Menu::Help:
 #if DEBUG
-        std::cout << "Display HelpContextMenu" << std::endl;
+        std::cout << "Display Help Drop Down Menu" << std::endl;
 #endif
         break;
     case GameEngine::Menu::About:
@@ -183,20 +191,41 @@ void GameEngine::UIManager::DisplayMenuChoices(Menu::MenuButtons button)
     }
 }
 
-void GameEngine::UIManager::DisplayFileMenuChoices(FileContextMenu::Choices button)
+void GameEngine::UIManager::DisplayFileMenuChoices(FileDropDownMenu::Choices choice)
 {
-    switch (button)
+    switch (choice)
     {
-    case FileContextMenu::IMPORT:
+    case FileDropDownMenu::IMPORT:
 
 #if DEBUG
         std::cout << "Display Import Options" << std::endl;
 #endif
         break;
-    case FileContextMenu::EXIT:
+    case FileDropDownMenu::EXIT:
         m_inputManager->SetShouldQuit(true); // user pressed Exit sub-menu item
 #if DEBUG
         std::cout << "Exit The Game" << std::endl;
+#endif
+        break;
+    default:
+        break;
+    }
+}
+
+void GameEngine::UIManager::DisplayOptionsMenuChoices(OptionsDropDownMenu::Choices choice)
+{
+    switch (choice)
+    {
+    case OptionsDropDownMenu::Choices::WORD_CATEGORY:
+
+#if DEBUG
+        std::cout << "Display Word Category Options" << std::endl;
+#endif
+        break;
+    case OptionsDropDownMenu::Choices::AUDIO:
+        
+#if DEBUG
+        std::cout << "Display Audio Options" << std::endl;
 #endif
         break;
     default:

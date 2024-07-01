@@ -1,9 +1,8 @@
 #pragma once
 
-#include "ContextMenu.h"
+#include "DropDownMenu.h"
 #include "RectangleDrawable.h"
 #include "IDrawable.h"
-//#include "MenuItem.h"
 #include "MenuItem.h"
 #include "InputManager.h"
 #include <memory>
@@ -11,25 +10,26 @@
 
 namespace GameEngine
 {
-    class FileContextMenu : public ContextMenu, public IDrawable
-    {
+	class OptionsDropDownMenu : public DropDownMenu, public IDrawable
+	{
     public:
         enum Choices
         {
-            IMPORT = 0,
-            EXIT
+            WORD_CATEGORY = 0,
+            AUDIO,
+            CHOICES_COUNT
         };
 
         MenuChoices GetMenuChoices() const override
         {
             return {
-                {IMPORT, "Import"},
-                {EXIT, "Exit"}
+                {WORD_CATEGORY, "Word Category"},
+                {AUDIO, "Audio"}
             };
         }
 
-        FileContextMenu();
-        ~FileContextMenu() = default;
+        OptionsDropDownMenu();
+        ~OptionsDropDownMenu() = default;
 
         void Draw() override;
         void Update(float dt) override;
@@ -37,22 +37,22 @@ namespace GameEngine
         void SetPriority(int priority) override { m_priority = priority; }
         bool GetIsActive() const;
         void SetIsActive(bool);
-        using Callback = std::function<void(FileContextMenu::Choices)>;
-        void AddCallback(Callback callback, FileContextMenu::Choices MenuItem);
+        using Callback = std::function<void(OptionsDropDownMenu::Choices)>;
+        void AddCallback(Callback callback, OptionsDropDownMenu::Choices MenuItem);
 
     private:
         std::unique_ptr<RectangleDrawable> m_menuBody;
-        std::unique_ptr<MenuItem> m_importBtn;
-        std::unique_ptr<MenuItem> m_exitBtn;
+        std::unique_ptr<MenuItem> m_wordCategoryMenuItem;
+        std::unique_ptr<MenuItem> m_audioMenuItem;
         void Initialize();
-        Callback m_importBtnCallback;
-        void ImportMenuItemClicked();
-        Callback m_exitBtnCallback;
-        void ExitMenuItemClicked();
+        Callback m_wordCategoryMenuItemCallback;
+        void WordCategoryMenuItemClicked();
+        Callback m_audioMenuItemCallback;
+        void AudioMenuItemClicked();
         void HandleMenuItem(InputManager* InputMgr, MenuItem* MenuItem, const std::string& MenuItemName, std::function<void()> callback);
-        int m_priority = 1; // draw priority
+        int m_priority; // draw priority
 
     protected:
         void RespondToObserved(InputManager* InputMgr) override;
-    };
+	};
 }

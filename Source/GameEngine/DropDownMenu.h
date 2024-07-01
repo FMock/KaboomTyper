@@ -7,7 +7,7 @@
 
 namespace GameEngine
 {
-    class ContextMenu : public InputObserver
+    class DropDownMenu : public InputObserver
     {
     public:
         // friendler alias
@@ -15,7 +15,7 @@ namespace GameEngine
 
         virtual MenuChoices GetMenuChoices() const = 0;
 
-        virtual ~ContextMenu() = default;
+        virtual ~DropDownMenu() = default;
 
     protected:
         bool m_isActive;

@@ -147,12 +147,12 @@
     <ClInclude Include="Common.h" />
     <ClInclude Include="ConcreteLevel.h" />
     <ClInclude Include="ConcreteSpriteFactory.h" />
-    <ClInclude Include="ContextMenu.h" />
+    <ClInclude Include="DropDownMenu.h" />
     <ClInclude Include="Cursor.h" />
     <ClInclude Include="DecorativeRectangleDrawable.h" />
     <ClInclude Include="DrawOrderManager.h" />
     <ClInclude Include="DrawUtils.h" />
-    <ClInclude Include="FileContextMenu.h" />
+    <ClInclude Include="FileDropDownMenu.h" />
     <ClInclude Include="Firework.h" />
     <ClInclude Include="FireworkExplosionManager.h" />
     <ClInclude Include="FontParameters.h" />
@@ -184,6 +184,7 @@
     <ClInclude Include="MessageBox.h" />
     <ClInclude Include="Moveable.h" />
     <ClInclude Include="ObjectStates.h" />
+    <ClInclude Include="OptionsDropDownMenu.h" />
     <ClInclude Include="RectangleDrawable.h" />
     <ClInclude Include="RGBColor.h" />
     <ClInclude Include="Score.h" />
@@ -219,7 +220,7 @@
     <ClCompile Include="DecorativeRectangleDrawable.cpp" />
     <ClCompile Include="DrawOrderManager.cpp" />
     <ClCompile Include="DrawUtils.cpp" />
-    <ClCompile Include="FileContextMenu.cpp" />
+    <ClCompile Include="FileDropDownMenu.cpp" />
     <ClCompile Include="Firework.cpp" />
     <ClCompile Include="FireworkExplosionManager.cpp" />
     <ClCompile Include="Game.cpp" />
@@ -242,6 +243,7 @@
     <ClCompile Include="MenuManager.cpp" />
     <ClCompile Include="Messagebox.cpp" />
     <ClCompile Include="Moveable.cpp" />
+    <ClCompile Include="OptionsDropDownMenu.cpp" />
     <ClCompile Include="RectangleDrawable.cpp" />
     <ClCompile Include="RGBColor.cpp" />
     <ClCompile Include="Score.cpp" />
