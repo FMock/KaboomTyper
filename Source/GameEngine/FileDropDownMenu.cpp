@@ -6,7 +6,7 @@ FileDropDownMenu::FileDropDownMenu() : m_menuBody(std::make_unique<RectangleDraw
                                        m_importMenuItem(std::make_unique<MenuItem>()), m_exitMenuItem(std::make_unique<MenuItem>()), 
                                        m_priority(0)
 {
-    m_isActive = false;
+    SetIsActive(false);
 	Initialize();
 }
 
@@ -23,7 +23,7 @@ void FileDropDownMenu::Initialize()
 
 void FileDropDownMenu::Draw()
 {
-    if (m_isActive)
+    if (GetIsActive())
     {
         m_menuBody->Draw();
         m_importMenuItem->Draw();
@@ -35,15 +35,15 @@ void FileDropDownMenu::Update(float dt)
 {
 }
 
-bool FileDropDownMenu::GetIsActive() const
-{
-    return m_isActive;
-}
-
-void FileDropDownMenu::SetIsActive(bool isActive)
-{
-    m_isActive = isActive;
-}
+//bool FileDropDownMenu::GetIsActive() const
+//{
+//    return m_isActive;
+//}
+//
+//void FileDropDownMenu::SetIsActive(bool isActive)
+//{
+//    m_isActive = isActive;
+//}
 
 void FileDropDownMenu::AddCallback(Callback callback, FileDropDownMenu::Choices MenuItem)
 {
@@ -97,7 +97,7 @@ void FileDropDownMenu::HandleMenuItem(InputManager* InputMgr, MenuItem* MenuItem
 
 void FileDropDownMenu::RespondToObserved(InputManager* InputMgr)
 {
-    if (m_isActive)
+    if (GetIsActive())
     {
         HandleMenuItem(InputMgr, m_importMenuItem.get(), "Import", [this]() { ImportMenuItemClicked(); });
         HandleMenuItem(InputMgr, m_exitMenuItem.get(), "Exit", [this]() { ExitMenuItemClicked(); });

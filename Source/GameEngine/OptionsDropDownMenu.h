@@ -35,8 +35,7 @@ namespace GameEngine
         void Update(float dt) override;
         int GetPriority() const override { return m_priority; }
         void SetPriority(int priority) override { m_priority = priority; }
-        bool GetIsActive() const;
-        void SetIsActive(bool);
+
         using Callback = std::function<void(OptionsDropDownMenu::Choices)>;
         void AddCallback(Callback callback, OptionsDropDownMenu::Choices MenuItem);
 

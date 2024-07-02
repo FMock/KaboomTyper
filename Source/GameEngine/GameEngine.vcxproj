@@ -220,6 +220,7 @@
     <ClCompile Include="DecorativeRectangleDrawable.cpp" />
     <ClCompile Include="DrawOrderManager.cpp" />
     <ClCompile Include="DrawUtils.cpp" />
+    <ClCompile Include="DropDownMenu.cpp" />
     <ClCompile Include="FileDropDownMenu.cpp" />
     <ClCompile Include="Firework.cpp" />
     <ClCompile Include="FireworkExplosionManager.cpp" />
