@@ -16,6 +16,8 @@ namespace GameEngine
         virtual MenuChoices GetMenuChoices() const = 0;
 
         virtual ~DropDownMenu() = default;
+        bool GetIsActive() const;
+        void SetIsActive(bool);
 
     protected:
         bool m_isActive;

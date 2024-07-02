@@ -6,7 +6,7 @@ OptionsDropDownMenu::OptionsDropDownMenu() : m_menuBody(std::make_unique<Rectang
                                              m_wordCategoryMenuItem(std::make_unique<MenuItem>()), m_audioMenuItem(std::make_unique<MenuItem>()),
 m_priority(0)
 {
-    m_isActive = false;
+    SetIsActive(false);
     Initialize();
 }
 
@@ -23,7 +23,7 @@ void OptionsDropDownMenu::Initialize()
 
 void OptionsDropDownMenu::Draw()
 {
-    if (m_isActive)
+    if (GetIsActive())
     {
         m_menuBody->Draw();
         m_wordCategoryMenuItem->Draw();
@@ -35,15 +35,15 @@ void OptionsDropDownMenu::Update(float dt)
 {
 }
 
-bool OptionsDropDownMenu::GetIsActive() const
-{
-    return m_isActive;
-}
-
-void OptionsDropDownMenu::SetIsActive(bool isActive)
-{
-    m_isActive = isActive;
-}
+//bool OptionsDropDownMenu::GetIsActive() const
+//{
+//    return m_isActive;
+//}
+//
+//void OptionsDropDownMenu::SetIsActive(bool isActive)
+//{
+//    m_isActive = isActive;
+//}
 
 void OptionsDropDownMenu::AddCallback(Callback callback, OptionsDropDownMenu::Choices MenuItem)
 {
@@ -97,7 +97,7 @@ void OptionsDropDownMenu::HandleMenuItem(InputManager* InputMgr, MenuItem* MenuI
 
 void OptionsDropDownMenu::RespondToObserved(InputManager* InputMgr)
 {
-    if (m_isActive)
+    if (GetIsActive())
     {
         HandleMenuItem(InputMgr, m_wordCategoryMenuItem.get(), "Word Category", [this]() { WordCategoryMenuItemClicked(); });
         HandleMenuItem(InputMgr, m_audioMenuItem.get(), "Audio", [this]() { AudioMenuItemClicked(); });
