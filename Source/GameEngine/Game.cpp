@@ -11,7 +11,7 @@ Game::Game()
 	m_window = nullptr;
 	m_glcontext = NULL;
 
-	// empty constructor to ensure that members are created after the OpenGL context is set up
+	// empty ctor to ensure that members are created after the OpenGL context is set up
 }
 	
 /// <summary>
@@ -28,13 +28,13 @@ bool Game::Initialize()
 	}
 
 	// Create the window and OpenGL context.
-	SDL_GL_SetAttribute(SDL_GL_BUFFER_SIZE, 32);
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+	SDL_GL_SetAttribute(SDL_GL_BUFFER_SIZE, 32); // use 32-bit buffer
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1); // enable double buffering
 
 	m_window = SDL_CreateWindow(
 	"Kaboom Typer",
 	SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-	800, 1000,
+	Common::WINDOW_WIDTH, Common::WINDOW_HEIGHT,
 	SDL_WINDOW_OPENGL);
 
 	if (!m_window)
@@ -68,9 +68,13 @@ bool Game::Initialize()
 	}
 
 	// Setup OpenGL state.
-	glViewport(0, 0, 800, 1000);
+	glViewport(0, 0, Common::WINDOW_WIDTH, Common::WINDOW_HEIGHT);
 	glMatrixMode(GL_PROJECTION);
-	glOrtho(0, 800, 1000, 0, 0, 100);
+
+	//define a 2D orthographic projection matrix
+	const double NEAR_CLIP = 0.0;
+	const double FAR_CLIP = 100.0; // could use smaller range for 2D rendering
+	glOrtho(0, Common::WINDOW_WIDTH, Common::WINDOW_HEIGHT, 0, NEAR_CLIP, FAR_CLIP);
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -142,7 +146,7 @@ void Game::Draw()
 
 void Game::Shutdown()
 {
-	// Once finished with OpenGL functions, the SDL_GLContext can be deleted.
+	// first delete OpenGL context then SDL
 	SDL_GL_DeleteContext(m_glcontext);
 	SDL_Quit();
 }

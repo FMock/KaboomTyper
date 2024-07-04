@@ -1,10 +1,6 @@
 #include <SDL.h>
 #include "GameManager.h"
 #include "Utilities.h"
-#include "LevelSplashScreen.h"
-#include "LevelMainMenu.h"
-#include "LevelGamePlay.h"
-#include "LevelGameOver.h"
 #include "TextBlock.h"
 #include "GlobalPreprocessorFlags.h"
 #include <iostream>
@@ -68,9 +64,9 @@ void GameManager::Initialize()
     RegisterDrawables();
 }
 
-GameEngine::GameManager::GameManager()
+GameManager::GameManager() : m_exitGame(false)
 {
-	// factory method Create() calls Initialize
+	// ctor is private. Must use factory method Create() to get a GameManager
 }
 
 std::shared_ptr<GameManager> GameManager::Create()

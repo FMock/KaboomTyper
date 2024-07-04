@@ -37,12 +37,6 @@
     <Filter Include="Source Files\Input">
       <UniqueIdentifier>{9b465b2a-80ac-43e8-a6fa-bfb2b3b85bb6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Level">
-      <UniqueIdentifier>{d10bd60b-81c9-4a7c-bb4c-c555a076787d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Level">
-      <UniqueIdentifier>{07fef409-bc99-4767-b2a1-9dabfa36733e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Draw">
       <UniqueIdentifier>{9b68f4e4-578c-4bd5-a2f3-28829c437ff1}</UniqueIdentifier>
     </Filter>
@@ -73,9 +67,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="AABB.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="game_data.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Utilities.h">
@@ -129,12 +120,6 @@
     <ClInclude Include="StateGameOver.h">
       <Filter>Header Files\State</Filter>
     </ClInclude>
-    <ClInclude Include="LevelManager.h">
-      <Filter>Header Files\Level</Filter>
-    </ClInclude>
-    <ClInclude Include="ILevel.h">
-      <Filter>Header Files\Level</Filter>
-    </ClInclude>
     <ClInclude Include="SpriteFactory.h">
       <Filter>Header Files\Sprite</Filter>
     </ClInclude>
@@ -144,23 +129,8 @@
     <ClInclude Include="ConcreteSpriteFactory.h">
       <Filter>Header Files\Sprite</Filter>
     </ClInclude>
-    <ClInclude Include="ConcreteLevel.h">
-      <Filter>Header Files\Level</Filter>
-    </ClInclude>
     <ClInclude Include="GameManager.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="LevelSplashScreen.h">
-      <Filter>Header Files\Level</Filter>
-    </ClInclude>
-    <ClInclude Include="LevelMainMenu.h">
-      <Filter>Header Files\Level</Filter>
-    </ClInclude>
-    <ClInclude Include="LevelGameOver.h">
-      <Filter>Header Files\Level</Filter>
-    </ClInclude>
-    <ClInclude Include="LevelGamePlay.h">
-      <Filter>Header Files\Level</Filter>
     </ClInclude>
     <ClInclude Include="GameStateComparator.h">
       <Filter>Header Files\State</Filter>
@@ -308,29 +278,11 @@
     <ClCompile Include="StateGameOver.cpp">
       <Filter>Source Files\State</Filter>
     </ClCompile>
-    <ClCompile Include="LevelManager.cpp">
-      <Filter>Source Files\Level</Filter>
-    </ClCompile>
     <ClCompile Include="ConcreteSpriteFactory.cpp">
       <Filter>Source Files\Sprite</Filter>
     </ClCompile>
-    <ClCompile Include="ConcreteLevel.cpp">
-      <Filter>Source Files\Level</Filter>
-    </ClCompile>
     <ClCompile Include="GameManager.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="LevelSplashScreen.cpp">
-      <Filter>Source Files\Level</Filter>
-    </ClCompile>
-    <ClCompile Include="LevelMainMenu.cpp">
-      <Filter>Source Files\Level</Filter>
-    </ClCompile>
-    <ClCompile Include="LevelGameOver.cpp">
-      <Filter>Source Files\Level</Filter>
-    </ClCompile>
-    <ClCompile Include="LevelGamePlay.cpp">
-      <Filter>Source Files\Level</Filter>
     </ClCompile>
     <ClCompile Include="Moveable.cpp">
       <Filter>Source Files</Filter>

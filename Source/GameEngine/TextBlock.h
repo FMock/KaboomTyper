@@ -6,7 +6,6 @@
 #include <sstream>
 #include <memory>
 #include <ctime>
-#include "game_data.h"
 #include "sprite.h"
 #include "TextString.h"
 #include "TextStringFont.h"

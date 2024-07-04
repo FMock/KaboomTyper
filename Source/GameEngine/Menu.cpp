@@ -64,25 +64,21 @@ void GameEngine::Menu::Initialize()
 
 void GameEngine::Menu::OptionsButtonClicked()
 {
-    // call the Options button callback
     m_optionsBtnCallback(Menu::MenuButtons::Options);
 }
 
 void GameEngine::Menu::FileButtonClicked()
 {
-    // call the File button callback
     m_fileBtnCallback(Menu::MenuButtons::File);
 }
 
 void GameEngine::Menu::HelpButtonClicked()
 {
-    // call the Help button callback
     m_helpBtnCallback(Menu::MenuButtons::Help);
 }
 
 void GameEngine::Menu::AboutButtonClicked()
 {
-    // call the About button callback
     m_aboutBtnCallback(Menu::MenuButtons::About);
 }
 
