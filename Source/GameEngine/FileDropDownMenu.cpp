@@ -35,16 +35,6 @@ void FileDropDownMenu::Update(float dt)
 {
 }
 
-//bool FileDropDownMenu::GetIsActive() const
-//{
-//    return m_isActive;
-//}
-//
-//void FileDropDownMenu::SetIsActive(bool isActive)
-//{
-//    m_isActive = isActive;
-//}
-
 void FileDropDownMenu::AddCallback(Callback callback, FileDropDownMenu::Choices MenuItem)
 {
     switch (MenuItem)

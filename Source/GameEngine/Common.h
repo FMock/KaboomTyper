@@ -24,6 +24,8 @@ namespace GameEngine
 		static std::string s_currentWordCategory;
 
 	public:
+		static const int WINDOW_WIDTH = 800;
+		static const int WINDOW_HEIGHT = 1000;
 		static void SubmitText(std::string text);
 		static std::string GetSubmittedText();
 		static void SetActiveText(std::string text);

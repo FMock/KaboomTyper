@@ -35,16 +35,6 @@ void OptionsDropDownMenu::Update(float dt)
 {
 }
 
-//bool OptionsDropDownMenu::GetIsActive() const
-//{
-//    return m_isActive;
-//}
-//
-//void OptionsDropDownMenu::SetIsActive(bool isActive)
-//{
-//    m_isActive = isActive;
-//}
-
 void OptionsDropDownMenu::AddCallback(Callback callback, OptionsDropDownMenu::Choices MenuItem)
 {
     switch (MenuItem)
@@ -60,7 +50,7 @@ void OptionsDropDownMenu::AddCallback(Callback callback, OptionsDropDownMenu::Ch
     }
 }
 
-void GameEngine::OptionsDropDownMenu::WordCategoryMenuItemClicked()
+void OptionsDropDownMenu::WordCategoryMenuItemClicked()
 {
     m_wordCategoryMenuItemCallback(OptionsDropDownMenu::Choices::WORD_CATEGORY);
 }

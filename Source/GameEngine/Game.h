@@ -4,6 +4,7 @@
 #include <vector>
 #include <memory>
 #include "GameManager.h"
+#include "Common.h"
 
 
 namespace GameEngine
@@ -25,7 +26,7 @@ namespace GameEngine
 		void Draw();
 		void LoadData();
 
-		// Manages child game managers
+		// The boss - manages other managers
 		std::shared_ptr<GameManager> m_gameManager;
 
 		// Set this to true to exit the game loop

@@ -3,10 +3,12 @@
 #include <memory>
 #include <functional>
 #include <utility> //for std::forward 
+#include <map>
 #include "GamePlayArea.h"
 #include "HeadsUpDisplay.h"
 #include "MessageBox.h"
 #include "Menu.h"
+#include "DropDownMenu.h"
 #include "FileDropDownMenu.h"
 #include "OptionsDropDownMenu.h"
 #include "InputManager.h"
@@ -43,8 +45,7 @@ namespace GameEngine
 		std::shared_ptr<GamePlayArea> m_gamePlayArea;
 		std::shared_ptr<HeadsUpDisplay> m_headsUpDisplay;
 		std::shared_ptr<MessageBox> m_messageBox;
-		std::shared_ptr<FileDropDownMenu> m_fileDropDownMenu;
-		std::shared_ptr<OptionsDropDownMenu> m_optionsDropDownMenu;
+		std::map<Menu::MenuButtons, std::shared_ptr<DropDownMenu>> m_dropDownMenus;
 		std::shared_ptr<Menu> m_gameMenu;
 		std::shared_ptr<InputManager> m_inputManager;
 		std::shared_ptr<InputMessageBox> m_inputMessageBox;
@@ -52,6 +53,7 @@ namespace GameEngine
 		int m_priority; // draw priority
 		bool m_initialized;
 		void Initialize();
+		void RegisterCallbacks();
 		void DisableAllButtonsExceptThisButton(Menu::MenuButtons button);
 	};
 

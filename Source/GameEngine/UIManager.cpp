@@ -11,8 +11,6 @@ UIManager::UIManager(std::shared_ptr<InputManager> inputManager) :
     m_headsUpDisplay(std::make_shared<HeadsUpDisplay>()),
     m_messageBox(std::make_shared<MessageBox>()),
     m_gameMenu(std::make_shared<Menu>()),
-    m_fileDropDownMenu(std::make_shared<FileDropDownMenu>()),
-    m_optionsDropDownMenu(std::make_shared<OptionsDropDownMenu>()),
     m_inputMessageBox(std::make_shared<InputMessageBox>()),
     m_initialized(false)
 {
@@ -25,6 +23,10 @@ UIManager::~UIManager()
 
 void UIManager::Initialize()
 {
+    // Submenus for each main menu
+    m_dropDownMenus[Menu::File] = std::make_shared<FileDropDownMenu>();
+    m_dropDownMenus[Menu::Options] = std::make_shared<OptionsDropDownMenu>();
+
     // User Input
     m_inputTextBox = std::make_shared<InputTextBox>();
     m_inputTextBox->InitializeTextBox(10, 916, 780, 34, Colors::DEFAULT_COLOR, true);
@@ -37,30 +39,45 @@ void UIManager::Initialize()
 
     // Register with InputManger to get user updates
     m_inputManager->RegisterObserver(m_gameMenu); // so menu can respond to mouse clicks
-    m_inputManager->RegisterObserver(m_fileDropDownMenu);
-    m_inputManager->RegisterObserver(m_optionsDropDownMenu);
+    
+    // Register each drop-down menu as an observer
+    for (const auto& pair : m_dropDownMenus)
+    {
+        m_inputManager->RegisterObserver(pair.second);
+    }
     m_inputManager->RegisterObserver(m_inputMessageBox);
 
+    // Register callbacks for sub menus
+    RegisterCallbacks();
+
+    m_initialized = true;
+}
+
+void GameEngine::UIManager::RegisterCallbacks()
+{
     // Register callbacks for main menu
     m_gameMenu->AddCallback([this](Menu::MenuButtons button) { this->DisplayMenuChoices(button); }, Menu::File);
     m_gameMenu->AddCallback([this](Menu::MenuButtons button) { this->DisplayMenuChoices(button); }, Menu::Options);
     m_gameMenu->AddCallback([this](Menu::MenuButtons button) { this->DisplayMenuChoices(button); }, Menu::Help);
     m_gameMenu->AddCallback([this](Menu::MenuButtons button) { this->DisplayMenuChoices(button); }, Menu::About);
 
-    // Register callbacks for sub menus
-    m_fileDropDownMenu->AddCallback([this](FileDropDownMenu::Choices choice) { this->DisplayFileMenuChoices(choice); }, FileDropDownMenu::IMPORT);
-    m_fileDropDownMenu->AddCallback([this](FileDropDownMenu::Choices choice) { this->DisplayFileMenuChoices(choice); }, FileDropDownMenu::EXIT);
-    m_optionsDropDownMenu->AddCallback([this](OptionsDropDownMenu::Choices choice) { this->DisplayOptionsMenuChoices(choice); }, OptionsDropDownMenu::WORD_CATEGORY);
-    m_optionsDropDownMenu->AddCallback([this](OptionsDropDownMenu::Choices choice) { this->DisplayOptionsMenuChoices(choice); }, OptionsDropDownMenu::AUDIO);
+    if (auto fileMenu = std::dynamic_pointer_cast<FileDropDownMenu>(m_dropDownMenus[Menu::File]))
+    {
+        fileMenu->AddCallback([this](FileDropDownMenu::Choices choice) { this->DisplayFileMenuChoices(choice); }, FileDropDownMenu::IMPORT);
+        fileMenu->AddCallback([this](FileDropDownMenu::Choices choice) { this->DisplayFileMenuChoices(choice); }, FileDropDownMenu::EXIT);
+    }
 
-    // Input Messagebox to get user name
+    if (auto optionsMenu = std::dynamic_pointer_cast<OptionsDropDownMenu>(m_dropDownMenus[Menu::Options]))
+    {
+        optionsMenu->AddCallback([this](OptionsDropDownMenu::Choices choice) { this->DisplayOptionsMenuChoices(choice); }, OptionsDropDownMenu::WORD_CATEGORY);
+        optionsMenu->AddCallback([this](OptionsDropDownMenu::Choices choice) { this->DisplayOptionsMenuChoices(choice); }, OptionsDropDownMenu::AUDIO);
+    }
+
     // Bind the callback and add the InputTextBox
-    //m_inputMessageBox->AddInputTextBox(std::bind(&UIManager::GetUserNamePromptCallback, this));
     m_inputMessageBox->AddInputTextBoxCallback(std::bind(&UIManager::GetUserNamePromptCallback, this));
     m_inputMessageBox->AddButtonCallback(std::bind(&UIManager::GetUserNamePromptCallback, this), InputMessageBox::Buttons::SUBMIT);
     m_inputMessageBox->AddButtonCallback(std::bind(&UIManager::CancelButtonCallback, this), InputMessageBox::Buttons::CANCEL);
     m_inputMessageBox->SetIsActive(true); // ask user for name at start of game
-    m_initialized = true;
 }
 
 void UIManager::Update(float dt)
@@ -94,14 +111,13 @@ void UIManager::Render()
 
 void UIManager::RegisterDrawables(DrawOrderManager& manager)
 {
-    // Example priorities
     m_inputTextBox->SetPriority(0);
     m_gamePlayArea->SetPriority(0);
     m_headsUpDisplay->SetPriority(2);
     m_gameMenu->SetPriority(3);
     m_messageBox->SetPriority(4);
-    m_fileDropDownMenu->SetPriority(9);
-    m_optionsDropDownMenu->SetPriority(9);
+    std::dynamic_pointer_cast<IDrawable>(m_dropDownMenus[Menu::File])->SetPriority(9);
+    std::dynamic_pointer_cast<IDrawable>(m_dropDownMenus[Menu::Options])->SetPriority(9);
     m_inputMessageBox->SetPriority(13);
 
     // Sharing IDrawables with DrawOrderManager
@@ -110,9 +126,14 @@ void UIManager::RegisterDrawables(DrawOrderManager& manager)
     manager.AddDrawable(m_headsUpDisplay);
     manager.AddDrawable(m_gameMenu);
     manager.AddDrawable(m_messageBox);
-    manager.AddDrawable(m_fileDropDownMenu);
-    manager.AddDrawable(m_optionsDropDownMenu);
     manager.AddDrawable(m_inputMessageBox);
+
+    // Add drop-down menus to the DrawOrderManager
+    for (const auto& pair : m_dropDownMenus)
+    {
+        auto drawable = std::dynamic_pointer_cast<IDrawable>(pair.second);
+        manager.AddDrawable(drawable);
+    }
 }
 
 void GameEngine::UIManager::GetUserNamePromptCallback()
@@ -154,36 +175,15 @@ void UIManager::GameOver()
 // Ensures each button's OnClick action is mutually exclusive
 void UIManager::DisableAllButtonsExceptThisButton(Menu::MenuButtons button)
 {
-    if (button != GameEngine::Menu::File)
+    for (auto& pair : m_dropDownMenus)
     {
-        if (m_fileDropDownMenu->GetIsActive())
+        if (pair.first != button)
         {
-            m_fileDropDownMenu->SetIsActive(false);
+            if (pair.second->GetIsActive())
+            {
+                pair.second->SetIsActive(false);
+            }
         }
-    }
-
-    if (button != GameEngine::Menu::Options)
-    {
-        if (m_optionsDropDownMenu->GetIsActive())
-        {
-            m_optionsDropDownMenu->SetIsActive(false);
-        }
-    }
-
-    if (button != GameEngine::Menu::Help)
-    {
-        //if (m_helpDropDownMenu->GetIsActive())
-        //{
-        //    m_helpDropDownMenu->SetIsActive(false);
-        //}
-    }
-
-    if (button != GameEngine::Menu::About)
-    {
-        //if (m_aboutDropDownMenu->GetIsActive())
-        //{
-        //    m_aboutDropDownMenu->SetIsActive(false);
-        //}
     }
 }
 
@@ -194,7 +194,7 @@ void UIManager::DisplayMenuChoices(Menu::MenuButtons button)
     {
     case GameEngine::Menu::File:
 
-        m_fileDropDownMenu->SetIsActive(!m_fileDropDownMenu->GetIsActive());
+        m_dropDownMenus[Menu::File]->SetIsActive(!m_dropDownMenus[Menu::File]->GetIsActive());
         DisableAllButtonsExceptThisButton(Menu::MenuButtons::File);
 
 #if DEBUG
@@ -203,7 +203,7 @@ void UIManager::DisplayMenuChoices(Menu::MenuButtons button)
         break;
     case GameEngine::Menu::Options:
 
-        m_optionsDropDownMenu->SetIsActive(!m_optionsDropDownMenu->GetIsActive());
+        m_dropDownMenus[Menu::Options]->SetIsActive(!m_dropDownMenus[Menu::Options]->GetIsActive());
         DisableAllButtonsExceptThisButton(Menu::MenuButtons::Options);
 
 #if DEBUG

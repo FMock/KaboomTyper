@@ -13,7 +13,6 @@ using namespace GameEngine::Utility;
 using namespace GameEngine;
 using namespace DrawUtilities;
 using std::ostringstream;
-typedef Game_Data GD;
 
 // initialize static member
 TextBlock* GameEngine::TextBlock::s_activeTextBlock = nullptr;

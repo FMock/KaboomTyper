@@ -6,42 +6,38 @@
 #define KABOOMTYPERDB_API __declspec(dllimport)
 #endif
 
-#include "sqlite3.h"
 #include <vector>
 #include <string>
 
 namespace KaboomTyperDB
 {
-	class KABOOMTYPERDB_API DBMessanger
-	{
-	public:
-		enum WordCategories
-		{
-			Mammal,
-			Reptile,
-			Amphibian,
-			Bird,
-			Fish,
-			Insect,
-			Arachnid,
-			Crustacean,
-			Myriapod,
-			Annelid,
-			Mollusk,
-			WORDCATEGORIESCOUNT
-		};
+    class DBMessangerImpl; // Forward declaration of the implementation class (hidden from public API)
 
-		DBMessanger();
-		~DBMessanger() = default;
+    class KABOOMTYPERDB_API DBMessanger
+    {
+    public:
+        enum WordCategories
+        {
+            Mammal,
+            Reptile,
+            Amphibian,
+            Bird,
+            Fish,
+            Insect,
+            Arachnid,
+            Crustacean,
+            Myriapod,
+            Annelid,
+            Mollusk,
+            WORDCATEGORIESCOUNT
+        };
 
-		bool GetWords(std::vector<std::string>& container, WordCategories = WordCategories::Mammal);
+        DBMessanger();
+        ~DBMessanger();
 
-	private:
-		std::string m_configFilePath;
-		std::string m_dbPath;
-		std::string ReadConfigFile(const std::string& filePath);
-		void ExecuteSQL(sqlite3* db, const std::string& sql);
-		std::string Trim(const std::string& str);
-		std::string GetCategoryString(KaboomTyperDB::DBMessanger::WordCategories category);
-	};
+        bool GetWords(std::vector<std::string>& container, WordCategories = WordCategories::Mammal);
+
+    private:
+        DBMessangerImpl* m_impl; // Pointer to the implementation
+    };
 }
