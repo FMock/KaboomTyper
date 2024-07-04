@@ -151,13 +151,51 @@ void UIManager::GameOver()
 	m_messageBox->ChangeMessage("GAME OVER", "F1:  NEW GAME", "ESC: EXIT GAME");
 }
 
-void GameEngine::UIManager::DisplayMenuChoices(Menu::MenuButtons button)
+// Ensures each button's OnClick action is mutually exclusive
+void UIManager::DisableAllButtonsExceptThisButton(Menu::MenuButtons button)
+{
+    if (button != GameEngine::Menu::File)
+    {
+        if (m_fileDropDownMenu->GetIsActive())
+        {
+            m_fileDropDownMenu->SetIsActive(false);
+        }
+    }
+
+    if (button != GameEngine::Menu::Options)
+    {
+        if (m_optionsDropDownMenu->GetIsActive())
+        {
+            m_optionsDropDownMenu->SetIsActive(false);
+        }
+    }
+
+    if (button != GameEngine::Menu::Help)
+    {
+        //if (m_helpDropDownMenu->GetIsActive())
+        //{
+        //    m_helpDropDownMenu->SetIsActive(false);
+        //}
+    }
+
+    if (button != GameEngine::Menu::About)
+    {
+        //if (m_aboutDropDownMenu->GetIsActive())
+        //{
+        //    m_aboutDropDownMenu->SetIsActive(false);
+        //}
+    }
+}
+
+
+void UIManager::DisplayMenuChoices(Menu::MenuButtons button)
 {
     switch (button)
     {
     case GameEngine::Menu::File:
 
         m_fileDropDownMenu->SetIsActive(!m_fileDropDownMenu->GetIsActive());
+        DisableAllButtonsExceptThisButton(Menu::MenuButtons::File);
 
 #if DEBUG
         std::cout << "Display File Drop Down Menu" << std::endl;
@@ -166,6 +204,8 @@ void GameEngine::UIManager::DisplayMenuChoices(Menu::MenuButtons button)
     case GameEngine::Menu::Options:
 
         m_optionsDropDownMenu->SetIsActive(!m_optionsDropDownMenu->GetIsActive());
+        DisableAllButtonsExceptThisButton(Menu::MenuButtons::Options);
+
 #if DEBUG
         std::cout << "Display Options Drop Down Menu" << std::endl;
 #endif

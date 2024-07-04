@@ -52,6 +52,7 @@ namespace GameEngine
 		int m_priority; // draw priority
 		bool m_initialized;
 		void Initialize();
+		void DisableAllButtonsExceptThisButton(Menu::MenuButtons button);
 	};
 
 	template<typename... Args>
