@@ -27,9 +27,9 @@ void Button::Initialize(std::string text, int x, int y, float scaler, Colors col
 	m_scaler = scaler;
 	m_adjustedWidth = static_cast<int>((text.size() * 24 * 1 * m_scaler)); // 24 is font texture width
 	m_width = m_adjustedWidth + (2 * Common::BUTTON_POSTION_OFFSET);
-	m_height = 32 * m_scaler + (2 * Common::BUTTON_POSTION_OFFSET); // 32 is font texture height
+	m_height = static_cast<int>(32 * m_scaler) + (2 * Common::BUTTON_POSTION_OFFSET); // 32 is font texture height
 	m_outlineWidth = m_adjustedWidth + 8;
-	m_outlineHeight = 32 * m_scaler + 8;
+	m_outlineHeight = static_cast<int>(32 * m_scaler) + 8;
 	m_outline->Initialize(m_xPos, m_yPos, m_outlineWidth, m_outlineHeight, Colors::DEFAULT_COLOR);
 	m_label->Initialize(text, x, y);
 }

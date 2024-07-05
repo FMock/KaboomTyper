@@ -178,7 +178,7 @@ std::string TextBlock::to_string() const
 /// <param name="textSize">The number of characters in the textstring</param>
 /// <param name="blockWidth">The width of a single textblock (default is 1 pixels)</param>
 /// <returns></returns>
-int GameEngine::TextBlock::ScaleTextBlockWidth(int textSize, int blockWidth)
+int GameEngine::TextBlock::ScaleTextBlockWidth(size_t textSize, int blockWidth)
 {
 	m_adjustedTextblockWidth = static_cast<int>((textSize * m_scaleFactor * blockWidth));
 

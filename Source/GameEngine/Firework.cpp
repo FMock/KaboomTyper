@@ -8,7 +8,7 @@ using namespace GameEngine;
 Firework::Firework(GLuint texture, int x, int y, int w, int h, int numParticles)
     : m_tex(texture), m_posX(x), m_posY(y), m_width(w), m_height(h), m_particleCount(numParticles), m_timer(0.0f), m_isActive(false)
 {
-    std::srand(std::time(0));
+    std::srand(static_cast<unsigned int>(std::time(0)));
     m_texSecond = Color::s_colorParameters.whiteTexture;
     m_texThird = Color::s_colorParameters.yellowTexture;
 }
@@ -81,7 +81,7 @@ void Firework::GenerateParticles()
     {
         Particle p;
 
-        float angle = static_cast<float>(std::rand()) / RAND_MAX * 2.0f * 3.1415926535897932; // random angle in radians
+        float angle = static_cast<float>(std::rand()) / RAND_MAX * 2.0f * PI; // random angle in radians
         float radius = static_cast<float>(std::rand()) / RAND_MAX * 100.0f; // random radius, adjusted to be twice as large
 
         p.x = m_posX + static_cast<int>(radius * cos(angle)); // x-coordinate based on polar coordinates
@@ -96,7 +96,7 @@ void Firework::GenerateParticles()
     {
         Particle p;
 
-        float angle = static_cast<float>(std::rand()) / RAND_MAX * 2.0f * 3.1415926535897932; // random angle in radians
+        float angle = static_cast<float>(std::rand()) / RAND_MAX * 2.0f * PI; // random angle in radians
         float radius = static_cast<float>(std::rand()) / RAND_MAX * 100.0f; // random radius, adjusted to be twice as large
 
         p.x = m_posX + static_cast<int>(radius * cos(angle)); // x-coordinate based on polar coordinates
@@ -111,7 +111,7 @@ void Firework::GenerateParticles()
     {
         Particle p;
 
-        float angle = static_cast<float>(std::rand()) / RAND_MAX * 2.0f * 3.1415926535897932; // random angle in radians
+        float angle = static_cast<float>(std::rand()) / RAND_MAX * 2.0f * PI; // random angle in radians
         float radius = static_cast<float>(std::rand()) / RAND_MAX * 100.0f; // random radius, adjusted to be twice as large
 
         p.x = m_posX + static_cast<int>(radius * cos(angle)); // x-coordinate based on polar coordinates

@@ -40,7 +40,7 @@ namespace GameEngine
         static void InitializeFont(FontParameters& fontParameters); // used to initialize s_font
         FontParameters m_fontParameters; // used to initialize s_font
         std::string m_string;
-        int m_textSize;
+        size_t m_textSize;
         float m_x, m_y; // (x, y) = where to start drawing on screen
         std::unique_ptr<Moveable> m_moveable;
         float m_velocity;

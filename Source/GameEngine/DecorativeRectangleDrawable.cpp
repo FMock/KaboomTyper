@@ -229,7 +229,7 @@ GLuint DecorativeRectangle::GetRandomTexture(const std::vector<GLuint>& textures
 
     // Choose a random number between 0 and textures.size() - 1
     std::mt19937 gen(rd()); // Standard mersenne_twister_engine seeded with rd()
-    std::uniform_int_distribution<> dis(0, textures.size() - 1);
+    std::uniform_int_distribution<> dis(0, static_cast<int>(textures.size()) - 1);
 
     // Return the randomly chosen texture
     return textures[dis(gen)];
@@ -242,7 +242,7 @@ int DecorativeRectangle::GetRandomIndex(const std::vector<Rectangle>& rectangles
         throw std::out_of_range("DecorativeRectangle::GetRandomIndex() The Rectangle vector is empty.");
     }
 
-    std::uniform_int_distribution<> dis(0, rectangles.size() - 1);
+    std::uniform_int_distribution<> dis(0, static_cast<int>(rectangles.size()) - 1);
     return dis(GetRng());
 }
 

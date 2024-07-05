@@ -5,6 +5,8 @@
 #include "Color.h"
 #include "GameStates.h"
 
+#define PI 3.14159265f
+
 /// <summary>
 /// Common.h holds common types used by various different other types
 /// </summary>
@@ -34,8 +36,8 @@ namespace GameEngine
 		static constexpr float GRAVITY = 9.81f;
 		static constexpr float BASE_SIZE = 1.0f;
 		static constexpr float LOG_BASE = 10.0f;
-		static constexpr float FLOOR = 878.0F; // The y-position the TextBlocks cannot exceed.
-		static constexpr float CEILING = 200.0F;
+		static constexpr int FLOOR = 878; // The y-position the TextBlocks cannot exceed.
+		static constexpr int CEILING = 200;
 		static constexpr int EDGE_LEFT = 10;
 		static constexpr int EDGE_RIGHT = 789;
 		static constexpr float HORIZONTAL_STEP = 24.0F; //24.0
