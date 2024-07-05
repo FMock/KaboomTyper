@@ -25,6 +25,14 @@ void WordManager::ChangeWordCategory(DBMessanger::WordCategories category)
     m_currentCategory = category;
 }
 
+std::vector<std::string> WordManager::GetWordCategories()
+{
+    if (!m_dbMessanger->GetWordCategories(m_words))
+        throw std::exception("WordManager(): Error GetWords returned false");
+
+    return m_words;
+}
+
 std::string WordManager::GetNextWord()
 {
     if (m_currentWordIndex + 1 < m_words.size() - 1)
