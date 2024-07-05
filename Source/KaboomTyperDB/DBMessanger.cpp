@@ -85,6 +85,52 @@ namespace KaboomTyperDB
         return true;
     }
 
+    bool DBMessanger::GetWordCategories(std::vector<std::string>& container)
+    {
+        sqlite3* db;
+        int rc;
+
+        // Open a database connection using the path from the configuration file
+        rc = sqlite3_open(m_impl->m_dbPath.c_str(), &db);
+        if (rc)
+        {
+            std::cerr << "Can't open database: " << sqlite3_errmsg(db) << std::endl;
+            return false;
+        }
+        else
+        {
+            std::cout << "Opened database successfully\n";
+        }
+
+        sqlite3_stmt* stmt;
+
+        // Build the query string
+        std::string query = "SELECT class FROM animal_class;";
+
+        rc = sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr);
+        if (rc == SQLITE_OK)
+        {
+            while (sqlite3_step(stmt) == SQLITE_ROW)
+            {
+                const unsigned char* typeText = sqlite3_column_text(stmt, 0);
+                if (typeText != nullptr)
+                {
+                    std::string word = reinterpret_cast<const char*>(typeText);
+                    container.push_back(m_impl->Trim(word)); // Trim and add word to the container
+                }
+            }
+        }
+        else
+        {
+            std::cerr << "Failed to execute statement: " << sqlite3_errmsg(db) << std::endl;
+        }
+        sqlite3_finalize(stmt);
+
+        // Close the database connection
+        sqlite3_close(db);
+        return true;
+    }
+
     // Implementation class methods
     std::string DBMessangerImpl::ReadConfigFile(const std::string& filePath)
     {

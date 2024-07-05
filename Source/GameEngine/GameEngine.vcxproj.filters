@@ -216,9 +216,6 @@
     <ClInclude Include="MenuItem.h">
       <Filter>Header Files\UI</Filter>
     </ClInclude>
-    <ClInclude Include="UIManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="DrawOrderManager.h">
       <Filter>Header Files\Draw</Filter>
     </ClInclude>
@@ -238,6 +235,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="OptionsDropDownMenu.h">
+      <Filter>Header Files\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UIManager.h">
       <Filter>Header Files\UI</Filter>
     </ClInclude>
   </ItemGroup>

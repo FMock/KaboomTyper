@@ -16,6 +16,7 @@ namespace GameEngine
 		WordManager();
 		~WordManager() = default;
 		void ChangeWordCategory(DBMessanger::WordCategories category);
+		std::vector<std::string> GetWordCategories();
 		std::string GetNextWord();
 
 	private:
