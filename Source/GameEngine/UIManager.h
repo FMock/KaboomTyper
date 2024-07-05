@@ -4,10 +4,12 @@
 #include <functional>
 #include <utility> //for std::forward 
 #include <map>
+#include <string>
+#include "Menu.h"
+#include "InputTextBox.h"
 #include "GamePlayArea.h"
 #include "HeadsUpDisplay.h"
 #include "MessageBox.h"
-#include "Menu.h"
 #include "DropDownMenu.h"
 #include "FileDropDownMenu.h"
 #include "OptionsDropDownMenu.h"
@@ -28,7 +30,7 @@ namespace GameEngine
 		void ResetScore();
 		void IncreaseScore();
 		void GameOver();
-		void DisplayMenuChoices(Menu::MenuButtons button);
+		void DisplayMenuChoices(const std::string& buttonName);
 		void DisplayFileMenuChoices(FileDropDownMenu::Choices button);
 		void DisplayOptionsMenuChoices(OptionsDropDownMenu::Choices button);
 		void RegisterDrawables(DrawOrderManager&  manager);
@@ -41,11 +43,11 @@ namespace GameEngine
 		void ChangeMessageBoxMessage(Args&&... args);
 
 	private:
+		std::map<std::string, std::shared_ptr<DropDownMenu>> m_dropDownMenus;
 		std::shared_ptr<InputTextBox> m_inputTextBox;
 		std::shared_ptr<GamePlayArea> m_gamePlayArea;
 		std::shared_ptr<HeadsUpDisplay> m_headsUpDisplay;
 		std::shared_ptr<MessageBox> m_messageBox;
-		std::map<Menu::MenuButtons, std::shared_ptr<DropDownMenu>> m_dropDownMenus;
 		std::shared_ptr<Menu> m_gameMenu;
 		std::shared_ptr<InputManager> m_inputManager;
 		std::shared_ptr<InputMessageBox> m_inputMessageBox;
@@ -53,8 +55,8 @@ namespace GameEngine
 		int m_priority; // draw priority
 		bool m_initialized;
 		void Initialize();
-		void RegisterCallbacks();
-		void DisableAllButtonsExceptThisButton(Menu::MenuButtons button);
+		bool RegisterCallbacks();
+		void DisableAllButtonsExceptThisButton(const std::string& buttonName);
 	};
 
 	template<typename... Args>

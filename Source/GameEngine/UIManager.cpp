@@ -1,5 +1,8 @@
 #include "UIManager.h"
 #include "Common.h"
+#include "MainMenu.h"
+#include <iostream>
+#include <stdexcept>
 
 #define DEBUG 1
 
@@ -10,7 +13,7 @@ UIManager::UIManager(std::shared_ptr<InputManager> inputManager) :
     m_gamePlayArea(std::make_shared<GamePlayArea>()),
     m_headsUpDisplay(std::make_shared<HeadsUpDisplay>()),
     m_messageBox(std::make_shared<MessageBox>()),
-    m_gameMenu(std::make_shared<Menu>()),
+    m_gameMenu(std::make_shared<MainMenu>()),
     m_inputMessageBox(std::make_shared<InputMessageBox>()),
     m_initialized(false)
 {
@@ -24,8 +27,8 @@ UIManager::~UIManager()
 void UIManager::Initialize()
 {
     // Submenus for each main menu
-    m_dropDownMenus[Menu::File] = std::make_shared<FileDropDownMenu>();
-    m_dropDownMenus[Menu::Options] = std::make_shared<OptionsDropDownMenu>();
+    m_dropDownMenus["File"] = std::make_shared<FileDropDownMenu>();
+    m_dropDownMenus["Options"] = std::make_shared<OptionsDropDownMenu>();
 
     // User Input
     m_inputTextBox = std::make_shared<InputTextBox>();
@@ -47,30 +50,64 @@ void UIManager::Initialize()
     }
     m_inputManager->RegisterObserver(m_inputMessageBox);
 
-    // Register callbacks for sub menus
-    RegisterCallbacks();
+    // Register callbacks for submenus
+    const char* errorMsg = "UIManager::Initialize(), Call to RegisterCallbacks() returned false";
+    if (!RegisterCallbacks())
+    {
+        std::cerr << errorMsg << std::endl;
+        throw std::runtime_error(errorMsg);
+    }
 
     m_initialized = true;
 }
 
-void GameEngine::UIManager::RegisterCallbacks()
+
+bool GameEngine::UIManager::RegisterCallbacks()
 {
     // Register callbacks for main menu
-    m_gameMenu->AddCallback([this](Menu::MenuButtons button) { this->DisplayMenuChoices(button); }, Menu::File);
-    m_gameMenu->AddCallback([this](Menu::MenuButtons button) { this->DisplayMenuChoices(button); }, Menu::Options);
-    m_gameMenu->AddCallback([this](Menu::MenuButtons button) { this->DisplayMenuChoices(button); }, Menu::Help);
-    m_gameMenu->AddCallback([this](Menu::MenuButtons button) { this->DisplayMenuChoices(button); }, Menu::About);
+    if (!m_gameMenu->AddCallback("File", [this](const std::string& buttonName) { this->DisplayMenuChoices(buttonName); }))
+    {
+        std::cerr << "Failed to register callback for File button" << std::endl;
+        return false;
+    }
+    if (!m_gameMenu->AddCallback("Options", [this](const std::string& buttonName) { this->DisplayMenuChoices(buttonName); }))
+    {
+        std::cerr << "Failed to register callback for Options button" << std::endl;
+        return false;
+    }
+    if (!m_gameMenu->AddCallback("Help", [this](const std::string& buttonName) { this->DisplayMenuChoices(buttonName); }))
+    {
+        std::cerr << "Failed to register callback for Help button" << std::endl;
+        return false;
+    }
+    if (!m_gameMenu->AddCallback("About", [this](const std::string& buttonName) { this->DisplayMenuChoices(buttonName); }))
+    {
+        std::cerr << "Failed to register callback for About button" << std::endl;
+        return false;
+    }
 
-    if (auto fileMenu = std::dynamic_pointer_cast<FileDropDownMenu>(m_dropDownMenus[Menu::File]))
+    // Register callbacks for FileDropDownMenu
+    if (auto fileMenu = std::dynamic_pointer_cast<FileDropDownMenu>(m_dropDownMenus["File"]))
     {
         fileMenu->AddCallback([this](FileDropDownMenu::Choices choice) { this->DisplayFileMenuChoices(choice); }, FileDropDownMenu::IMPORT);
         fileMenu->AddCallback([this](FileDropDownMenu::Choices choice) { this->DisplayFileMenuChoices(choice); }, FileDropDownMenu::EXIT);
     }
+    else
+    {
+        std::cerr << "Failed to find FileDropDownMenu" << std::endl;
+        return false;
+    }
 
-    if (auto optionsMenu = std::dynamic_pointer_cast<OptionsDropDownMenu>(m_dropDownMenus[Menu::Options]))
+    // Register callbacks for OptionsDropDownMenu
+    if (auto optionsMenu = std::dynamic_pointer_cast<OptionsDropDownMenu>(m_dropDownMenus["Options"]))
     {
         optionsMenu->AddCallback([this](OptionsDropDownMenu::Choices choice) { this->DisplayOptionsMenuChoices(choice); }, OptionsDropDownMenu::WORD_CATEGORY);
         optionsMenu->AddCallback([this](OptionsDropDownMenu::Choices choice) { this->DisplayOptionsMenuChoices(choice); }, OptionsDropDownMenu::AUDIO);
+    }
+    else
+    {
+        std::cerr << "Failed to find OptionsDropDownMenu" << std::endl;
+        return false;
     }
 
     // Bind the callback and add the InputTextBox
@@ -78,6 +115,8 @@ void GameEngine::UIManager::RegisterCallbacks()
     m_inputMessageBox->AddButtonCallback(std::bind(&UIManager::GetUserNamePromptCallback, this), InputMessageBox::Buttons::SUBMIT);
     m_inputMessageBox->AddButtonCallback(std::bind(&UIManager::CancelButtonCallback, this), InputMessageBox::Buttons::CANCEL);
     m_inputMessageBox->SetIsActive(true); // ask user for name at start of game
+
+    return true;
 }
 
 void UIManager::Update(float dt)
@@ -116,8 +155,8 @@ void UIManager::RegisterDrawables(DrawOrderManager& manager)
     m_headsUpDisplay->SetPriority(2);
     m_gameMenu->SetPriority(3);
     m_messageBox->SetPriority(4);
-    std::dynamic_pointer_cast<IDrawable>(m_dropDownMenus[Menu::File])->SetPriority(9);
-    std::dynamic_pointer_cast<IDrawable>(m_dropDownMenus[Menu::Options])->SetPriority(9);
+    std::dynamic_pointer_cast<IDrawable>(m_dropDownMenus["File"])->SetPriority(9);
+    std::dynamic_pointer_cast<IDrawable>(m_dropDownMenus["Options"])->SetPriority(9);
     m_inputMessageBox->SetPriority(13);
 
     // Sharing IDrawables with DrawOrderManager
@@ -172,62 +211,53 @@ void UIManager::GameOver()
 	m_messageBox->ChangeMessage("GAME OVER", "F1:  NEW GAME", "ESC: EXIT GAME");
 }
 
-// Ensures each button's OnClick action is mutually exclusive
-void UIManager::DisableAllButtonsExceptThisButton(Menu::MenuButtons button)
+void UIManager::DisableAllButtonsExceptThisButton(const std::string& buttonName)
 {
     for (auto& pair : m_dropDownMenus)
     {
-        if (pair.first != button)
+        if (pair.first != buttonName)
         {
-            if (pair.second->GetIsActive())
-            {
-                pair.second->SetIsActive(false);
-            }
+            pair.second->SetIsActive(false);
         }
     }
 }
 
 
-void UIManager::DisplayMenuChoices(Menu::MenuButtons button)
+void GameEngine::UIManager::DisplayMenuChoices(const std::string& buttonName)
 {
-    switch (button)
+    auto it = m_dropDownMenus.find(buttonName);
+    if (it != m_dropDownMenus.end())
     {
-    case GameEngine::Menu::File:
-
-        m_dropDownMenus[Menu::File]->SetIsActive(!m_dropDownMenus[Menu::File]->GetIsActive());
-        DisableAllButtonsExceptThisButton(Menu::MenuButtons::File);
+        it->second->SetIsActive(!it->second->GetIsActive());
+        DisableAllButtonsExceptThisButton(buttonName);
 
 #if DEBUG
-        std::cout << "Display File Drop Down Menu" << std::endl;
+        std::cout << "Display " << buttonName << " Drop Down Menu" << std::endl;
 #endif
-        break;
-    case GameEngine::Menu::Options:
-
-        m_dropDownMenus[Menu::Options]->SetIsActive(!m_dropDownMenus[Menu::Options]->GetIsActive());
-        DisableAllButtonsExceptThisButton(Menu::MenuButtons::Options);
-
-#if DEBUG
-        std::cout << "Display Options Drop Down Menu" << std::endl;
-#endif
-        break;
-    case GameEngine::Menu::Help:
+    }
+    else if (buttonName == "Help")
+    {
 #if DEBUG
         std::cout << "Display Help Drop Down Menu" << std::endl;
 #endif
-        break;
-    case GameEngine::Menu::About:
+        // Handle Help logic here if needed
+    }
+    else if (buttonName == "About")
+    {
 #if DEBUG
         std::cout << "Display About Menu Choices" << std::endl;
 #endif
 
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION,
             "About",
-            "Kaboom Typer\n A retro inspired typing game by Frank Mock\n https://www.frankmock.com/software/kaboomtyper\n Copyright 2024 All Rights Reserved",
+            "Kaboom Typer\n A retro inspired typing game by Frank Mock \n https://www.frankmock.com/software/kaboomtyper\n Copyright 2024 All Rights Reserved",
             NULL);
-
-        break;
-    default:
-        break;
+    }
+    else
+    {
+#if DEBUG
+        std::cout << "Unknown button: " << buttonName << std::endl;
+#endif
     }
 }
 

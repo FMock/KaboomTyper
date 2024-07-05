@@ -240,6 +240,9 @@
     <ClInclude Include="UIManager.h">
       <Filter>Header Files\UI</Filter>
     </ClInclude>
+    <ClInclude Include="MainMenu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -381,6 +384,9 @@
       <Filter>Source Files\UI</Filter>
     </ClCompile>
     <ClCompile Include="DropDownMenu.cpp">
+      <Filter>Source Files\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="MainMenu.cpp">
       <Filter>Source Files\UI</Filter>
     </ClCompile>
   </ItemGroup>

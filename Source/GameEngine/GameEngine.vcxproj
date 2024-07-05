@@ -170,6 +170,7 @@
     <ClInclude Include="InputObserver.h" />
     <ClInclude Include="InputTextBox.h" />
     <ClInclude Include="KeyPressHandler.h" />
+    <ClInclude Include="MainMenu.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="MenuItem.h" />
     <ClInclude Include="MenuManager.h" />
@@ -225,6 +226,7 @@
     <ClCompile Include="InputMessageBox.cpp" />
     <ClCompile Include="InputTextBox.cpp" />
     <ClCompile Include="KeyPressHandler.cpp" />
+    <ClCompile Include="MainMenu.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="MenuItem.cpp" />
     <ClCompile Include="MenuManager.cpp" />
