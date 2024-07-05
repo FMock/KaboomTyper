@@ -5,9 +5,9 @@
 #include<vector>
 #include "RGBColor.h"
 #include "Color.h"
+#include "Common.h"
 #include <cmath>
 
-#define PI 3.14159265
 
 struct GlDrawFrameParams
 {
@@ -87,8 +87,6 @@ namespace DrawUtilities
 	void drawRasterText(GLuint tex, int x, int y, int w, int h, char string[]);
 
 	void glDrawSpriteRotate(GLuint tex, int x, int y, int w, int h, GLfloat angle);
-
-	void DrawTrapezoid();
 
 	void DrawRectangle(int x, int y, int w, int h, const RGBColor& fillColor);
 }

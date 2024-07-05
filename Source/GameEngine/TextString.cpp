@@ -156,7 +156,7 @@ void GameEngine::TextString::DrawText(float scaleFactor, float angle)
 
     m_angle = angle;
     const char* str = m_string.c_str();
-    short strLen = strlen(str);
+    short strLen = static_cast<short>(strlen(str));
 
     // Precompute font division values
     float colDivision = s_font.colDivision;

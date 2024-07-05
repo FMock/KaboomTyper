@@ -79,7 +79,7 @@ bool Game::Initialize()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	srand(time(NULL));
+	srand(static_cast<unsigned int>(time(NULL)));
 
 	// Load the game objects
 	LoadData();

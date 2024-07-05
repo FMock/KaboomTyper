@@ -248,7 +248,7 @@ void TextBlockManager::DestroyActiveTextBlock()
             Common::s_currentPosition = it->get()->GetPosition();
             // How wide is the TextBlock that's about to be destroyed?
             auto size = it->get()->GetSize();
-            Common::s_currentTextBlockWidth = size.first;
+            Common::s_currentTextBlockWidth = static_cast<int>(size.first);
 
             // Unregister the TextBlock from the InputManager
             m_inputManager->UnregisterObserver(it->get());

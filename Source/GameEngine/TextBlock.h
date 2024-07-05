@@ -62,7 +62,7 @@ namespace GameEngine
 		float m_angle;
 		bool m_canMoveHorizontal;
 		void Initialize(float x, float y, std::string str, Colors color);
-		int ScaleTextBlockWidth(int textSize, int blockWidth);
+		int ScaleTextBlockWidth(size_t textSize, int blockWidth);
 		float GetNormalizedSize(float textSize);
 		int m_textBlockWidth;
 		static TextBlock* s_activeTextBlock;

@@ -226,6 +226,9 @@ void DrawUtilities::glDrawSprite(GLuint tex, int x, int y, int w, int h)
  * param scaleY is the scaling factor along the y-axis */
 void DrawUtilities::glDrawSpriteScaled(GLuint tex, int x, int y, int w, int h, float scaleX, float scaleY)
 {
+	GLuint wScaled = static_cast<GLint>(w * scaleX);
+	GLuint hScaled = static_cast<GLint>(h * scaleY);
+
 	glBindTexture(GL_TEXTURE_2D, tex);
 	glBegin(GL_QUADS);
 	{
@@ -235,13 +238,13 @@ void DrawUtilities::glDrawSpriteScaled(GLuint tex, int x, int y, int w, int h, f
 		glVertex2i(x, y);
 
 		glTexCoord2f(scaleX, 1.0f); // top right
-		glVertex2i(x + w * scaleX, y);
+		glVertex2i(x + wScaled, y);
 
 		glTexCoord2f(scaleX, 0.0f); // bottom right
-		glVertex2i(x + w * scaleX, y + h * scaleY);
+		glVertex2i(x + wScaled, y + hScaled);
 
 		glTexCoord2f(0.0f, 0.0f); // bottom left
-		glVertex2i(x, y + h * scaleY);
+		glVertex2i(x, y + hScaled);
 	}
 	glEnd(); // sends all submitted data to the GPU for rendering
 }
@@ -252,6 +255,9 @@ void DrawUtilities::glDrawTexture(GLuint tex, int x, int y, float width, float h
 	int w = 1;
 	int h = 1;
 
+	GLuint adjustedWidth = static_cast<GLuint>(w * width);
+	GLuint adjustedHeight = static_cast<GLuint>(h * height);
+
 	glBindTexture(GL_TEXTURE_2D, tex);
 	glBegin(GL_QUADS);
 	{
@@ -261,13 +267,13 @@ void DrawUtilities::glDrawTexture(GLuint tex, int x, int y, float width, float h
 		glVertex2i(x, y);
 
 		glTexCoord2f(width, 1.0f); // top right
-		glVertex2i(x + w * width, y);
+		glVertex2i(x + adjustedWidth, y);
 
 		glTexCoord2f(width, 0.0f); // bottom right
-		glVertex2i(x + w * width, y + h * height);
+		glVertex2i(x + adjustedWidth, y + adjustedHeight);
 
 		glTexCoord2f(0.0f, 0.0f); // bottom left
-		glVertex2i(x, y + h * height);
+		glVertex2i(x, y + adjustedHeight);
 	}
 	glEnd(); // sends all submitted data to the GPU for rendering
 }
@@ -276,7 +282,7 @@ void DrawUtilities::glDrawTexture(GLuint tex, int x, int y, float width, float h
 void DrawUtilities::glDrawSpriteScaledRotated(GLuint tex, int x, int y, int w, int h, float scaleX, float scaleY, float angle)
 {
 	// Convert the angle to radians
-	float radians = angle * (3.1415926535897932 / 180.0f);
+	float radians = angle * (3.1415926535897932f / 180.0f);
 
 	// Calculate the half-width and half-height for scaling
 	float halfWidth = w * scaleX * 0.5f;
@@ -352,6 +358,9 @@ void DrawUtilities::glDrawSpriteScaled(GLuint tex, int x, int y, int w, int h, f
 
 void DrawUtilities::glDrawRectangleOutline(GLuint tex, int x, int y, int w, int h, float scaleX, float scaleY)
 {
+	GLuint wScaled = static_cast<GLuint>(w * scaleX);
+	GLuint hScaled = static_cast<GLuint>(h * scaleY);
+
 	glBindTexture(GL_TEXTURE_2D, tex);
 	glBegin(GL_LINES);
 	{
@@ -361,23 +370,23 @@ void DrawUtilities::glDrawRectangleOutline(GLuint tex, int x, int y, int w, int 
 		glTexCoord2f(0.0f, 1.0f); // top left
 		glVertex2i(x, y);
 		glTexCoord2f(scaleX, 1.0f); // top right
-		glVertex2i(x + w * scaleX, y);
+		glVertex2i(x + wScaled, y);
 
 		// Right line
 		glTexCoord2f(scaleX, 1.0f); // top right
-		glVertex2i(x + w * scaleX, y);
+		glVertex2i(x + wScaled, y);
 		glTexCoord2f(scaleX, 0.0f); // bottom right
-		glVertex2i(x + w * scaleX, y + h * scaleY);
+		glVertex2i(x + wScaled, y + hScaled);
 
 		// Bottom line
 		glTexCoord2f(scaleX, 0.0f); // bottom right
-		glVertex2i(x + w * scaleX, y + h * scaleY);
+		glVertex2i(x + wScaled, y + hScaled);
 		glTexCoord2f(0.0f, 0.0f); // bottom left
-		glVertex2i(x, y + h * scaleY);
+		glVertex2i(x, y + hScaled);
 
 		// Left line
 		glTexCoord2f(0.0f, 0.0f); // bottom left
-		glVertex2i(x, y + h * scaleY);
+		glVertex2i(x, y + hScaled);
 		glTexCoord2f(0.0f, 1.0f); // top left
 		glVertex2i(x, y);
 	}
@@ -388,6 +397,8 @@ void DrawUtilities::glDrawRectangleOutline(GLuint tex, int x, int y, float width
 {
 	GLuint w = 1;
 	GLuint h = 1;
+	GLuint wScaled = static_cast<GLuint>(w * width);
+	GLuint hScaled = static_cast<GLuint>(h * height);
 
 	glBindTexture(GL_TEXTURE_2D, tex);
 	glBegin(GL_LINES);
@@ -398,23 +409,23 @@ void DrawUtilities::glDrawRectangleOutline(GLuint tex, int x, int y, float width
 		glTexCoord2f(0.0f, 1.0f); // top left
 		glVertex2i(x, y);
 		glTexCoord2f(width, 1.0f); // top right
-		glVertex2i(x + w * width, y);
+		glVertex2i(x + wScaled, y);
 
 		// Right line
 		glTexCoord2f(width, 1.0f); // top right
-		glVertex2i(x + w * width, y);
+		glVertex2i(x + wScaled, y);
 		glTexCoord2f(width, 0.0f); // bottom right
-		glVertex2i(x + w * width, y + h * height);
+		glVertex2i(x + wScaled, y + hScaled);
 
 		// Bottom line
 		glTexCoord2f(width, 0.0f); // bottom right
-		glVertex2i(x + w * width, y + h * height);
+		glVertex2i(x + wScaled, y + hScaled);
 		glTexCoord2f(0.0f, 0.0f); // bottom left
-		glVertex2i(x, y + h * height);
+		glVertex2i(x, y + hScaled);
 
 		// Left line
 		glTexCoord2f(0.0f, 0.0f); // bottom left
-		glVertex2i(x, y + h * height);
+		glVertex2i(x, y + hScaled);
 		glTexCoord2f(0.0f, 1.0f); // top left
 		glVertex2i(x, y);
 	}
@@ -449,6 +460,9 @@ void DrawUtilities::glDrawRectangleOutline(int x, int y, int w, int h, const RGB
 
 void DrawUtilities::glDrawRectangleOutlineFilled(GLuint tex, int x, int y, int w, int h, float scaleX, float scaleY, const RGBColor& fillColor)
 {
+	GLuint wScaled = static_cast<GLuint>(w * scaleX);
+	GLuint hScaled = static_cast<GLuint>(h * scaleY);
+
 	glBindTexture(GL_TEXTURE_2D, tex);
 	glBegin(GL_LINES);
 	{
@@ -458,23 +472,23 @@ void DrawUtilities::glDrawRectangleOutlineFilled(GLuint tex, int x, int y, int w
 		glTexCoord2f(0.0f, 1.0f); // top left
 		glVertex2i(x, y);
 		glTexCoord2f(scaleX, 1.0f); // top right
-		glVertex2i(x + w * scaleX, y);
+		glVertex2i(x + wScaled, y);
 
 		// Right line
 		glTexCoord2f(scaleX, 1.0f); // top right
-		glVertex2i(x + w * scaleX, y);
+		glVertex2i(x + wScaled, y);
 		glTexCoord2f(scaleX, 0.0f); // bottom right
-		glVertex2i(x + w * scaleX, y + h * scaleY);
+		glVertex2i(x + wScaled, y + hScaled);
 
 		// Bottom line
 		glTexCoord2f(scaleX, 0.0f); // bottom right
-		glVertex2i(x + w * scaleX, y + h * scaleY);
+		glVertex2i(x + wScaled, y + hScaled);
 		glTexCoord2f(0.0f, 0.0f); // bottom left
-		glVertex2i(x, y + h * scaleY);
+		glVertex2i(x, y + hScaled);
 
 		// Left line
 		glTexCoord2f(0.0f, 0.0f); // bottom left
-		glVertex2i(x, y + h * scaleY);
+		glVertex2i(x, y + hScaled);
 		glTexCoord2f(0.0f, 1.0f); // top left
 		glVertex2i(x, y);
 	}
@@ -485,9 +499,9 @@ void DrawUtilities::glDrawRectangleOutlineFilled(GLuint tex, int x, int y, int w
 	glBegin(GL_QUADS);
 	{
 		glVertex2i(x, y);
-		glVertex2i(x + w * scaleX, y);
-		glVertex2i(x + w * scaleX, y + h * scaleY);
-		glVertex2i(x, y + h * scaleY);
+		glVertex2i(x + wScaled, y);
+		glVertex2i(x + wScaled, y + hScaled);
+		glVertex2i(x, y + hScaled);
 	}
 	glEnd();
 }
@@ -508,6 +522,9 @@ void DrawUtilities::glDrawFilledRectangle(int x, int y, int w, int h, const RGBC
 
 void DrawUtilities::glDrawRectangleOutline(int x, int y, int w, int h, float scaleX, float scaleY, const RGBColor& color)
 {
+	GLuint wScaled = static_cast<GLuint>(w * scaleX);
+	GLuint hScaled = static_cast<GLuint>(h * scaleY);
+
 	// Save current state
 	glPushAttrib(GL_CURRENT_BIT | GL_ENABLE_BIT);
 	glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
@@ -520,18 +537,18 @@ void DrawUtilities::glDrawRectangleOutline(int x, int y, int w, int h, float sca
 	{
 		// Top line
 		glVertex2i(x, y); // Top left
-		glVertex2i(x + w * scaleX, y); // Top right (scaled width)
+		glVertex2i(x + wScaled, y); // Top right (scaled width)
 
 		// Right line
-		glVertex2i(x + w * scaleX, y); // Top right (scaled width)
-		glVertex2i(x + w * scaleX, y + h * scaleY); // Bottom right (scaled width and height)
+		glVertex2i(x + wScaled, y); // Top right (scaled width)
+		glVertex2i(x + wScaled, y + hScaled); // Bottom right (scaled width and height)
 
 		// Bottom line
-		glVertex2i(x + w * scaleX, y + h * scaleY); // Bottom right (scaled width and height)
-		glVertex2i(x, y + h * scaleY); // Bottom left (scaled height)
+		glVertex2i(x + wScaled, y + hScaled); // Bottom right (scaled width and height)
+		glVertex2i(x, y + hScaled); // Bottom left (scaled height)
 
 		// Left line
-		glVertex2i(x, y + h * scaleY); // Bottom left (scaled height)
+		glVertex2i(x, y + hScaled); // Bottom left (scaled height)
 		glVertex2i(x, y); // Top left
 	}
 	glEnd();
@@ -544,6 +561,9 @@ void DrawUtilities::glDrawRectangleOutline(int x, int y, int w, int h, float sca
 
 void DrawUtilities::glDrawFilledRectangle(int x, int y, int w, int h, float scaleX, float scaleY, const RGBColor& color)
 {
+	GLuint wScaled = static_cast<GLuint>(w * scaleX);
+	GLuint hScaled = static_cast<GLuint>(h * scaleY);
+
 	// Save current state
 	glPushAttrib(GL_CURRENT_BIT | GL_ENABLE_BIT);
 	glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
@@ -558,13 +578,13 @@ void DrawUtilities::glDrawFilledRectangle(int x, int y, int w, int h, float scal
 		glVertex2i(x, y);
 
 		// Top right vertex (scaled width)
-		glVertex2i(x + w * scaleX, y);
+		glVertex2i(x + wScaled, y);
 
 		// Bottom right vertex (scaled width and height)
-		glVertex2i(x + w * scaleX, y + h * scaleY);
+		glVertex2i(x + wScaled, y + hScaled);
 
 		// Bottom left vertex (scaled height)
-		glVertex2i(x, y + h * scaleY);
+		glVertex2i(x, y + hScaled);
 	}
 	glEnd();
 
@@ -575,6 +595,9 @@ void DrawUtilities::glDrawFilledRectangle(int x, int y, int w, int h, float scal
 
 void DrawUtilities::glDrawFilledRectangle(int x, int y, int w, int h, float scaleX, float scaleY, const RGBColor& color, unsigned char opacity)
 {
+	GLuint wScaled = static_cast<GLuint>(w * scaleX);
+	GLuint hScaled = static_cast<GLuint>(h * scaleY);
+
 	// Save current state
 	glPushAttrib(GL_CURRENT_BIT | GL_ENABLE_BIT);
 	glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
@@ -593,13 +616,13 @@ void DrawUtilities::glDrawFilledRectangle(int x, int y, int w, int h, float scal
 		glVertex2i(x, y);
 
 		// Top right vertex (scaled width)
-		glVertex2i(x + w * scaleX, y);
+		glVertex2i(x + wScaled, y);
 
 		// Bottom right vertex (scaled width and height)
-		glVertex2i(x + w * scaleX, y + h * scaleY);
+		glVertex2i(x + wScaled, y + hScaled);
 
 		// Bottom left vertex (scaled height)
-		glVertex2i(x, y + h * scaleY);
+		glVertex2i(x, y + hScaled);
 	}
 	glEnd();
 
@@ -685,6 +708,9 @@ void DrawUtilities::glDrawAudio(GLuint tex, int x, int y, int w, int h, std::vec
 
 void DrawUtilities::glDrawFrameScaled(GlDrawFrameParams params)
 {
+	GLuint wScaled = static_cast<GLuint>(params.w * params.scale);
+	GLuint hScaled = static_cast<GLuint>(params.h * params.scale);
+
 	glBindTexture(GL_TEXTURE_2D, params.tex);
 	glBegin(GL_QUADS);
 	{
@@ -694,13 +720,13 @@ void DrawUtilities::glDrawFrameScaled(GlDrawFrameParams params)
 		glVertex2i(params.x, params.y);
 
 		glTexCoord2f(params.s2, params.t2);  // B
-		glVertex2i(params.x + params.w * params.scale, params.y);
+		glVertex2i(params.x + wScaled, params.y);
 
 		glTexCoord2f(params.s2, params.t1); // C
-		glVertex2i(params.x + params.w * params.scale, params.y + params.h * params.scale);
+		glVertex2i(params.x + wScaled, params.y + hScaled);
 
 		glTexCoord2f(params.s1, params.t1); // D
-		glVertex2i(params.x, params.y + params.h * params.scale);
+		glVertex2i(params.x, params.y + hScaled);
 	}
 	glEnd();
 }
@@ -708,7 +734,7 @@ void DrawUtilities::glDrawFrameScaled(GlDrawFrameParams params)
 void DrawUtilities::glDrawFrameScaled(GlDrawFrameParams params, float angle)
 {
 	// Convert the angle to radians
-	float radians = angle * (3.1415926535897932 / 180.0f);
+	float radians = angle * (PI / 180.0f);
 
 	// Calculate the half-width and half-height for scaling
 	float halfWidth = params.w * params.scale * 0.5f;
@@ -801,7 +827,7 @@ void DrawUtilities::drawRasterText(GLuint tex, int x, int y, int w, int h, char 
 	int numberOfRows = 0; //-----------------define just to get it to compile, fix later
 	int currentRow = 0; //-----------------define just to get it to compile, fix later
 
-	const int N = strlen(string);
+	const size_t N = strlen(string);
 	for (int i = 0; i < N; i++)
 	{
 		int frame = string[i] - 32; //the current frame or letter to draw
@@ -850,28 +876,19 @@ void DrawUtilities::glDrawSpriteRotate(GLuint tex, int x, int y, int w, int h, G
 	glPopMatrix();
 }
 
-void DrawUtilities::DrawTrapezoid()
-{
-	glColor3f(255.0f, 255.0f, 255.0f); // sets color to black.
-	glBegin(GL_TRIANGLE_STRIP); // draw in triangle strips
-	glVertex2i(100.0f, 0.75f); // top of the roof
-	glVertex2i(299.5f, 0.25f); // left corner of the roof
-	glVertex2i(0.5f, 0.25f); // right corner of the roof
-	glVertex2i(0.5f, 0.5f); // bottom left corner of the house
-	glVertex2i(0.5f, 100.5f); //bottom right corner of the house
-	glEnd();
-}
-
 void DrawUtilities::DrawRectangle(int x, int y, int w, int h, const RGBColor& fillColor)
 {
+	GLfloat xf = static_cast<GLfloat>(x);
+	GLfloat yf = static_cast<GLfloat>(y);
+
 	glBegin(GL_QUADS);
 	{
 		glColor3ub(fillColor.r, fillColor.g, fillColor.b); // Set fill color
 
-		glVertex2f(x, y);           // Bottom-left corner
-		glVertex2f(x + w, y);   // Bottom-right corner
-		glVertex2f(x + w, y + h); // Top-right corner
-		glVertex2f(x, y + h);  // Top-left corner
+		glVertex2f(xf, yf);           // Bottom-left corner
+		glVertex2f(xf + w, yf);   // Bottom-right corner
+		glVertex2f(xf + w, yf + h); // Top-right corner
+		glVertex2f(xf, yf + h);  // Top-left corner
 	}
 	glEnd();
 }

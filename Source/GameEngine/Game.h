@@ -37,6 +37,6 @@ namespace GameEngine
 		unsigned int m_currentTime = 0;
 		unsigned int m_f_previousTime = 0;
 		unsigned int m_fps = 0;
-		double m_deltaTime = 0.0f;
+		float m_deltaTime = 0.0f;
 	};
 }

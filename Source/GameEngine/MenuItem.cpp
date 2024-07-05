@@ -25,12 +25,14 @@ void MenuItem::Initialize(std::string text, int x, int y, int parentX, int paren
 {
 	m_xPos = parentX;
 	m_yPos = y - Common::MENUITEM_POSTION_OFFSET;
+
 	m_scaler = scaler;
+	int scaledTextureHeight = static_cast<int>(32 * m_scaler); // 32 is font texture height
 	m_adjustedWidth = static_cast<int>((text.size() * 24 * 1 * m_scaler)); // 24 is font texture width
 	m_width = m_adjustedWidth + (2 * Common::MENUITEM_POSTION_OFFSET);
-	m_height = 32 * m_scaler + (2 * Common::MENUITEM_POSTION_OFFSET); // 32 is font texture height
+	m_height = scaledTextureHeight + (2 * Common::MENUITEM_POSTION_OFFSET);
 	m_outlineWidth = parentWidth - 10;
-	m_outlineHeight = 32 * m_scaler + 8;
+	m_outlineHeight = static_cast<int>(32 * m_scaler) + 8;
 	m_outline->Initialize(m_xPos, m_yPos, m_outlineWidth, m_outlineHeight, Colors::DEFAULT_COLOR);
 	m_label->Initialize(text, x, y);
 }
