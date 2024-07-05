@@ -33,15 +33,15 @@ void Firework::Draw()
 
     for (auto& particle : m_particles) // this draw should occur over many cycles of the game loop
     {
-        DrawUtilities::glDrawSpriteScaled(m_tex, particle.x, particle.y, m_width, m_height, particle.scaleX, particle.scaleY);
+        DrawUtilities::glDrawSpriteWithSoftGlow(m_tex, particle.x, particle.y, m_width, m_height, particle.scaleX, particle.scaleY);
     }
     for (auto& particle : m_particlesSecond)
     {
-        DrawUtilities::glDrawSpriteScaled(m_texSecond, particle.x, particle.y, m_width, m_height, particle.scaleX, particle.scaleY);
+       DrawUtilities::glDrawSpriteWithGlow(m_texSecond, particle.x, particle.y, m_width, m_height, particle.scaleX, particle.scaleY);
     }
     for (auto& particle : m_particlesThird)
     {
-        DrawUtilities::glDrawSpriteScaled(m_texThird, particle.x, particle.y, m_width, m_height, particle.scaleX, particle.scaleY);
+        DrawUtilities::glDrawSpriteWithGlow(m_texThird, particle.x, particle.y, m_width, m_height, particle.scaleX, particle.scaleY);
     }
 }
 

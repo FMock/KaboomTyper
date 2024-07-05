@@ -249,6 +249,111 @@ void DrawUtilities::glDrawSpriteScaled(GLuint tex, int x, int y, int w, int h, f
 	glEnd(); // sends all submitted data to the GPU for rendering
 }
 
+void DrawUtilities::glDrawSpriteWithGlow(GLuint tex, int x, int y, int w, int h, float scaleX, float scaleY)
+{
+	GLuint wScaled = static_cast<GLint>(w * scaleX);
+	GLuint hScaled = static_cast<GLint>(h * scaleY);
+
+	// Save current state
+	GLboolean blendEnabled = glIsEnabled(GL_BLEND);
+	GLint srcBlendFunc, dstBlendFunc;
+	glGetIntegerv(GL_BLEND_SRC, &srcBlendFunc);
+	glGetIntegerv(GL_BLEND_DST, &dstBlendFunc);
+
+	glPushAttrib(GL_CURRENT_BIT);
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE); // Additive blending
+
+	glBindTexture(GL_TEXTURE_2D, tex);
+	glBegin(GL_QUADS);
+	{
+		glColor4ub(255, 255, 255, 128); // Semi-transparent white
+
+		glTexCoord2f(0.0f, 1.0f); // top left
+		glVertex2i(x, y);
+
+		glTexCoord2f(scaleX, 1.0f); // top right
+		glVertex2i(x + wScaled, y);
+
+		glTexCoord2f(scaleX, 0.0f); // bottom right
+		glVertex2i(x + wScaled, y + hScaled);
+
+		glTexCoord2f(0.0f, 0.0f); // bottom left
+		glVertex2i(x, y + hScaled);
+	}
+	glEnd();
+
+	// Restore previous state
+	glBlendFunc(srcBlendFunc, dstBlendFunc);
+	if (!blendEnabled)
+	{
+		glDisable(GL_BLEND);
+	}
+
+	glPopAttrib();
+
+	// Reset color to white with full opacity
+	glColor4ub(255, 255, 255, 255);
+}
+
+//  Renders the texture multiple times with varying levels of transparency and slightly different sizes or positions.
+void DrawUtilities::glDrawSpriteWithSoftGlow(GLuint tex, int x, int y, int w, int h, float scaleX, float scaleY)
+{
+	GLuint wScaled = static_cast<GLint>(w * scaleX);
+	GLuint hScaled = static_cast<GLint>(h * scaleY);
+
+	// Save current state
+	GLboolean blendEnabled = glIsEnabled(GL_BLEND);
+	GLint srcBlendFunc, dstBlendFunc;
+	glGetIntegerv(GL_BLEND_SRC, &srcBlendFunc);
+	glGetIntegerv(GL_BLEND_DST, &dstBlendFunc);
+
+	glPushAttrib(GL_CURRENT_BIT);
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Standard alpha blending
+
+	for (int i = 0; i < 3; ++i)
+	{
+		float alpha = 1.0f / (i + 1);
+		int offset = i * 2;
+
+		glBindTexture(GL_TEXTURE_2D, tex);
+		glBegin(GL_QUADS);
+		{
+			glColor4f(1.0f, 1.0f, 1.0f, alpha); // Varying transparency
+
+			glTexCoord2f(0.0f, 1.0f); // top left
+			glVertex2i(x - offset, y - offset);
+
+			glTexCoord2f(scaleX, 1.0f); // top right
+			glVertex2i(x + wScaled + offset, y - offset);
+
+			glTexCoord2f(scaleX, 0.0f); // bottom right
+			glVertex2i(x + wScaled + offset, y + hScaled + offset);
+
+			glTexCoord2f(0.0f, 0.0f); // bottom left
+			glVertex2i(x - offset, y + hScaled + offset);
+		}
+		glEnd();
+	}
+
+	// Restore previous state
+	glBlendFunc(srcBlendFunc, dstBlendFunc);
+	if (!blendEnabled)
+	{
+		glDisable(GL_BLEND);
+	}
+
+	glPopAttrib();
+
+	// Reset color to white with full opacity
+	glColor4ub(255, 255, 255, 255);
+}
+
+
+
 // Assumes the tex w = 1, and h = 1
 void DrawUtilities::glDrawTexture(GLuint tex, int x, int y, float width, float height)
 {

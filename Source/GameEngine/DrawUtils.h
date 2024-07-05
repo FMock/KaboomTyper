@@ -43,6 +43,8 @@ namespace DrawUtilities
 	/// <param name="scaleX"></param>
 	/// <param name="scaleY"></param>
 	void glDrawSpriteScaled(GLuint tex, int x, int y, int w, int h, float scaleX, float scaleY);
+	void glDrawSpriteWithGlow(GLuint tex, int x, int y, int w, int h, float scaleX, float scaleY);
+	void glDrawSpriteWithSoftGlow(GLuint tex, int x, int y, int w, int h, float scaleX, float scaleY);
 	void glDrawSpriteScaledRotated(GLuint tex, int x, int y, int w, int h, float scaleX, float scaleY, float angle);
 	void glDrawSpriteScaled(GLuint tex, int x, int y, int w, int h, float scaleX, float scaleY, GLuint xScaled, GLuint yScaled);
 	void glDrawTexture(GLuint tex, int x, int y, float width, float height); // assumes the texture w = 1 and h = 1
