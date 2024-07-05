@@ -1,3 +1,7 @@
+/*
+* menu.h 
+* Abstract class for creating different kinds of menus
+*/
 #pragma once
 
 #include "InputObserver.h"
@@ -8,54 +12,44 @@
 #include "Button.h"
 #include <memory>
 #include <functional>
+#include <unordered_map>
 
-namespace GameEngine 
+#define DEBUG_MENU 0
+
+namespace GameEngine
 {
-	class Menu : public InputObserver, public IDrawable
-	{
-	public:
+    class Menu : public InputObserver, public IDrawable
+    {
+    public:
+        using Callback = std::function<void(const std::string&)>;
 
-		enum MenuButtons
-		{
-			File,
-			Options,
-			Help,
-			About,
-			ButtonCount
-		};
+        struct MenuEntry
+        {
+            std::unique_ptr<Button> button;
+            Callback callback;
+        };
 
-		Menu();
-		~Menu();
-		void Draw() override;
-		void Update(float dt) override;
-		int GetPriority() const override { return m_priority; }
-		void SetPriority(int priority) override { m_priority = priority; }
-		using Callback = std::function<void(Menu::MenuButtons)>;
-		void AddCallback(Callback callback, Menu::MenuButtons button);
+        Menu();
+        virtual ~Menu();
+        void Draw() override;
+        void Update(float dt) override;
+        int GetPriority() const override { return m_priority; }
+        void SetPriority(int priority) override { m_priority = priority; }
+        void AddMenuItem(const std::string& name, std::unique_ptr<Button> button, Callback callback);
+        bool AddCallback(const std::string& name, Callback callback);
+        void InitializeMenu(const std::string& name, int nameX, int nameY, int x, int y, int width, int height, Colors, bool = true);
 
-	private:
-		std::unique_ptr<RectangleDrawable> m_menuBar;
-		std::unique_ptr<Button> m_fileBtn;
-		std::unique_ptr<Button> m_optionsBtn;
-		std::unique_ptr<Button> m_aboutBtn;
-		std::unique_ptr<Button> m_helpBtn;
-		TextString m_title;
-		std::unique_ptr<RectangleDrawable> m_footer;
-		int m_priority; // draw priority
+    protected:
+        void RespondToObserved(InputManager* InputMgr) override;
+        void HandleButton(InputManager* InputMgr, Button* button, const std::string& buttonName, Callback callback);
+        void InitializeCommonElements();
+        virtual void InitializeMenuItems() = 0;
+        virtual void InitializeMenuItem(Button* button, const std::string& label, int x, int y, float scale, int color) = 0;
 
-		void Initialize();
-
-		Callback m_optionsBtnCallback;
-		void OptionsButtonClicked();
-		Callback m_fileBtnCallback;
-		void FileButtonClicked();
-		Callback m_helpBtnCallback;
-		void HelpButtonClicked();
-		Callback m_aboutBtnCallback;
-		void AboutButtonClicked();
-		void HandleButton(InputManager* InputMgr, Button* button, const std::string& buttonName, std::function<void()> callback);
-
-	protected:
-		void RespondToObserved(InputManager* InputMgr) override;
-	};
+        std::unique_ptr<RectangleDrawable> m_menuBar;
+        std::unique_ptr<RectangleDrawable> m_footer;
+        std::unordered_map<std::string, MenuEntry> m_menuItems;
+        TextString m_title;
+        int m_priority; // draw priority
+    };
 }

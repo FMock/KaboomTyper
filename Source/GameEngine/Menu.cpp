@@ -4,85 +4,99 @@
 
 using namespace GameEngine;
 
-Menu::Menu() 
-	: m_menuBar(std::make_unique<RectangleDrawable>()), m_optionsBtn(std::make_unique<Button>()), m_aboutBtn(std::make_unique<Button>()), m_helpBtn(std::make_unique<Button>()),
-      m_fileBtn(std::make_unique<Button>()), m_footer(std::make_unique<RectangleDrawable>()), m_priority(0)
+Menu::Menu()
+    : m_priority(0)
 {
-	Initialize();
+    InitializeCommonElements();
 }
 
-Menu::~Menu()
-{
-}
+Menu::~Menu() = default;
 
 void Menu::Draw()
 {
-	m_menuBar->Draw();
-	m_fileBtn->Draw();
-	m_optionsBtn->Draw();
-	m_helpBtn->Draw();
-	m_aboutBtn->Draw();
+    m_menuBar->Draw();
     m_title.DrawText(1.0f);
     m_footer->Draw();
+
+    // Draw all buttons
+    for (const auto& item : m_menuItems)
+    {
+        if (item.second.button)
+        {
+#if DEBUG_MENU
+            std::cout << "Drawing button: " << item.first << std::endl;
+#endif
+            item.second.button->Draw();
+        }
+        else
+        {
+            std::cerr << "Error: Null button pointer for item: " << item.first << std::endl;
+        }
+    }
 }
 
 void Menu::Update(float dt)
 {
-}
-
-void GameEngine::Menu::AddCallback(Callback callback, Menu::MenuButtons button)
-{
-    switch (button)
+    // Update all buttons
+    for (auto& item : m_menuItems)
     {
-    case GameEngine::Menu::File:
-        m_fileBtnCallback = callback;
-        break;
-    case GameEngine::Menu::Options:
-        m_optionsBtnCallback = callback;
-        break;
-    case GameEngine::Menu::Help:
-        m_helpBtnCallback = callback;
-        break;
-    case GameEngine::Menu::About:
-        m_aboutBtnCallback = callback;
-        break;
-    default:
-        break;
+        if (item.second.button)
+        {
+            item.second.button->Update(dt);
+        }
     }
 }
 
-void GameEngine::Menu::Initialize()
+void Menu::AddMenuItem(const std::string& name, std::unique_ptr<Button> button, Callback callback)
 {
-	m_menuBar->Initialize(0, 0, 900, 42, Colors::BLUE, true);
-	m_fileBtn->Initialize("FILE", 15, 12, 0.65f, Colors::DARK_YELLOW);
-	m_optionsBtn->Initialize("OPTIONS", 100, 12, 0.65f, Colors::DARK_YELLOW);
-	m_helpBtn->Initialize("HELP", 232, 12, 0.65f, Colors::DARK_YELLOW);
-	m_aboutBtn->Initialize("ABOUT", 317, 12, 0.65f, Colors::DARK_YELLOW);
-    m_title = TextString("Kaboom Typer!", 480, 8);
-    m_footer->Initialize(0, 950, 900, 42, Colors::BLUE, true);
+#if DEBUG_MENU
+    std::cout << "Adding menu item: " << name << std::endl;
+#endif
+
+    if (!button)
+    {
+        std::cerr << "Error: Null button passed for menu item: " << name << std::endl;
+    }
+    m_menuItems[name] = MenuEntry{ std::move(button), callback };
 }
 
-void GameEngine::Menu::OptionsButtonClicked()
+bool Menu::AddCallback(const std::string& name, Callback callback)
 {
-    m_optionsBtnCallback(Menu::MenuButtons::Options);
+    auto it = m_menuItems.find(name);
+    if (it != m_menuItems.end())
+    {
+        it->second.callback = callback;
+        return true;
+    }
+#if DEBUG_MENU
+    std::cout << "Warning: Attempting to add callback to non-existent menu item: " << name << std::endl;
+#endif
+    return false;
 }
 
-void GameEngine::Menu::FileButtonClicked()
+void Menu::InitializeMenu(const std::string& name, int nameX, int nameY, int x, int y, int width, int height, GameEngine::Colors, bool fill)
 {
-    m_fileBtnCallback(Menu::MenuButtons::File);
+    m_menuBar->Initialize(x, y, width, height, Colors::BLUE, fill);
+    m_title = TextString(name, nameX, nameY);
+
+    // Initialize menu items
+    for (auto& item : m_menuItems)
+    {
+        InitializeMenuItem(item.second.button.get(), item.first, 0, 0, 1.0f, Colors::DEFAULT_COLOR); // Pass default values
+    }
+
+    m_footer->Initialize(0, 950, 900, 42, Colors::BLUE, true);// TODO: REMOVE FOOTER FROM MENU
 }
 
-void GameEngine::Menu::HelpButtonClicked()
+void Menu::RespondToObserved(InputManager* InputMgr)
 {
-    m_helpBtnCallback(Menu::MenuButtons::Help);
+    for (auto& item : m_menuItems)
+    {
+        HandleButton(InputMgr, item.second.button.get(), item.first, item.second.callback);
+    }
 }
 
-void GameEngine::Menu::AboutButtonClicked()
-{
-    m_aboutBtnCallback(Menu::MenuButtons::About);
-}
-
-void Menu::HandleButton(InputManager* InputMgr, Button* button, const std::string& buttonName, std::function<void()> callback)
+void Menu::HandleButton(InputManager* InputMgr, Button* button, const std::string& buttonName, Callback callback)
 {
     int mouseX, mouseY;
     InputMgr->GetMousePosition(&mouseX, &mouseY);
@@ -91,26 +105,23 @@ void Menu::HandleButton(InputManager* InputMgr, Button* button, const std::strin
 
     if (InputMgr->m_mouseButtonState[0] && !InputMgr->m_prevMouseButtonState[0] && button->IsMouseOverButton(mouseX, mouseY))
     {
-#if DEBUG
+#if DEBUG_MENU
         std::cout << buttonName << " button clicked" << std::endl;
 #endif
         button->SetButtonColor(Colors::DARK_GRAY);
-        callback();
+        callback(buttonName);
     }
     else if (!InputMgr->m_mouseButtonState[0] && InputMgr->m_prevMouseButtonState[0] && button->IsMouseOverButton(mouseX, mouseY))
     {
-#if DEBUG
+#if DEBUG_MENU
         std::cout << buttonName << " button released" << std::endl;
 #endif
         button->SetButtonColor(Colors::DEFAULT_COLOR);
     }
 }
 
-void Menu::RespondToObserved(InputManager* InputMgr)
+void Menu::InitializeCommonElements()
 {
-    HandleButton(InputMgr, m_fileBtn.get(), "File", [this]() { FileButtonClicked(); });
-    HandleButton(InputMgr, m_optionsBtn.get(), "Options", [this]() { OptionsButtonClicked(); });
-    HandleButton(InputMgr, m_helpBtn.get(), "Help", [this]() { HelpButtonClicked(); });
-    HandleButton(InputMgr, m_aboutBtn.get(), "About", [this]() { AboutButtonClicked(); });
+    m_menuBar = std::make_unique<RectangleDrawable>();
+    m_footer = std::make_unique<RectangleDrawable>();
 }
-
