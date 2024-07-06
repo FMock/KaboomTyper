@@ -31,8 +31,8 @@ namespace GameEngine
 		void IncreaseScore();
 		void GameOver();
 		void DisplayMenuChoices(const std::string& buttonName);
-		void DisplayFileMenuChoices(FileDropDownMenu::Choices button);
-		void DisplayOptionsMenuChoices(OptionsDropDownMenu::Choices button);
+		void DisplayFileMenuChoices(const std::string& choice);
+		void DisplayOptionsMenuChoices(const std::string& choice);
 		void RegisterDrawables(DrawOrderManager&  manager);
 		void GetUserNamePromptCallback();
 		void CancelButtonCallback();

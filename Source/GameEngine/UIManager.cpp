@@ -70,16 +70,19 @@ bool GameEngine::UIManager::RegisterCallbacks()
         std::cerr << "Failed to register callback for File button" << std::endl;
         return false;
     }
+
     if (!m_gameMenu->AddCallback("Options", [this](const std::string& buttonName) { this->DisplayMenuChoices(buttonName); }))
     {
         std::cerr << "Failed to register callback for Options button" << std::endl;
         return false;
     }
+
     if (!m_gameMenu->AddCallback("Help", [this](const std::string& buttonName) { this->DisplayMenuChoices(buttonName); }))
     {
         std::cerr << "Failed to register callback for Help button" << std::endl;
         return false;
     }
+
     if (!m_gameMenu->AddCallback("About", [this](const std::string& buttonName) { this->DisplayMenuChoices(buttonName); }))
     {
         std::cerr << "Failed to register callback for About button" << std::endl;
@@ -89,8 +92,17 @@ bool GameEngine::UIManager::RegisterCallbacks()
     // Register callbacks for FileDropDownMenu
     if (auto fileMenu = std::dynamic_pointer_cast<FileDropDownMenu>(m_dropDownMenus["File"]))
     {
-        fileMenu->AddCallback([this](FileDropDownMenu::Choices choice) { this->DisplayFileMenuChoices(choice); }, FileDropDownMenu::IMPORT);
-        fileMenu->AddCallback([this](FileDropDownMenu::Choices choice) { this->DisplayFileMenuChoices(choice); }, FileDropDownMenu::EXIT);
+        if (!fileMenu->AddCallback("Import", [this](const std::string& choice) { this->DisplayFileMenuChoices(choice); }))
+        {
+            std::cerr << "Failed to register callback for Import MenuItem" << std::endl;
+            return false;
+        }
+
+        if (!fileMenu->AddCallback("Exit", [this](const std::string& choice) { this->DisplayFileMenuChoices(choice); }))
+        {
+            std::cerr << "Failed to register callback for Exit MenuItem" << std::endl;
+            return false;
+        }
     }
     else
     {
@@ -101,8 +113,17 @@ bool GameEngine::UIManager::RegisterCallbacks()
     // Register callbacks for OptionsDropDownMenu
     if (auto optionsMenu = std::dynamic_pointer_cast<OptionsDropDownMenu>(m_dropDownMenus["Options"]))
     {
-        optionsMenu->AddCallback([this](OptionsDropDownMenu::Choices choice) { this->DisplayOptionsMenuChoices(choice); }, OptionsDropDownMenu::WORD_CATEGORY);
-        optionsMenu->AddCallback([this](OptionsDropDownMenu::Choices choice) { this->DisplayOptionsMenuChoices(choice); }, OptionsDropDownMenu::AUDIO);
+        if (!optionsMenu->AddCallback("Word Category", [this](const std::string& choice) { this->DisplayOptionsMenuChoices(choice); }))
+        {
+            std::cerr << "Failed to register callback for Word Category MenuItem" << std::endl;
+            return false;
+        }
+
+        if (!optionsMenu->AddCallback("Audio", [this](const std::string& choice) { this->DisplayOptionsMenuChoices(choice); }))
+        {
+            std::cerr << "Failed to register callback for Audio MenuItem" << std::endl;
+            return false;
+        }
     }
     else
     {
@@ -211,11 +232,11 @@ void UIManager::GameOver()
 	m_messageBox->ChangeMessage("GAME OVER", "F1:  NEW GAME", "ESC: EXIT GAME");
 }
 
-void UIManager::DisableAllButtonsExceptThisButton(const std::string& buttonName)
+void UIManager::DisableAllButtonsExceptThisButton(const std::string& menuName)
 {
     for (auto& pair : m_dropDownMenus)
     {
-        if (pair.first != buttonName)
+        if (pair.first != menuName)
         {
             pair.second->SetIsActive(false);
         }
@@ -261,44 +282,45 @@ void GameEngine::UIManager::DisplayMenuChoices(const std::string& buttonName)
     }
 }
 
-void GameEngine::UIManager::DisplayFileMenuChoices(FileDropDownMenu::Choices choice)
-{
-    switch (choice)
-    {
-    case FileDropDownMenu::IMPORT:
 
+void GameEngine::UIManager::DisplayFileMenuChoices(const std::string& choice)
+{
+    if (choice == "Import")
+    {
 #if DEBUG
         std::cout << "Display Import Options" << std::endl;
 #endif
-        break;
-    case FileDropDownMenu::EXIT:
+    }
+    else if (choice == "Exit")
+    {
         m_inputManager->SetShouldQuit(true); // user pressed Exit sub-menu item
 #if DEBUG
         std::cout << "Exit The Game" << std::endl;
 #endif
-        break;
-    default:
-        break;
+    }
+    else
+    {
+        // Handle default case if necessary
     }
 }
 
-void GameEngine::UIManager::DisplayOptionsMenuChoices(OptionsDropDownMenu::Choices choice)
-{
-    switch (choice)
-    {
-    case OptionsDropDownMenu::Choices::WORD_CATEGORY:
 
+void GameEngine::UIManager::DisplayOptionsMenuChoices(const std::string& choice)
+{
+    if (choice == "Word Category")
+    {
 #if DEBUG
         std::cout << "Display Word Category Options" << std::endl;
 #endif
-        break;
-    case OptionsDropDownMenu::Choices::AUDIO:
-        
+    }
+    else if (choice == "Audio")
+    {
 #if DEBUG
         std::cout << "Display Audio Options" << std::endl;
 #endif
-        break;
-    default:
-        break;
+    }
+    else
+    {
+        // Handle default case if necessary
     }
 }
