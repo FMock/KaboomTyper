@@ -27,10 +27,10 @@ void WordManager::ChangeWordCategory(DBMessanger::WordCategories category)
 
 std::vector<std::string> WordManager::GetWordCategories()
 {
-    if (!m_dbMessanger->GetWordCategories(m_words))
+    if (!m_dbMessanger->GetWordCategories(m_wordCategories))
         throw std::exception("WordManager(): Error GetWords returned false");
 
-    return m_words;
+    return m_wordCategories;
 }
 
 std::string WordManager::GetNextWord()

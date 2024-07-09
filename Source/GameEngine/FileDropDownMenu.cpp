@@ -15,15 +15,15 @@ void GameEngine::FileDropDownMenu::InitializeMenuEntries()
     }
 
     AddMenuItem("Import", std::move(menuItem), [this](const std::string& menuItemName)
-        {
-            // default is do nothing. Owners of MenuItwm objects should call AddCallback to make the MenuItem do something
-        });
+    {
+        // default is do nothing. Owners of MenuItwm objects should call AddCallback to make the MenuItem do something
+    });
 
 
     AddMenuItem("Exit", std::make_unique<MenuItem>(), [this](const std::string& menuItemName)
-        {
+    {
 
-        });
+    });
 
 }
 

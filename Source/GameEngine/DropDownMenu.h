@@ -1,3 +1,9 @@
+/*
+* DropDownMenu.h
+* Base class for creating different kinds of DropDownMenus
+* DropDownMenus MenuItems are click-aware. Each MenuItems's OnClick behavior gets defined
+* via the Callback passed to the HandleButton method.
+*/
 #pragma once
 
 #include <iostream>

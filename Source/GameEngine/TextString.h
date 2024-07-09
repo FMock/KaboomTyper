@@ -14,10 +14,10 @@ namespace GameEngine
     {
     public:
         TextString();
-        TextString(std::string text, int x, int y);
-        TextString(const char* text, int x, int y);
+        TextString(std::string text, int x, int y, float textScaler = 1.0f);
+        TextString(const char* text, int x, int y, float textScaler = 1.0f);
         void Initialize(const char* string, int x, int y);
-        void Initialize(std::string& string, int x, int y);
+        void Initialize(const std::string& string, int x, int y);
         size_t GetTextSize();
         size_t GetFontWidth();
         size_t GetFontHeight();
@@ -31,12 +31,15 @@ namespace GameEngine
         void SetX(float x);
         void SetY(float y);
         void MoveHorizontal(float n);
+        int GetWidth() const;
+        void SetText(std::string text);
 
         // Static member for TextStringFont shared across all instances
         static TextStringFont s_font;
         static bool s_fontInitialized;
 
     private:
+        void ComputeTextStringWidth(float fontScaler);
         static void InitializeFont(FontParameters& fontParameters); // used to initialize s_font
         FontParameters m_fontParameters; // used to initialize s_font
         std::string m_string;
@@ -45,6 +48,8 @@ namespace GameEngine
         std::unique_ptr<Moveable> m_moveable;
         float m_velocity;
         float m_angle;
+        float m_textScaler;
+        int m_width;
 
         // Cache for storing precomputed values for each ASCII character
         struct CharMetrics

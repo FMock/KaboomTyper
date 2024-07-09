@@ -17,6 +17,7 @@
 #include "UIManager.h"
 #include "DrawOrderManager.h"
 #include "FireworkExplosionManager.h"
+#include "ChoiceMenuItem.h"
 
 /// <summary>
 /// GameManager manages the various entities in the game to create a
@@ -51,7 +52,6 @@ namespace GameEngine
 		std::shared_ptr<FireworkExplosionManager> m_fireworkExplosionManager;
 		std::shared_ptr<DecorativeRectangle> m_rectangleOfRectangles;
 		std::shared_ptr<TextBlockManager> m_textblockManager;
-
 		bool m_exitGame;
 		
 		// Audio

@@ -26,9 +26,18 @@ UIManager::~UIManager()
 
 void UIManager::Initialize()
 {
+    // Get word categories for WordCategoryChoiceMenu
+    WordManager wordManager;
+    m_wordCategories = wordManager.GetWordCategories();
+    if (m_wordCategories.empty())
+        std::cerr << "Error: m_wordCategories is empty!" << std::endl;
+
     // Submenus for each main menu
     m_dropDownMenus["File"] = std::make_shared<FileDropDownMenu>();
     m_dropDownMenus["Options"] = std::make_shared<OptionsDropDownMenu>();
+
+    // CoiceMenus for each drop down menu
+    m_choiceMenus["Word Category"] = std::make_shared<WordCategoryChoiceMenu>();
 
     // User Input
     m_inputTextBox = std::make_shared<InputTextBox>();
@@ -48,6 +57,13 @@ void UIManager::Initialize()
     {
         m_inputManager->RegisterObserver(pair.second);
     }
+
+    // Register each ChoiceMenu as an observer
+    for (const auto& pair : m_choiceMenus)
+    {
+        m_inputManager->RegisterObserver(pair.second);
+    }
+
     m_inputManager->RegisterObserver(m_inputMessageBox);
 
     // Register callbacks for submenus
@@ -65,25 +81,25 @@ void UIManager::Initialize()
 bool GameEngine::UIManager::RegisterCallbacks()
 {
     // Register callbacks for main menu
-    if (!m_gameMenu->AddCallback("File", [this](const std::string& buttonName) { this->DisplayMenuChoices(buttonName); }))
+    if (!m_gameMenu->AddCallback("File", [this](const std::string& buttonName) { this->DisplayMainMenuChoices(buttonName); }))
     {
         std::cerr << "Failed to register callback for File button" << std::endl;
         return false;
     }
 
-    if (!m_gameMenu->AddCallback("Options", [this](const std::string& buttonName) { this->DisplayMenuChoices(buttonName); }))
+    if (!m_gameMenu->AddCallback("Options", [this](const std::string& buttonName) { this->DisplayMainMenuChoices(buttonName); }))
     {
         std::cerr << "Failed to register callback for Options button" << std::endl;
         return false;
     }
 
-    if (!m_gameMenu->AddCallback("Help", [this](const std::string& buttonName) { this->DisplayMenuChoices(buttonName); }))
+    if (!m_gameMenu->AddCallback("Help", [this](const std::string& buttonName) { this->DisplayMainMenuChoices(buttonName); }))
     {
         std::cerr << "Failed to register callback for Help button" << std::endl;
         return false;
     }
 
-    if (!m_gameMenu->AddCallback("About", [this](const std::string& buttonName) { this->DisplayMenuChoices(buttonName); }))
+    if (!m_gameMenu->AddCallback("About", [this](const std::string& buttonName) { this->DisplayMainMenuChoices(buttonName); }))
     {
         std::cerr << "Failed to register callback for About button" << std::endl;
         return false;
@@ -92,13 +108,13 @@ bool GameEngine::UIManager::RegisterCallbacks()
     // Register callbacks for FileDropDownMenu
     if (auto fileMenu = std::dynamic_pointer_cast<FileDropDownMenu>(m_dropDownMenus["File"]))
     {
-        if (!fileMenu->AddCallback("Import", [this](const std::string& choice) { this->DisplayFileMenuChoices(choice); }))
+        if (!fileMenu->AddCallback("Import", [this](const std::string& choice) { this->DisplayDropDownMenuChoices(choice); }))
         {
             std::cerr << "Failed to register callback for Import MenuItem" << std::endl;
             return false;
         }
 
-        if (!fileMenu->AddCallback("Exit", [this](const std::string& choice) { this->DisplayFileMenuChoices(choice); }))
+        if (!fileMenu->AddCallback("Exit", [this](const std::string& choice) { this->DisplayDropDownMenuChoices(choice); }))
         {
             std::cerr << "Failed to register callback for Exit MenuItem" << std::endl;
             return false;
@@ -113,13 +129,13 @@ bool GameEngine::UIManager::RegisterCallbacks()
     // Register callbacks for OptionsDropDownMenu
     if (auto optionsMenu = std::dynamic_pointer_cast<OptionsDropDownMenu>(m_dropDownMenus["Options"]))
     {
-        if (!optionsMenu->AddCallback("Word Category", [this](const std::string& choice) { this->DisplayOptionsMenuChoices(choice); }))
+        if (!optionsMenu->AddCallback("Word Category", [this](const std::string& choice) { this->DisplayDropDownMenuChoices(choice); }))
         {
             std::cerr << "Failed to register callback for Word Category MenuItem" << std::endl;
             return false;
         }
 
-        if (!optionsMenu->AddCallback("Audio", [this](const std::string& choice) { this->DisplayOptionsMenuChoices(choice); }))
+        if (!optionsMenu->AddCallback("Audio", [this](const std::string& choice) { this->DisplayDropDownMenuChoices(choice); }))
         {
             std::cerr << "Failed to register callback for Audio MenuItem" << std::endl;
             return false;
@@ -128,6 +144,24 @@ bool GameEngine::UIManager::RegisterCallbacks()
     else
     {
         std::cerr << "Failed to find OptionsDropDownMenu" << std::endl;
+        return false;
+    }
+
+    //Register callbacks for WordCategoryChoiceMenu
+    if (auto choiceMenu = std::dynamic_pointer_cast<WordCategoryChoiceMenu>(m_choiceMenus["Word Category"]))
+    {
+        for (auto& category : m_wordCategories) 
+        {
+            if (!choiceMenu->AddCallback(category, [this](const std::string& category) { this->DisplayWordCategoryChoices(category); }))
+            {
+                std::cerr << "Failed to register callback for " << category << " ChoiceMenuItem" << std::endl;
+                return false;
+            }
+        }
+    }
+    else
+    {
+        std::cerr << "Failed to find WordCategoryChoiceMenu" << std::endl;
         return false;
     }
 
@@ -178,6 +212,7 @@ void UIManager::RegisterDrawables(DrawOrderManager& manager)
     m_messageBox->SetPriority(4);
     std::dynamic_pointer_cast<IDrawable>(m_dropDownMenus["File"])->SetPriority(9);
     std::dynamic_pointer_cast<IDrawable>(m_dropDownMenus["Options"])->SetPriority(9);
+    std::dynamic_pointer_cast<IDrawable>(m_choiceMenus["Word Category"])->SetPriority(9);
     m_inputMessageBox->SetPriority(13);
 
     // Sharing IDrawables with DrawOrderManager
@@ -188,8 +223,14 @@ void UIManager::RegisterDrawables(DrawOrderManager& manager)
     manager.AddDrawable(m_messageBox);
     manager.AddDrawable(m_inputMessageBox);
 
-    // Add drop-down menus to the DrawOrderManager
+    // Add all menus to the DrawOrderManager
     for (const auto& pair : m_dropDownMenus)
+    {
+        auto drawable = std::dynamic_pointer_cast<IDrawable>(pair.second);
+        manager.AddDrawable(drawable);
+    }
+
+    for (const auto& pair : m_choiceMenus)
     {
         auto drawable = std::dynamic_pointer_cast<IDrawable>(pair.second);
         manager.AddDrawable(drawable);
@@ -241,10 +282,18 @@ void UIManager::DisableAllButtonsExceptThisButton(const std::string& menuName)
             pair.second->SetIsActive(false);
         }
     }
+
+    for (auto& pair : m_choiceMenus)
+    {
+        if (pair.first != menuName)
+        {
+            pair.second->SetIsActive(false);
+        }
+    }
 }
 
 
-void GameEngine::UIManager::DisplayMenuChoices(const std::string& buttonName)
+void GameEngine::UIManager::DisplayMainMenuChoices(const std::string& buttonName)
 {
     auto it = m_dropDownMenus.find(buttonName);
     if (it != m_dropDownMenus.end())
@@ -282,8 +331,7 @@ void GameEngine::UIManager::DisplayMenuChoices(const std::string& buttonName)
     }
 }
 
-
-void GameEngine::UIManager::DisplayFileMenuChoices(const std::string& choice)
+void GameEngine::UIManager::DisplayDropDownMenuChoices(const std::string& choice)
 {
     if (choice == "Import")
     {
@@ -298,20 +346,12 @@ void GameEngine::UIManager::DisplayFileMenuChoices(const std::string& choice)
         std::cout << "Exit The Game" << std::endl;
 #endif
     }
-    else
-    {
-        // Handle default case if necessary
-    }
-}
-
-
-void GameEngine::UIManager::DisplayOptionsMenuChoices(const std::string& choice)
-{
-    if (choice == "Word Category")
+    else if (choice == "Word Category")
     {
 #if DEBUG
-        std::cout << "Display Word Category Options" << std::endl;
+        std::cout << "Display Word Category" << std::endl;
 #endif
+        m_choiceMenus["Word Category"]->SetIsActive(true);
     }
     else if (choice == "Audio")
     {
@@ -322,5 +362,17 @@ void GameEngine::UIManager::DisplayOptionsMenuChoices(const std::string& choice)
     else
     {
         // Handle default case if necessary
+    }
+}
+
+
+void GameEngine::UIManager::DisplayWordCategoryChoices(const std::string& choice)
+{
+    for (const auto& categoy : m_wordCategories)
+    {
+        if (categoy == choice)
+        {
+            std::cout << "Player has choosen WordCategoryChoice " << categoy << std::endl;
+        }
     }
 }

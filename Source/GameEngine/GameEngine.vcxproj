@@ -142,6 +142,7 @@
     <ClInclude Include="AABB.h" />
     <ClInclude Include="AudioGenerator.h" />
     <ClInclude Include="Button.h" />
+    <ClInclude Include="ChoiceMenu.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="ColorParameters.h" />
     <ClInclude Include="Common.h" />
@@ -172,6 +173,7 @@
     <ClInclude Include="KeyPressHandler.h" />
     <ClInclude Include="MainMenu.h" />
     <ClInclude Include="Menu.h" />
+    <ClInclude Include="ChoiceMenuItem.h" />
     <ClInclude Include="MenuItem.h" />
     <ClInclude Include="MenuManager.h" />
     <ClInclude Include="MessageBox.h" />
@@ -200,11 +202,13 @@
     <ClInclude Include="User.h" />
     <ClInclude Include="Utilities.h" />
     <ClInclude Include="Vector2D.h" />
+    <ClInclude Include="WordCategoryChoiceMenu.h" />
     <ClInclude Include="WordManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AudioGenerator.cpp" />
     <ClCompile Include="Button.cpp" />
+    <ClCompile Include="ChoiceMenu.cpp" />
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="Common.cpp" />
     <ClCompile Include="ConcreteSpriteFactory.cpp" />
@@ -228,6 +232,7 @@
     <ClCompile Include="KeyPressHandler.cpp" />
     <ClCompile Include="MainMenu.cpp" />
     <ClCompile Include="Menu.cpp" />
+    <ClCompile Include="ChoiceMenuItem.cpp" />
     <ClCompile Include="MenuItem.cpp" />
     <ClCompile Include="MenuManager.cpp" />
     <ClCompile Include="Messagebox.cpp" />
@@ -250,6 +255,7 @@
     <ClCompile Include="UIManager.cpp" />
     <ClCompile Include="User.cpp" />
     <ClCompile Include="Utilities.cpp" />
+    <ClCompile Include="WordCategoryChoiceMenu.cpp" />
     <ClCompile Include="WordManager.cpp" />
   </ItemGroup>
   <ItemGroup>

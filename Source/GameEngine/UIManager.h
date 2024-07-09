@@ -13,6 +13,9 @@
 #include "DropDownMenu.h"
 #include "FileDropDownMenu.h"
 #include "OptionsDropDownMenu.h"
+#include "ChoiceMenu.h"
+#include "WordCategoryChoiceMenu.h"
+#include "WordManager.h"
 #include "InputManager.h"
 #include "DrawOrderManager.h"
 #include "InputMessageBox.h"
@@ -30,9 +33,9 @@ namespace GameEngine
 		void ResetScore();
 		void IncreaseScore();
 		void GameOver();
-		void DisplayMenuChoices(const std::string& buttonName);
-		void DisplayFileMenuChoices(const std::string& choice);
-		void DisplayOptionsMenuChoices(const std::string& choice);
+		void DisplayMainMenuChoices(const std::string& buttonName);
+		void DisplayWordCategoryChoices(const std::string& choice);
+		void DisplayDropDownMenuChoices(const std::string& choice);
 		void RegisterDrawables(DrawOrderManager&  manager);
 		void GetUserNamePromptCallback();
 		void CancelButtonCallback();
@@ -44,6 +47,7 @@ namespace GameEngine
 
 	private:
 		std::map<std::string, std::shared_ptr<DropDownMenu>> m_dropDownMenus;
+		std::map<std::string, std::shared_ptr<ChoiceMenu>> m_choiceMenus;
 		std::shared_ptr<InputTextBox> m_inputTextBox;
 		std::shared_ptr<GamePlayArea> m_gamePlayArea;
 		std::shared_ptr<HeadsUpDisplay> m_headsUpDisplay;
@@ -57,6 +61,7 @@ namespace GameEngine
 		void Initialize();
 		bool RegisterCallbacks();
 		void DisableAllButtonsExceptThisButton(const std::string& buttonName);
+		std::vector<std::string> m_wordCategories;
 	};
 
 	template<typename... Args>

@@ -1,6 +1,8 @@
 /*
-* menu.h 
-* Abstract class for creating different kinds of menus
+* Menu.h 
+* Base class for creating different kinds of Menus
+* Menus Buttons are click-aware. Each Button's OnClick behavior gets defined
+* via the Callback passed to the HandleButton method.
 */
 #pragma once
 

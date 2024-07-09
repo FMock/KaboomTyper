@@ -64,9 +64,9 @@ void MenuItem::SetIsActive(bool isActive)
 	m_active = isActive;
 }
 
-void MenuItem::MenuItemPressed()
-{
-}
+//void MenuItem::MenuItemPressed()
+//{
+//}
 
 bool MenuItem::IsMouseOverMenuItem(const int& x, const int& y)
 {
@@ -74,9 +74,9 @@ bool MenuItem::IsMouseOverMenuItem(const int& x, const int& y)
 		y >= m_yPos && y <= m_yPos + m_outlineHeight;
 }
 
-void MenuItem::MenuItemReleased()
-{
-}
+//void MenuItem::MenuItemReleased()
+//{
+//}
 
 void MenuItem::SetMenuItemColor(Colors color)
 {
