@@ -22,10 +22,12 @@ namespace GameEngine
 		void ButtonReleased();
 		void SetButtonColor(Colors color);
 		int GetXPosition() const;
+		void SetXPosition(int x);
 		int GetYPostion() const;
 		int GetWidth() const;
 		int GetHeight() const;
 		void SetIsActive(bool isActive);
+		void SetText(std::string text);
 
 	private:
 		std::unique_ptr<RectangleDrawable> m_outline;

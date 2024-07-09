@@ -7,6 +7,7 @@
 #include <stdexcept>
 #include <cstring>
 #include <unordered_map>
+#include <iostream>
 
 using namespace GameEngine;
 using namespace DrawUtilities;
@@ -44,12 +45,11 @@ void TextString::InitializeFont(FontParameters& fontParameters)
 }
 
 TextString::TextString()
-	: m_moveable(std::make_unique<Moveable>()),
-	m_x(0), m_y(0), m_textSize(0), m_velocity(0.0f), m_angle(0.0f)
+	: m_moveable(std::make_unique<Moveable>()), m_x(0), m_y(0), m_textSize(0), m_velocity(0.0f), m_angle(0.0f), m_width(0), m_textScaler(1.0f)
 {
 }
 
-GameEngine::TextString::TextString(std::string text, int x, int y) : TextString(text.c_str(), x, y)
+GameEngine::TextString::TextString(std::string text, int x, int y, float textScaler) : TextString(text.c_str(), x, y, textScaler)
 {
 	m_string = text;
 	m_textSize = std::strlen(text.c_str());
@@ -64,9 +64,12 @@ GameEngine::TextString::TextString(std::string text, int x, int y) : TextString(
 	m_y = y;
 	m_velocity = 0.0f;
 	m_angle = 0.0f;
+    m_textScaler = textScaler;
+    m_width = 0;
+    ComputeTextStringWidth(m_textScaler);
 }
 
-GameEngine::TextString::TextString(const char* text, int x, int y)
+GameEngine::TextString::TextString(const char* text, int x, int y, float textScaler)
 {
 	m_string = text;
 	m_textSize = std::strlen(text);
@@ -81,6 +84,9 @@ GameEngine::TextString::TextString(const char* text, int x, int y)
 	m_y = y;
 	m_velocity = 0.0f;
 	m_angle = 0.0f;
+    m_textScaler = textScaler;
+    m_width = 0;
+    ComputeTextStringWidth(m_textScaler);
 }
 
 /// <summary>
@@ -111,9 +117,17 @@ void TextString::Initialize(const char* str, int x, int y)
 /// <param name="string">std::string of text. This text gets drawn to the screen</param>
 /// <param name="x">The starting x postion to draw the text on screen</param>
 /// <param name="y">The starting y position to draw the text on screen</param>
-void TextString::Initialize(std::string& string, int x, int y)
+void TextString::Initialize(const std::string& text, int x, int y)
 {
-	Initialize(string.c_str(), x, y);
+	Initialize(text.c_str(), x, y);
+}
+
+void TextString::ComputeTextStringWidth(float fontScaler)
+{
+    auto fontWidth = s_font.frameWidth;
+    size_t strLen = m_string.length();
+    float width = static_cast<float>(strLen * fontWidth * fontScaler);
+    m_width = static_cast<int>(width);
 }
 
 size_t GameEngine::TextString::GetTextSize()
@@ -173,6 +187,7 @@ void GameEngine::TextString::DrawText(float scaleFactor, float angle)
 
     // Calculate the center of the text string
     float totalWidth = strLen * frameWidth * scaleFactor;
+    m_width = static_cast<int>(ceil(totalWidth));
     float centerX = m_x + totalWidth / 2.0f;
     float centerY = m_y + frameHeight * scaleFactor / 2.0f;
 
@@ -278,6 +293,16 @@ void GameEngine::TextString::SetY(float y)
 void GameEngine::TextString::MoveHorizontal(float n)
 {
     m_x += n;
+}
+
+int GameEngine::TextString::GetWidth() const
+{
+    return m_width;
+}
+
+void GameEngine::TextString::SetText(std::string text)
+{
+    m_string = text;
 }
 
 std::string GameEngine::TextString::GetText() const

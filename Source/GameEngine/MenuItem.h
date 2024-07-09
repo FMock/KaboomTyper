@@ -12,14 +12,12 @@ namespace GameEngine
 	{
 	public:
 		MenuItem();
-		MenuItem(std::string text, int x, int y, int parentX, int parentY, int parentWidth, float scale = 1.0f, Colors color = Colors::DEFAULT_COLOR);
 		~MenuItem();
+		MenuItem(std::string text, int x, int y, int parentX, int parentY, int parentWidth, float scale = 1.0f, Colors color = Colors::DEFAULT_COLOR);
 		void Initialize(std::string text, int x, int y, int parentX, int parentY, int parentWidth, float scale = 1.0f, Colors color = Colors::DEFAULT_COLOR);
 		void Update(float dt);
 		void Draw();
-		void MenuItemPressed();
 		bool IsMouseOverMenuItem(const int& x, const int& y);
-		void MenuItemReleased();
 		void SetMenuItemColor(Colors color);
 		int GetXPosition() const;
 		int GetYPostion() const;

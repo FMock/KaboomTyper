@@ -74,6 +74,11 @@ int GameEngine::Button::GetXPosition() const
 	return m_xPos;
 }
 
+void GameEngine::Button::SetXPosition(int x)
+{
+	m_xPos = x;
+}
+
 int GameEngine::Button::GetYPostion() const
 {
 	return m_yPos;
@@ -92,5 +97,10 @@ int GameEngine::Button::GetHeight() const
 void GameEngine::Button::SetIsActive(bool isActive)
 {
 	m_active = isActive;
+}
+
+void GameEngine::Button::SetText(std::string text)
+{
+	m_label->SetText(text);
 }
 
