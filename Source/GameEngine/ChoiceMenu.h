@@ -37,6 +37,10 @@ namespace GameEngine
         void InitializeChoiceMenu(int x, int y, int width, int height, Colors, bool = true);
         bool GetIsActive() const;
         void SetIsActive(bool);
+        int GetWidth() const;
+        int GetHeight() const;
+        void SetWidth(int width);
+        void SetHeight(int height);
 
     protected:
         void RespondToObserved(InputManager* InputMgr) override;
@@ -50,5 +54,7 @@ namespace GameEngine
         int m_count; // number of ChoiceMenuItems
         bool m_isActive;
         int m_priority; // draw priority
+        int m_width;
+        int m_height;
 	};
 }

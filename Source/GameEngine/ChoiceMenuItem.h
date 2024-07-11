@@ -53,7 +53,7 @@ namespace GameEngine
 		bool m_isSelected;
 		bool m_isInitialized;
 		bool m_active; // true when mouse hover present
-		std::string m_selectX = "x";
+		std::string m_selectX = " ";
 		std::string m_name;
 	};
 }
