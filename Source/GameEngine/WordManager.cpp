@@ -27,6 +27,8 @@ void WordManager::ChangeWordCategory(DBMessanger::WordCategories category)
 
 std::vector<std::string> WordManager::GetWordCategories()
 {
+    m_wordCategories.push_back("Default");
+
     if (!m_dbMessanger->GetWordCategories(m_wordCategories))
         throw std::exception("WordManager(): Error GetWords returned false");
 

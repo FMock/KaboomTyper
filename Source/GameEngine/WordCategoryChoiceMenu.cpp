@@ -7,12 +7,12 @@ WordCategoryChoiceMenu::WordCategoryChoiceMenu()
 {
     InitializeMenuEntries();
 
-    // determine what dimensions the menu should be
-
+    const int x = 365;
+    const int y = 40;
     int width = 500;
     int height = 860;
 
-    InitializeChoiceMenu(365, 40, width, height, Colors::BLUE, true);
+    InitializeChoiceMenu(x, y, width, height, Colors::BLUE, true);
 }
 
 
@@ -22,6 +22,8 @@ void WordCategoryChoiceMenu::InitializeMenuEntries()
     WordManager wordManager;
     auto categories = wordManager.GetWordCategories(); // TODO: GET WORD CATEGORIES FROM GLOBAL SOURCE INSTEAD OF ANOTHER DATABASE QUERY
     m_count = categories.size();
+
+
 
     for (const auto& category : categories)
     {
