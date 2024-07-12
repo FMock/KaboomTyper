@@ -1,242 +1,265 @@
 #include "ChoiceMenu.h"
 #include "Common.h"
+#include <algorithm>
+#include <iostream>
 
-GameEngine::ChoiceMenu::ChoiceMenu() : m_isActive(false), m_priority(0), m_count(0)
+namespace GameEngine
 {
-	SetIsActive(false);
-	InitializeCommonElements();
-}
 
-GameEngine::ChoiceMenu::~ChoiceMenu() = default;
+    ChoiceMenu::ChoiceMenu() : m_isActive(false), m_priority(0), m_count(0)
+    {
+        SetIsActive(false);
+        InitializeCommonElements();
+    }
 
-void GameEngine::ChoiceMenu::Draw()
-{
-	if (GetIsActive())
-	{
-		m_menuBody->Draw();
+    ChoiceMenu::~ChoiceMenu() = default;
 
-		// Draw all menu items
-		for (const auto& item : m_choiceMenuItems)
-		{
-			if (item.second.menuItem)
-			{
+    void ChoiceMenu::Draw()
+    {
+        if (!GetIsActive()) return;
+
+        m_menuBody->Draw();
+
+        for (const auto& item : m_choiceMenuItems)
+        {
+            if (item.second.menuItem)
+            {
 #if DEBUG_CHOICEMENU
-				//std::cout << "Drawing ChoiceMenuItem: " << item.first << std::endl;
+                // std::cout << "Drawing ChoiceMenuItem: " << item.first << std::endl;
 #endif
-				item.second.menuItem->Draw();
-			}
-			else
-			{
-				std::cerr << "Error: Null choice menu item pointer for item: " << item.first << std::endl;
-			}
-		}
-	}
-}
+                item.second.menuItem->Draw();
+            }
+            else
+            {
+                std::cerr << "Error: Null choice menu item pointer for item: " << item.first << std::endl;
+            }
+        }
+    }
 
-void GameEngine::ChoiceMenu::Update(float dt)
-{
-	// Update all MenuItems
-	for (auto& item : m_choiceMenuItems)
-	{
-		if (item.second.menuItem)
-		{
-			item.second.menuItem->Update(dt);
-		}
-	}
-}
+    void ChoiceMenu::Update(float dt)
+    {
+        for (auto& item : m_choiceMenuItems)
+        {
+            if (item.second.menuItem)
+            {
+                item.second.menuItem->Update(dt);
+            }
+        }
+    }
 
+    void ChoiceMenu::AddChoiceMenuItem(const std::string& name, std::unique_ptr<ChoiceMenuItem> choiceMenuItem, Callback callback)
+    {
+        if (!choiceMenuItem)
+        {
+            std::cerr << "Error: Null ChoiceMenuItem passed for choiceMenuItem: " << name << std::endl;
+            return; // Early exit if choiceMenuItem is null
+        }
 
-void GameEngine::ChoiceMenu::AddChoiceMenuItem(const std::string& name, std::unique_ptr<ChoiceMenuItem> choiceMenuItem, Callback callback)
-{
-	if (!choiceMenuItem)
-	{
-		std::cerr << "Error: Null ChoiceMenuItem passed for choiceMenuItem: " << name << std::endl;
-		return; // Early exit if choiceMenuItem is null
-	}
+        m_choiceMenuItems[name] = ChoiceMenuEntry{ std::move(choiceMenuItem), std::move(callback) };
+        m_choiceMenuItems[name].menuItem->SetName(name);
 
-	m_choiceMenuItems[name] = ChoiceMenuEntry{ std::move(choiceMenuItem), std::move(callback) };
-	m_choiceMenuItems[name].menuItem.get()->SetName(name);
-	if (name == "Default")
-		m_choiceMenuItems["Default"].menuItem->SetIsSelected(true);
-}
+        if (name == "Default")
+            m_choiceMenuItems["Default"].menuItem->SetIsSelected(true);
+    }
 
-
-bool GameEngine::ChoiceMenu::AddCallback(const std::string& name, Callback callback)
-{
-	auto it = m_choiceMenuItems.find(name);
-	if (it != m_choiceMenuItems.end())
-	{
-		it->second.callback = callback;
-		return true;
-	}
-#if DEBUG_CHOICEMENU
-	std::cout << "Warning: Attempting to add callback to non-existent choice menu item: " << name << std::endl;
-#endif
-	return false;
-}
-
-void GameEngine::ChoiceMenu::InitializeChoiceMenu(int x, int y, int width, int height, Colors, bool)
-{
-	m_menuBody->Initialize(x, y, width, height, Colors::BLUE, true);
-
-	int verticalSpacer = 32;
-
-	// Determine the largest string size
-	size_t max_size = 0;
-	for (const auto& item : m_choiceMenuItems)
-	{
-		if (item.first.size() > max_size)
-		{
-			max_size = item.first.size();
-		}
-	}
-
-	// Adjust the size of this choice menu based on it's contents
-	int menuWidth = max_size * 20;
-	int menuHeight = m_choiceMenuItems.size() * (Common::FONT_HEIGHT * 1.30);
-	SetWidth(menuWidth);
-	SetHeight(menuHeight);
-
-	// Initialize choice menu items
-	for (auto& item : m_choiceMenuItems)
-	{
-		// Determine the number of asterisks to append
-		int augment_size = static_cast<int>(max_size) - static_cast<int>(item.first.size());
-		item.second.menuItem.get()->SetAugmentedSize(augment_size);
-
-		InitializeMenuEntry(item.second.menuItem.get(), item.first, x, y + verticalSpacer, 1.0f, Colors::DEFAULT_COLOR); // Pass default values
-		item.second.menuItem.get()->SetXPosition(x);
-		item.second.menuItem.get()->SetYPosition(y + verticalSpacer);
-		auto scaler = item.second.menuItem.get()->GetLableScaler();
-		item.second.menuItem.get()->AugmentLabel(augment_size);
-		y += (Common::FONT_HEIGHT * 1.25);
-	}
-}
-
-bool GameEngine::ChoiceMenu::GetIsActive() const
-{
-	return m_isActive;
-}
-
-void GameEngine::ChoiceMenu::SetIsActive(bool isActive)
-{
-	m_isActive = isActive;
-}
-
-int GameEngine::ChoiceMenu::GetWidth() const
-{
-	return m_menuBody->GetWidth();
-}
-
-int GameEngine::ChoiceMenu::GetHeight() const
-{
-	return m_menuBody->GetHeight();
-}
-
-void GameEngine::ChoiceMenu::SetWidth(int width)
-{
-	if (width > 0)
-		m_menuBody->SetWidth(width);
-}
-
-void GameEngine::ChoiceMenu::SetHeight(int height)
-{
-	if (height > 0)
-		m_menuBody->SetHeight(height);
-}
-
-void GameEngine::ChoiceMenu::RespondToObserved(InputManager* InputMgr)
-{
-	if (GetIsActive())
-	{
-		for (auto& item : m_choiceMenuItems)
-		{
-			HandleMenuItem(InputMgr, item.second.menuItem.get(), item.first, item.second.callback);
-		}
-	}
-}
-
-void GameEngine::ChoiceMenu::HandleMenuItem(InputManager* InputMgr, ChoiceMenuItem* menuItem, const std::string& menuItemName, Callback callback)
-{
-	int mouseX, mouseY;
-	InputMgr->GetMousePosition(&mouseX, &mouseY);
-
-	menuItem->SetIsActive(menuItem->MouseHoverPresent(mouseX, mouseY)); // toggle current menuItem active state
-
-	if (InputMgr->m_mouseButtonState[0] && !InputMgr->m_prevMouseButtonState[0] && menuItem->MouseHoverPresent(mouseX, mouseY))
-	{
-#if DEBUG_CHOICEMENU
-		std::cout << menuItem << " ChoiceMenuItem clicked" << std::endl;
-#endif
-	}
-	else if (!InputMgr->m_mouseButtonState[0] && InputMgr->m_prevMouseButtonState[0] && menuItem->MouseHoverPresent(mouseX, mouseY))
-	{
-#if DEBUG_CHOICEMENU
-		std::cout << menuItem << " ChoiceMenuItem released" << std::endl;
-#endif
-
-		menuItem->SetIsSelected(!menuItem->GetIsSelected());
-		callback(menuItemName);
-
-		// If the selected item is "Default", deselect all other items
-		if (menuItem->GetIsSelected() && menuItemName == "Default")
-		{
-			for (auto& item : m_choiceMenuItems)
-			{
-				if (item.first != "Default")
-				{
-					item.second.menuItem->SetIsSelected(false);
-				}
-			}
-		}
-		// If another item is selected, unselect "Default"
-		else if (menuItem->GetIsSelected() && menuItemName != "Default")
-		{
-			auto defaultItem = m_choiceMenuItems.find("Default");
-			if (defaultItem != m_choiceMenuItems.end())
-			{
-				defaultItem->second.menuItem->SetIsSelected(false);
-			}
-		}
+    bool ChoiceMenu::AddCallback(const std::string& name, Callback callback)
+    {
+        auto it = m_choiceMenuItems.find(name);
+        if (it != m_choiceMenuItems.end())
+        {
+            it->second.callback = callback;
+            return true;
+        }
 
 #if DEBUG_CHOICEMENU
-		std::cout << menuItem->GetName() << " is Selected = " << menuItem->GetIsSelected() << ", is Active = " << menuItem->GetIsActive() << std::endl;
+        std::cout << "Warning: Attempting to add callback to non-existent choice menu item: " << name << std::endl;
 #endif
-	}
-}
+
+        return false;
+    }
+
+    void ChoiceMenu::InitializeChoiceMenu(int x, int y, int width, int height, Colors color, bool flag)
+    {
+        m_menuBody->Initialize(x, y, width, height, color, flag);
+
+        const int verticalSpacer = 32;
+
+        // Determine the largest string size
+        size_t max_size = std::max_element(
+            m_choiceMenuItems.begin(), m_choiceMenuItems.end(),
+            [](const auto& a, const auto& b) { return a.first.size() < b.first.size(); }
+        )->first.size();
+
+        // Adjust the size of this choice menu based on its contents
+        int menuWidth = static_cast<int>(max_size * 20);
+        int menuHeight = static_cast<int>(m_choiceMenuItems.size() * (Common::FONT_HEIGHT * 1.30));
+        SetWidth(menuWidth);
+        SetHeight(menuHeight);
+
+        // Initialize choice menu items
+        for (auto& item : m_choiceMenuItems)
+        {
+            int augment_size = static_cast<int>(max_size - item.first.size());
+            auto& menuItem = item.second.menuItem;
+
+            menuItem->SetAugmentedSize(augment_size);
+            InitializeMenuEntry(menuItem.get(), item.first, x, y + verticalSpacer, 1.0f, Colors::DEFAULT_COLOR);
+            menuItem->SetXPosition(x);
+            menuItem->SetYPosition(y + verticalSpacer);
+            menuItem->AugmentLabel(augment_size);
+
+            y += static_cast<int>(Common::FONT_HEIGHT * 1.25);
+        }
+    }
+
+    bool ChoiceMenu::GetIsActive() const
+    {
+        return m_isActive;
+    }
+
+    void ChoiceMenu::SetIsActive(bool isActive)
+    {
+        m_isActive = isActive;
+    }
+
+    int ChoiceMenu::GetWidth() const
+    {
+        return m_menuBody->GetWidth();
+    }
+
+    int ChoiceMenu::GetHeight() const
+    {
+        return m_menuBody->GetHeight();
+    }
+
+    void ChoiceMenu::SetWidth(int width)
+    {
+        if (width > 0)
+            m_menuBody->SetWidth(width);
+    }
+
+    void ChoiceMenu::SetHeight(int height)
+    {
+        if (height > 0)
+            m_menuBody->SetHeight(height);
+    }
+
+    void ChoiceMenu::RespondToObserved(InputManager* InputMgr)
+    {
+        if (GetIsActive())
+        {
+            for (auto& item : m_choiceMenuItems)
+            {
+                HandleMenuItem(InputMgr, item.second.menuItem.get(), item.first, item.second.callback);
+            }
+        }
+    }
+
+    // Handles logic related to selecting and de-selcting a ChoiceMenuItem
+    // Requirements:
+    // When "Default" menu item is selected, no other item can be selected
+    // When the last item selected is de-selected, "Default" gets selected automatically
+    void ChoiceMenu::HandleMenuItem(InputManager* InputMgr, ChoiceMenuItem* menuItem, const std::string& menuItemName, Callback callback)
+    {
+        int mouseX, mouseY;
+        InputMgr->GetMousePosition(&mouseX, &mouseY);
+
+        bool isHovered = menuItem->MouseHoverPresent(mouseX, mouseY);
+        menuItem->SetIsActive(isHovered);
+
+        bool mouseState = InputMgr->m_mouseButtonState[0];
+        bool prevMouseState = InputMgr->m_prevMouseButtonState[0];
+
+        if (mouseState && !prevMouseState && isHovered)
+        {
+#if DEBUG_CHOICEMENU
+            std::cout << menuItem << " ChoiceMenuItem clicked" << std::endl;
+#endif
+        }
+        else if (!mouseState && prevMouseState && isHovered)
+        {
+#if DEBUG_CHOICEMENU
+            std::cout << menuItem << " ChoiceMenuItem released" << std::endl;
+#endif
+            bool wasSelected = menuItem->GetIsSelected();
+            menuItem->SetIsSelected(!wasSelected);
+
+            // Check if the Default menu item is being de-selected
+            if (menuItemName == "Default" && wasSelected && !menuItem->GetIsSelected())
+            {
+                bool anyOtherSelected = false;
+                for (const auto& item : m_choiceMenuItems)
+                {
+                    if (item.first != "Default" && item.second.menuItem->GetIsSelected())
+                    {
+                        anyOtherSelected = true;
+                        break;
+                    }
+                }
+
+                // If no other menu items are selected, re-select the Default item
+                if (!anyOtherSelected)
+                {
+                    menuItem->SetIsSelected(true);
+                }
+            }
+
+            // Ensure Default is selected if all others are deselected
+            if (!menuItem->GetIsSelected())
+            {
+                bool anySelected = false;
+                for (const auto& item : m_choiceMenuItems)
+                {
+                    if (item.second.menuItem->GetIsSelected())
+                    {
+                        anySelected = true;
+                        break;
+                    }
+                }
+
+                if (!anySelected)
+                {
+                    auto defaultItem = m_choiceMenuItems.find("Default");
+                    if (defaultItem != m_choiceMenuItems.end())
+                    {
+                        defaultItem->second.menuItem->SetIsSelected(true);
+                    }
+                }
+            }
+
+            if (menuItem->GetIsSelected())
+            {
+                if (menuItemName == "Default")
+                {
+                    for (auto& item : m_choiceMenuItems)
+                    {
+                        if (item.first != "Default")
+                        {
+                            item.second.menuItem->SetIsSelected(false);
+                        }
+                    }
+                }
+                else
+                {
+                    auto defaultItem = m_choiceMenuItems.find("Default");
+                    if (defaultItem != m_choiceMenuItems.end())
+                    {
+                        defaultItem->second.menuItem->SetIsSelected(false);
+                    }
+                }
+            }
+
+            callback(menuItemName);
+
+#if DEBUG_CHOICEMENU
+            std::cout << menuItem->GetName() << " is Selected = " << menuItem->GetIsSelected() << ", is Active = " << menuItem->GetIsActive() << std::endl;
+#endif
+        }
+    }
 
 
-
-//void GameEngine::ChoiceMenu::HandleMenuItem(InputManager* InputMgr, ChoiceMenuItem* menuItem, const std::string& menuItemName, Callback callback)
-//{
-//	int mouseX, mouseY;
-//	InputMgr->GetMousePosition(&mouseX, &mouseY);
-//
-//	menuItem->SetIsActive(menuItem->MouseHoverPresent(mouseX, mouseY)); // toggle current menuItem active state
-//
-//	if (InputMgr->m_mouseButtonState[0] && !InputMgr->m_prevMouseButtonState[0] && menuItem->MouseHoverPresent(mouseX, mouseY))
-//	{
-//#if DEBUG_CHOICEMENU
-//		std::cout << menuItem << " ChoiceMenuItem clicked" << std::endl;
-//#endif
-//
-//	}
-//	else if (!InputMgr->m_mouseButtonState[0] && InputMgr->m_prevMouseButtonState[0] && menuItem->MouseHoverPresent(mouseX, mouseY))
-//	{
-//#if DEBUG_CHOICEMENU
-//		std::cout << menuItem << " ChoiceMenuItem released" << std::endl;
-//#endif
-//
-//		menuItem->SetIsSelected(!menuItem->GetIsSelected());
-//		callback(menuItemName);
-//
-//#if DEBUG_CHOICEMENU
-//		std::cout << menuItem->GetName() << " is Selected = " << menuItem->GetIsSelected() << ", is Active = " << menuItem->GetIsActive() << std::endl;
-//#endif
-//	}
-//}
-
-void GameEngine::ChoiceMenu::InitializeCommonElements()
-{
-	m_menuBody = std::make_unique<RectangleDrawable>();
+    void ChoiceMenu::InitializeCommonElements()
+    {
+        m_menuBody = std::make_unique<RectangleDrawable>();
+    }
 }
