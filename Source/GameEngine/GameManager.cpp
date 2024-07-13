@@ -184,7 +184,7 @@ void GameManager::RespondToObserved(InputManager* InputMgr)
             m_rectangleOfRectangles->SetAnimate(false);
             m_rectangleOfRectangles->SetAnimateRandom(false);
 
-            if(!textblockGeneratorRunning)
+            if (!textblockGeneratorRunning)
             {
                 m_textblockManager->ToggleRunning();
                 m_textblockManager->GenerateTextBlock();
@@ -237,6 +237,10 @@ void GameManager::RespondToObserved(InputManager* InputMgr)
                 m_textblockManager->ToggleRunning();
             }
         }
+    }
+    else if (InputMgr->m_kbState[SDL_SCANCODE_ESCAPE]) // Check for ESC key press
+    {
+        m_inputManager->SetShouldQuit(true); // Set the exit flag to true
     }
     else if (InputMgr->m_kbState[SDL_SCANCODE_F4])
     {

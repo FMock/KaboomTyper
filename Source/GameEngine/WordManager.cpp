@@ -25,15 +25,24 @@ void WordManager::ChangeWordCategory(DBMessanger::WordCategories category)
     m_currentCategory = category;
 }
 
-std::vector<std::string> WordManager::GetWordCategories()
+std::vector<std::string> WordManager::GetWordCategories() // TODO: currently only gets animal class names from DBMessanger::GetWordCategories.
 {
-    m_wordCategories.push_back("Default");
+    static std::vector<std::string> wordCategories;
+    static bool isInitialized = false;
 
-    if (!m_dbMessanger->GetWordCategories(m_wordCategories))
-        throw std::exception("WordManager(): Error GetWords returned false");
+    if (!isInitialized)
+    {
+        wordCategories.push_back("Default");
 
-    return m_wordCategories;
+        if (!m_dbMessanger->GetWordCategories(wordCategories))
+            throw std::exception("WordManager::GetWordCategories(): Error GetWords returned false");
+
+        isInitialized = true;
+    }
+
+    return wordCategories;
 }
+
 
 std::string WordManager::GetNextWord()
 {
