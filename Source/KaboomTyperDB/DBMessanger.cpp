@@ -105,7 +105,7 @@ namespace KaboomTyperDB
         sqlite3_stmt* stmt;
 
         // Build the query string
-        std::string query = "SELECT class FROM animal_class;";
+        std::string query = "SELECT class FROM animal_class;"; // TODO: UPDATE THIS TO ALSO RETURN NON-ANIMAL CATEGORIES ONCE THE DB IS UPDATED
 
         rc = sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr);
         if (rc == SQLITE_OK)
