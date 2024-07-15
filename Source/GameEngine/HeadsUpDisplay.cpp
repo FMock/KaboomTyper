@@ -18,10 +18,6 @@ HeadsUpDisplay::HeadsUpDisplay()
 	m_user->SetName("Frank");
 }
 
-HeadsUpDisplay::~HeadsUpDisplay()
-{
-}
-
 void HeadsUpDisplay::Draw()
 {
 	DrawHud();

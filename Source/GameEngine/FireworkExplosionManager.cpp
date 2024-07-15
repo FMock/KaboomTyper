@@ -8,10 +8,6 @@ GameEngine::FireworkExplosionManager::FireworkExplosionManager() : m_explode(fal
     m_firework = std::make_unique<Firework>(m_fireworkColorTexture, 400, 400, 1, 1, 300);
 }
 
-GameEngine::FireworkExplosionManager::~FireworkExplosionManager()
-{
-}
-
 void GameEngine::FireworkExplosionManager::ProcessInput()
 {
     // Set Firework color and positon

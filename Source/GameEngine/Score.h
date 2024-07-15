@@ -11,8 +11,6 @@ namespace GameEngine
     {
     public:
         Score();
-        ~Score();
-
         void IncreaseScore(int score);
         void DecreaseScore(int score);
         void SetScore(int score);

@@ -27,7 +27,7 @@ namespace GameEngine
         };
 
         ChoiceMenu();
-        virtual ~ChoiceMenu();
+        virtual ~ChoiceMenu() = default;
         void Draw() override;
         void Update(float dt) override;
         int GetPriority() const override { return m_priority; }

@@ -20,10 +20,6 @@ UIManager::UIManager(std::shared_ptr<InputManager> inputManager) :
 	Initialize();
 }
 
-UIManager::~UIManager()
-{
-}
-
 void UIManager::Initialize()
 {
     // Get word categories for WordCategoryChoiceMenu

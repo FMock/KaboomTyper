@@ -32,7 +32,7 @@ namespace GameEngine
         };
 
         Menu();
-        virtual ~Menu();
+        virtual ~Menu() = default;
         void Draw() override;
         void Update(float dt) override;
         int GetPriority() const override { return m_priority; }

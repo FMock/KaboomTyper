@@ -76,11 +76,6 @@ std::shared_ptr<GameManager> GameManager::Create()
     return instance;
 }
 
-GameEngine::GameManager::~GameManager()
-{
-
-}
-
 void GameManager::Update(float dt)
 {
     UpdateGameEntities(dt);

@@ -8,8 +8,6 @@ namespace GameEngine
 		InitializeCommonElements();
 	}
 
-	DropDownMenu::~DropDownMenu() = default;
-
 	void DropDownMenu::Draw()
 	{
 		if (GetIsActive()) 

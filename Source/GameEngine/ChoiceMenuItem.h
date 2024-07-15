@@ -15,7 +15,7 @@ namespace GameEngine
 	{
 	public:
 		ChoiceMenuItem();
-		~ChoiceMenuItem();
+		~ChoiceMenuItem() = default;
 		ChoiceMenuItem(std::string text, int x, int y, float labelScaler = 1.0f);
 		void Initialize(const std::string& text, int x, int y, float labelScaler = 1.0f);
 		void Update(float dt);

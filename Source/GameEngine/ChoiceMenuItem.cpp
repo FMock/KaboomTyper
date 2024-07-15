@@ -11,7 +11,6 @@ ChoiceMenuItem::ChoiceMenuItem() : m_label(std::make_unique<TextString>()), m_au
     Initialize("ChoiceMenuItem", 0, 0, m_labelScaler);
 }
 
-ChoiceMenuItem::~ChoiceMenuItem() = default;
 
 ChoiceMenuItem::ChoiceMenuItem(std::string text, int x, int y, float labelScaler) : m_label(std::make_unique<TextString>()), m_augmentedLabel(std::make_unique<TextString>()),
                                                                                                   m_clickBox(std::make_unique<Button>()), m_labelScaler(1.0f), 

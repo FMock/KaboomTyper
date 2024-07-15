@@ -7,10 +7,6 @@ Score::Score() : m_score(0), m_highScore(0), m_multiplier(1), m_totalGamesPlayed
 {
 }
 
-Score::~Score()
-{
-}
-
 void Score::IncreaseScore(int score)
 {
     m_score += score;

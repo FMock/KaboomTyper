@@ -9,7 +9,6 @@ namespace GameEngine
 	{
 	public:
 		FireworkExplosionManager();
-		~FireworkExplosionManager();
 		void ProcessInput();
 		void Update(float dt) override;
 		void Draw() override;

@@ -17,7 +17,6 @@ namespace GameEngine
 	{
 	public:
 		InputTextBox();
-		~InputTextBox();
 		InputTextBox(int x, int y, int width, int height, Colors rectColor = Colors::DEFAULT_COLOR, bool fillWithColor = false);
 		void InitializeTextBox(int x, int y, int width, int height, Colors rectColor = Colors::DEFAULT_COLOR, bool fillWithColor = false);
 		void Update(float dt) override;
