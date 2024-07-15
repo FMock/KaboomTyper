@@ -26,7 +26,6 @@ namespace GameEngine
 	{
 	public:
 		UIManager(std::shared_ptr<InputManager> inputManager);
-		~UIManager();
 		void Update(float dt);
 		void ProcessInput();
 		void Render();

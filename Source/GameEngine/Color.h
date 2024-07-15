@@ -50,7 +50,6 @@ namespace GameEngine
 	{
 	public:
 		Color();
-		~Color();
 
 		// Static members to share across all instances
 		static ColorParameters s_colorParameters;

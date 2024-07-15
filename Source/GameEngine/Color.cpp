@@ -39,10 +39,6 @@ Color::Color()
 	}
 }
 
-Color::~Color()
-{
-}
-
 bool Color::InitializeColorParameters()
 {
 	bool initialized = Utilities::ReadXmlFile("../../Config/ColorParameters.xml", s_colorParameters); // TODO: REMOVE HARD-CODED PATH

@@ -16,10 +16,6 @@ Button::Button(std::string text, int x, int y, float scaler, Colors color) : m_o
 	Initialize(text, x, y, scaler, color);
 }
 
-Button::~Button()
-{
-}
-
 void Button::Initialize(std::string text, int x, int y, float scaler, Colors color)
 {
 	m_xPos = x - Common::BUTTON_POSTION_OFFSET;

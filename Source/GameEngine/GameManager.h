@@ -30,7 +30,6 @@ namespace GameEngine
 	{
 	public:
 		static std::shared_ptr<GameManager> Create();
-		~GameManager();
 		void Update(float dt);
 		void UserScored();
 		void Render();

@@ -14,9 +14,6 @@ GameEngine::MessageBox::MessageBox(int x, int y, int width, int height, Colors c
 	Initialize(x, y, width, height, color);
 }
 
-GameEngine::MessageBox::~MessageBox()
-{
-}
 
 void GameEngine::MessageBox::Initialize(int x, int y, int width, int height, Colors color)
 {

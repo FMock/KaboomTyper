@@ -17,10 +17,6 @@ InputTextBox::InputTextBox()
     m_backSpaceCallback = [this]() { this->OnBackspace(); };
 }
 
-InputTextBox::~InputTextBox()
-{
-}
-
 GameEngine::InputTextBox::InputTextBox(int x, int y, int width, int height, Colors rectColor, bool fillWithColor) :
     m_textBox(std::make_unique<RectangleDrawable>()), m_cursor(std::make_unique<Cursor>()), m_cursorXPos(0), m_cursorYPos(0), 
     m_fontWidth(24), m_initialized(false), m_full(false), m_startCursorXPos(0), m_startCursorYPos(0), m_maxCharacters(0)

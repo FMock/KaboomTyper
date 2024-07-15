@@ -13,8 +13,6 @@ namespace GameEngine
 	{
 	public:
 		HeadsUpDisplay();
-		~HeadsUpDisplay();
-
 		void Draw() override;
 		void Update(float dt) override;
 		void Initialize(int x, int y);

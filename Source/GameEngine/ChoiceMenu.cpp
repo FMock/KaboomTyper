@@ -12,8 +12,6 @@ namespace GameEngine
         InitializeCommonElements();
     }
 
-    ChoiceMenu::~ChoiceMenu() = default;
-
     void ChoiceMenu::Draw()
     {
         if (!GetIsActive()) return;
@@ -184,29 +182,20 @@ namespace GameEngine
             bool wasSelected = menuItem->GetIsSelected();
             menuItem->SetIsSelected(!wasSelected);
 
-            // Check if the Default menu item is being de-selected
-            if (menuItemName == "Default" && wasSelected && !menuItem->GetIsSelected())
+            if (menuItem->GetIsSelected())
             {
-                bool anyOtherSelected = false;
-                for (const auto& item : m_choiceMenuItems)
+                // Deselect all other menu items
+                for (auto& item : m_choiceMenuItems)
                 {
-                    if (item.first != "Default" && item.second.menuItem->GetIsSelected())
+                    if (item.first != menuItemName)
                     {
-                        anyOtherSelected = true;
-                        break;
+                        item.second.menuItem->SetIsSelected(false);
                     }
                 }
-
-                // If no other menu items are selected, re-select the Default item
-                if (!anyOtherSelected)
-                {
-                    menuItem->SetIsSelected(true);
-                }
             }
-
-            // Ensure Default is selected if all others are deselected
-            if (!menuItem->GetIsSelected())
+            else
             {
+                // Ensure Default is selected if all others are deselected
                 bool anySelected = false;
                 for (const auto& item : m_choiceMenuItems)
                 {
@@ -227,28 +216,6 @@ namespace GameEngine
                 }
             }
 
-            if (menuItem->GetIsSelected())
-            {
-                if (menuItemName == "Default")
-                {
-                    for (auto& item : m_choiceMenuItems)
-                    {
-                        if (item.first != "Default")
-                        {
-                            item.second.menuItem->SetIsSelected(false);
-                        }
-                    }
-                }
-                else
-                {
-                    auto defaultItem = m_choiceMenuItems.find("Default");
-                    if (defaultItem != m_choiceMenuItems.end())
-                    {
-                        defaultItem->second.menuItem->SetIsSelected(false);
-                    }
-                }
-            }
-
             callback(menuItemName);
 
 #if DEBUG_CHOICEMENU
@@ -256,7 +223,6 @@ namespace GameEngine
 #endif
         }
     }
-
 
     void ChoiceMenu::InitializeCommonElements()
     {

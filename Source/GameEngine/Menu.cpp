@@ -10,8 +10,6 @@ Menu::Menu()
     InitializeCommonElements();
 }
 
-Menu::~Menu() = default;
-
 void Menu::Draw()
 {
     m_menuBar->Draw();

@@ -13,7 +13,6 @@ namespace GameEngine
 	public:
 		Button();
 		Button(std::string text, int x, int y, float scale = 1.0f, Colors color = Colors::DEFAULT_COLOR);
-		~Button();
 		void Initialize(std::string text, int x, int y, float scale = 1.0f, Colors color = Colors::DEFAULT_COLOR);
 		void Update(float dt);
 		void Draw();

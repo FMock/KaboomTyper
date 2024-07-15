@@ -17,7 +17,6 @@ namespace GameEngine
 	public:
 		MessageBox();
 		MessageBox(int x, int y, int width, int height, Colors color = Colors::DEFAULT_COLOR);
-		~MessageBox();
 		void Initialize(int x, int y, int width, int height, Colors color = Colors::DEFAULT_COLOR);
 		void Update(float dt) override;
 		void Draw() override;
