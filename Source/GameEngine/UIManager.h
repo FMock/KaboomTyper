@@ -25,7 +25,7 @@ namespace GameEngine
 	class UIManager
 	{
 	public:
-		UIManager(std::shared_ptr<InputManager> inputManager);
+		UIManager(std::shared_ptr<InputManager> inputManager, std::shared_ptr<WordManager> wordManager);
 		void Update(float dt);
 		void ProcessInput();
 		void Render();
@@ -54,13 +54,14 @@ namespace GameEngine
 		std::shared_ptr<Menu> m_gameMenu;
 		std::shared_ptr<InputManager> m_inputManager;
 		std::shared_ptr<InputMessageBox> m_inputMessageBox;
+		std::shared_ptr<WordManager> m_wordManager;
+		std::vector<std::string> m_wordCategories;
 		Callback m_processInputCallback;
 		int m_priority; // draw priority
 		bool m_initialized;
 		void Initialize();
 		bool RegisterCallbacks();
 		void DisableAllButtonsExceptThisButton(const std::string& buttonName);
-		std::vector<std::string> m_wordCategories;
 	};
 
 	template<typename... Args>

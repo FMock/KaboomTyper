@@ -5,9 +5,6 @@
 #include "TextStringFont.h"
 #include "FontParameters.h"
 #include "TextBlockParameters.h"
-#include <memory>
-#include <vector>
-#include <map>
 #include "InputTextBox.h"
 #include "InputManager.h"
 #include "TextBlockManager.h"
@@ -18,6 +15,10 @@
 #include "DrawOrderManager.h"
 #include "FireworkExplosionManager.h"
 #include "ChoiceMenuItem.h"
+#include "WordManager.h"
+#include <memory>
+#include <vector>
+#include <map>
 
 /// <summary>
 /// GameManager manages the various entities in the game to create a
@@ -51,6 +52,7 @@ namespace GameEngine
 		std::shared_ptr<FireworkExplosionManager> m_fireworkExplosionManager;
 		std::shared_ptr<DecorativeRectangle> m_rectangleOfRectangles;
 		std::shared_ptr<TextBlockManager> m_textblockManager;
+		std::shared_ptr<WordManager> m_wordManager; // shares with TextBlockManager
 		bool m_exitGame;
 		
 		// Audio

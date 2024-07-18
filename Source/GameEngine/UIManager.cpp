@@ -8,13 +8,14 @@
 
 using namespace GameEngine;
 
-UIManager::UIManager(std::shared_ptr<InputManager> inputManager) :
+UIManager::UIManager(std::shared_ptr<InputManager> inputManager, std::shared_ptr<WordManager> wordManager) :
     m_inputManager(inputManager),
     m_gamePlayArea(std::make_shared<GamePlayArea>()),
     m_headsUpDisplay(std::make_shared<HeadsUpDisplay>()),
     m_messageBox(std::make_shared<MessageBox>()),
     m_gameMenu(std::make_shared<MainMenu>()),
     m_inputMessageBox(std::make_shared<InputMessageBox>()),
+    m_wordManager(wordManager),
     m_initialized(false)
 {
 	Initialize();
@@ -23,8 +24,7 @@ UIManager::UIManager(std::shared_ptr<InputManager> inputManager) :
 void UIManager::Initialize()
 {
     // Get word categories for WordCategoryChoiceMenu
-    WordManager wordManager;
-    m_wordCategories = wordManager.GetWordCategories();
+    m_wordCategories = m_wordManager->GetWordCategories();
     if (m_wordCategories.empty())
         std::cerr << "Error: m_wordCategories is empty!" << std::endl;
 
@@ -33,7 +33,7 @@ void UIManager::Initialize()
     m_dropDownMenus["Options"] = std::make_shared<OptionsDropDownMenu>();
 
     // CoiceMenus for each drop down menu
-    m_choiceMenus["Word Category"] = std::make_shared<WordCategoryChoiceMenu>();
+    m_choiceMenus["Word Category"] = std::make_shared<WordCategoryChoiceMenu>(m_wordCategories);
 
     // User Input
     m_inputTextBox = std::make_shared<InputTextBox>();

@@ -17,6 +17,9 @@ void GameManager::Initialize()
 {
     m_exitGame = false;
 
+    // Word Manager
+    m_wordManager = std::make_shared<WordManager>();
+
     // User Input
     m_inputManager = std::make_shared<InputManager>();
 	m_inputManager->RegisterObserver(shared_from_this());
@@ -25,11 +28,11 @@ void GameManager::Initialize()
 	m_stateMachine = std::make_unique<StateMachine>();
 
     // UI Manager
-    m_uiManager = std::make_unique<UIManager>(m_inputManager);
+    m_uiManager = std::make_unique<UIManager>(m_inputManager, m_wordManager);
     m_uiManager->AddCallback(std::bind(&GameManager::UserScored, this));
 
     // TextBlock Manager
-    m_textblockManager = std::make_shared<TextBlockManager>(10.0f, m_inputManager);
+    m_textblockManager = std::make_shared<TextBlockManager>(10.0f, m_inputManager, m_wordManager);
 
     // Firework Explosion Manager
     m_fireworkExplosionManager = std::make_shared<FireworkExplosionManager>();
