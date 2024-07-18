@@ -12,6 +12,7 @@ Colors Common::s_previousColor = DEFAULT_COLOR;
 std::pair<float, float> Common::s_currentPosition = { 0.0f, 0.0f };
 int Common::s_currentTextBlockWidth = 0;
 GameState Common::CurrentState = GameState::STOPPED;
+const std::string Common::DEFAULT_WORD_CATEGORY = "Bird";
 
 void Common::SubmitText(std::string text)
 {

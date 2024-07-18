@@ -8,7 +8,7 @@ using namespace KaboomTyperDB;
 
 WordManager::WordManager() : m_currentWordIndex(0), m_dbMessanger(std::make_unique<DBMessanger>())
 {
-    m_currentCategory = DBMessanger::WordCategories::Bird; // default word category
+    m_currentCategory = DBMessanger::WordCategory::Bird; // default word category
 
     if (!m_dbMessanger->GetWords(m_words, m_currentCategory))
         throw std::exception("WordManager(): Error GetWords returned false");
@@ -20,9 +20,12 @@ WordManager::WordManager() : m_currentWordIndex(0), m_dbMessanger(std::make_uniq
     std::shuffle(m_words.begin(), m_words.end(), std::default_random_engine(seed));
 }
 
-void WordManager::ChangeWordCategory(DBMessanger::WordCategories category)
+void WordManager::ChangeWordCategory(DBMessanger::WordCategory category)
 {
     m_currentCategory = category;
+
+    if (!m_dbMessanger->GetWords(m_words, m_currentCategory))
+        throw std::exception("WordManager(): Error GetWords returned false");
 }
 
 std::vector<std::string> WordManager::GetWordCategories() // TODO: currently only gets animal class names from DBMessanger::GetWordCategories.
@@ -43,7 +46,6 @@ std::vector<std::string> WordManager::GetWordCategories() // TODO: currently onl
     return wordCategories;
 }
 
-
 std::string WordManager::GetNextWord()
 {
     if (m_currentWordIndex + 1 < m_words.size() - 1)
@@ -52,4 +54,9 @@ std::string WordManager::GetNextWord()
         m_currentWordIndex = 0;
 
     return m_words[m_currentWordIndex];
+}
+
+DBMessanger::WordCategory GameEngine::WordManager::GetWordCategory(const std::string& category) const
+{
+    return m_dbMessanger->GetWordCategoryFromString(category);
 }

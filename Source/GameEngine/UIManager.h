@@ -33,7 +33,7 @@ namespace GameEngine
 		void IncreaseScore();
 		void GameOver();
 		void DisplayMainMenuChoices(const std::string& buttonName);
-		void DisplayWordCategoryChoices(const std::string& choice);
+		void WordCategoryChoiceMenuOnClick(const std::string& choice);
 		void DisplayDropDownMenuChoices(const std::string& choice);
 		void RegisterDrawables(DrawOrderManager&  manager);
 		void GetUserNamePromptCallback();

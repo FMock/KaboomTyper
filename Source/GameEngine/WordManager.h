@@ -15,14 +15,15 @@ namespace GameEngine
 	public:
 		WordManager();
 		~WordManager() = default;
-		void ChangeWordCategory(DBMessanger::WordCategories category);
+		void ChangeWordCategory(DBMessanger::WordCategory category);
 		std::vector<std::string> GetWordCategories();
 		std::string GetNextWord();
+		DBMessanger::WordCategory GetWordCategory(const std::string& category) const;
 
 	private:
 		std::unique_ptr<KaboomTyperDB::DBMessanger> m_dbMessanger;
 		std::vector<std::string> m_words;
-		DBMessanger::WordCategories m_currentCategory;
+		DBMessanger::WordCategory m_currentCategory;
 		int m_currentWordIndex;
 	};
 }

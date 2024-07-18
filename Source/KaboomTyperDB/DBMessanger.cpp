@@ -19,7 +19,7 @@ namespace KaboomTyperDB
         std::string ReadConfigFile(const std::string& filePath);
         void ExecuteSQL(sqlite3* db, const std::string& sql);
         std::string Trim(const std::string& str);
-        std::string GetCategoryString(DBMessanger::WordCategories category);
+        std::string GetCategoryString(DBMessanger::WordCategory category);
 
         ~DBMessangerImpl() = default; // Explicitly define the destructor
     };
@@ -36,8 +36,10 @@ namespace KaboomTyperDB
         delete m_impl;
     }
 
-    bool DBMessanger::GetWords(std::vector<std::string>& container, WordCategories category)
+    bool DBMessanger::GetWords(std::vector<std::string>& container, WordCategory category)
     {
+        container.clear();
+
         sqlite3* db;
         int rc;
 
@@ -131,6 +133,34 @@ namespace KaboomTyperDB
         return true;
     }
 
+    DBMessanger::WordCategory DBMessanger::GetWordCategoryFromString(const std::string& category)
+    {
+        if (category == "Mammal")
+            return DBMessanger::Mammal;
+        else if (category == "Reptile")
+            return DBMessanger::Reptile;
+        else if (category == "Amphibian")
+            return DBMessanger::Amphibian;
+        else if (category == "Bird")
+            return DBMessanger::Bird;
+        else if (category == "Fish")
+            return DBMessanger::Fish;
+        else if (category == "Insect")
+            return DBMessanger::Insect;
+        else if (category == "Arachnid")
+            return DBMessanger::Arachnid;
+        else if (category == "Crustacean")
+            return DBMessanger::Crustacean;
+        else if (category == "Myriapod")
+            return DBMessanger::Myriapod;
+        else if (category == "Annelid")
+            return DBMessanger::Annelid;
+        else if (category == "Mollusk")
+            return DBMessanger::Mollusk;
+        else
+            throw std::invalid_argument("Unknown category string: " + category);
+    }
+
     // Implementation class methods
     std::string DBMessangerImpl::ReadConfigFile(const std::string& filePath)
     {
@@ -184,7 +214,7 @@ namespace KaboomTyperDB
         return str.substr(start, end - start + 1);
     }
 
-    std::string DBMessangerImpl::GetCategoryString(DBMessanger::WordCategories category)
+    std::string DBMessangerImpl::GetCategoryString(DBMessanger::WordCategory category)
     {
         switch (category)
         {

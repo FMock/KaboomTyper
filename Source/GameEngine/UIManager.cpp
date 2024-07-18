@@ -148,7 +148,7 @@ bool GameEngine::UIManager::RegisterCallbacks()
     {
         for (auto& category : m_wordCategories) 
         {
-            if (!choiceMenu->AddCallback(category, [this](const std::string& category) { this->DisplayWordCategoryChoices(category); }))
+            if (!choiceMenu->AddCallback(category, [this](const std::string& category) { this->WordCategoryChoiceMenuOnClick(category); }))
             {
                 std::cerr << "Failed to register callback for " << category << " ChoiceMenuItem" << std::endl;
                 return false;
@@ -362,13 +362,19 @@ void GameEngine::UIManager::DisplayDropDownMenuChoices(const std::string& choice
 }
 
 
-void GameEngine::UIManager::DisplayWordCategoryChoices(const std::string& choice)
+void GameEngine::UIManager::WordCategoryChoiceMenuOnClick(const std::string& choice)
 {
-    for (const auto& categoy : m_wordCategories)
+    std::string selection = choice;
+    for (const auto& category : m_wordCategories)
     {
-        if (categoy == choice)
+        if (category == choice) // valid category
         {
-            std::cout << "Player has choosen WordCategoryChoice " << categoy << std::endl;
+            if (choice == "Default")
+                selection = Common::DEFAULT_WORD_CATEGORY;
+                
+            auto wordCategory = m_wordManager->GetWordCategory(selection);
+            m_wordManager->ChangeWordCategory(wordCategory);
+            std::cout << "Player has choosen WordCategoryChoice " << selection << std::endl;
         }
     }
 }
