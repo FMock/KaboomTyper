@@ -16,7 +16,7 @@ namespace KaboomTyperDB
     class KABOOMTYPERDB_API DBMessanger
     {
     public:
-        enum WordCategories
+        enum WordCategory
         {
             Mammal,
             Reptile,
@@ -35,8 +35,9 @@ namespace KaboomTyperDB
         DBMessanger();
         ~DBMessanger();
 
-        bool GetWords(std::vector<std::string>& container, WordCategories = WordCategories::Mammal);
+        bool GetWords(std::vector<std::string>& container, WordCategory = WordCategory::Mammal);
         bool GetWordCategories(std::vector<std::string>& container);
+        DBMessanger::WordCategory GetWordCategoryFromString(const std::string& category);
 
     private:
         DBMessangerImpl* m_impl; // Pointer to the implementation
