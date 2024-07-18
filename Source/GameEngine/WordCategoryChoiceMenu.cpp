@@ -3,7 +3,7 @@
 
 using namespace GameEngine;
 
-WordCategoryChoiceMenu::WordCategoryChoiceMenu()
+WordCategoryChoiceMenu::WordCategoryChoiceMenu(const std::vector<std::string>& wordCategories) : m_wordCategories(wordCategories)
 {
     InitializeMenuEntries();
 
@@ -19,13 +19,9 @@ WordCategoryChoiceMenu::WordCategoryChoiceMenu()
 void WordCategoryChoiceMenu::InitializeMenuEntries()
 {
     // Get all word categories
-    WordManager wordManager;
-    auto categories = wordManager.GetWordCategories(); // TODO: GET WORD CATEGORIES FROM GLOBAL SOURCE INSTEAD OF ANOTHER DATABASE QUERY
-    m_count = categories.size();
+    m_count = m_wordCategories.size();
 
-
-
-    for (const auto& category : categories)
+    for (const auto& category : m_wordCategories)
     {
         auto choiceMenuItemPtr = std::make_unique<ChoiceMenuItem>();
         AddChoiceMenuItem(category, std::move(choiceMenuItemPtr), [this](const std::string& menuItemName)

@@ -21,16 +21,16 @@ namespace GameEngine
         float m_spawnInterval; // Time interval between spawning TextBlocks
         float m_elapsedTime = 0;
         std::shared_ptr<InputManager> m_inputManager;
+        std::shared_ptr<WordManager> m_wordManager;
         void SetHorizontalMovement(TextBlock* block);
         TextBlock* m_horizontalMovingBlock; // Pointer to the block that can move horizontally
         void HandleLanding(std::shared_ptr<TextBlock>& block);
         void UnregisterAllTextBlocks();
         void UpdateTimer(float dt);
-        std::unique_ptr<WordManager> m_wordManager;
         int m_priority;// draw priority
 
     public:
-        TextBlockManager(float spawnIntervalSeconds, std::shared_ptr<InputManager> inputManager);
+        TextBlockManager(float spawnIntervalSeconds, std::shared_ptr<InputManager> inputManager, std::shared_ptr<WordManager> wordManager);
         void ClearBlockDeque();
         void GenerateTextBlock();
         void Update(float dt) override;
