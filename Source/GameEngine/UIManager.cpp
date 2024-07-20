@@ -104,7 +104,7 @@ bool GameEngine::UIManager::RegisterCallbacks()
     // Register callbacks for FileDropDownMenu
     if (auto fileMenu = std::dynamic_pointer_cast<FileDropDownMenu>(m_dropDownMenus["File"]))
     {
-        if (!fileMenu->AddCallback("Import", [this](const std::string& choice) { this->FileDropDownMenuOnClick(choice); }))
+        if (!fileMenu->AddCallback("Start", [this](const std::string& choice) { this->FileDropDownMenuOnClick(choice); }))
         {
             std::cerr << "Failed to register callback for Import MenuItem" << std::endl;
             return false;
@@ -175,6 +175,15 @@ void UIManager::Update(float dt)
     m_inputTextBox->Update(dt);
 	if (m_headsUpDisplay->UpdateRequired()) // only update the HUD if needed
 		m_headsUpDisplay->Update(dt);
+
+    // Call Update() on each DropDownMenu
+    for (auto& pair : m_dropDownMenus)
+    {
+        if (pair.second)
+        {
+            pair.second->Update(dt);
+        }
+    }
 }
 
 void UIManager::ProcessInput()
@@ -248,9 +257,25 @@ void GameEngine::UIManager::CancelButtonCallback()
     m_inputTextBox->SetIsActive(true);
 }
 
+void GameEngine::UIManager::ChangeStartMenuItemLabel(const std::string& newLabelText)
+{
+    auto menu = std::dynamic_pointer_cast<FileDropDownMenu>(m_dropDownMenus["File"]);
+    menu->ChangeMenuItemLabel("Start", newLabelText); // For the menu item with key == "Start", change it's label to newLabelText
+}
+
 void GameEngine::UIManager::AddCallback(Callback callback)
 {
     m_processInputCallback = callback;
+}
+
+void UIManager::AddGameOverCallback(Callback callback)
+{
+    m_gameOverCallback = callback;
+}
+
+void UIManager::AddStartGameCallback(Callback callback)
+{
+    m_startGameCallback = callback;
 }
 
 void UIManager::ResetScore()
@@ -329,13 +354,21 @@ void GameEngine::UIManager::DisplayMainMenuChoices(const std::string& buttonName
 
 void GameEngine::UIManager::FileDropDownMenuOnClick(const std::string& choice)
 {
-    if (choice == "Import")
+    if (choice == "START")
     {
 #if DEBUG
-        std::cout << "Display Import Options" << std::endl;
+        std::cout << "Start the game" << std::endl;
 #endif
+        m_startGameCallback();
     }
-    else if (choice == "Exit")
+    else if (choice == "STOP")
+    {
+#if DEBUG
+        std::cout << "Stop The Game" << std::endl;
+#endif
+        m_gameOverCallback();
+    }
+    else if (choice == "EXIT")
     {
         m_inputManager->SetShouldQuit(true); // user pressed Exit sub-menu item
 #if DEBUG
@@ -350,7 +383,7 @@ void GameEngine::UIManager::FileDropDownMenuOnClick(const std::string& choice)
 
 void GameEngine::UIManager::OptionsDropDownMenuOnClick(const std::string& choice)
 {
-    if (choice == "Word Category")
+    if (choice == "WORD CATEGORY")
     {
 #if DEBUG
         std::cout << "Display Word Category" << std::endl;
@@ -358,7 +391,7 @@ void GameEngine::UIManager::OptionsDropDownMenuOnClick(const std::string& choice
         m_choiceMenus["Word Category"]->SetIsActive(!m_choiceMenus["Word Category"]->GetIsActive());
 
     }
-    else if (choice == "Audio")
+    else if (choice == "AUDIO")
     {
 #if DEBUG
         std::cout << "Display Audio Options" << std::endl;

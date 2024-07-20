@@ -42,6 +42,7 @@ namespace GameEngine
 		void Initialize();
 		void UpdateGameEntities(float deltaTime);
 		void GameOver();
+		void StartGame();
 		void RegisterDrawables();
 
 		DrawOrderManager m_drawOrderManager;

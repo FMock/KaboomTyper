@@ -39,8 +39,11 @@ namespace GameEngine
 		void RegisterDrawables(DrawOrderManager&  manager);
 		void GetUserNamePromptCallback();
 		void CancelButtonCallback();
+		void ChangeStartMenuItemLabel(const std::string& choice);
 		using Callback = std::function<void()>;
 		void AddCallback(Callback callback);
+		void AddGameOverCallback(Callback callback);
+		void AddStartGameCallback(Callback callback);
 
 		template<typename... Args> // Wrapper for MessageBox::ChangeMessage(Args&&... args)
 		void ChangeMessageBoxMessage(Args&&... args);
@@ -58,6 +61,8 @@ namespace GameEngine
 		std::shared_ptr<WordManager> m_wordManager;
 		std::vector<std::string> m_wordCategories;
 		Callback m_processInputCallback;
+		Callback m_gameOverCallback;
+		Callback m_startGameCallback;
 		int m_priority; // draw priority
 		bool m_initialized;
 		void Initialize();

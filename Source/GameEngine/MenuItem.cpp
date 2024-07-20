@@ -64,19 +64,21 @@ void MenuItem::SetIsActive(bool isActive)
 	m_active = isActive;
 }
 
-//void MenuItem::MenuItemPressed()
-//{
-//}
+void GameEngine::MenuItem::SetLabelText(const std::string& text)
+{
+	m_label->SetText(text);
+}
+
+std::string GameEngine::MenuItem::GetLabelText() const
+{
+	return m_label->GetText();
+}
 
 bool MenuItem::IsMouseOverMenuItem(const int& x, const int& y)
 {
 	return x >= m_xPos && x <= m_xPos + m_outlineWidth &&
 		y >= m_yPos && y <= m_yPos + m_outlineHeight;
 }
-
-//void MenuItem::MenuItemReleased()
-//{
-//}
 
 void MenuItem::SetMenuItemColor(Colors color)
 {
