@@ -25,6 +25,8 @@ namespace GameEngine
 		int GetHeight() const;
 		bool GetIsActive() const;
 		void SetIsActive(bool isActive);
+		void SetLabelText(const std::string& text);
+		std::string GetLabelText() const;
 
 	private:
 		std::unique_ptr<RectangleDrawable> m_outline;

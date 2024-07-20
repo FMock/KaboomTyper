@@ -30,6 +30,8 @@ void GameManager::Initialize()
     // UI Manager
     m_uiManager = std::make_unique<UIManager>(m_inputManager, m_wordManager);
     m_uiManager->AddCallback(std::bind(&GameManager::UserScored, this));
+    m_uiManager->AddGameOverCallback(std::bind(&GameManager::GameOver, this));
+    m_uiManager->AddStartGameCallback(std::bind(&GameManager::StartGame, this));
 
     // TextBlock Manager
     m_textblockManager = std::make_shared<TextBlockManager>(10.0f, m_inputManager, m_wordManager);
@@ -129,13 +131,81 @@ void GameEngine::GameManager::UpdateGameEntities(float deltaTime)
     m_rectangleOfRectangles->Update(deltaTime);
 }
 
+void GameEngine::GameManager::StartGame()
+{
+    GameState currentState = m_stateMachine->GetCurrentState();
+    Common::CurrentState = currentState;
+    bool textblockGeneratorRunning = m_textblockManager->IsRunning();
+
+    if (currentState == GameState::IDLE )
+    {
+        m_stateMachine->TransitionTo(GameState::RUNNING);
+        m_uiManager->ChangeMessageBoxMessage("F2: PAUSE", "F3: END GAME");
+        m_uiManager->ChangeStartMenuItemLabel("STOP");
+        m_rectangleOfRectangles->SetAnimate(false);
+        m_rectangleOfRectangles->SetAnimateRandom(false);
+
+        if (!m_textblockManager->IsRunning())
+        {
+            m_textblockManager->ToggleRunning();
+            m_textblockManager->GenerateTextBlock();
+        }
+    }
+    else if (currentState == GameState::PAUSED) // Start game if paused
+    {
+        m_stateMachine->TransitionTo(GameState::RUNNING);
+        m_uiManager->ChangeMessageBoxMessage("F1: PAUSE", "F3: END GAME");
+
+        if (!m_textblockManager->IsRunning())
+        {
+            m_textblockManager->ToggleRunning();
+        }
+    }
+    else if (currentState == GameState::RUNNING)
+    {
+        m_rectangleOfRectangles->SetAnimateClockwise(true);
+    }
+    else if (currentState == GameState::STOPPED)
+    {
+        m_stateMachine->TransitionTo(GameState::IDLE);
+        m_textblockManager->ClearBlockDeque();
+        m_textblockManager->SetTextBlockLimitReached(false);
+        m_uiManager->ResetScore();
+
+        // Now it's safe to transition to GameState::RUNNING
+        m_stateMachine->TransitionTo(GameState::RUNNING);
+        m_uiManager->ChangeMessageBoxMessage("F2: PAUSE", "F3: END GAME");
+        m_uiManager->ChangeStartMenuItemLabel("STOP");
+        m_rectangleOfRectangles->SetAnimate(false);
+        m_rectangleOfRectangles->SetAnimateRandom(false);
+
+        if (!m_textblockManager->IsRunning())
+        {
+            m_textblockManager->ToggleRunning();
+            m_textblockManager->GenerateTextBlock();
+        }
+    }
+}
+
 void GameEngine::GameManager::GameOver()
 {
+    GameState currentState = m_stateMachine->GetCurrentState();
+    Common::CurrentState = currentState;
+    bool textblockGeneratorRunning = m_textblockManager->IsRunning();
+
+    m_rectangleOfRectangles->SetAnimateClockwise(false);
+    m_uiManager->ChangeStartMenuItemLabel("START");
+
     m_stateMachine->TransitionTo(GameState::STOPPED);
     m_uiManager->GameOver();
 
     m_rectangleOfRectangles->SetAnimateClockwise(false);
     m_rectangleOfRectangles->SetAnimateRandom(true);
+
+    if (m_textblockManager->IsRunning())
+    {
+        m_textblockManager->ToggleRunning();
+    }
 }
 
 void GameManager::RegisterDrawables()
@@ -175,41 +245,7 @@ void GameManager::RespondToObserved(InputManager* InputMgr)
 
     if (InputMgr->m_kbState[SDL_SCANCODE_F1])
     {
-        if (currentState == GameState::IDLE || currentState == GameState::PAUSED)
-        {
-            m_stateMachine->TransitionTo(GameState::RUNNING);
-            m_uiManager->ChangeMessageBoxMessage("F2: PAUSE", "F3: END GAME");
-            m_rectangleOfRectangles->SetAnimate(false);
-            m_rectangleOfRectangles->SetAnimateRandom(false);
-
-            if (!textblockGeneratorRunning)
-            {
-                m_textblockManager->ToggleRunning();
-                m_textblockManager->GenerateTextBlock();
-            }
-        }
-        else if (currentState == GameState::PAUSED) // Start game if paused
-        {
-            m_stateMachine->TransitionTo(GameState::RUNNING);
-            m_uiManager->ChangeMessageBoxMessage("F1: PAUSE", "F3: END GAME");
-
-            if (!textblockGeneratorRunning)
-            {
-                m_textblockManager->ToggleRunning();
-            }
-        }
-        else if (currentState == GameState::RUNNING)
-        {
-            m_rectangleOfRectangles->SetAnimateClockwise(true);
-        }
-        else if (currentState == GameState::STOPPED)
-        {
-            m_stateMachine->TransitionTo(GameState::IDLE);
-            m_rectangleOfRectangles->SetAnimate(true);
-            m_textblockManager->ClearBlockDeque();
-            m_textblockManager->SetTextBlockLimitReached(false);
-            m_uiManager->ResetScore();
-        }
+        StartGame();
     }
     else if (InputMgr->m_kbState[SDL_SCANCODE_F2])
     {
@@ -225,15 +261,9 @@ void GameManager::RespondToObserved(InputManager* InputMgr)
     }
     else if (InputMgr->m_kbState[SDL_SCANCODE_F3])
     {
-        m_rectangleOfRectangles->SetAnimateClockwise(false);
         if (currentState == GameState::PAUSED || currentState == GameState::RUNNING)
         {
             GameOver();
-
-            if (textblockGeneratorRunning)
-            {
-                m_textblockManager->ToggleRunning();
-            }
         }
     }
     else if (InputMgr->m_kbState[SDL_SCANCODE_ESCAPE]) // Check for ESC key press

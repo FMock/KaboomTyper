@@ -8,6 +8,7 @@ namespace GameEngine
     {
     public:
         FileDropDownMenu();
+        void ChangeMenuItemLabel(const std::string& key, const std::string& newLabel);
 
     protected:
         void InitializeMenuEntries() override;

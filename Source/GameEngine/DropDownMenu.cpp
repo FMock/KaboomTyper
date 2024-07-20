@@ -42,6 +42,10 @@ namespace GameEngine
 				item.second.menuItem->Update(dt);
 			}
 		}
+
+		// if game state == stop, change SetLabelText("START") and set flag to stop the game
+
+		// if game state == run, change SetLabelText("STOP") and set flag to start the game
 	}
 
 	void DropDownMenu::AddMenuItem(const std::string& name, std::unique_ptr<MenuItem> menuItem, Callback callback)
@@ -116,7 +120,8 @@ namespace GameEngine
 			std::cout << menuItem << " MenuItem clicked" << std::endl;
 #endif
 			menuItem->SetMenuItemColor(Colors::DARK_GRAY);
-			callback(menuItemName);
+			//callback(menuItemName);
+			callback(menuItem->GetLabelText());
 		}
 		else if (!InputMgr->m_mouseButtonState[0] && InputMgr->m_prevMouseButtonState[0] && menuItem->IsMouseOverMenuItem(mouseX, mouseY))
 		{
