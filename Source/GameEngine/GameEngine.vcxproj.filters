@@ -252,6 +252,9 @@
     <ClInclude Include="WordCategoryChoiceMenu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="AudioChoiceMenu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -405,6 +408,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="WordCategoryChoiceMenu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioChoiceMenu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
