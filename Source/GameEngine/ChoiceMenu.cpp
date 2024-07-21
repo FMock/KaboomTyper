@@ -89,10 +89,14 @@ namespace GameEngine
         )->first.size();
 
         // Adjust the size of this choice menu based on its contents
-        int menuWidth = static_cast<int>(max_size * 20);
+        int menuWidth = static_cast<int>(max_size * 21);
         int menuHeight = static_cast<int>(m_choiceMenuItems.size() * (Common::FONT_HEIGHT * 1.30));
         SetWidth(menuWidth);
-        SetHeight(menuHeight);
+
+        if(m_choiceMenuItems.size() == 1) // Ensure menu is large enough when menu only contains a single choice
+            SetHeight(100);
+        else
+            SetHeight(menuHeight);
 
         // Initialize choice menu items
         for (auto& item : m_choiceMenuItems)
@@ -140,6 +144,17 @@ namespace GameEngine
     {
         if (height > 0)
             m_menuBody->SetHeight(height);
+    }
+
+    bool ChoiceMenu::GetMenuItemSelectionState(const std::string& key) const
+    {
+        bool state = false;
+        auto choiceMenuItem = m_choiceMenuItems.find(key);
+        if (choiceMenuItem != m_choiceMenuItems.end())
+        {
+            state = choiceMenuItem->second.menuItem->GetIsSelected();
+        }
+        return state;
     }
 
     void ChoiceMenu::RespondToObserved(InputManager* InputMgr)

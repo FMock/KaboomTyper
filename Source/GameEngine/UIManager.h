@@ -34,6 +34,7 @@ namespace GameEngine
 		void GameOver();
 		void DisplayMainMenuChoices(const std::string& buttonName);
 		void WordCategoryChoiceMenuOnClick(const std::string& choice);
+		void AudioChoiceMenuOnClick(const std::string& choice);
 		void FileDropDownMenuOnClick(const std::string& choice);
 		void OptionsDropDownMenuOnClick(const std::string& choice);
 		void RegisterDrawables(DrawOrderManager&  manager);
@@ -41,9 +42,11 @@ namespace GameEngine
 		void CancelButtonCallback();
 		void ChangeStartMenuItemLabel(const std::string& choice);
 		using Callback = std::function<void()>;
+		using AudioCallback = std::function<void(bool)>;
 		void AddCallback(Callback callback);
 		void AddGameOverCallback(Callback callback);
 		void AddStartGameCallback(Callback callback);
+		void AddAudioCallback(AudioCallback callback);
 
 		template<typename... Args> // Wrapper for MessageBox::ChangeMessage(Args&&... args)
 		void ChangeMessageBoxMessage(Args&&... args);
@@ -60,9 +63,11 @@ namespace GameEngine
 		std::shared_ptr<InputMessageBox> m_inputMessageBox;
 		std::shared_ptr<WordManager> m_wordManager;
 		std::vector<std::string> m_wordCategories;
+		std::vector<std::string> m_audioOptions;
 		Callback m_processInputCallback;
 		Callback m_gameOverCallback;
 		Callback m_startGameCallback;
+		AudioCallback m_audioCallback;
 		int m_priority; // draw priority
 		bool m_initialized;
 		void Initialize();

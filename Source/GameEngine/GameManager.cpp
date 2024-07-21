@@ -8,6 +8,8 @@
 #include "Common.h"
 #include "GameStates.h"
 
+#define DEBUG_GAMEMANAGER 1
+
 using namespace GameEngine;
 using namespace GameEngine::Utility;
 using namespace KaboomTyperDB;
@@ -32,6 +34,8 @@ void GameManager::Initialize()
     m_uiManager->AddCallback(std::bind(&GameManager::UserScored, this));
     m_uiManager->AddGameOverCallback(std::bind(&GameManager::GameOver, this));
     m_uiManager->AddStartGameCallback(std::bind(&GameManager::StartGame, this));
+    //m_uiManager->AddAudioCallback(std::bind(&GameManager::SetPlayMusic, this, std::placeholders::_1)); // need placeholder since SetPlayMusic takes a bool parameter
+    m_uiManager->AddAudioCallback([this](bool playMusic) { this->SetPlayMusic(playMusic); }); // Will using lambdas improve performance?
 
     // TextBlock Manager
     m_textblockManager = std::make_shared<TextBlockManager>(10.0f, m_inputManager, m_wordManager);
@@ -234,6 +238,21 @@ bool GameEngine::GameManager::GetExitGame() const
 void GameEngine::GameManager::SetExitGame(bool exitGame)
 {  
     m_exitGame = exitGame;
+}
+
+bool GameEngine::GameManager::GetPlayMusic() const
+{
+    return m_playMusic;
+}
+
+void GameEngine::GameManager::SetPlayMusic(bool playMusic)
+{
+    m_playMusic = playMusic;
+
+#if DEBUG_GAMEMANAGER
+    std::cout << "Play Music is " << m_playMusic << std::endl;
+#endif // DEBUG_GAMEMANAGER
+
 }
 
 

@@ -36,6 +36,8 @@ namespace GameEngine
 		void Render();
 		bool GetExitGame() const;
 		void SetExitGame(bool exitGame);
+		bool GetPlayMusic() const;
+		void SetPlayMusic(bool playMusic);
 
 	private:
 		GameManager();
@@ -54,6 +56,7 @@ namespace GameEngine
 		std::shared_ptr<DecorativeRectangle> m_rectangleOfRectangles;
 		std::shared_ptr<TextBlockManager> m_textblockManager;
 		std::shared_ptr<WordManager> m_wordManager; // shares with TextBlockManager
+		bool m_playMusic;
 		bool m_exitGame;
 		
 		// Audio

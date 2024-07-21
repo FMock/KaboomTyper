@@ -140,6 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AABB.h" />
+    <ClInclude Include="AudioChoiceMenu.h" />
     <ClInclude Include="AudioGenerator.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="ChoiceMenu.h" />
@@ -206,6 +207,7 @@
     <ClInclude Include="WordManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AudioChoiceMenu.cpp" />
     <ClCompile Include="AudioGenerator.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="ChoiceMenu.cpp" />

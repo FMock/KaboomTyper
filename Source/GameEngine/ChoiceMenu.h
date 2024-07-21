@@ -41,6 +41,7 @@ namespace GameEngine
         int GetHeight() const;
         void SetWidth(int width);
         void SetHeight(int height);
+        bool GetMenuItemSelectionState(const std::string& key) const;
 
     protected:
         void RespondToObserved(InputManager* InputMgr) override;

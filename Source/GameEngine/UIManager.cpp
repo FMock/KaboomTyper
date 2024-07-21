@@ -1,6 +1,7 @@
 #include "UIManager.h"
 #include "Common.h"
 #include "MainMenu.h"
+#include "AudioChoiceMenu.h"
 #include <iostream>
 #include <stdexcept>
 
@@ -34,6 +35,8 @@ void UIManager::Initialize()
 
     // CoiceMenus for each drop down menu
     m_choiceMenus["Word Category"] = std::make_shared<WordCategoryChoiceMenu>(m_wordCategories);
+    m_audioOptions.push_back("Play Music");
+    m_choiceMenus["Audio"] = std::make_shared<AudioChoiceMenu>(m_audioOptions);
 
     // User Input
     m_inputTextBox = std::make_shared<InputTextBox>();
@@ -161,6 +164,24 @@ bool GameEngine::UIManager::RegisterCallbacks()
         return false;
     }
 
+    //Register callbacks for AudioChoiceMenu
+    if (auto choiceMenu = std::dynamic_pointer_cast<AudioChoiceMenu>(m_choiceMenus["Audio"]))
+    {
+        for (auto& option : m_audioOptions)
+        {
+            if (!choiceMenu->AddCallback(option, [this](const std::string& option) { this->AudioChoiceMenuOnClick(option); }))
+            {
+                std::cerr << "Failed to register callback for " << option << " ChoiceMenuItem" << std::endl;
+                return false;
+            }
+        }
+    }
+    else
+    {
+        std::cerr << "Failed to find WordCategoryChoiceMenu" << std::endl;
+        return false;
+    }
+
     // Bind the callback and add the InputTextBox
     m_inputMessageBox->AddInputTextBoxCallback(std::bind(&UIManager::GetUserNamePromptCallback, this));
     m_inputMessageBox->AddButtonCallback(std::bind(&UIManager::GetUserNamePromptCallback, this), InputMessageBox::Buttons::SUBMIT);
@@ -218,6 +239,7 @@ void UIManager::RegisterDrawables(DrawOrderManager& manager)
     std::dynamic_pointer_cast<IDrawable>(m_dropDownMenus["File"])->SetPriority(9);
     std::dynamic_pointer_cast<IDrawable>(m_dropDownMenus["Options"])->SetPriority(9);
     std::dynamic_pointer_cast<IDrawable>(m_choiceMenus["Word Category"])->SetPriority(9);
+    std::dynamic_pointer_cast<IDrawable>(m_choiceMenus["Audio"])->SetPriority(9);
     m_inputMessageBox->SetPriority(13);
 
     // Sharing IDrawables with DrawOrderManager
@@ -276,6 +298,11 @@ void UIManager::AddGameOverCallback(Callback callback)
 void UIManager::AddStartGameCallback(Callback callback)
 {
     m_startGameCallback = callback;
+}
+
+void UIManager::AddAudioCallback(AudioCallback callback)
+{
+    m_audioCallback = callback;
 }
 
 void UIManager::ResetScore()
@@ -389,6 +416,8 @@ void GameEngine::UIManager::OptionsDropDownMenuOnClick(const std::string& choice
         std::cout << "Display Word Category" << std::endl;
 #endif
         m_choiceMenus["Word Category"]->SetIsActive(!m_choiceMenus["Word Category"]->GetIsActive());
+        if (m_choiceMenus["Word Category"]->GetIsActive())
+            m_choiceMenus["Audio"]->SetIsActive(false);
 
     }
     else if (choice == "AUDIO")
@@ -396,6 +425,9 @@ void GameEngine::UIManager::OptionsDropDownMenuOnClick(const std::string& choice
 #if DEBUG
         std::cout << "Display Audio Options" << std::endl;
 #endif
+        m_choiceMenus["Audio"]->SetIsActive(!m_choiceMenus["Audio"]->GetIsActive());
+        if (m_choiceMenus["Audio"]->GetIsActive())
+            m_choiceMenus["Word Category"]->SetIsActive(false);
     }
     else
     {
@@ -419,4 +451,31 @@ void GameEngine::UIManager::WordCategoryChoiceMenuOnClick(const std::string& cho
             std::cout << "Player has choosen WordCategoryChoice " << selection << std::endl;
         }
     }
+}
+
+void GameEngine::UIManager::AudioChoiceMenuOnClick(const std::string& choice)
+{
+    bool state = false;
+    const char* errorMsg = "UIManager::AudioChoiceMenuOnClick, invalid choice key";
+    std::string selection = choice;
+    for (const auto& option : m_audioOptions)
+    {
+        if (option == choice) // valid audio option
+        {
+            std::cout << "Player has choosen audio option " << selection << std::endl;
+
+            auto menu = std::dynamic_pointer_cast<AudioChoiceMenu>(m_choiceMenus["Audio"]);
+            state = menu->GetMenuItemSelectionState("Play Music");
+        }
+        else 
+        {
+            std::cerr << errorMsg << std::endl;
+            throw std::runtime_error(errorMsg);
+        }
+    }
+
+    std::cout << selection << " state is " << state << std::endl;
+
+    // turns music on or off depending on state of "Play Music" selection
+    m_audioCallback(state);
 }
