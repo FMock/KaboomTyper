@@ -36,6 +36,7 @@ void GameManager::Initialize()
     m_uiManager->AddStartGameCallback(std::bind(&GameManager::StartGame, this));
     //m_uiManager->AddAudioCallback(std::bind(&GameManager::SetPlayMusic, this, std::placeholders::_1)); // need placeholder since SetPlayMusic takes a bool parameter
     m_uiManager->AddAudioCallback([this](bool playMusic) { this->SetPlayMusic(playMusic); }); // Will using lambdas improve performance?
+    m_uiManager->AddWordSpeedCallback([this](const std::string speed) { this->ChangeTextBlockFallSpeed(speed); });
 
     // TextBlock Manager
     m_textblockManager = std::make_shared<TextBlockManager>(10.0f, m_inputManager, m_wordManager);
@@ -251,8 +252,13 @@ void GameEngine::GameManager::SetPlayMusic(bool playMusic)
 
 #if DEBUG_GAMEMANAGER
     std::cout << "Play Music is " << m_playMusic << std::endl;
-#endif // DEBUG_GAMEMANAGER
+#endif 
 
+}
+
+void GameEngine::GameManager::ChangeTextBlockFallSpeed(const std::string& speed)
+{
+    std::cout << "Change TextBlock Fall Speed to " << speed << std::endl;
 }
 
 

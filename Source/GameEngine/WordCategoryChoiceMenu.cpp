@@ -7,12 +7,12 @@ WordCategoryChoiceMenu::WordCategoryChoiceMenu(const std::vector<std::string>& w
 {
     InitializeMenuEntries();
 
-    const int x = 365;
-    const int y = 40;
-    int width = 500;
-    int height = 860;
+    m_x = 365;
+    m_y = 40;
+    m_width = 500;
+    m_height = 860;
 
-    InitializeChoiceMenu(x, y, width, height, Colors::BLUE, true);
+    InitializeChoiceMenu(m_x, m_y, m_width, m_height, Colors::BLUE, true);
 }
 
 

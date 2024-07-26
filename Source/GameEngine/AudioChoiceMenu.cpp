@@ -5,7 +5,7 @@ GameEngine::AudioChoiceMenu::AudioChoiceMenu(const std::vector<std::string>& aud
     InitializeMenuEntries();
 
     const int x = 365;
-    const int y = 100;
+    const int y = 150;
     int width = 500;
     int height = 860;
 

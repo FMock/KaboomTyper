@@ -2,6 +2,7 @@
 #include "Common.h"
 #include "MainMenu.h"
 #include "AudioChoiceMenu.h"
+#include "WordSpeedChoiceMenu.h"
 #include <iostream>
 #include <stdexcept>
 
@@ -17,6 +18,8 @@ UIManager::UIManager(std::shared_ptr<InputManager> inputManager, std::shared_ptr
     m_gameMenu(std::make_shared<MainMenu>()),
     m_inputMessageBox(std::make_shared<InputMessageBox>()),
     m_wordManager(wordManager),
+    m_wordSpeedOptions{ "Default", "Hare", "Turtle", "Cheetah" },
+    m_audioOptions{"Play Music"},
     m_initialized(false)
 {
 	Initialize();
@@ -35,7 +38,7 @@ void UIManager::Initialize()
 
     // CoiceMenus for each drop down menu
     m_choiceMenus["Word Category"] = std::make_shared<WordCategoryChoiceMenu>(m_wordCategories);
-    m_audioOptions.push_back("Play Music");
+    m_choiceMenus["Word Speed"] = std::make_shared<WordSpeedChoiceMenu>(m_wordSpeedOptions);
     m_choiceMenus["Audio"] = std::make_shared<AudioChoiceMenu>(m_audioOptions);
 
     // User Input
@@ -139,6 +142,12 @@ bool GameEngine::UIManager::RegisterCallbacks()
             std::cerr << "Failed to register callback for Audio MenuItem" << std::endl;
             return false;
         }
+
+        if (!optionsMenu->AddCallback("Word Speed", [this](const std::string& choice) { this->OptionsDropDownMenuOnClick(choice); }))
+        {
+            std::cerr << "Failed to register callback for Word Speed MenuItem" << std::endl;
+            return false;
+        }
     }
     else
     {
@@ -178,7 +187,25 @@ bool GameEngine::UIManager::RegisterCallbacks()
     }
     else
     {
-        std::cerr << "Failed to find WordCategoryChoiceMenu" << std::endl;
+        std::cerr << "Failed to find AudioChoiceMenu" << std::endl;
+        return false;
+    }
+
+    //Register callbacks for WordSpeedChoiceMenu
+    if (auto choiceMenu = std::dynamic_pointer_cast<WordSpeedChoiceMenu>(m_choiceMenus["Word Speed"]))
+    {
+        for (auto& option : m_wordSpeedOptions)
+        {
+            if (!choiceMenu->AddCallback(option, [this](const std::string& option) { this->WordSpeedChoiceMenuOnClick(option); }))
+            {
+                std::cerr << "Failed to register callback for " << option << " ChoiceMenuItem" << std::endl;
+                return false;
+            }
+        }
+    }
+    else
+    {
+        std::cerr << "Failed to find WordSpeedChoiceMenu" << std::endl;
         return false;
     }
 
@@ -239,6 +266,7 @@ void UIManager::RegisterDrawables(DrawOrderManager& manager)
     std::dynamic_pointer_cast<IDrawable>(m_dropDownMenus["File"])->SetPriority(9);
     std::dynamic_pointer_cast<IDrawable>(m_dropDownMenus["Options"])->SetPriority(9);
     std::dynamic_pointer_cast<IDrawable>(m_choiceMenus["Word Category"])->SetPriority(9);
+    std::dynamic_pointer_cast<IDrawable>(m_choiceMenus["Word Speed"])->SetPriority(9);
     std::dynamic_pointer_cast<IDrawable>(m_choiceMenus["Audio"])->SetPriority(9);
     m_inputMessageBox->SetPriority(13);
 
@@ -303,6 +331,11 @@ void UIManager::AddStartGameCallback(Callback callback)
 void UIManager::AddAudioCallback(AudioCallback callback)
 {
     m_audioCallback = callback;
+}
+
+void UIManager::AddWordSpeedCallback(WordSpeedCallback callback)
+{
+    m_wordSpeedCallback = callback;
 }
 
 void UIManager::ResetScore()
@@ -417,8 +450,10 @@ void GameEngine::UIManager::OptionsDropDownMenuOnClick(const std::string& choice
 #endif
         m_choiceMenus["Word Category"]->SetIsActive(!m_choiceMenus["Word Category"]->GetIsActive());
         if (m_choiceMenus["Word Category"]->GetIsActive())
+        {
             m_choiceMenus["Audio"]->SetIsActive(false);
-
+            m_choiceMenus["Word Speed"]->SetIsActive(false);
+        }
     }
     else if (choice == "AUDIO")
     {
@@ -426,8 +461,23 @@ void GameEngine::UIManager::OptionsDropDownMenuOnClick(const std::string& choice
         std::cout << "Display Audio Options" << std::endl;
 #endif
         m_choiceMenus["Audio"]->SetIsActive(!m_choiceMenus["Audio"]->GetIsActive());
-        if (m_choiceMenus["Audio"]->GetIsActive())
+        if (m_choiceMenus["Audio"]->GetIsActive()) 
+        {
             m_choiceMenus["Word Category"]->SetIsActive(false);
+            m_choiceMenus["Word Speed"]->SetIsActive(false);
+        }
+    }
+    else if (choice == "WORD SPEED")
+    {
+#if DEBUG
+        std::cout << "Display Word Speed Options" << std::endl;
+#endif
+        m_choiceMenus["Word Speed"]->SetIsActive(!m_choiceMenus["Word Speed"]->GetIsActive());
+        if (m_choiceMenus["Word Speed"]->GetIsActive()) 
+        {
+            m_choiceMenus["Word Category"]->SetIsActive(false);
+            m_choiceMenus["Audio"]->SetIsActive(false);
+        }  
     }
     else
     {
@@ -478,4 +528,32 @@ void GameEngine::UIManager::AudioChoiceMenuOnClick(const std::string& choice)
 
     // turns music on or off depending on state of "Play Music" selection
     m_audioCallback(state);
+}
+
+void GameEngine::UIManager::WordSpeedChoiceMenuOnClick(const std::string& choice)
+{
+    bool state = false;
+    const char* errorMsg = "UIManager::WordSpeedChoiceMenuOnClick, invalid choice key";
+    std::string selection = choice;
+
+    for (const auto& option : m_wordSpeedOptions)
+    {
+        if (option == choice) // valid word speed option
+        {
+            auto menu = std::dynamic_pointer_cast<WordSpeedChoiceMenu>(m_choiceMenus["Word Speed"]);
+            state = menu->GetMenuItemSelectionState(option);
+        }
+    }
+
+#if DEBUG
+    std::cout << selection << " state is " << state << std::endl;
+#endif
+
+    // If state is false then player toggled the current speed off, so set speed selection to Default
+    if (!state)
+    {
+        selection = "Default";
+    }
+
+    m_wordSpeedCallback(selection);
 }
