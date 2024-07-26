@@ -205,6 +205,7 @@
     <ClInclude Include="Vector2D.h" />
     <ClInclude Include="WordCategoryChoiceMenu.h" />
     <ClInclude Include="WordManager.h" />
+    <ClInclude Include="WordSpeedChoiceMenu.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AudioChoiceMenu.cpp" />
@@ -259,6 +260,7 @@
     <ClCompile Include="Utilities.cpp" />
     <ClCompile Include="WordCategoryChoiceMenu.cpp" />
     <ClCompile Include="WordManager.cpp" />
+    <ClCompile Include="WordSpeedChoiceMenu.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\KaboomTyperDB\KaboomTyperDB.vcxproj">

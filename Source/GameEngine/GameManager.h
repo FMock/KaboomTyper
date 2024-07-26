@@ -38,6 +38,7 @@ namespace GameEngine
 		void SetExitGame(bool exitGame);
 		bool GetPlayMusic() const;
 		void SetPlayMusic(bool playMusic);
+		void ChangeTextBlockFallSpeed(const std::string& speed);
 
 	private:
 		GameManager();

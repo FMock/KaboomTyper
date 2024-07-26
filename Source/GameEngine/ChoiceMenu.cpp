@@ -93,10 +93,19 @@ namespace GameEngine
         int menuHeight = static_cast<int>(m_choiceMenuItems.size() * (Common::FONT_HEIGHT * 1.30));
         SetWidth(menuWidth);
 
-        if(m_choiceMenuItems.size() == 1) // Ensure menu is large enough when menu only contains a single choice
+        if (m_choiceMenuItems.size() == 1) // TODO: GENERALIZE CHOICE MENU SIZE FOR ALL SIZES
+        {
             SetHeight(100);
-        else
+        }
+        else if (m_choiceMenuItems.size() == 4)
+        {
+            SetHeight(200);
+            SetWidth(180);
+        }
+        else 
+        {
             SetHeight(menuHeight);
+        }
 
         // Initialize choice menu items
         for (auto& item : m_choiceMenuItems)
