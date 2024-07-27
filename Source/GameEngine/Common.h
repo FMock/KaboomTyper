@@ -4,6 +4,7 @@
 #include "AABB.h"
 #include "Color.h"
 #include "GameStates.h"
+#include <map>
 
 #define PI 3.14159265f
 
@@ -34,7 +35,7 @@ namespace GameEngine
 		static void SetActiveText(std::string text);
 		static std::string GetActiveText();
 		static bool AABBIntersect(AABB box1, AABB box2);
-		static constexpr float GRAVITY = 9.81f;
+		static float GRAVITY;
 		static constexpr float BASE_SIZE = 1.0f;
 		static constexpr float LOG_BASE = 10.0f;
 		static constexpr int FLOOR = 878; // The y-position the TextBlocks cannot exceed.
@@ -52,5 +53,6 @@ namespace GameEngine
 		static constexpr int MENUITEM_POSTION_OFFSET = 4;
 		inline static const std::string GAME_CONFIG_FILE = R"(..\..\Config\GameEngineConfig.txt)"; // must be inline for C++17 and later to define in header
 		static GameState CurrentState;
+		static const std::map<std::string, float> GRAVITY_CHOICES;
 	};
 }

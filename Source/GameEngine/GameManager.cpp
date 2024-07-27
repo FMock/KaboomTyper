@@ -256,11 +256,22 @@ void GameEngine::GameManager::SetPlayMusic(bool playMusic)
 
 }
 
+// Changes TextBlock fall speed by adjusting the gravity variable
 void GameEngine::GameManager::ChangeTextBlockFallSpeed(const std::string& speed)
 {
     std::cout << "Change TextBlock Fall Speed to " << speed << std::endl;
-}
 
+    auto it = Common::GRAVITY_CHOICES.find(speed);
+
+    if (it != Common::GRAVITY_CHOICES.end())
+    {
+        Common::GRAVITY = it->second;
+    }
+    else
+    {
+        throw std::out_of_range("Key not found in GRAVITY_CHOICES map: " + speed);
+    }
+}
 
 void GameManager::RespondToObserved(InputManager* InputMgr)
 {
@@ -297,11 +308,11 @@ void GameManager::RespondToObserved(InputManager* InputMgr)
     }
     else if (InputMgr->m_kbState[SDL_SCANCODE_F4])
     {
-
+        // Do nothing for now
     }
     else if (InputMgr->m_kbState[SDL_SCANCODE_F5])
     {
-
+        // Do Nothing for now
     }
     else
     {
