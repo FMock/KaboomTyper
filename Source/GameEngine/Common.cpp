@@ -4,6 +4,13 @@
 
 using namespace GameEngine;
 
+float Common::GRAVITY = 9.81f;
+const std::map<std::string, float> Common::GRAVITY_CHOICES = {
+	{"Default", 18.00f},
+	{"Turtle", 9.81f},
+	{"Hare", 26.00f},
+	{"Cheetah", 30.0f}
+};
 std::string Common::s_submittedText = "";
 std::string Common::s_activeText = "";
 std::string Common::s_currentWordCategory = "";
