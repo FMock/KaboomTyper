@@ -1,1 +1,1 @@
-db_path=../../Resources/databases/AnimalClassificationDB.db
+db_path=../../Resources/databases/KaboomTyperDB.db
