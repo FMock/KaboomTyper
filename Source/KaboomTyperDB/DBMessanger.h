@@ -28,7 +28,13 @@ namespace KaboomTyperDB
             Crustacean,
             Myriapod,
             Annelid,
+            Cnidarian,
             Mollusk,
+            Echinoderm,
+            Poriferan,
+            Nematode,
+            Eye,
+            Anime,
             WORDCATEGORIESCOUNT
         };
 

@@ -9,7 +9,7 @@ const std::map<std::string, float> Common::GRAVITY_CHOICES = {
 	{"Default", 18.00f},
 	{"Turtle", 9.81f},
 	{"Hare", 26.00f},
-	{"Cheetah", 30.0f}
+	{"Cheetah", 36.0f}
 };
 std::string Common::s_submittedText = "";
 std::string Common::s_activeText = "";

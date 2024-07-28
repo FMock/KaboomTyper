@@ -107,7 +107,7 @@ namespace KaboomTyperDB
         sqlite3_stmt* stmt;
 
         // Build the query string
-        std::string query = "SELECT class FROM animal_class;"; // TODO: UPDATE THIS TO ALSO RETURN NON-ANIMAL CATEGORIES ONCE THE DB IS UPDATED
+        std::string query = "SELECT class FROM category;"; // TODO: UPDATE THIS TO ALSO RETURN NON-ANIMAL CATEGORIES ONCE THE DB IS UPDATED
 
         rc = sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr);
         if (rc == SQLITE_OK)
@@ -155,8 +155,20 @@ namespace KaboomTyperDB
             return DBMessanger::Myriapod;
         else if (category == "Annelid")
             return DBMessanger::Annelid;
+        else if (category == "Cnidarian")
+            return DBMessanger::Cnidarian;
         else if (category == "Mollusk")
             return DBMessanger::Mollusk;
+        else if (category == "Echinoderm")
+            return DBMessanger::Echinoderm;
+        else if (category == "Poriferan")
+            return DBMessanger::Poriferan;
+        else if (category == "Nematode")
+            return DBMessanger::Nematode;
+        else if (category == "Eye")
+            return DBMessanger::Eye;
+        else if (category == "Anime")
+            return DBMessanger::Anime;
         else
             throw std::invalid_argument("Unknown category string: " + category);
     }
@@ -238,8 +250,20 @@ namespace KaboomTyperDB
             return "Myriapod";
         case DBMessanger::Annelid:
             return "Annelid";
+        case DBMessanger::Cnidarian:
+            return "Cnidarian";
         case DBMessanger::Mollusk:
             return "Mollusk";
+        case DBMessanger::Echinoderm:
+            return "Echinoderm";
+        case DBMessanger::Poriferan:
+            return "Poriferan";
+        case DBMessanger::Nematode:
+            return "Nematode";
+        case DBMessanger::Eye:
+            return "Eye";
+        case DBMessanger::Anime:
+            return "Anime";
         default:
             return "Unknown";
         }
