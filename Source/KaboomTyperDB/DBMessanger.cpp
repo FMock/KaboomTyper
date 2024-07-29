@@ -2,7 +2,8 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <algorithm> // For std::find_if
+#include <algorithm>
+#include <random>
 #include <cctype>    // For std::isspace>
 #include "sqlite3.h"
 
@@ -57,10 +58,8 @@ namespace KaboomTyperDB
 
         sqlite3_stmt* stmt;
 
-        // Get the category string
         std::string categoryString = m_impl->GetCategoryString(category);
 
-        // Build the query string
         std::string query = "SELECT TYPE FROM " + categoryString + ";";
 
         rc = sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr);
@@ -81,9 +80,64 @@ namespace KaboomTyperDB
             std::cerr << "Failed to execute statement: " << sqlite3_errmsg(db) << std::endl;
         }
         sqlite3_finalize(stmt);
-
-        // Close the database connection
         sqlite3_close(db);
+        return true;
+    }
+
+    bool DBMessanger::GetDefaultWords(std::vector<std::string>& container)
+    {
+        container.clear();
+
+        sqlite3* db;
+        int rc;
+
+        rc = sqlite3_open(m_impl->m_dbPath.c_str(), &db);
+        if (rc)
+        {
+            std::cerr << "Can't open database: " << sqlite3_errmsg(db) << std::endl;
+            return false;
+        }
+        else
+        {
+            std::cout << "Opened database successfully\n";
+        }
+
+        sqlite3_stmt* stmt;
+
+        std::vector<std::string> allWords;
+
+        // Loop through each WordCategory to get words
+        for (int category = 0; category < WordCategory::WORDCATEGORIESCOUNT; ++category)
+        {
+            std::string categoryString = m_impl->GetCategoryString(static_cast<WordCategory>(category));
+            std::string query = "SELECT TYPE FROM " + categoryString + ";";
+
+            rc = sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr);
+            if (rc == SQLITE_OK)
+            {
+                while (sqlite3_step(stmt) == SQLITE_ROW)
+                {
+                    const unsigned char* typeText = sqlite3_column_text(stmt, 0);
+                    if (typeText != nullptr)
+                    {
+                        std::string word = reinterpret_cast<const char*>(typeText);
+                        allWords.push_back(m_impl->Trim(word)); // Trim and add word to the list
+                    }
+                }
+            }
+            else
+            {
+                std::cerr << "Failed to execute statement: " << sqlite3_errmsg(db) << std::endl;
+            }
+
+            sqlite3_finalize(stmt);
+        }
+
+        sqlite3_close(db);
+
+        // Shuffle and sample up to 200 words
+        container = SampleWords(allWords, std::min<size_t>(200, allWords.size()));
+
         return true;
     }
 
@@ -171,6 +225,15 @@ namespace KaboomTyperDB
             return DBMessanger::Anime;
         else
             throw std::invalid_argument("Unknown category string: " + category);
+    }
+
+    // Function to shuffle and sample words
+    std::vector<std::string> DBMessanger::SampleWords(const std::vector<std::string>& words, size_t sampleSize)
+    {
+        std::vector<std::string> sample;
+        std::sample(words.begin(), words.end(), std::back_inserter(sample),
+            sampleSize, std::mt19937{ std::random_device{}() });
+        return sample;
     }
 
     // Implementation class methods
