@@ -10,7 +10,7 @@ WordManager::WordManager() : m_currentWordIndex(0), m_dbMessanger(std::make_uniq
 {
     m_currentCategory = DBMessanger::WordCategory::Bird; // default word category
 
-    if (!m_dbMessanger->GetWords(m_words, m_currentCategory))
+    if (!m_dbMessanger->GetDefaultWords(m_words))
         throw std::exception("WordManager(): Error GetWords returned false");
 
     // Obtain a time-based seed
@@ -28,7 +28,7 @@ void WordManager::ChangeWordCategory(DBMessanger::WordCategory category)
         throw std::exception("WordManager(): Error GetWords returned false");
 }
 
-std::vector<std::string> WordManager::GetWordCategories() // TODO: currently only gets animal class names from DBMessanger::GetWordCategories.
+std::vector<std::string> WordManager::GetWordCategories()
 {
     static std::vector<std::string> wordCategories;
     static bool isInitialized = false;

@@ -23,6 +23,7 @@ namespace GameEngine
 	private:
 		std::unique_ptr<KaboomTyperDB::DBMessanger> m_dbMessanger;
 		std::vector<std::string> m_words;
+		std::vector<std::string> m_defaultWords;
 		DBMessanger::WordCategory m_currentCategory;
 		int m_currentWordIndex;
 	};

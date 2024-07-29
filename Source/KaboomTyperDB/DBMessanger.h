@@ -42,10 +42,12 @@ namespace KaboomTyperDB
         ~DBMessanger();
 
         bool GetWords(std::vector<std::string>& container, WordCategory = WordCategory::Mammal);
+        bool GetDefaultWords(std::vector<std::string>& container);
         bool GetWordCategories(std::vector<std::string>& container);
         DBMessanger::WordCategory GetWordCategoryFromString(const std::string& category);
 
     private:
         DBMessangerImpl* m_impl; // Pointer to the implementation
+        std::vector<std::string> SampleWords(const std::vector<std::string>& words, size_t sampleSize);
     };
 }
