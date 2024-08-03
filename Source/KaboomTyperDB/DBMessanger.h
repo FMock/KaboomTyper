@@ -35,6 +35,7 @@ namespace KaboomTyperDB
             Nematode,
             Eye,
             Anime,
+            Default,
             WORDCATEGORIESCOUNT
         };
 

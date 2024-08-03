@@ -8,12 +8,11 @@ using namespace KaboomTyperDB;
 
 WordManager::WordManager() : m_currentWordIndex(0), m_dbMessanger(std::make_unique<DBMessanger>())
 {
-    m_currentCategory = DBMessanger::WordCategory::Bird; // default word category
+    m_currentCategory = DBMessanger::WordCategory::Default; // default word category
 
     if (!m_dbMessanger->GetDefaultWords(m_words))
         throw std::exception("WordManager(): Error GetWords returned false");
 
-    // Obtain a time-based seed
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 
     // Use the default random engine and the seed to shuffle the vector
@@ -35,8 +34,6 @@ std::vector<std::string> WordManager::GetWordCategories()
 
     if (!isInitialized)
     {
-        wordCategories.push_back("Default");
-
         if (!m_dbMessanger->GetWordCategories(wordCategories))
             throw std::exception("WordManager::GetWordCategories(): Error GetWords returned false");
 

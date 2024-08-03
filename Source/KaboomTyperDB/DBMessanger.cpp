@@ -39,48 +39,60 @@ namespace KaboomTyperDB
 
     bool DBMessanger::GetWords(std::vector<std::string>& container, WordCategory category)
     {
-        container.clear();
-
-        sqlite3* db;
-        int rc;
-
-        // Open a database connection using the path from the configuration file
-        rc = sqlite3_open(m_impl->m_dbPath.c_str(), &db);
-        if (rc)
+        if (category == WordCategory::Default)
         {
-            std::cerr << "Can't open database: " << sqlite3_errmsg(db) << std::endl;
-            return false;
-        }
-        else
-        {
-            std::cout << "Opened database successfully\n";
-        }
-
-        sqlite3_stmt* stmt;
-
-        std::string categoryString = m_impl->GetCategoryString(category);
-
-        std::string query = "SELECT TYPE FROM " + categoryString + ";";
-
-        rc = sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr);
-        if (rc == SQLITE_OK)
-        {
-            while (sqlite3_step(stmt) == SQLITE_ROW)
+            if (!GetDefaultWords(container)) 
             {
-                const unsigned char* typeText = sqlite3_column_text(stmt, 0);
-                if (typeText != nullptr)
-                {
-                    std::string word = reinterpret_cast<const char*>(typeText);
-                    container.push_back(m_impl->Trim(word)); // Trim and add word to the container
-                }
+                std::cerr << "GetDefaultWords: Returned false for " << m_impl->GetCategoryString(category) << std::endl;
+                return false;
             }
         }
         else
         {
-            std::cerr << "Failed to execute statement: " << sqlite3_errmsg(db) << std::endl;
+            container.clear();
+
+            sqlite3* db;
+            int rc;
+
+            // Open a database connection using the path from the configuration file
+            rc = sqlite3_open(m_impl->m_dbPath.c_str(), &db);
+            if (rc)
+            {
+                std::cerr << "Can't open database: " << sqlite3_errmsg(db) << std::endl;
+                return false;
+            }
+            else
+            {
+                std::cout << "Opened database successfully\n";
+            }
+
+            sqlite3_stmt* stmt;
+
+            std::string categoryString = m_impl->GetCategoryString(category);
+
+            std::string query = "SELECT TYPE FROM " + categoryString + ";";
+
+            rc = sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr);
+            if (rc == SQLITE_OK)
+            {
+                while (sqlite3_step(stmt) == SQLITE_ROW)
+                {
+                    const unsigned char* typeText = sqlite3_column_text(stmt, 0);
+                    if (typeText != nullptr)
+                    {
+                        std::string word = reinterpret_cast<const char*>(typeText);
+                        container.push_back(m_impl->Trim(word)); // Trim and add word to the container
+                    }
+                }
+            }
+            else
+            {
+                std::cerr << "Failed to execute statement: " << sqlite3_errmsg(db) << std::endl;
+            }
+            sqlite3_finalize(stmt);
+            sqlite3_close(db);
         }
-        sqlite3_finalize(stmt);
-        sqlite3_close(db);
+
         return true;
     }
 
@@ -110,6 +122,10 @@ namespace KaboomTyperDB
         for (int category = 0; category < WordCategory::WORDCATEGORIESCOUNT; ++category)
         {
             std::string categoryString = m_impl->GetCategoryString(static_cast<WordCategory>(category));
+
+            if (categoryString == "Default")
+                continue;
+
             std::string query = "SELECT TYPE FROM " + categoryString + ";";
 
             rc = sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr);
@@ -223,6 +239,8 @@ namespace KaboomTyperDB
             return DBMessanger::Eye;
         else if (category == "Anime")
             return DBMessanger::Anime;
+        else if (category == "Default")
+            return DBMessanger::Default;
         else
             throw std::invalid_argument("Unknown category string: " + category);
     }
@@ -327,6 +345,8 @@ namespace KaboomTyperDB
             return "Eye";
         case DBMessanger::Anime:
             return "Anime";
+        case DBMessanger::Default:
+            return "Default";
         default:
             return "Unknown";
         }
