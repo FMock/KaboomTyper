@@ -177,10 +177,7 @@ namespace GameEngine
         }
     }
 
-    // Handles logic related to selecting and de-selcting a ChoiceMenuItem
-    // Requirements:
-    // When "Default" menu item is selected, no other item can be selected
-    // When the last item selected is de-selected, "Default" gets selected automatically
+
     void ChoiceMenu::HandleMenuItem(InputManager* InputMgr, ChoiceMenuItem* menuItem, const std::string& menuItemName, Callback callback)
     {
         int mouseX, mouseY;
@@ -204,10 +201,29 @@ namespace GameEngine
             std::cout << menuItem << " ChoiceMenuItem released" << std::endl;
 #endif
             bool wasSelected = menuItem->GetIsSelected();
-            menuItem->SetIsSelected(!wasSelected);
+            std::string callbackMenuItemName = menuItemName;
 
-            if (menuItem->GetIsSelected())
+            if (wasSelected)
             {
+                // If the currently selected item is selected again
+                auto defaultItem = m_choiceMenuItems.find("Default");
+                if (defaultItem != m_choiceMenuItems.end())
+                {
+                    // If "Default" item exists, select it
+                    menuItem->SetIsSelected(false);
+                    defaultItem->second.menuItem->SetIsSelected(true);
+                    callbackMenuItemName = "Default"; // Update the callback name
+                }
+                else
+                {
+                    // If "Default" item does not exist, simply deselect the current item
+                    menuItem->SetIsSelected(false);
+                }
+            }
+            else
+            {
+                menuItem->SetIsSelected(true);
+
                 // Deselect all other menu items
                 for (auto& item : m_choiceMenuItems)
                 {
@@ -217,36 +233,36 @@ namespace GameEngine
                     }
                 }
             }
-            else
-            {
-                // Ensure Default is selected if all others are deselected
-                bool anySelected = false;
-                for (const auto& item : m_choiceMenuItems)
-                {
-                    if (item.second.menuItem->GetIsSelected())
-                    {
-                        anySelected = true;
-                        break;
-                    }
-                }
 
-                if (!anySelected)
+            // Ensure "Default" is selected if all others are deselected and it exists
+            bool anySelected = false;
+            for (const auto& item : m_choiceMenuItems)
+            {
+                if (item.second.menuItem->GetIsSelected())
                 {
-                    auto defaultItem = m_choiceMenuItems.find("Default");
-                    if (defaultItem != m_choiceMenuItems.end())
-                    {
-                        defaultItem->second.menuItem->SetIsSelected(true);
-                    }
+                    anySelected = true;
+                    break;
                 }
             }
 
-            callback(menuItemName);
+            if (!anySelected)
+            {
+                auto defaultItem = m_choiceMenuItems.find("Default");
+                if (defaultItem != m_choiceMenuItems.end())
+                {
+                    defaultItem->second.menuItem->SetIsSelected(true);
+                    callbackMenuItemName = "Default"; // Update the callback name if Default is selected
+                }
+            }
+
+            callback(callbackMenuItemName);
 
 #if DEBUG_CHOICEMENU
             std::cout << menuItem->GetName() << " is Selected = " << menuItem->GetIsSelected() << ", is Active = " << menuItem->GetIsActive() << std::endl;
 #endif
         }
     }
+
 
     void ChoiceMenu::InitializeCommonElements()
     {
