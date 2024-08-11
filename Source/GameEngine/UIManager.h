@@ -13,6 +13,7 @@
 #include "DropDownMenu.h"
 #include "FileDropDownMenu.h"
 #include "OptionsDropDownMenu.h"
+#include "HelpDropDownMenu.h"
 #include "ChoiceMenu.h"
 #include "WordCategoryChoiceMenu.h"
 #include "WordManager.h"
@@ -38,6 +39,7 @@ namespace GameEngine
 		void WordSpeedChoiceMenuOnClick(const std::string& choice);
 		void FileDropDownMenuOnClick(const std::string& choice);
 		void OptionsDropDownMenuOnClick(const std::string& choice);
+		void HelpDropDownMenuOnClick(const std::string& choice);
 		void RegisterDrawables(DrawOrderManager&  manager);
 		void GetUserNamePromptCallback();
 		void CancelButtonCallback();

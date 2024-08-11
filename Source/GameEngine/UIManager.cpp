@@ -35,6 +35,7 @@ void UIManager::Initialize()
     // Submenus for each main menu
     m_dropDownMenus["File"] = std::make_shared<FileDropDownMenu>();
     m_dropDownMenus["Options"] = std::make_shared<OptionsDropDownMenu>();
+    m_dropDownMenus["Help"] = std::make_shared<HelpDropDownMenu>();
 
     // CoiceMenus for each drop down menu
     m_choiceMenus["Word Category"] = std::make_shared<WordCategoryChoiceMenu>(m_wordCategories);
@@ -155,6 +156,33 @@ bool GameEngine::UIManager::RegisterCallbacks()
         return false;
     }
 
+    // Register callbacks for OptionsDropDownMenu
+    if (auto helpMenu = std::dynamic_pointer_cast<HelpDropDownMenu>(m_dropDownMenus["Help"]))
+    {
+        if (!helpMenu->AddCallback("Instructions", [this](const std::string& choice) { this->HelpDropDownMenuOnClick(choice); }))
+        {
+            std::cerr << "Failed to register callback for Instructions MenuItem" << std::endl;
+            return false;
+        }
+
+        if (!helpMenu->AddCallback("View Source Code", [this](const std::string& choice) { this->HelpDropDownMenuOnClick(choice); }))
+        {
+            std::cerr << "Failed to register callback for View Source Code MenuItem" << std::endl;
+            return false;
+        }
+
+        if (!helpMenu->AddCallback("Send Feedback", [this](const std::string& choice) { this->HelpDropDownMenuOnClick(choice); }))
+        {
+            std::cerr << "Failed to register callback for Send Feedback MenuItem" << std::endl;
+            return false;
+        }
+    }
+    else
+    {
+        std::cerr << "Failed to find HelpDropDownMenu" << std::endl;
+        return false;
+    }
+
     //Register callbacks for WordCategoryChoiceMenu
     if (auto choiceMenu = std::dynamic_pointer_cast<WordCategoryChoiceMenu>(m_choiceMenus["Word Category"]))
     {
@@ -265,6 +293,7 @@ void UIManager::RegisterDrawables(DrawOrderManager& manager)
     m_messageBox->SetPriority(4);
     std::dynamic_pointer_cast<IDrawable>(m_dropDownMenus["File"])->SetPriority(9);
     std::dynamic_pointer_cast<IDrawable>(m_dropDownMenus["Options"])->SetPriority(9);
+    std::dynamic_pointer_cast<IDrawable>(m_dropDownMenus["Help"])->SetPriority(9);
     std::dynamic_pointer_cast<IDrawable>(m_choiceMenus["Word Category"])->SetPriority(9);
     std::dynamic_pointer_cast<IDrawable>(m_choiceMenus["Word Speed"])->SetPriority(9);
     std::dynamic_pointer_cast<IDrawable>(m_choiceMenus["Audio"])->SetPriority(9);
@@ -386,13 +415,13 @@ void GameEngine::UIManager::DisplayMainMenuChoices(const std::string& buttonName
         std::cout << "Display " << buttonName << " Drop Down Menu" << std::endl;
 #endif
     }
-    else if (buttonName == "Help")
-    {
-#if DEBUG
-        std::cout << "Display Help Drop Down Menu" << std::endl;
-#endif
-        // Handle Help logic here if needed
-    }
+//    else if (buttonName == "Help")
+//    {
+//#if DEBUG
+//        std::cout << "Display Help Drop Down Menu" << std::endl;
+//#endif
+//        // Handle Help logic here if needed
+//    }
     else if (buttonName == "About")
     {
 #if DEBUG
@@ -556,4 +585,33 @@ void GameEngine::UIManager::WordSpeedChoiceMenuOnClick(const std::string& choice
     }
 
     m_wordSpeedCallback(selection);
+}
+
+void GameEngine::UIManager::HelpDropDownMenuOnClick(const std::string& choice)
+{
+    if (choice == "INSTRUCTIONS")
+    {
+#if DEBUG
+        std::cout << "Display Instructions" << std::endl;
+#endif
+
+    }
+    else if (choice == "VIEW SOURCE CODE")
+    {
+#if DEBUG
+        std::cout << "Display View Source Code Option" << std::endl;
+#endif
+
+    }
+    else if (choice == "SEND FEEDBACK")
+    {
+#if DEBUG
+        std::cout << "Display Send Feedback Option" << std::endl;
+#endif
+
+    }
+    else
+    {
+        // Do Nothing
+    }
 }
