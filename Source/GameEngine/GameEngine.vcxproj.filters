@@ -258,6 +258,9 @@
     <ClInclude Include="WordSpeedChoiceMenu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="HelpDropDownMenu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -417,6 +420,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="WordSpeedChoiceMenu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HelpDropDownMenu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
