@@ -5,7 +5,7 @@ using namespace GameEngine;
 GameEngine::HelpDropDownMenu::HelpDropDownMenu()
 {
 	InitializeMenuEntries();
-	InitializeMenu(270, 40, 300, 170, Colors::BLUE, true);
+	InitializeMenu(X_POSITION, Y_POSITION, WIDTH, HEIGHT, Colors::BLUE, true);
 }
 
 void HelpDropDownMenu::ChangeMenuItemLabel(const std::string& key, const std::string& newLabel)
@@ -47,9 +47,9 @@ void HelpDropDownMenu::InitializeMenuEntries()
 
 void HelpDropDownMenu::InitializeMenuEntry(MenuItem* menuItem, const std::string& label, int x, int y, float scale, int color)
 {
-    int menuXPos = 280;
-    int menuYPos = 45;
-    int menuWidth = 290;
+    int menuXPos = X_POSITION + 10;;
+    int menuYPos = Y_POSITION + 5;
+    int menuWidth = WIDTH - 10;
 
     if (menuItem)
     {

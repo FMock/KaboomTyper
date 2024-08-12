@@ -415,13 +415,6 @@ void GameEngine::UIManager::DisplayMainMenuChoices(const std::string& buttonName
         std::cout << "Display " << buttonName << " Drop Down Menu" << std::endl;
 #endif
     }
-//    else if (buttonName == "Help")
-//    {
-//#if DEBUG
-//        std::cout << "Display Help Drop Down Menu" << std::endl;
-//#endif
-//        // Handle Help logic here if needed
-//    }
     else if (buttonName == "About")
     {
 #if DEBUG
