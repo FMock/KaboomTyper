@@ -279,6 +279,12 @@ void GameManager::RespondToObserved(InputManager* InputMgr)
     Common::CurrentState = currentState;
     bool textblockGeneratorRunning = m_textblockManager->IsRunning();
 
+    // Let the menu system handle its keyboard shortcuts / navigation / click-outside first.
+    // If it consumed the input this frame, don't run the game-level key handling below
+    // (notably ESC, which closes an open menu instead of quitting when a menu is open).
+    if (m_uiManager->HandleMenuInput(InputMgr))
+        return;
+
     if (InputMgr->m_kbState[SDL_SCANCODE_F1])
     {
         StartGame();
@@ -302,8 +308,10 @@ void GameManager::RespondToObserved(InputManager* InputMgr)
             GameOver();
         }
     }
-    else if (InputMgr->m_kbState[SDL_SCANCODE_ESCAPE]) // Check for ESC key press
+    else if (InputMgr->m_kbState[SDL_SCANCODE_ESCAPE] && !InputMgr->m_kbPrevState[SDL_SCANCODE_ESCAPE]) // ESC just pressed (edge)
     {
+        // Edge-triggered so that a held ESC which closed an open menu (handled in
+        // HandleMenuInput) does not also quit the game on the following frames.
         m_inputManager->SetShouldQuit(true); // Set the exit flag to true
     }
     else if (InputMgr->m_kbState[SDL_SCANCODE_F4])

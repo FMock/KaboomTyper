@@ -8,6 +8,11 @@ void KeyPressHandler::HandleKeyPresses(InputManager* InputMgr, KeyPressCallback 
     {
         if (!InputMgr->m_kbPrevState[i] && InputMgr->m_kbState[i])
         {
+            // Ignore key presses while CTRL is held so menu shortcuts (CTRL+F/O/H/A)
+            // don't leak characters into the input text box.
+            if (InputMgr->m_kbState[SDL_SCANCODE_LCTRL] || InputMgr->m_kbState[SDL_SCANCODE_RCTRL])
+                continue;
+
             auto shiftPressed = InputMgr->m_kbState[SDL_SCANCODE_LSHIFT] || InputMgr->m_kbState[SDL_SCANCODE_RSHIFT];
             switch (i)
             {

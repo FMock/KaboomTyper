@@ -118,6 +118,17 @@ void Menu::HandleButton(InputManager* InputMgr, Button* button, const std::strin
     }
 }
 
+bool Menu::IsPointInMenuBar(int x, int y) const
+{
+    if (!m_menuBar)
+        return false;
+
+    int left = m_menuBar->GetXPosition();
+    int top = m_menuBar->GetYPosition();
+    return x >= left && x <= left + m_menuBar->GetWidth() &&
+           y >= top && y <= top + m_menuBar->GetHeight();
+}
+
 void Menu::InitializeCommonElements()
 {
     m_menuBar = std::make_unique<RectangleDrawable>();

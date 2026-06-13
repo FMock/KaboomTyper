@@ -40,6 +40,7 @@ namespace GameEngine
         void AddMenuItem(const std::string& name, std::unique_ptr<Button> button, Callback callback);
         bool AddCallback(const std::string& name, Callback callback);
         void InitializeMenu(const std::string& name, int nameX, int nameY, int x, int y, int width, int height, Colors, bool = true);
+        bool IsPointInMenuBar(int x, int y) const; // hit-test against the top menu bar
 
     protected:
         void RespondToObserved(InputManager* InputMgr) override;
