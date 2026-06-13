@@ -118,6 +118,13 @@ void Menu::HandleButton(InputManager* InputMgr, Button* button, const std::strin
     }
 }
 
+void Menu::SetMenuItemSelected(const std::string& name, bool selected)
+{
+    auto it = m_menuItems.find(name);
+    if (it != m_menuItems.end() && it->second.button)
+        it->second.button->SetSelected(selected);
+}
+
 bool Menu::IsPointInMenuBar(int x, int y) const
 {
     if (!m_menuBar)

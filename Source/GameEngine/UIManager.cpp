@@ -253,12 +253,14 @@ void UIManager::Update(float dt)
 	if (m_headsUpDisplay->UpdateRequired()) // only update the HUD if needed
 		m_headsUpDisplay->Update(dt);
 
-    // Call Update() on each DropDownMenu
+    // Call Update() on each DropDownMenu and keep its top menu-bar button highlighted
+    // while that drop-down is open.
     for (auto& pair : m_dropDownMenus)
     {
         if (pair.second)
         {
             pair.second->Update(dt);
+            m_gameMenu->SetMenuItemSelected(pair.first, pair.second->GetIsActive());
         }
     }
 }
