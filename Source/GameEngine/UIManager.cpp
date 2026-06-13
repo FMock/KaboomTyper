@@ -3,8 +3,10 @@
 #include "MainMenu.h"
 #include "AudioChoiceMenu.h"
 #include "WordSpeedChoiceMenu.h"
+#include <SDL.h>
 #include <iostream>
 #include <stdexcept>
+#include <set>
 
 #define DEBUG 1
 
@@ -32,6 +34,21 @@ void UIManager::Initialize()
     if (m_wordCategories.empty())
         std::cerr << "Error: m_wordCategories is empty!" << std::endl;
 
+    // Group the animal categories under a single "Animals" entry. Everything that is not a
+    // known non-animal category is treated as an animal (so new animal categories added to the
+    // DB automatically join the group).
+    static const std::set<std::string> NON_ANIMALS = { "Eye", "Anime", "Default" };
+    m_animalCategories.clear();
+    m_topLevelCategories.clear();
+    m_topLevelCategories.push_back("Animals");
+    for (const auto& category : m_wordCategories)
+    {
+        if (NON_ANIMALS.count(category))
+            m_topLevelCategories.push_back(category); // Eye / Anime / Default stay top-level
+        else
+            m_animalCategories.push_back(category);   // grouped under the Animals fly-out
+    }
+
     // Submenus for each main menu
     m_dropDownMenus["File"] = std::make_shared<FileDropDownMenu>();
     m_dropDownMenus["Options"] = std::make_shared<OptionsDropDownMenu>();
@@ -39,19 +56,20 @@ void UIManager::Initialize()
     m_dropDownMenus["About"] = std::make_shared<AboutDropDownMenu>();
 
     // CoiceMenus for each drop down menu
-    m_choiceMenus["Word Category"] = std::make_shared<WordCategoryChoiceMenu>(m_wordCategories);
+    m_choiceMenus["Word Category"] = std::make_shared<WordCategoryChoiceMenu>(m_topLevelCategories);
+    m_choiceMenus["Animals"] = std::make_shared<WordCategoryChoiceMenu>(m_animalCategories); // fly-out
     m_choiceMenus["Word Speed"] = std::make_shared<WordSpeedChoiceMenu>(m_wordSpeedOptions);
     m_choiceMenus["Audio"] = std::make_shared<AudioChoiceMenu>(m_audioOptions);
 
     // User Input
     m_inputTextBox = std::make_shared<InputTextBox>();
-    m_inputTextBox->InitializeTextBox(10, 916, 780, 34, Colors::DEFAULT_COLOR, true);
+    m_inputTextBox->InitializeTextBox(10, 916, 880, 34, Colors::DEFAULT_COLOR, true);
     m_inputTextBox->AddCallback(std::bind(&UIManager::ProcessInput, this)); // Bind ProcessInput() for use as a Callback by InputTextBox
     m_inputManager->RegisterObserver(m_inputTextBox); // so InputTextbox can respond to user key presses
 
     // GUI
     m_gamePlayArea->Initialize();
-    m_headsUpDisplay->Initialize(445, 43);
+    m_headsUpDisplay->Initialize(545, 43); // moved right to meet the widened (900px) frame; covers the gap left by widening
 
     // Register with InputManger to get user updates
     m_inputManager->RegisterObserver(m_gameMenu); // so menu can respond to mouse clicks
@@ -184,12 +202,19 @@ bool GameEngine::UIManager::RegisterCallbacks()
         return false;
     }
 
-    //Register callbacks for WordCategoryChoiceMenu
+    //Register callbacks for the top-level WordCategoryChoiceMenu (Animals + Eye/Anime/Default)
     if (auto choiceMenu = std::dynamic_pointer_cast<WordCategoryChoiceMenu>(m_choiceMenus["Word Category"]))
     {
-        for (auto& category : m_wordCategories) 
+        for (auto& category : m_topLevelCategories)
         {
-            if (!choiceMenu->AddCallback(category, [this](const std::string& category) { this->WordCategoryChoiceMenuOnClick(category); }))
+            // "Animals" opens the fly-out instead of loading words; the rest load directly.
+            ChoiceMenu::Callback cb;
+            if (category == "Animals")
+                cb = [this](const std::string&) { this->OpenWordCategoryFlyout("Animals"); };
+            else
+                cb = [this](const std::string& c) { this->WordCategoryChoiceMenuOnClick(c); };
+
+            if (!choiceMenu->AddCallback(category, cb))
             {
                 std::cerr << "Failed to register callback for " << category << " ChoiceMenuItem" << std::endl;
                 return false;
@@ -199,6 +224,24 @@ bool GameEngine::UIManager::RegisterCallbacks()
     else
     {
         std::cerr << "Failed to find WordCategoryChoiceMenu" << std::endl;
+        return false;
+    }
+
+    //Register callbacks for the Animals fly-out (each animal is a real category that loads words)
+    if (auto flyout = std::dynamic_pointer_cast<WordCategoryChoiceMenu>(m_choiceMenus["Animals"]))
+    {
+        for (auto& category : m_animalCategories)
+        {
+            if (!flyout->AddCallback(category, [this](const std::string& c) { this->WordCategoryChoiceMenuOnClick(c); }))
+            {
+                std::cerr << "Failed to register callback for " << category << " (Animals fly-out)" << std::endl;
+                return false;
+            }
+        }
+    }
+    else
+    {
+        std::cerr << "Failed to find Animals fly-out menu" << std::endl;
         return false;
     }
 
@@ -299,6 +342,7 @@ void UIManager::RegisterDrawables(DrawOrderManager& manager)
     std::dynamic_pointer_cast<IDrawable>(m_dropDownMenus["Help"])->SetPriority(9);
     std::dynamic_pointer_cast<IDrawable>(m_dropDownMenus["About"])->SetPriority(9);
     std::dynamic_pointer_cast<IDrawable>(m_choiceMenus["Word Category"])->SetPriority(9);
+    std::dynamic_pointer_cast<IDrawable>(m_choiceMenus["Animals"])->SetPriority(9);
     std::dynamic_pointer_cast<IDrawable>(m_choiceMenus["Word Speed"])->SetPriority(9);
     std::dynamic_pointer_cast<IDrawable>(m_choiceMenus["Audio"])->SetPriority(9);
     m_inputMessageBox->SetPriority(13);
@@ -478,6 +522,66 @@ std::shared_ptr<GameEngine::ChoiceMenu> GameEngine::UIManager::GetOpenChoiceMenu
     return nullptr;
 }
 
+std::shared_ptr<GameEngine::ChoiceMenu> GameEngine::UIManager::GetFocusedChoiceMenu() const
+{
+    // A fly-out (the deepest open menu) takes keyboard focus over its parent.
+    auto fly = m_choiceMenus.find("Animals");
+    if (fly != m_choiceMenus.end() && fly->second->GetIsActive())
+        return fly->second;
+
+    for (const auto& pair : m_choiceMenus)
+        if (pair.first != "Animals" && pair.second->GetIsActive())
+            return pair.second;
+
+    return nullptr;
+}
+
+int GameEngine::UIManager::ComputeFlyoutX(int parentX, int parentWidth, int flyoutWidth) const
+{
+    // General, off-screen-safe placement: prefer opening to the right of the parent menu; if the
+    // window sits so far right that the fly-out would clip off the physical display, open it to
+    // the left instead (and vice-versa). Decision is based on the window's on-screen position.
+    int winX = 0, winY = 0;
+    SDL_Rect disp{ 0, 0, Common::WINDOW_WIDTH, Common::WINDOW_HEIGHT };
+    if (SDL_Window* w = SDL_GL_GetCurrentWindow())
+    {
+        SDL_GetWindowPosition(w, &winX, &winY);
+        int d = SDL_GetWindowDisplayIndex(w);
+        if (d >= 0)
+            SDL_GetDisplayBounds(d, &disp);
+    }
+
+    const int rightX = parentX + parentWidth; // fly-out left edge if placed on the right
+    const int leftX = parentX - flyoutWidth;  // fly-out left edge if placed on the left
+
+    const bool fitsRight = (winX + rightX + flyoutWidth) <= (disp.x + disp.w);
+    const bool fitsLeft = (winX + leftX) >= disp.x;
+
+    if (fitsRight) return rightX;
+    if (fitsLeft)  return leftX;
+
+    // Neither side fits fully: choose the side with more room.
+    const int roomRight = (disp.x + disp.w) - (winX + rightX);
+    const int roomLeft = (winX + parentX) - disp.x;
+    return (roomRight >= roomLeft) ? rightX : leftX;
+}
+
+void GameEngine::UIManager::OpenWordCategoryFlyout(const std::string& name)
+{
+    auto parentIt = m_choiceMenus.find("Word Category");
+    auto flyIt = m_choiceMenus.find(name);
+    if (parentIt == m_choiceMenus.end() || flyIt == m_choiceMenus.end())
+        return;
+
+    auto parent = parentIt->second;
+    auto fly = flyIt->second;
+
+    int x = ComputeFlyoutX(parent->GetMenuX(), parent->GetWidth(), fly->GetWidth());
+    fly->RepositionX(x);
+    fly->SetIsActive(true);
+    fly->SetHighlight(0); // give the fly-out keyboard focus on its first item
+}
+
 void GameEngine::UIManager::OpenMenu(const std::string& name)
 {
     auto it = m_dropDownMenus.find(name);
@@ -509,10 +613,18 @@ bool GameEngine::UIManager::HandleMenuInput(InputManager* InputMgr)
         }
     }
 
-    // 2. Esc: back out one level — close an open choice sub-menu first (focus returns to
-    //    the drop-down), then the drop-down; if nothing is open, defer to the caller (quit).
+    // 2. Esc: back out one level — fly-out first (focus returns to the Word Category menu),
+    //    then any open choice sub-menu (focus returns to the drop-down), then the drop-down;
+    //    if nothing is open, defer to the caller (quit).
     if (KeyJustPressed(InputMgr, SDL_SCANCODE_ESCAPE))
     {
+        auto flyIt = m_choiceMenus.find("Animals");
+        if (flyIt != m_choiceMenus.end() && flyIt->second->GetIsActive())
+        {
+            flyIt->second->SetIsActive(false);
+            flyIt->second->ResetHighlight();
+            return true;
+        }
         if (auto choice = GetOpenChoiceMenu())
         {
             choice->SetIsActive(false);
@@ -527,22 +639,46 @@ bool GameEngine::UIManager::HandleMenuInput(InputManager* InputMgr)
         return false;
     }
 
-    // 3a. Arrow / Enter navigation while a choice sub-menu is open — it has focus.
-    if (auto choice = GetOpenChoiceMenu())
+    // 3a. Arrow / Enter navigation while a choice sub-menu has focus (a fly-out wins over its
+    //     parent). Right descends into a fly-out; Left backs out of one.
+    if (auto focus = GetFocusedChoiceMenu())
     {
+        auto flyIt = m_choiceMenus.find("Animals");
+        const bool focusIsFlyout = (flyIt != m_choiceMenus.end() && focus == flyIt->second);
+
         if (KeyJustPressed(InputMgr, SDL_SCANCODE_DOWN))
         {
-            choice->MoveHighlight(1);
+            focus->MoveHighlight(1);
             return true;
         }
         if (KeyJustPressed(InputMgr, SDL_SCANCODE_UP))
         {
-            choice->MoveHighlight(-1);
+            focus->MoveHighlight(-1);
+            return true;
+        }
+        if (KeyJustPressed(InputMgr, SDL_SCANCODE_RIGHT))
+        {
+            // Descend into a fly-out when the highlighted item opens one.
+            if (!focusIsFlyout && focus->GetHighlightedName() == "Animals")
+                OpenWordCategoryFlyout("Animals");
+            return true;
+        }
+        if (KeyJustPressed(InputMgr, SDL_SCANCODE_LEFT))
+        {
+            // Back out of a fly-out to its parent menu.
+            if (focusIsFlyout)
+            {
+                focus->SetIsActive(false);
+                focus->ResetHighlight();
+            }
             return true;
         }
         if (KeyJustPressed(InputMgr, SDL_SCANCODE_RETURN) || KeyJustPressed(InputMgr, SDL_SCANCODE_KP_ENTER))
         {
-            choice->ActivateHighlighted(); // select the category/speed/audio option
+            focus->ActivateHighlighted(); // select the category/speed/audio option (or open the fly-out)
+            // Selecting "Animals" in the parent opens the fly-out — move focus into it.
+            if (!focusIsFlyout && flyIt != m_choiceMenus.end() && flyIt->second->GetIsActive())
+                flyIt->second->SetHighlight(0);
             return true;
         }
     }
@@ -645,6 +781,14 @@ void GameEngine::UIManager::FileDropDownMenuOnClick(const std::string& choice)
 
 void GameEngine::UIManager::OptionsDropDownMenuOnClick(const std::string& choice)
 {
+    // The Animals fly-out is a child of the Word Category menu; reset it whenever the user
+    // switches Options sub-menus so it can't be left visible without its parent.
+    if (auto fly = m_choiceMenus.find("Animals"); fly != m_choiceMenus.end())
+    {
+        fly->second->SetIsActive(false);
+        fly->second->ResetHighlight();
+    }
+
     if (choice == "WORD CATEGORY")
     {
 #if DEBUG

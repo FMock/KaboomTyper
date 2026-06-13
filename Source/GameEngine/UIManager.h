@@ -41,6 +41,7 @@ namespace GameEngine
 		bool HandleMenuInput(InputManager* InputMgr);
 		bool IsAnyMenuOpen() const;
 		void CloseAllMenus();
+		void OpenWordCategoryFlyout(const std::string& name); // open a fly-out beside the Word Category menu
 
 		void WordCategoryChoiceMenuOnClick(const std::string& choice);
 		void AudioChoiceMenuOnClick(const std::string& choice);
@@ -75,7 +76,9 @@ namespace GameEngine
 		std::shared_ptr<InputManager> m_inputManager;
 		std::shared_ptr<InputMessageBox> m_inputMessageBox;
 		std::shared_ptr<WordManager> m_wordManager;
-		std::vector<std::string> m_wordCategories;
+		std::vector<std::string> m_wordCategories;     // all categories from the DB
+		std::vector<std::string> m_animalCategories;   // categories grouped under "Animals"
+		std::vector<std::string> m_topLevelCategories; // "Animals" + the non-animal categories
 		std::vector<std::string> m_audioOptions;
 		std::vector<std::string> m_wordSpeedOptions;
 		Callback m_processInputCallback;
@@ -93,6 +96,8 @@ namespace GameEngine
 		void OpenMenu(const std::string& name);              // open this dropdown, close others, highlight first item
 		std::shared_ptr<DropDownMenu> GetOpenDropDown() const; // the active dropdown, or nullptr
 		std::shared_ptr<ChoiceMenu> GetOpenChoiceMenu() const; // the active Options sub-menu, or nullptr
+		std::shared_ptr<ChoiceMenu> GetFocusedChoiceMenu() const; // keyboard focus: fly-out wins over its parent
+		int ComputeFlyoutX(int parentX, int parentWidth, int flyoutWidth) const; // off-screen-safe left/right placement
 		// Visual left-to-right order of the drop-down top menus (About is modal, excluded)
 		std::vector<std::string> m_topMenuOrder{ "File", "Options", "Help", "About" };
 	};

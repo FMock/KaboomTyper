@@ -47,7 +47,7 @@ void GameManager::Initialize()
 
     // Rectangle of Rectangles
     m_rectangleOfRectangles = std::make_shared<DecorativeRectangle>();
-    m_rectangleOfRectangles->Initialize(13, 45, 430, 100, Colors::DARK_GRAY);
+    m_rectangleOfRectangles->Initialize(13, 45, 530, 100, Colors::DARK_GRAY); // widened to meet the scoreboard; more squares auto-generated from the width
     m_rectangleOfRectangles->SetAnimate(false);
     m_rectangleOfRectangles->SetAnimateClockwise(false);
     m_rectangleOfRectangles->SetAnimateRandom(true);

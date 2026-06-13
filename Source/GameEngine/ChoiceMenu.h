@@ -51,6 +51,11 @@ namespace GameEngine
         void SetHighlight(int index);    // clamp into [0, count) (or -1 to clear)
         void ResetHighlight();           // clear the highlight (-1)
         void ActivateHighlighted();      // select the highlighted item
+        std::string GetHighlightedName() const; // key of the highlighted item, or ""
+
+        // Fly-out positioning support
+        int GetMenuX() const;            // current left edge of the menu body
+        void RepositionX(int newX);      // move the whole menu horizontally (Y unchanged)
 
     protected:
         void RespondToObserved(InputManager* InputMgr) override;
@@ -70,5 +75,14 @@ namespace GameEngine
         int m_priority; // draw priority
         int m_width;
         int m_height;
+
+        // Saved layout args from the last InitializeChoiceMenu call, so the menu can be
+        // repositioned later (used by fly-out menus).
+        int m_layoutX = 0;
+        int m_layoutY = 0;
+        int m_layoutWidth = 0;
+        int m_layoutHeight = 0;
+        Colors m_layoutColor = Colors::BLUE;
+        bool m_layoutFlag = true;
 	};
 }
