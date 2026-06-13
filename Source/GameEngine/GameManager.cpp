@@ -43,7 +43,6 @@ void GameManager::Initialize()
 
     // Firework Explosion Manager
     m_fireworkExplosionManager = std::make_shared<FireworkExplosionManager>();
-    m_fireworkExplosionManager->SetShouldFireworkExplode(false);
 
     // Rectangle of Rectangles
     m_rectangleOfRectangles = std::make_shared<DecorativeRectangle>();
@@ -68,7 +67,10 @@ void GameManager::Initialize()
             // TODO: HANDLE THIS ERROR
         }
 
-        m_explosion->LoadWAV("explosion_stereo", m_explosionPath);
+        // Load the boom under several keys so overlapping/rapid explosions don't cut each
+        // other off (the SDL mixer mixes different keys; the same key would just restart).
+        for (int v = 0; v < BOOM_VOICES; ++v)
+            m_explosion->LoadWAV("boom_" + std::to_string(v), m_explosionPath);
     }
 
     RegisterDrawables();
@@ -90,17 +92,7 @@ void GameManager::Update(float dt)
 {
     UpdateGameEntities(dt);
 
-    if (m_fireworkExplosionManager->IsFireworkActive())
-    {
-        m_fireworkExplosionManager->Update(dt);
-    }
-
-    if(m_fireworkExplosionManager->GetShouldFireworkExplode())
-    {
-        m_fireworkExplosionManager->SetIsFireworkActive(true);
-        m_fireworkExplosionManager->GenerateFireworkParticles();
-        m_fireworkExplosionManager->SetShouldFireworkExplode(false);
-    }
+    m_fireworkExplosionManager->Update(dt); // advance any active explosions (cheap when none)
 
     m_exitGame = m_inputManager->ShouldQuit(); // user wishes to exit?
 }
@@ -110,10 +102,17 @@ void GameManager::UserScored()
 {
     m_textblockManager->DestroyActiveTextBlock();
     m_uiManager->IncreaseScore();
-    m_fireworkExplosionManager->SetShouldFireworkExplode(true);
-    m_fireworkExplosionManager->ProcessInput();
-    m_explosion->PlaySound("explosion_stereo");
-    SDL_Delay(10); // slight pause to hear the sound
+
+    int blasts = m_fireworkExplosionManager->Trigger(); // bright sprite explosions (multiple for long words)
+
+    // Play the boom on the next voice in the pool (round-robin) so consecutive scores
+    // don't cut each other off. A couple of long-word blasts layer for a bigger roar.
+    int voices = (blasts >= 4) ? 2 : 1;
+    for (int v = 0; v < voices; ++v)
+    {
+        m_explosion->PlaySound("boom_" + std::to_string(m_boomVoice));
+        m_boomVoice = (m_boomVoice + 1) % BOOM_VOICES;
+    }
 }
 
 void GameManager::Render()
@@ -215,8 +214,8 @@ void GameEngine::GameManager::GameOver()
 
 void GameManager::RegisterDrawables()
 {
-    // Firework Manager
-    m_fireworkExplosionManager->SetPriority(1);
+    // Firework Manager - above the text blocks (1) so blasts render over them
+    m_fireworkExplosionManager->SetPriority(7);
     m_drawOrderManager.AddDrawable(m_fireworkExplosionManager);
 
     // Textblock Manager

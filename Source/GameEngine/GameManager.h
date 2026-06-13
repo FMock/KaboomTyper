@@ -63,6 +63,8 @@ namespace GameEngine
 		// Audio
 		std::shared_ptr<GameAudio> m_explosion;
 		std::string m_explosionPath;
+		static const int BOOM_VOICES = 4; // pool of explosion voices so rapid blasts overlap
+		int m_boomVoice = 0;              // round-robin index into the voice pool
 
 	protected:
 		void RespondToObserved(InputManager* InputMgr) override;
