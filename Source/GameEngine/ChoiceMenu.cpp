@@ -82,6 +82,15 @@ namespace GameEngine
 
         const int verticalSpacer = 32;
 
+        // Nothing to lay out if there are no items; keep the passed-in size and bail
+        // (avoids dereferencing std::max_element's end() iterator on an empty container).
+        if (m_choiceMenuItems.empty())
+        {
+            SetWidth(width);
+            SetHeight(height);
+            return;
+        }
+
         // Determine the largest string size
         size_t max_size = std::max_element(
             m_choiceMenuItems.begin(), m_choiceMenuItems.end(),

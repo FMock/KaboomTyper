@@ -45,15 +45,27 @@ bool Game::Initialize()
 	}
 
 	// Create an OpenGL context associated with the window.
-	SDL_GLContext glcontext = SDL_GL_CreateContext(m_window);
+	m_glcontext = SDL_GL_CreateContext(m_window);
+	if (!m_glcontext)
+	{
+		fprintf(stderr, "Could not create OpenGL context. ErrorCode=%s\n", SDL_GetError());
+		SDL_DestroyWindow(m_window);
+		m_window = nullptr;
+		SDL_Quit();
+		return false;
+	}
 
 	// Make sure we have a recent version of OpenGL.
 	GLenum glewError = glewInit();
 	if (glewError != GLEW_OK)
 	{
 		fprintf(stderr, "Could not initialize glew. ErrorCode=%s\n", glewGetErrorString(glewError));
+		SDL_GL_DeleteContext(m_glcontext);
+		m_glcontext = NULL;
+		SDL_DestroyWindow(m_window);
+		m_window = nullptr;
 		SDL_Quit();
-		return 1;
+		return false;
 	}
 	if (GLEW_VERSION_2_0)
 	{
@@ -63,8 +75,12 @@ bool Game::Initialize()
 	else
 	{
 		fprintf(stderr, "OpenGL max supported version is too low.\n");
+		SDL_GL_DeleteContext(m_glcontext);
+		m_glcontext = NULL;
+		SDL_DestroyWindow(m_window);
+		m_window = nullptr;
 		SDL_Quit();
-		return 1;
+		return false;
 	}
 
 	// Setup OpenGL state.
@@ -146,7 +162,16 @@ void Game::Draw()
 
 void Game::Shutdown()
 {
-	// first delete OpenGL context then SDL
-	SDL_GL_DeleteContext(m_glcontext);
+	// first delete OpenGL context, then destroy the window, then quit SDL
+	if (m_glcontext)
+	{
+		SDL_GL_DeleteContext(m_glcontext);
+		m_glcontext = NULL;
+	}
+	if (m_window)
+	{
+		SDL_DestroyWindow(m_window);
+		m_window = nullptr;
+	}
 	SDL_Quit();
 }

@@ -127,7 +127,8 @@ void InputMessageBox::AddButtonCallback(Callback callback, InputMessageBox::Butt
 void InputMessageBox::OnEnter()
 {
     Common::SubmitText(m_inputTextBox->GetTextBoxContentsAsString());
-    m_enterPressedCallback();
+    if (m_enterPressedCallback)
+        m_enterPressedCallback();
     m_inputTextBox->ClearInputText();
     m_inputTextBox->SetCursorXPosition(m_inputTextBox->GetCursorStartingXPosition());
     m_inputTextBox->SetCursorYPosition(m_inputTextBox->GetCursorStartingYPosition());
@@ -148,8 +149,8 @@ void InputMessageBox::RespondToObserved(InputManager* InputMgr)
     if (m_isActive)
     {
         // Handle button clicks
-        HandleButtonClick(InputMgr, m_cancelButton.get(), "Cancel", [this]() { m_cancelBtnCallback(); });
-        HandleButtonClick(InputMgr, m_submitButton.get(), "Submit", [this]() { m_submitBtnCallback(); });
+        HandleButtonClick(InputMgr, m_cancelButton.get(), "Cancel", [this]() { if (m_cancelBtnCallback) m_cancelBtnCallback(); });
+        HandleButtonClick(InputMgr, m_submitButton.get(), "Submit", [this]() { if (m_submitBtnCallback) m_submitBtnCallback(); });
 
         // Pass the callbacks to HandleKeyPresses
         m_keyPressHandler->HandleKeyPresses(InputMgr, m_keyPressCallback, m_enterCallback, m_backSpaceCallback);

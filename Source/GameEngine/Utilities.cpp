@@ -468,8 +468,8 @@ bool Utilities::ReadWordsFromFile(const std::string& filename, std::unordered_ma
 
 	while (std::getline(file, line))
 	{
-		if (line.empty() || line[0] == '#')
-		{ // Ignore empty lines and comments
+		if (line.empty())
+		{ // Ignore empty lines
 			continue;
 		}
 		else if (line[0] == '#')
