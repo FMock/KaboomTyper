@@ -2,6 +2,7 @@
 #include "Firework.h"
 #include "IDrawable.h"
 #include <memory>
+#include <vector>
 
 namespace GameEngine
 {
@@ -9,21 +10,19 @@ namespace GameEngine
 	{
 	public:
 		FireworkExplosionManager();
-		void ProcessInput();
 		void Update(float dt) override;
 		void Draw() override;
 		int GetPriority() const override { return m_priority; }
 		void SetPriority(int priority) override { m_priority = priority; }
-		bool IsFireworkActive();
-		void SetIsFireworkActive(bool isActive);
-		void GenerateFireworkParticles();
-		void SetShouldFireworkExplode(bool shouldExplode);
-		bool GetShouldFireworkExplode();
+
+		// Spawn explosions for the just-destroyed TextBlock (reads Common globals for its
+		// position/width). Long blocks get several staggered blasts spread across the block.
+		// Returns the number of blasts spawned (used to scale the audio).
+		int Trigger();
 
 	private:
-		GLuint m_fireworkColorTexture;
-		std::unique_ptr<Firework> m_firework;
-		bool m_explode;
+		std::vector<GLuint> m_explosionFrames;                 // shared hit_* animation frames
+		std::vector<std::unique_ptr<Firework>> m_explosions;   // active explosion pool
 		int m_priority; // draw priority
 	};
 }

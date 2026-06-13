@@ -1,1 +1,1 @@
-explosionWavFilePath=..\..\Resources\sounds\explosion_stereo.wav
+explosionWavFilePath=..\..\Resources\sounds\boom.wav
