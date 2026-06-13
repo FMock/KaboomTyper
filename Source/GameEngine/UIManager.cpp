@@ -434,6 +434,193 @@ void GameEngine::UIManager::DisplayMainMenuChoices(const std::string& buttonName
     }
 }
 
+namespace
+{
+    // True only on the frame the key transitions from up to down (edge detection).
+    bool KeyJustPressed(GameEngine::InputManager* in, SDL_Scancode sc)
+    {
+        return in->m_kbState[sc] && !in->m_kbPrevState[sc];
+    }
+
+    bool CtrlHeld(GameEngine::InputManager* in)
+    {
+        return in->m_kbState[SDL_SCANCODE_LCTRL] || in->m_kbState[SDL_SCANCODE_RCTRL];
+    }
+}
+
+bool GameEngine::UIManager::IsAnyMenuOpen() const
+{
+    for (const auto& pair : m_dropDownMenus)
+        if (pair.second->GetIsActive()) return true;
+    for (const auto& pair : m_choiceMenus)
+        if (pair.second->GetIsActive()) return true;
+    return false;
+}
+
+void GameEngine::UIManager::CloseAllMenus()
+{
+    for (auto& pair : m_dropDownMenus)
+    {
+        pair.second->SetIsActive(false);
+        pair.second->ResetHighlight();
+    }
+    for (auto& pair : m_choiceMenus)
+    {
+        pair.second->SetIsActive(false);
+        pair.second->ResetHighlight();
+    }
+}
+
+std::shared_ptr<GameEngine::DropDownMenu> GameEngine::UIManager::GetOpenDropDown() const
+{
+    for (const auto& pair : m_dropDownMenus)
+        if (pair.second->GetIsActive()) return pair.second;
+    return nullptr;
+}
+
+std::shared_ptr<GameEngine::ChoiceMenu> GameEngine::UIManager::GetOpenChoiceMenu() const
+{
+    for (const auto& pair : m_choiceMenus)
+        if (pair.second->GetIsActive()) return pair.second;
+    return nullptr;
+}
+
+void GameEngine::UIManager::OpenMenu(const std::string& name)
+{
+    auto it = m_dropDownMenus.find(name);
+    if (it == m_dropDownMenus.end())
+        return;
+
+    it->second->SetIsActive(true);
+    DisableAllButtonsExceptThisButton(name);
+    it->second->SetHighlight(0); // highlight the first item for keyboard users
+}
+
+bool GameEngine::UIManager::HandleMenuInput(InputManager* InputMgr)
+{
+    // 1. CTRL shortcuts: open the corresponding top menu (toggles drop-downs).
+    if (CtrlHeld(InputMgr))
+    {
+        const char* menuName = nullptr;
+        if (KeyJustPressed(InputMgr, SDL_SCANCODE_F)) menuName = "File";
+        else if (KeyJustPressed(InputMgr, SDL_SCANCODE_O)) menuName = "Options";
+        else if (KeyJustPressed(InputMgr, SDL_SCANCODE_H)) menuName = "Help";
+        else if (KeyJustPressed(InputMgr, SDL_SCANCODE_A)) menuName = "About";
+
+        if (menuName)
+        {
+            DisplayMainMenuChoices(menuName);   // toggles the drop-down (or shows About box)
+            if (auto opened = GetOpenDropDown())
+                opened->SetHighlight(0);
+            return true;
+        }
+    }
+
+    // 2. Esc: back out one level — close an open choice sub-menu first (focus returns to
+    //    the drop-down), then the drop-down; if nothing is open, defer to the caller (quit).
+    if (KeyJustPressed(InputMgr, SDL_SCANCODE_ESCAPE))
+    {
+        if (auto choice = GetOpenChoiceMenu())
+        {
+            choice->SetIsActive(false);
+            choice->ResetHighlight();
+            return true;
+        }
+        if (IsAnyMenuOpen())
+        {
+            CloseAllMenus();
+            return true;
+        }
+        return false;
+    }
+
+    // 3a. Arrow / Enter navigation while a choice sub-menu is open — it has focus.
+    if (auto choice = GetOpenChoiceMenu())
+    {
+        if (KeyJustPressed(InputMgr, SDL_SCANCODE_DOWN))
+        {
+            choice->MoveHighlight(1);
+            return true;
+        }
+        if (KeyJustPressed(InputMgr, SDL_SCANCODE_UP))
+        {
+            choice->MoveHighlight(-1);
+            return true;
+        }
+        if (KeyJustPressed(InputMgr, SDL_SCANCODE_RETURN) || KeyJustPressed(InputMgr, SDL_SCANCODE_KP_ENTER))
+        {
+            choice->ActivateHighlighted(); // select the category/speed/audio option
+            return true;
+        }
+    }
+    // 3b. Otherwise, arrow / Enter navigation while a drop-down is open.
+    else if (auto open = GetOpenDropDown())
+    {
+        if (KeyJustPressed(InputMgr, SDL_SCANCODE_DOWN))
+        {
+            open->MoveHighlight(1);
+            return true;
+        }
+        if (KeyJustPressed(InputMgr, SDL_SCANCODE_UP))
+        {
+            open->MoveHighlight(-1);
+            return true;
+        }
+        if (KeyJustPressed(InputMgr, SDL_SCANCODE_RIGHT) || KeyJustPressed(InputMgr, SDL_SCANCODE_LEFT))
+        {
+            // Switch to the adjacent top menu (File/Options/Help), keeping it open.
+            const int count = static_cast<int>(m_topMenuOrder.size());
+            int curIdx = -1;
+            for (int i = 0; i < count; ++i)
+            {
+                auto it = m_dropDownMenus.find(m_topMenuOrder[i]);
+                if (it != m_dropDownMenus.end() && it->second->GetIsActive())
+                {
+                    curIdx = i;
+                    break;
+                }
+            }
+            if (curIdx >= 0 && count > 0)
+            {
+                int delta = KeyJustPressed(InputMgr, SDL_SCANCODE_RIGHT) ? 1 : -1;
+                int nextIdx = ((curIdx + delta) % count + count) % count;
+                OpenMenu(m_topMenuOrder[nextIdx]);
+            }
+            return true;
+        }
+        if (KeyJustPressed(InputMgr, SDL_SCANCODE_RETURN) || KeyJustPressed(InputMgr, SDL_SCANCODE_KP_ENTER))
+        {
+            // Activate the highlighted item; an Options item opens its choice sub-menu,
+            // which we then give keyboard focus by highlighting its first entry.
+            open->ActivateHighlighted();
+            if (auto opened = GetOpenChoiceMenu())
+                opened->SetHighlight(0);
+            return true;
+        }
+    }
+
+    // 4. Click outside any open menu closes all menus.
+    if (InputMgr->m_mouseButtonState[0] && !InputMgr->m_prevMouseButtonState[0] && IsAnyMenuOpen())
+    {
+        int mouseX, mouseY;
+        InputMgr->GetMousePosition(&mouseX, &mouseY);
+
+        bool insideMenus = m_gameMenu->IsPointInMenuBar(mouseX, mouseY); // top bar handles its own toggles
+        for (auto& pair : m_dropDownMenus)
+            if (pair.second->GetIsActive() && pair.second->IsPointInBody(mouseX, mouseY))
+                insideMenus = true;
+        for (auto& pair : m_choiceMenus)
+            if (pair.second->GetIsActive() && pair.second->IsPointInBody(mouseX, mouseY))
+                insideMenus = true;
+
+        if (!insideMenus)
+            CloseAllMenus();
+        // Do not consume: a plain click should still reach other observers.
+    }
+
+    return false;
+}
+
 void GameEngine::UIManager::FileDropDownMenuOnClick(const std::string& choice)
 {
     if (choice == "START")

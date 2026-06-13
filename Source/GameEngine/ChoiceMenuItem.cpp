@@ -43,6 +43,14 @@ void GameEngine::ChoiceMenuItem::Update(float dt)
 
 void GameEngine::ChoiceMenuItem::Draw()
 {
+    if (m_active)
+    {
+        // Highlight the focused/hovered item (mirrors MenuItem's highlight) so that
+        // keyboard and mouse navigation are visible.
+        RGBColor color = RGBColor::GetRGBColor(RGBColor::White);
+        glDrawFilledRectangle(m_xPos, m_yPos, m_width, m_height, 1.0f, 1.0f, color, 50);
+    }
+
     //m_label->DrawText(m_labelScaler);
     m_augmentedLabel->DrawText(m_labelScaler);
     m_clickBox->Draw();

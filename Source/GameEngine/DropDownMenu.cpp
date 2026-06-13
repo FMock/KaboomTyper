@@ -58,6 +58,10 @@ namespace GameEngine
 		{
 			std::cerr << "Error: Null menuItem passed for menu item: " << name << std::endl;
 		}
+		if (m_menuItems.find(name) == m_menuItems.end())
+		{
+			m_itemOrder.push_back(name); // preserve insertion order for keyboard navigation
+		}
 		m_menuItems[name] = MenuEntry{ std::move(menuItem), callback };
 	}
 
@@ -98,12 +102,29 @@ namespace GameEngine
 
 	void DropDownMenu::RespondToObserved(InputManager* InputMgr)
 	{
-		if (GetIsActive()) 
+		if (GetIsActive())
 		{
+			int mouseX, mouseY;
+			InputMgr->GetMousePosition(&mouseX, &mouseY);
+
+			// Mouse hover updates the shared highlight; it does NOT clear it when
+			// the cursor is over no item, so a keyboard highlight persists.
+			for (int i = 0; i < static_cast<int>(m_itemOrder.size()); ++i)
+			{
+				MenuItem* item = m_menuItems[m_itemOrder[i]].menuItem.get();
+				if (item && item->IsMouseOverMenuItem(mouseX, mouseY))
+				{
+					m_highlightedIndex = i;
+					break;
+				}
+			}
+
 			for (auto& item : m_menuItems)
 			{
 				HandleMenuItem(InputMgr, item.second.menuItem.get(), item.first, item.second.callback);
 			}
+
+			ApplyHighlight();
 		}
 	}
 
@@ -111,8 +132,6 @@ namespace GameEngine
 	{
 		int mouseX, mouseY;
 		InputMgr->GetMousePosition(&mouseX, &mouseY);
-
-		menuItem->SetIsActive(menuItem->IsMouseOverMenuItem(mouseX, mouseY)); // toggle current menuItem active state
 
 		if (InputMgr->m_mouseButtonState[0] && !InputMgr->m_prevMouseButtonState[0] && menuItem->IsMouseOverMenuItem(mouseX, mouseY))
 		{
@@ -130,6 +149,77 @@ namespace GameEngine
 #endif
 			menuItem->SetMenuItemColor(Colors::DEFAULT_COLOR);
 		}
+	}
+
+	void DropDownMenu::ApplyHighlight()
+	{
+		for (int i = 0; i < static_cast<int>(m_itemOrder.size()); ++i)
+		{
+			MenuItem* item = m_menuItems[m_itemOrder[i]].menuItem.get();
+			if (item)
+				item->SetIsActive(i == m_highlightedIndex);
+		}
+	}
+
+	int DropDownMenu::GetItemCount() const
+	{
+		return static_cast<int>(m_itemOrder.size());
+	}
+
+	void DropDownMenu::MoveHighlight(int delta)
+	{
+		int count = GetItemCount();
+		if (count == 0)
+			return;
+
+		if (m_highlightedIndex < 0)
+			m_highlightedIndex = (delta >= 0) ? 0 : count - 1;
+		else
+			m_highlightedIndex = ((m_highlightedIndex + delta) % count + count) % count;
+
+		ApplyHighlight();
+	}
+
+	void DropDownMenu::SetHighlight(int index)
+	{
+		int count = GetItemCount();
+		if (count == 0)
+			m_highlightedIndex = -1;
+		else if (index < 0)
+			m_highlightedIndex = -1;
+		else if (index >= count)
+			m_highlightedIndex = count - 1;
+		else
+			m_highlightedIndex = index;
+
+		ApplyHighlight();
+	}
+
+	void DropDownMenu::ResetHighlight()
+	{
+		m_highlightedIndex = -1;
+		ApplyHighlight();
+	}
+
+	void DropDownMenu::ActivateHighlighted()
+	{
+		if (m_highlightedIndex < 0 || m_highlightedIndex >= GetItemCount())
+			return;
+
+		auto& entry = m_menuItems[m_itemOrder[m_highlightedIndex]];
+		if (entry.menuItem && entry.callback)
+			entry.callback(entry.menuItem->GetLabelText()); // mirror the mouse-click path
+	}
+
+	bool DropDownMenu::IsPointInBody(int x, int y) const
+	{
+		if (!m_menuBody)
+			return false;
+
+		int left = m_menuBody->GetXPosition();
+		int top = m_menuBody->GetYPosition();
+		return x >= left && x <= left + m_menuBody->GetWidth() &&
+			   y >= top && y <= top + m_menuBody->GetHeight();
 	}
 
 	void DropDownMenu::InitializeCommonElements()

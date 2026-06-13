@@ -34,6 +34,13 @@ namespace GameEngine
 		void IncreaseScore();
 		void GameOver();
 		void DisplayMainMenuChoices(const std::string& buttonName);
+
+		// Keyboard + click-outside handling for the top menu bar.
+		// Returns true if it consumed input this frame (so the caller can skip its own handling).
+		bool HandleMenuInput(InputManager* InputMgr);
+		bool IsAnyMenuOpen() const;
+		void CloseAllMenus();
+
 		void WordCategoryChoiceMenuOnClick(const std::string& choice);
 		void AudioChoiceMenuOnClick(const std::string& choice);
 		void WordSpeedChoiceMenuOnClick(const std::string& choice);
@@ -80,6 +87,13 @@ namespace GameEngine
 		void Initialize();
 		bool RegisterCallbacks();
 		void DisableAllButtonsExceptThisButton(const std::string& buttonName);
+
+		// Keyboard-navigation helpers
+		void OpenMenu(const std::string& name);              // open this dropdown, close others, highlight first item
+		std::shared_ptr<DropDownMenu> GetOpenDropDown() const; // the active dropdown, or nullptr
+		std::shared_ptr<ChoiceMenu> GetOpenChoiceMenu() const; // the active Options sub-menu, or nullptr
+		// Visual left-to-right order of the drop-down top menus (About is modal, excluded)
+		std::vector<std::string> m_topMenuOrder{ "File", "Options", "Help" };
 	};
 
 	template<typename... Args>

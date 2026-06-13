@@ -2,6 +2,7 @@
 
 #include "ChoiceMenuItem.h"
 #include <unordered_map>
+#include <vector>
 #include <iostream>
 #include <string>
 #include <functional>
@@ -42,18 +43,30 @@ namespace GameEngine
         void SetWidth(int width);
         void SetHeight(int height);
         bool GetMenuItemSelectionState(const std::string& key) const;
+        bool IsPointInBody(int x, int y) const; // hit-test against the menu body
+
+        // Keyboard navigation support (mirrors DropDownMenu)
+        int GetItemCount() const;
+        void MoveHighlight(int delta);   // step the highlight by +/-1, wrapping
+        void SetHighlight(int index);    // clamp into [0, count) (or -1 to clear)
+        void ResetHighlight();           // clear the highlight (-1)
+        void ActivateHighlighted();      // select the highlighted item
 
     protected:
         void RespondToObserved(InputManager* InputMgr) override;
         void HandleMenuItem(InputManager* InputMgr, ChoiceMenuItem* menuItem, const std::string& menuItemName, Callback callback);
+        void SelectItem(const std::string& menuItemName); // shared mouse/keyboard selection logic
+        void ApplyHighlight();                            // mark only the highlighted item active
         void InitializeCommonElements();
         virtual void InitializeMenuEntries() = 0;
         virtual void InitializeMenuEntry(ChoiceMenuItem* menuItem, const std::string& label, int x, int y, float scale, int color) = 0;
 
         std::unique_ptr<RectangleDrawable> m_menuBody;
         std::unordered_map<std::string, ChoiceMenuEntry> m_choiceMenuItems;
+        std::vector<std::string> m_itemOrder; // top-to-bottom visual order (for keyboard nav)
         int m_count; // number of ChoiceMenuItems
         bool m_isActive;
+        int m_highlightedIndex = -1; // shared mouse/keyboard highlight; -1 = none
         int m_priority; // draw priority
         int m_width;
         int m_height;
