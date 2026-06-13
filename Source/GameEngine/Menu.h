@@ -41,6 +41,7 @@ namespace GameEngine
         bool AddCallback(const std::string& name, Callback callback);
         void InitializeMenu(const std::string& name, int nameX, int nameY, int x, int y, int width, int height, Colors, bool = true);
         bool IsPointInMenuBar(int x, int y) const; // hit-test against the top menu bar
+        void SetMenuItemSelected(const std::string& name, bool selected); // persistent highlight for the open menu's button
 
     protected:
         void RespondToObserved(InputManager* InputMgr) override;

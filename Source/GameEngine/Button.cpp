@@ -36,7 +36,13 @@ void Button::Update(float dt)
 
 void Button::Draw()
 {
-	if (m_active)
+	if (m_selected)
+	{
+		// Persistent highlight while this menu's drop-down is open (stronger than hover).
+		RGBColor color = RGBColor::GetRGBColor(RGBColor::White);
+		glDrawFilledRectangle(m_xPos, m_yPos, m_outlineWidth, m_outlineHeight, 1.0f, 1.0f, color, 180);
+	}
+	else if (m_active)
 	{
 		RGBColor color = RGBColor::GetRGBColor(RGBColor::White);
 		glDrawFilledRectangle(m_xPos, m_yPos, m_outlineWidth, m_outlineHeight, 1.0f, 1.0f, color, 128); // 128 == hover opacity
@@ -93,6 +99,11 @@ int GameEngine::Button::GetHeight() const
 void GameEngine::Button::SetIsActive(bool isActive)
 {
 	m_active = isActive;
+}
+
+void GameEngine::Button::SetSelected(bool selected)
+{
+	m_selected = selected;
 }
 
 void GameEngine::Button::SetText(std::string text)
