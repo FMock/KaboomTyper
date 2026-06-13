@@ -6,7 +6,7 @@ using namespace DrawUtilities;
 
 GameEngine::MessageBox::MessageBox()
 {
-	Initialize(11, 43, 433, 103, Colors::BLACK); // setup
+	Initialize(11, 43, 533, 103, Colors::BLACK); // widened to fill up to the scoreboard's new position
 }
 
 GameEngine::MessageBox::MessageBox(int x, int y, int width, int height, Colors color)

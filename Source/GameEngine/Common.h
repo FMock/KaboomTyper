@@ -28,7 +28,7 @@ namespace GameEngine
 
 	public:
 		static const std::string DEFAULT_WORD_CATEGORY;
-		static const int WINDOW_WIDTH = 800;
+		static const int WINDOW_WIDTH = 900; // widened from 800 so the Word Category fly-out fits (matches the 900px menu bar)
 		static const int WINDOW_HEIGHT = 1000;
 		static void SubmitText(std::string text);
 		static std::string GetSubmittedText();
@@ -41,7 +41,7 @@ namespace GameEngine
 		static constexpr int FLOOR = 878; // The y-position the TextBlocks cannot exceed.
 		static constexpr int CEILING = 200;
 		static constexpr int EDGE_LEFT = 10;
-		static constexpr int EDGE_RIGHT = 789;
+		static constexpr int EDGE_RIGHT = 889; // tracks the right side bar inner edge (window widened to 900)
 		static constexpr float HORIZONTAL_STEP = 24.0F; //24.0
 		static constexpr int FONT_HEIGHT = 34;
 		static constexpr int TEXTBLOCK_VERTICAL_START_POSITION = 115;

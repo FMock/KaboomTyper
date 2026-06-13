@@ -16,7 +16,7 @@ namespace GameEngine
     class InputMessageBox : public IInputMessageBox, public InputObserver, public IDrawable
     {
     public:
-        InputMessageBox(int x = 250, int y = 300, int width = 260, int height = 150);
+        InputMessageBox(int x = 320, int y = 300, int width = 260, int height = 150); // x centers the 260-wide box in the 900px play area
 
         enum Buttons
         {

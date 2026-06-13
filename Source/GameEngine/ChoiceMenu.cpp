@@ -81,6 +81,14 @@ namespace GameEngine
 
     void ChoiceMenu::InitializeChoiceMenu(int x, int y, int width, int height, Colors color, bool flag)
     {
+        // Remember the layout args so the menu can be repositioned later (fly-out support).
+        m_layoutX = x;
+        m_layoutY = y;
+        m_layoutWidth = width;
+        m_layoutHeight = height;
+        m_layoutColor = color;
+        m_layoutFlag = flag;
+
         m_menuBody->Initialize(x, y, width, height, color, flag);
 
         const int verticalSpacer = 32;
@@ -380,6 +388,27 @@ namespace GameEngine
             return;
 
         SelectItem(m_itemOrder[m_highlightedIndex]);
+    }
+
+    std::string ChoiceMenu::GetHighlightedName() const
+    {
+        if (m_highlightedIndex < 0 || m_highlightedIndex >= static_cast<int>(m_itemOrder.size()))
+            return "";
+
+        return m_itemOrder[m_highlightedIndex];
+    }
+
+    int ChoiceMenu::GetMenuX() const
+    {
+        return m_menuBody ? m_menuBody->GetXPosition() : 0;
+    }
+
+    void ChoiceMenu::RepositionX(int newX)
+    {
+        // Re-run the layout at the new X (Y/size preserved). InitializeChoiceMenu is
+        // idempotent: each item's Initialize resets its (augmented) label before the
+        // layout re-augments it.
+        InitializeChoiceMenu(newX, m_layoutY, m_layoutWidth, m_layoutHeight, m_layoutColor, m_layoutFlag);
     }
 
 
