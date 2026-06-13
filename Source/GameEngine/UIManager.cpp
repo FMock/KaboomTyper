@@ -36,6 +36,7 @@ void UIManager::Initialize()
     m_dropDownMenus["File"] = std::make_shared<FileDropDownMenu>();
     m_dropDownMenus["Options"] = std::make_shared<OptionsDropDownMenu>();
     m_dropDownMenus["Help"] = std::make_shared<HelpDropDownMenu>();
+    m_dropDownMenus["About"] = std::make_shared<AboutDropDownMenu>();
 
     // CoiceMenus for each drop down menu
     m_choiceMenus["Word Category"] = std::make_shared<WordCategoryChoiceMenu>(m_wordCategories);
@@ -294,6 +295,7 @@ void UIManager::RegisterDrawables(DrawOrderManager& manager)
     std::dynamic_pointer_cast<IDrawable>(m_dropDownMenus["File"])->SetPriority(9);
     std::dynamic_pointer_cast<IDrawable>(m_dropDownMenus["Options"])->SetPriority(9);
     std::dynamic_pointer_cast<IDrawable>(m_dropDownMenus["Help"])->SetPriority(9);
+    std::dynamic_pointer_cast<IDrawable>(m_dropDownMenus["About"])->SetPriority(9);
     std::dynamic_pointer_cast<IDrawable>(m_choiceMenus["Word Category"])->SetPriority(9);
     std::dynamic_pointer_cast<IDrawable>(m_choiceMenus["Word Speed"])->SetPriority(9);
     std::dynamic_pointer_cast<IDrawable>(m_choiceMenus["Audio"])->SetPriority(9);
@@ -414,17 +416,6 @@ void GameEngine::UIManager::DisplayMainMenuChoices(const std::string& buttonName
 #if DEBUG
         std::cout << "Display " << buttonName << " Drop Down Menu" << std::endl;
 #endif
-    }
-    else if (buttonName == "About")
-    {
-#if DEBUG
-        std::cout << "Display About Menu Choices" << std::endl;
-#endif
-
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION,
-            "About",
-            "Kaboom Typer\n A retro inspired typing game by Frank Mock \n https://www.frankmock.com/software/kaboomtyper\n Copyright 2024 All Rights Reserved",
-            NULL);
     }
     else
     {

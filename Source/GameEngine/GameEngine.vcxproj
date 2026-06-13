@@ -166,6 +166,7 @@
     <ClInclude Include="GlobalPreprocessorFlags.h" />
     <ClInclude Include="HeadsUpDisplay.h" />
     <ClInclude Include="HelpDropDownMenu.h" />
+    <ClInclude Include="AboutDropDownMenu.h" />
     <ClInclude Include="IDrawable.h" />
     <ClInclude Include="IInputMessageBox.h" />
     <ClInclude Include="InputManager.h" />
@@ -231,6 +232,7 @@
     <ClCompile Include="GamePlayArea.cpp" />
     <ClCompile Include="HeadsUpDisplay.cpp" />
     <ClCompile Include="HelpDropDownMenu.cpp" />
+    <ClCompile Include="AboutDropDownMenu.cpp" />
     <ClCompile Include="IInputMessageBox.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="InputMessageBox.cpp" />

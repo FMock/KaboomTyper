@@ -14,6 +14,7 @@
 #include "FileDropDownMenu.h"
 #include "OptionsDropDownMenu.h"
 #include "HelpDropDownMenu.h"
+#include "AboutDropDownMenu.h"
 #include "ChoiceMenu.h"
 #include "WordCategoryChoiceMenu.h"
 #include "WordManager.h"
@@ -93,7 +94,7 @@ namespace GameEngine
 		std::shared_ptr<DropDownMenu> GetOpenDropDown() const; // the active dropdown, or nullptr
 		std::shared_ptr<ChoiceMenu> GetOpenChoiceMenu() const; // the active Options sub-menu, or nullptr
 		// Visual left-to-right order of the drop-down top menus (About is modal, excluded)
-		std::vector<std::string> m_topMenuOrder{ "File", "Options", "Help" };
+		std::vector<std::string> m_topMenuOrder{ "File", "Options", "Help", "About" };
 	};
 
 	template<typename... Args>
