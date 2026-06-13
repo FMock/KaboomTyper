@@ -45,10 +45,11 @@ std::vector<std::string> WordManager::GetWordCategories()
 
 std::string WordManager::GetNextWord()
 {
-    if (m_currentWordIndex + 1 < m_words.size() - 1)
-        m_currentWordIndex += 1;
-    else
-        m_currentWordIndex = 0;
+    if (m_words.empty())
+        return "";
+
+    // Advance to the next word, wrapping back to the start after the last word
+    m_currentWordIndex = (m_currentWordIndex + 1) % m_words.size();
 
     return m_words[m_currentWordIndex];
 }

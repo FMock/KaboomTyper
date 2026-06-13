@@ -18,9 +18,15 @@ InputTextBox::InputTextBox()
 }
 
 GameEngine::InputTextBox::InputTextBox(int x, int y, int width, int height, Colors rectColor, bool fillWithColor) :
-    m_textBox(std::make_unique<RectangleDrawable>()), m_cursor(std::make_unique<Cursor>()), m_cursorXPos(0), m_cursorYPos(0), 
-    m_fontWidth(24), m_initialized(false), m_full(false), m_startCursorXPos(0), m_startCursorYPos(0), m_maxCharacters(0)
+    m_textBox(std::make_unique<RectangleDrawable>()), m_cursor(std::make_unique<Cursor>()), m_cursorXPos(0), m_cursorYPos(0),
+    m_fontWidth(24), m_initialized(false), m_full(false), m_startCursorXPos(0), m_startCursorYPos(0), m_maxCharacters(0),
+    m_isActive(false), m_priority(0), m_keyPressHandler(std::make_shared<KeyPressHandler>())
 {
+    // Initialize the callbacks (mirrors the default constructor)
+    m_keyPressCallback = [this](std::string key) { this->OnKeyPress(key); };
+    m_enterCallback = [this]() { this->OnEnter(); };
+    m_backSpaceCallback = [this]() { this->OnBackspace(); };
+
     InitializeTextBox(x, y, width, height);
 }
 
@@ -136,7 +142,8 @@ void InputTextBox::Initialize()
 void InputTextBox::CheckForMatch()
 {
     Common::SubmitText(GetTextBoxContentsAsString());
-    m_checkforMatchCallback(); // UIManager's callback - ProcessInput()
+    if (m_checkforMatchCallback)
+        m_checkforMatchCallback(); // UIManager's callback - ProcessInput()
     ClearInputText();
     SetCursorXPosition(GetCursorStartingXPosition());
     SetCursorYPosition(GetCursorStartingYPosition());
