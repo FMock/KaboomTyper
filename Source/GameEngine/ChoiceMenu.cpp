@@ -90,6 +90,7 @@ namespace GameEngine
         m_layoutFlag = flag;
 
         m_menuBody->Initialize(x, y, width, height, color, flag);
+        m_menuBody->SetFrameColor(RGBColor::GetRGBColor(RGBColor::Red)); // red frame, keep fill
 
         const int verticalSpacer = 32;
 

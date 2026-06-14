@@ -539,6 +539,10 @@ void DrawUtilities::glDrawRectangleOutline(GLuint tex, int x, int y, float width
 
 void DrawUtilities::glDrawRectangleOutline(int x, int y, int w, int h, const RGBColor& outlineColor)
 {
+	// Disable texturing so the outline draws in the pure color regardless of whatever
+	// texture a previous draw left bound (otherwise the line color gets modulated).
+	glBindTexture(GL_TEXTURE_2D, 0);
+
 	glBegin(GL_LINES);
 	{
 		glColor3ub(outlineColor.r, outlineColor.g, outlineColor.b); // Set outline color
@@ -560,6 +564,9 @@ void DrawUtilities::glDrawRectangleOutline(int x, int y, int w, int h, const RGB
 		glVertex2i(x, y);
 	}
 	glEnd();
+
+	// Restore the default full-white color so subsequent textured draws aren't tinted.
+	glColor4ub(255, 255, 255, 255);
 }
 
 

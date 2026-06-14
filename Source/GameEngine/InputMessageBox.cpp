@@ -1,6 +1,7 @@
 #include "InputMessageBox.h"
 #include "Common.h"
 #include "DrawUtils.h"
+#include <SDL.h>
 #include <iostream>
 
 #define DEBUG_INPUT_MESSAGEBOX 1
@@ -9,7 +10,7 @@ using namespace DrawUtilities;
 using namespace GameEngine;
 
 InputMessageBox::InputMessageBox(int x, int y, int width, int height)
-    : m_x(x), m_y(y), m_width(width), m_height(height), m_priority(0), m_isActive(false), m_nextYPosition(y + 50), // Initialize next Y position with a starting offset
+    : m_x(x), m_y(y), m_width(width), m_height(height), m_priority(0), m_focusedButton(SUBMIT), m_isActive(false), m_nextYPosition(y + 50), // Initialize next Y position with a starting offset
       m_messageBoxBody(std::make_shared<RectangleDrawable>()), m_inputTextBox(std::make_shared<InputTextBox>()), m_keyPressHandler(std::make_shared<KeyPressHandler>())
 {
     m_inputManager = std::make_shared<InputManager>();
@@ -37,6 +38,7 @@ void InputMessageBox::Draw()
     {
         RGBColor color = RGBColor::GetRGBColor(RGBColor::Blue);
         glDrawFilledRectangle(m_x, m_y, m_width, m_height, 1.0f, 1.0f, color);
+        glDrawRectangleOutline(m_x, m_y, m_width, m_height, RGBColor::GetRGBColor(RGBColor::Red)); // red frame, consistent with menus/popups
 
         m_cancelButton->Draw();
         m_submitButton->Draw();
@@ -81,6 +83,8 @@ bool InputMessageBox::GetIsActive() const
 void InputMessageBox::SetIsActive(bool isActive)
 {
     m_isActive = isActive;
+    if (isActive)
+        m_focusedButton = SUBMIT; // default focus: user can just press Enter to submit
 }
 
 void InputMessageBox::HandleButtonClick(InputManager* InputMgr, Button* button, const std::string& buttonName, std::function<void()> callback)
@@ -126,9 +130,18 @@ void InputMessageBox::AddButtonCallback(Callback callback, InputMessageBox::Butt
 
 void InputMessageBox::OnEnter()
 {
-    Common::SubmitText(m_inputTextBox->GetTextBoxContentsAsString());
-    if (m_enterPressedCallback)
-        m_enterPressedCallback();
+    // Enter activates whichever button has keyboard focus.
+    if (m_focusedButton == CANCEL)
+    {
+        if (m_cancelBtnCallback)
+            m_cancelBtnCallback();
+    }
+    else // SUBMIT
+    {
+        Common::SubmitText(m_inputTextBox->GetTextBoxContentsAsString());
+        if (m_enterPressedCallback)
+            m_enterPressedCallback();
+    }
     m_inputTextBox->ClearInputText();
     m_inputTextBox->SetCursorXPosition(m_inputTextBox->GetCursorStartingXPosition());
     m_inputTextBox->SetCursorYPosition(m_inputTextBox->GetCursorStartingYPosition());
@@ -148,6 +161,21 @@ void InputMessageBox::RespondToObserved(InputManager* InputMgr)
 {
     if (m_isActive)
     {
+        // Left/Right (and Up/Down) move keyboard focus between Submit and Cancel.
+        auto justPressed = [InputMgr](SDL_Scancode sc)
+        {
+            return InputMgr->m_kbState[sc] && !InputMgr->m_kbPrevState[sc];
+        };
+        if (justPressed(SDL_SCANCODE_LEFT) || justPressed(SDL_SCANCODE_RIGHT) ||
+            justPressed(SDL_SCANCODE_UP) || justPressed(SDL_SCANCODE_DOWN))
+        {
+            m_focusedButton = (m_focusedButton == SUBMIT) ? CANCEL : SUBMIT;
+        }
+
+        // Show the focused button as a persistent highlight.
+        m_submitButton->SetSelected(m_focusedButton == SUBMIT);
+        m_cancelButton->SetSelected(m_focusedButton == CANCEL);
+
         // Handle button clicks
         HandleButtonClick(InputMgr, m_cancelButton.get(), "Cancel", [this]() { if (m_cancelBtnCallback) m_cancelBtnCallback(); });
         HandleButtonClick(InputMgr, m_submitButton.get(), "Submit", [this]() { if (m_submitBtnCallback) m_submitBtnCallback(); });

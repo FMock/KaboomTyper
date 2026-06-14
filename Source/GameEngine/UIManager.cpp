@@ -7,6 +7,8 @@
 #include <iostream>
 #include <stdexcept>
 #include <set>
+#include <algorithm>
+#include <cctype>
 
 #define DEBUG 1
 
@@ -308,7 +310,13 @@ bool GameEngine::UIManager::RegisterCallbacks()
     m_instructionsPopup->AddLine("Type the falling word and press Enter to blow it up.");
     m_instructionsPopup->AddLine("Clear words before the blocks stack to the top.");
     m_instructionsPopup->AddLine("Arrow keys nudge the active falling block.");
-    m_instructionsPopup->AddLine("F1 Start   F2 Pause   F3 End Game   Esc Menu/Quit");
+    const RGBColor keyRed = RGBColor::GetRGBColor(RGBColor::Red);
+    const RGBColor white = RGBColor::GetRGBColor(RGBColor::White);
+    m_instructionsPopup->AddColoredLine({
+        { "F1", keyRed }, { " Start   ", white },
+        { "F2", keyRed }, { " Pause   ", white },
+        { "F3", keyRed }, { " End Game   ", white },
+        { "Esc", keyRed }, { " Menu/Quit", white } });
     m_instructionsPopup->AddButton("Close", [this]() { m_instructionsPopup->SetIsActive(false); });
 
     // --- Help: Send Feedback ---
@@ -358,6 +366,17 @@ void UIManager::ProcessInput()
     // an empty active word before the game starts or after it ends).
     if (Common::CurrentState != GameState::RUNNING || IsAnyMenuOpen() || submittedStr.empty())
         return;
+
+    // "kaboom" (any case) is a cheat: detonate the active block but award no points.
+    std::string lowered = submittedStr;
+    std::transform(lowered.begin(), lowered.end(), lowered.begin(),
+                   [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+    if (lowered == "kaboom")
+    {
+        if (m_kaboomCallback)
+            m_kaboomCallback(); // GameManager::BlowUpActiveBlock() — no score
+        return;
+    }
 
     // Did user score?
     if (activeStr == submittedStr)
@@ -474,6 +493,11 @@ void GameEngine::UIManager::ChangeStartMenuItemLabel(const std::string& newLabel
 void GameEngine::UIManager::AddCallback(Callback callback)
 {
     m_processInputCallback = callback;
+}
+
+void GameEngine::UIManager::AddKaboomCallback(Callback callback)
+{
+    m_kaboomCallback = callback;
 }
 
 void UIManager::AddGameOverCallback(Callback callback)

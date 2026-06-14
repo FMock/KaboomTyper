@@ -13,7 +13,7 @@ Menu::Menu()
 void Menu::Draw()
 {
     m_menuBar->Draw();
-    m_title.DrawText(1.0f);
+    m_title.DrawText(1.0f, 0.0f, RGBColor::GetRGBColor(RGBColor::Yellow)); // "Kaboom Typer!" in yellow
     m_footer->Draw();
 
     // Draw all buttons
@@ -75,6 +75,7 @@ bool Menu::AddCallback(const std::string& name, Callback callback)
 void Menu::InitializeMenu(const std::string& name, int nameX, int nameY, int x, int y, int width, int height, GameEngine::Colors, bool fill)
 {
     m_menuBar->Initialize(x, y, width, height, Colors::BLUE, fill);
+    m_menuBar->SetFrameColor(RGBColor::GetRGBColor(RGBColor::Red)); // red frame, blue fill
     m_title = TextString(name, nameX, nameY);
 
     // Initialize menu items
@@ -84,6 +85,7 @@ void Menu::InitializeMenu(const std::string& name, int nameX, int nameY, int x, 
     }
 
     m_footer->Initialize(0, 950, 900, 42, Colors::BLUE, true);// TODO: REMOVE FOOTER FROM MENU
+    m_footer->SetFrameColor(RGBColor::GetRGBColor(RGBColor::Red)); // red frame, blue fill
 }
 
 void Menu::RespondToObserved(InputManager* InputMgr)

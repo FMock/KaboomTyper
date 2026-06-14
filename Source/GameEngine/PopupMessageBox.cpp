@@ -24,13 +24,14 @@ void PopupMessageBox::Draw()
     if (!m_isActive)
         return;
 
-    // Dark-blue background with a white border, so the blue buttons stand out.
+    // Dark-blue background with a red frame to match the red scoreboard.
     RGBColor background = RGBColor::GetRGBColor(RGBColor::DarkBlue);
     glDrawFilledRectangle(m_x, m_y, m_width, m_height, 1.0f, 1.0f, background);
-    glDrawRectangleOutline(m_x, m_y, m_width, m_height, RGBColor::GetRGBColor(RGBColor::White));
+    glDrawRectangleOutline(m_x, m_y, m_width, m_height, RGBColor::GetRGBColor(RGBColor::Red));
 
     for (auto& line : m_lines)
-        line->DrawText(LINE_SCALE);
+        for (auto& segment : line.segments)
+            segment.text->DrawText(LINE_SCALE, 0.0f, segment.color);
 
     for (auto& entry : m_buttons)
         entry.button->Draw();
@@ -38,8 +39,25 @@ void PopupMessageBox::Draw()
 
 void PopupMessageBox::AddLine(const std::string& text)
 {
-    // Construct with LINE_SCALE so GetWidth() reflects the on-screen pixel width.
-    m_lines.push_back(std::make_unique<TextString>(text.c_str(), 0, 0, LINE_SCALE));
+    AddColoredLine({ { text, RGBColor::GetRGBColor(RGBColor::White) } });
+}
+
+void PopupMessageBox::AddColoredLine(const std::vector<std::pair<std::string, RGBColor>>& segments)
+{
+    Line line;
+    int charOffset = 0;
+    for (const auto& seg : segments)
+    {
+        Segment s;
+        // Construct with LINE_SCALE so the monospaced advance matches the draw scale.
+        s.text = std::make_unique<TextString>(seg.first.c_str(), 0, 0, LINE_SCALE);
+        s.color = seg.second;
+        s.charOffset = charOffset;
+        line.segments.push_back(std::move(s));
+        charOffset += static_cast<int>(seg.first.size());
+    }
+    line.charCount = charOffset;
+    m_lines.push_back(std::move(line));
     RecomputeLayout();
 }
 
@@ -56,7 +74,7 @@ void PopupMessageBox::RecomputeLayout()
     // clamped so the box always fits inside the window with a margin.
     int maxLineWidth = 0;
     for (auto& line : m_lines)
-        maxLineWidth = std::max(maxLineWidth, line->GetWidth());
+        maxLineWidth = std::max(maxLineWidth, static_cast<int>(line.charCount * CHAR_ADVANCE));
 
     int buttonRowWidth = 0;
     int buttonHeight = 0;
@@ -82,11 +100,16 @@ void PopupMessageBox::RecomputeLayout()
     m_x = (Common::WINDOW_WIDTH - m_width) / 2;
     m_y = (Common::WINDOW_HEIGHT - m_height) / 2;
 
-    // Position the text lines, left-aligned with the interior padding.
+    // Position the text lines, left-aligned with the interior padding. Each segment is
+    // offset by its character position (monospaced font).
     for (int i = 0; i < numLines; ++i)
     {
-        m_lines[i]->SetX(static_cast<float>(m_x + INTERIOR_PADDING));
-        m_lines[i]->SetY(static_cast<float>(m_y + TOP_PADDING + i * LINE_Y_SPACING));
+        const int lineY = m_y + TOP_PADDING + i * LINE_Y_SPACING;
+        for (auto& segment : m_lines[i].segments)
+        {
+            segment.text->SetX(static_cast<float>(m_x + INTERIOR_PADDING + static_cast<int>(segment.charOffset * CHAR_ADVANCE)));
+            segment.text->SetY(static_cast<float>(lineY));
+        }
     }
 
     // Position the buttons as a centered row beneath the text.

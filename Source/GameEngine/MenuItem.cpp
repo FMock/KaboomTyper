@@ -34,6 +34,7 @@ void MenuItem::Initialize(std::string text, int x, int y, int parentX, int paren
 	m_outlineWidth = parentWidth - 10;
 	m_outlineHeight = static_cast<int>(32 * m_scaler) + 8;
 	m_outline->Initialize(m_xPos, m_yPos, m_outlineWidth, m_outlineHeight, Colors::DEFAULT_COLOR);
+	m_outline->SetFrameColor(RGBColor::GetRGBColor(RGBColor::Red)); // red highlight frame to match the scoreboard
 	m_label->Initialize(text, x, y);
 }
 

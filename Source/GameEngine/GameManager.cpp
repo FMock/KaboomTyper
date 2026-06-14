@@ -32,6 +32,7 @@ void GameManager::Initialize()
     // UI Manager
     m_uiManager = std::make_unique<UIManager>(m_inputManager, m_wordManager);
     m_uiManager->AddCallback(std::bind(&GameManager::UserScored, this));
+    m_uiManager->AddKaboomCallback(std::bind(&GameManager::BlowUpActiveBlock, this)); // "kaboom" clears the block for free
     m_uiManager->AddGameOverCallback(std::bind(&GameManager::GameOver, this));
     m_uiManager->AddStartGameCallback(std::bind(&GameManager::StartGame, this));
     //m_uiManager->AddAudioCallback(std::bind(&GameManager::SetPlayMusic, this, std::placeholders::_1)); // need placeholder since SetPlayMusic takes a bool parameter
@@ -97,11 +98,12 @@ void GameManager::Update(float dt)
     m_exitGame = m_inputManager->ShouldQuit(); // user wishes to exit?
 }
 
-// User successfully typed target word/s, Destroy TextBlock and increase score
-void GameManager::UserScored()
+// Detonate the active TextBlock: destroy it, fire the explosion sprites, and play the boom.
+// Awards NO points — used both by UserScored() (which adds the score) and by the "kaboom"
+// cheat word (which clears the block for free).
+void GameManager::BlowUpActiveBlock()
 {
     m_textblockManager->DestroyActiveTextBlock();
-    m_uiManager->IncreaseScore();
 
     int blasts = m_fireworkExplosionManager->Trigger(); // bright sprite explosions (multiple for long words)
 
@@ -113,6 +115,13 @@ void GameManager::UserScored()
         m_explosion->PlaySound("boom_" + std::to_string(m_boomVoice));
         m_boomVoice = (m_boomVoice + 1) % BOOM_VOICES;
     }
+}
+
+// User successfully typed target word/s, Destroy TextBlock and increase score
+void GameManager::UserScored()
+{
+    BlowUpActiveBlock();
+    m_uiManager->IncreaseScore();
 }
 
 void GameManager::Render()

@@ -33,6 +33,7 @@ namespace GameEngine
 		static std::shared_ptr<GameManager> Create();
 		void Update(float dt);
 		void UserScored();
+		void BlowUpActiveBlock(); // detonate the active block (no scoring) — used by UserScored and the "kaboom" word
 		void Render();
 		bool GetExitGame() const;
 		void SetExitGame(bool exitGame);
