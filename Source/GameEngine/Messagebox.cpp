@@ -25,14 +25,23 @@ void GameEngine::MessageBox::Initialize(int x, int y, int width, int height, Col
 	bool fillMessageBox = true;
 	m_body.Initialize(x, y, width, height, color, fillMessageBox);
 
-	m_messageMap["default"] = std::make_unique<TextString>("F1: START GAME", m_x + 20, m_y + 16);
-	m_messageMap["gameover"] = std::make_unique<TextString>("Game Over", m_x + 10, m_y + 30);
+	m_defaultMessage = std::make_unique<TextString>("F1: START GAME", m_x + LINE_X_PADDING, m_y + LINE_Y_START);
 
-	m_message_01 = "";
-	m_message_02 = "";
-	m_message_03 = "";
-    this->ChangeMessage(" ", "F1: START GAME");
+	// Start screen: the start prompt plus the menu navigation shortcuts. Labels are
+	// space-padded (monospaced font) so everything after the ':' lines up in one column.
+	this->ChangeMessage("F1:       START GAME",
+						 "OPTIONS:  CTRL + O",
+						 "HELP:     CTRL + H",
+						 "ESC:      CLOSE MENUS");
 	m_initialized = true;
+}
+
+void GameEngine::MessageBox::SetBanner(const std::string& text)
+{
+	if (text.empty())
+		m_banner.reset();
+	else
+		m_banner = std::make_unique<TextString>(text.c_str(), m_x + BANNER_X, m_y + BANNER_Y);
 }
 
 void GameEngine::MessageBox::Update(float dt)
@@ -50,23 +59,20 @@ void GameEngine::MessageBox::Draw()
     RGBColor color = RGBColor::GetRGBColor(RGBColor::DarkBlue);
     glDrawFilledRectangle(m_x, m_y, m_width, m_height, 1.0f, 1.0f, color);
 
-    if (m_message_01.empty() && m_message_02.empty() && m_message_03.empty())
+    if (m_lines.empty())
     {
-        m_messageMap["default"]->DrawText(0.80f);
+        m_defaultMessage->DrawText(0.80f);
     }
     else
     {
-        if (!m_message_01.empty())
+        for (auto& line : m_lines)
         {
-            m_messageMap[m_message_01]->DrawText(0.64f);
+            line->DrawText(LINE_SCALE);
         }
-        if (!m_message_02.empty())
-        {
-            m_messageMap[m_message_02]->DrawText(0.64f);
-        }
-        if (!m_message_03.empty())
-        {
-            m_messageMap[m_message_03]->DrawText(0.64f);
-        }
+    }
+
+    if (m_banner)
+    {
+        m_banner->DrawText(BANNER_SCALE);
     }
 }
