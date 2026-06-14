@@ -42,10 +42,24 @@ void GameEngine::MessageBox::SetBanner(const std::string& text)
 		m_banner.reset();
 	else
 		m_banner = std::make_unique<TextString>(text.c_str(), m_x + BANNER_X, m_y + BANNER_Y);
+
+	// Restart the flash so a freshly-set banner appears immediately.
+	m_bannerFlashElapsed = 0.0f;
+	m_bannerVisible = true;
 }
 
 void GameEngine::MessageBox::Update(float dt)
 {
+	// Slowly blink the banner (e.g. "GAME OVER") by toggling its visibility.
+	if (m_banner)
+	{
+		m_bannerFlashElapsed += dt;
+		if (m_bannerFlashElapsed >= BANNER_FLASH_INTERVAL)
+		{
+			m_bannerFlashElapsed -= BANNER_FLASH_INTERVAL;
+			m_bannerVisible = !m_bannerVisible;
+		}
+	}
 }
 
 void GameEngine::MessageBox::Draw()
@@ -71,8 +85,8 @@ void GameEngine::MessageBox::Draw()
         }
     }
 
-    if (m_banner)
+    if (m_banner && m_bannerVisible)
     {
-        m_banner->DrawText(BANNER_SCALE);
+        m_banner->DrawText(BANNER_SCALE, 0.0f, RGBColor::GetRGBColor(RGBColor::Yellow));
     }
 }

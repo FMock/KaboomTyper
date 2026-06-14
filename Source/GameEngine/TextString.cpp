@@ -161,7 +161,7 @@ size_t GameEngine::TextString::GetFontHeight()
 /// 
 /// </summary>
 /// <param name="scaleFactor">float that determines how much to scale the texture</param>
-void GameEngine::TextString::DrawText(float scaleFactor, float angle)
+void GameEngine::TextString::DrawText(float scaleFactor, float angle, const RGBColor& color)
 {
     if (!s_fontInitialized)
     {
@@ -184,6 +184,7 @@ void GameEngine::TextString::DrawText(float scaleFactor, float angle)
     params.tex = fontImage;
     params.w = frameWidth;
     params.h = frameHeight;
+    params.color = color; // tint the (white) font glyphs; defaults to white = no tint
 
     // Calculate the center of the text string
     float totalWidth = strLen * frameWidth * scaleFactor;

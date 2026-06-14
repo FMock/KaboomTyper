@@ -184,6 +184,7 @@
     <ClInclude Include="Moveable.h" />
     <ClInclude Include="ObjectStates.h" />
     <ClInclude Include="OptionsDropDownMenu.h" />
+    <ClInclude Include="PopupMessageBox.h" />
     <ClInclude Include="RectangleDrawable.h" />
     <ClInclude Include="RGBColor.h" />
     <ClInclude Include="Score.h" />
@@ -247,6 +248,7 @@
     <ClCompile Include="Messagebox.cpp" />
     <ClCompile Include="Moveable.cpp" />
     <ClCompile Include="OptionsDropDownMenu.cpp" />
+    <ClCompile Include="PopupMessageBox.cpp" />
     <ClCompile Include="RectangleDrawable.cpp" />
     <ClCompile Include="RGBColor.cpp" />
     <ClCompile Include="Score.cpp" />

@@ -819,7 +819,7 @@ void DrawUtilities::glDrawFrameScaled(GlDrawFrameParams params)
 	glBindTexture(GL_TEXTURE_2D, params.tex);
 	glBegin(GL_QUADS);
 	{
-		glColor3ub(255, 255, 255);
+		glColor3ub(params.color.r, params.color.g, params.color.b);
 
 		glTexCoord2f(params.s1, params.t2);  // A
 		glVertex2i(params.x, params.y);
@@ -870,7 +870,7 @@ void DrawUtilities::glDrawFrameScaled(GlDrawFrameParams params, float angle)
 	glBindTexture(GL_TEXTURE_2D, params.tex);
 	glBegin(GL_QUADS);
 	{
-		glColor3ub(255, 255, 255);
+		glColor3ub(params.color.r, params.color.g, params.color.b);
 
 		// Draw the frame with texture coordinates
 		glTexCoord2f(params.s1, params.t2); // bottom left

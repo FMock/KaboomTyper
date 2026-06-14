@@ -45,10 +45,16 @@ namespace GameEngine
 		static constexpr int BANNER_Y = 36;
 		static constexpr float BANNER_SCALE = 0.90f;
 
+		// Banner flash: the banner toggles visibility every BANNER_FLASH_INTERVAL seconds
+		// so messages like "GAME OVER" blink slowly (driven by Update()).
+		static constexpr float BANNER_FLASH_INTERVAL = 0.6f;
+
 		RectangleDrawable m_body;
 		std::unique_ptr<TextString> m_defaultMessage;      // shown when no lines are set
 		std::vector<std::unique_ptr<TextString>> m_lines;  // current message, one entry per line
 		std::unique_ptr<TextString> m_banner;              // optional large right-side message
+		float m_bannerFlashElapsed = 0.0f;                 // time accumulator for the banner flash
+		bool m_bannerVisible = true;                       // current banner blink state
 		int m_x, m_y, m_width, m_height;
 		int m_priority = 1; // draw priority
 		bool m_initialized;

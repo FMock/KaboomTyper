@@ -21,6 +21,10 @@ struct GlDrawFrameParams
 	float t1;
 	float t2;
 	float scale;
+	// Modulation color for the frame. Defaults to white (no tint) so existing
+	// callers are unaffected; the font atlas is white-on-transparent, so setting
+	// a non-white color tints the drawn glyph/frame.
+	RGBColor color{ 255, 255, 255 };
 };
 
 namespace DrawUtilities

@@ -21,7 +21,7 @@ namespace GameEngine
         size_t GetTextSize();
         size_t GetFontWidth();
         size_t GetFontHeight();
-        void DrawText(float scaleFactor, float angle = 0.0f);
+        void DrawText(float scaleFactor, float angle = 0.0f, const RGBColor& color = RGBColor(255, 255, 255));
         void Update(float dt);
         std::string GetText() const;
         void SetVelocity(float velocity);

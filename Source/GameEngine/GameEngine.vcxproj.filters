@@ -234,6 +234,9 @@
     <ClInclude Include="KeyPressHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PopupMessageBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="OptionsDropDownMenu.h">
       <Filter>Header Files\UI</Filter>
     </ClInclude>
@@ -402,6 +405,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="KeyPressHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PopupMessageBox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="OptionsDropDownMenu.cpp">
