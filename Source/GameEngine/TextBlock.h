@@ -13,8 +13,10 @@
 #include "InputManager.h"
 #include "Color.h"
 
+class b2Body; // Box2D rigid body (defined in <box2d/box2d.h>); only the pointer is needed here
+
 /// <summary>
-/// A TextBlock is a composite of colored blocks with a TextString 
+/// A TextBlock is a composite of colored blocks with a TextString
 /// </summary>
 
 namespace GameEngine
@@ -45,6 +47,14 @@ namespace GameEngine
 		void SetVelocity(float velocity);
 		float GetVelocity() const;
 		void SetCanMoveHorizontal(bool canMoveHorizontal);
+
+		// Rigid-body hand-off: once a falling block reaches the stack/floor it is
+		// driven by Box2D instead of the custom fall code above.
+		void SetBody(b2Body* body);          // attach a dynamic body; block becomes physics-driven
+		b2Body* GetBody() const;
+		bool IsPhysicsControlled() const;
+		void SyncFromBody();                 // mirror the body's transform onto this block + its text
+
 		void Activate();
 		bool IsActive() const;
 		void SetActiveState(bool isActive);
@@ -61,6 +71,8 @@ namespace GameEngine
 		float m_velocity;
 		float m_angle;
 		bool m_canMoveHorizontal;
+		b2Body* m_body = nullptr;          // non-owning; the PhysicsWorld owns it
+		bool m_physicsControlled = false;  // true once handed off to Box2D
 		void Initialize(float x, float y, std::string str, Colors color);
 		int ScaleTextBlockWidth(size_t textSize, int blockWidth);
 		float GetNormalizedSize(float textSize);

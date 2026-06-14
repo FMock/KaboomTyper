@@ -1,7 +1,10 @@
 #include "TextBlockManager.h"
 #include "Color.h"
 #include "GlobalPreprocessorFlags.h"
+#include "Common.h"
+#include "PhysicsWorld.h"
 #include <iostream>
+#include <algorithm>
 
 /// <summary>
 /// TextBlockManager manages TextBlock creation and removal
@@ -10,20 +13,33 @@
 using namespace GameEngine;
 
 TextBlockManager::TextBlockManager(float spawnIntervalSeconds, std::shared_ptr<InputManager> inputManager, std::shared_ptr<WordManager> wordManager)
-    : m_running(false), m_spawnInterval(spawnIntervalSeconds), m_inputManager(inputManager), m_elapsedTime(0), 
+    : m_physics(std::make_unique<PhysicsWorld>()),
+      m_running(false), m_spawnInterval(spawnIntervalSeconds), m_inputManager(inputManager), m_elapsedTime(0),
       m_limitReached(false), m_horizontalMovingBlock(nullptr), m_wordManager(wordManager), m_priority(0)
 {
     m_lastSpawnTime = std::chrono::steady_clock::now();
+
+    // Static play-area bounds. Landed blocks rest with their *top* at Common::FLOOR (matching the
+    // original game), so the physical floor sits one block-height lower, under their bottoms.
+    // Gravity here is the *physics* gravity (m/s^2) for settled/toppling blocks, independent of
+    // Common::GRAVITY (which is the tiny per-pixel descent rate of the player-controlled block).
+    m_physics->CreateBounds(static_cast<float>(Common::EDGE_LEFT),
+                            static_cast<float>(Common::EDGE_RIGHT),
+                            static_cast<float>(Common::FLOOR + Common::FONT_HEIGHT),
+                            0.0f);
 }
+
+TextBlockManager::~TextBlockManager() = default;
 
 void TextBlockManager::ClearBlockDeque()
 {
-    // Unregister them from the InputManager
+    // Unregister them from the InputManager and remove any rigid bodies from the simulation.
     for (size_t i = 0; i < m_blockDeque.size(); ++i)
     {
         if (m_blockDeque[i])
         {
             m_inputManager->UnregisterObserver(m_blockDeque[i].get());
+            m_physics->DestroyBody(m_blockDeque[i]->GetBody());
         }
         else
         {
@@ -87,69 +103,102 @@ void TextBlockManager::Update(float dt)
     if (!m_running)
         return;
 
-    TextBlock* horizontalMovableBlock = nullptr;
-    bool gameOver = false;
-
-    for (size_t i = 0; i < m_blockDeque.size(); ++i)
+    // There is only ever one player-controlled block falling; everything else is owned by Box2D.
+    std::shared_ptr<TextBlock> falling;
+    for (auto& b : m_blockDeque)
     {
-        auto& blockA = m_blockDeque[i];
-        blockA->Update(dt);
-        auto blockAPosition = blockA->GetPosition();
-
-        if (blockA->GetMovingState())
+        if (!b->IsPhysicsControlled())
         {
-            if (blockAPosition.second >= Common::FLOOR) // TextBlock landed on the bottom
-            {
-                HandleLanding(blockA);
-                GenerateTextBlock(); // Previous TextBlock reached the bottom so create another one
-            }
-            else
-            {
-                horizontalMovableBlock = blockA.get();
-            }
+            falling = b;
+            break;
         }
-        else if (blockAPosition.second <= Common::CEILING)
+    }
+
+    if (falling)
+    {
+        falling->Update(dt); // custom controlled descent
+
+        // Once it reaches the floor or the top of the settled stack, hand it to the physics
+        // engine, which settles or topples it realistically, and give the player the next word.
+        AABB& box = falling->GetBox();
+        if (box.y + box.h >= FindSupportTopY(falling.get()))
         {
-            ToggleRunning(); // Game Over
-            m_limitReached = true;
+            HandOffToPhysics(falling);
+            GenerateTextBlock();
+            falling = nullptr;
+        }
+    }
+
+    // Advance the rigid-body simulation, then mirror each body back onto its block.
+    m_physics->Step(dt);
+
+    bool gameOver = false;
+    for (auto& b : m_blockDeque)
+    {
+        if (!b->IsPhysicsControlled())
+            continue;
+
+        b->SyncFromBody();
+        if (b->GetBox().y <= Common::CEILING) // the stack has reached the top -> game over
             gameOver = true;
-            break;
-        }
-
-        // Check for collisions with other TextBlocks
-        for (size_t j = 0; j < m_blockDeque.size(); ++j)
-        {
-            if (i == j)
-                continue;
-
-            auto& blockB = m_blockDeque[j];
-            HandleCollisions(*blockA, blockAPosition.second, *blockB);
-        }
-
-        if (gameOver)
-            break;
     }
 
     if (gameOver)
     {
+        ToggleRunning();
+        m_limitReached = true;
         UnregisterAllTextBlocks();
+    }
+    else if (falling && falling->IsActive() && falling->GetMovingState())
+    {
+        SetHorizontalMovement(falling.get());
     }
     else
     {
-        // Set the block that can move horizontally, if there is one
-        SetHorizontalMovement(horizontalMovableBlock);
+        SetHorizontalMovement(nullptr);
     }
 
     UpdateTimer(dt);
 }
 
 
-void TextBlockManager::HandleLanding(std::shared_ptr<TextBlock>& block)
+// Convert a falling block into a dynamic Box2D body, carrying over its current downward speed so
+// the motion is seamless, and remove it from player control.
+void TextBlockManager::HandOffToPhysics(std::shared_ptr<TextBlock>& block)
 {
-    block->SetMovingState(false);
-    block->SetPosition(block->GetPosition().first, Common::FLOOR);
+    AABB& box = block->GetBox();
+    b2Body* body = m_physics->CreateBlockBody(block->GetPosition().first,
+                                              block->GetPosition().second,
+                                              static_cast<float>(box.w),
+                                              static_cast<float>(box.h),
+                                              block->GetVelocity());
     block->SetActiveState(false);
     m_inputManager->UnregisterObserver(block.get());
+    block->SetBody(body); // marks the block physics-controlled and stops its custom motion
+}
+
+// Highest surface (smallest y) the given block could land on: the floor by default, or the top of
+// any already-settled block it overlaps horizontally.
+float TextBlockManager::FindSupportTopY(TextBlock* block) const
+{
+    const AABB& a = block->GetBox();
+    // The player-controlled fall stops the block's *top* at Common::FLOOR, so its bottom lands at
+    // FLOOR + a.h. Using the block's own height (not Common::FONT_HEIGHT) keeps the hand-off
+    // threshold exactly aligned with that stop point, so a block reliably reaches it.
+    float surface = static_cast<float>(Common::FLOOR + a.h); // where the block's bottom rests on the floor
+
+    for (const auto& other : m_blockDeque)
+    {
+        if (other.get() == block || !other->IsPhysicsControlled())
+            continue;
+
+        const AABB& b = other->GetBox();
+        const bool overlapX = (a.x < b.x + b.w) && (a.x + a.w > b.x);
+        if (overlapX && b.y >= a.y && b.y < surface)
+            surface = static_cast<float>(b.y);
+    }
+
+    return surface;
 }
 
 void TextBlockManager::UnregisterAllTextBlocks()
@@ -214,23 +263,6 @@ void GameEngine::TextBlockManager::SetTextBlockLimitReached(bool b)
     m_limitReached = b;
 }
 
-void GameEngine::TextBlockManager::HandleCollisions(TextBlock& blockA, float& blockAYPosition, TextBlock& blockB)
-{
-    if (blockA.GetMovingState() && !blockB.GetMovingState() && Common::AABBIntersect(blockA.GetBox(), blockB.GetBox()))
-    {
-        blockA.SetMovingState(false);
-        m_inputManager->UnregisterObserver(&blockA); // blockA stacked on top of another TextBlock. Unregister it from m_inputManager
-
-        auto blockBPosition = blockB.GetPosition();
-        blockAYPosition = blockBPosition.second - blockA.GetBox().h;
-        blockA.SetPosition(blockA.GetPosition().first, blockAYPosition);
-        blockA.SetVelocity(0.0f);
-        blockA.SetActiveState(false);
-
-        GenerateTextBlock(); // Give user another TextBlock
-    }
-}
-
 void TextBlockManager::DestroyActiveTextBlock()
 {
     if (!m_blockDeque.empty())
@@ -250,8 +282,9 @@ void TextBlockManager::DestroyActiveTextBlock()
             auto size = it->get()->GetSize();
             Common::s_currentTextBlockWidth = static_cast<int>(size.first);
 
-            // Unregister the TextBlock from the InputManager
+            // Unregister the TextBlock from the InputManager and drop any rigid body it owns
             m_inputManager->UnregisterObserver(it->get());
+            m_physics->DestroyBody(it->get()->GetBody());
 
             // Delete the active TextBlock from the container
             m_blockDeque.erase(it);
