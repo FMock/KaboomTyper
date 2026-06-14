@@ -1,10 +1,12 @@
 #pragma once
 
 #include "Game.h"
+#include "DrawUtils.h"
 #include <GL/glew.h>
 #include <time.h>
 
 using namespace GameEngine;
+using namespace DrawUtilities;
 
 Game::Game()
 {
@@ -31,10 +33,15 @@ bool Game::Initialize()
 	SDL_GL_SetAttribute(SDL_GL_BUFFER_SIZE, 32); // use 32-bit buffer
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1); // enable double buffering
 
+	// Physical window is the logical play field plus a border margin on every side, so the
+	// red border (drawn in Draw()) is extra space rather than covering existing content.
+	const int physicalWidth = Common::WINDOW_WIDTH + 2 * Common::BORDER_THICKNESS;
+	const int physicalHeight = Common::WINDOW_HEIGHT + 2 * Common::BORDER_THICKNESS;
+
 	m_window = SDL_CreateWindow(
 	"Kaboom Typer",
 	SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-	Common::WINDOW_WIDTH, Common::WINDOW_HEIGHT,
+	physicalWidth, physicalHeight,
 	SDL_WINDOW_OPENGL);
 
 	if (!m_window)
@@ -84,13 +91,16 @@ bool Game::Initialize()
 	}
 
 	// Setup OpenGL state.
-	glViewport(0, 0, Common::WINDOW_WIDTH, Common::WINDOW_HEIGHT);
+	glViewport(0, 0, physicalWidth, physicalHeight);
 	glMatrixMode(GL_PROJECTION);
 
-	//define a 2D orthographic projection matrix
+	//define a 2D orthographic projection matrix. The visible range is expanded by the border
+	//thickness on every side, so logical (0,0)..(WINDOW_WIDTH,WINDOW_HEIGHT) renders inset by the
+	//border, leaving a margin around it for the red border. All UI keeps its logical coordinates.
 	const double NEAR_CLIP = 0.0;
 	const double FAR_CLIP = 100.0; // could use smaller range for 2D rendering
-	glOrtho(0, Common::WINDOW_WIDTH, Common::WINDOW_HEIGHT, 0, NEAR_CLIP, FAR_CLIP);
+	const int B = Common::BORDER_THICKNESS;
+	glOrtho(-B, Common::WINDOW_WIDTH + B, Common::WINDOW_HEIGHT + B, -B, NEAR_CLIP, FAR_CLIP);
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -155,6 +165,17 @@ void Game::Draw()
 
 	// Draw Game
 	m_gameManager->Render();
+
+	// Strong red border around the whole app, drawn last so it sits on top, in the margin
+	// just outside the logical play field (which holds the existing blue border inside it).
+	const int B = Common::BORDER_THICKNESS;
+	const int W = Common::WINDOW_WIDTH;
+	const int H = Common::WINDOW_HEIGHT;
+	const RGBColor red = RGBColor::GetRGBColor(RGBColor::Red);
+	glDrawFilledRectangle(-B, -B, W + 2 * B, B, 1.0f, 1.0f, red); // top
+	glDrawFilledRectangle(-B, H, W + 2 * B, B, 1.0f, 1.0f, red);  // bottom
+	glDrawFilledRectangle(-B, 0, B, H, 1.0f, 1.0f, red);          // left
+	glDrawFilledRectangle(W, 0, B, H, 1.0f, 1.0f, red);           // right
 
 	// Swap Window
 	SDL_GL_SwapWindow(m_window);

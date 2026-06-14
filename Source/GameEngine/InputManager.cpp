@@ -1,4 +1,5 @@
 #include "InputManager.h"
+#include "Common.h"
 #include <cstring>
 #include <iostream>
 #include <string>
@@ -40,7 +41,11 @@ void GameEngine::InputManager::GetNewInputState()
 
 void InputManager::GetMousePosition(int* x, int* y)
 {
-	SDL_GetMouseState(x, y); 
+	SDL_GetMouseState(x, y);
+	// The window is enlarged by BORDER_THICKNESS on every side and content is inset by that much
+	// (see Game::Initialize), so convert the physical mouse position back to logical coordinates.
+	*x -= Common::BORDER_THICKNESS;
+	*y -= Common::BORDER_THICKNESS;
 }
 
 void InputManager::UpdateMouseButtonState(int button, bool state)
