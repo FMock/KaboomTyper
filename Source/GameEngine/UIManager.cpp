@@ -314,6 +314,12 @@ void UIManager::ProcessInput()
     std::string activeStr = Common::GetActiveText();
     std::string submittedStr = Common::GetSubmittedText();
 
+    // Only score during active gameplay. Ignore ENTER used to pick a menu /
+    // sub-menu item, and ignore empty submissions (which would spuriously match
+    // an empty active word before the game starts or after it ends).
+    if (Common::CurrentState != GameState::RUNNING || IsAnyMenuOpen() || submittedStr.empty())
+        return;
+
     // Did user score?
     if (activeStr == submittedStr)
     {
@@ -422,7 +428,11 @@ void UIManager::ResetScore()
 
 void UIManager::IncreaseScore()
 {
-	m_headsUpDisplay->IncreaseScore(10); // TODO: HARD CODED AS 10. SCORE INCREASE SHOULD BE BASED ON THE SIZE OF THE TEXT
+	// 10 points per character: longer words are worth more. The just-typed word is
+	// still in Common's submitted text here (only the *active* text is overwritten
+	// when the next block spawns during UserScored).
+	int points = static_cast<int>(Common::GetSubmittedText().length()) * 10;
+	m_headsUpDisplay->IncreaseScore(points);
 	m_headsUpDisplay->SetUpdateRequired(true); // HUD needs to be updated
 }
 
