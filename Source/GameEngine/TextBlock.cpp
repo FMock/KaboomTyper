@@ -1,9 +1,11 @@
 #include <iostream>
+#include <box2d/box2d.h>
 #include "TextBlock.h"
 #include "AABB.h"
 #include "DrawUtils.h"
 #include "Utilities.h"
 #include "Common.h"
+#include "PhysicsWorld.h"
 
 /**
 *
@@ -111,6 +113,11 @@ void TextBlock::Draw()
 
 void TextBlock::Update(float deltaTime)
 {
+	// Once handed off to Box2D the block's transform comes from SyncFromBody(),
+	// so the custom fall code below is skipped entirely.
+	if (m_physicsControlled)
+		return;
+
 	// move 'em down unless they already reached the bottom
 	if (m_position.second < Common::FLOOR && m_isMoving)
 	{
@@ -147,6 +154,55 @@ void TextBlock::SetVelocity(float velocity)
 float TextBlock::GetVelocity() const
 {
 	return m_velocity;
+}
+
+void TextBlock::SetBody(b2Body* body)
+{
+	m_body = body;
+	m_physicsControlled = (body != nullptr);
+	if (m_physicsControlled)
+	{
+		// Box2D now owns this block's motion; stop the custom fall state.
+		m_isMoving = false;
+		m_canMoveHorizontal = false;
+	}
+}
+
+b2Body* TextBlock::GetBody() const
+{
+	return m_body;
+}
+
+bool TextBlock::IsPhysicsControlled() const
+{
+	return m_physicsControlled;
+}
+
+// Mirror the rigid body's transform back onto the block (and its TextString) so the
+// colored body and the text stay glued together as the block settles or topples.
+void TextBlock::SyncFromBody()
+{
+	if (!m_body)
+		return;
+
+	const b2Vec2 center = m_body->GetPosition();           // body center, in meters
+	const float halfW = m_box.w * 0.5f;
+	const float halfH = m_box.h * 0.5f;
+
+	const float topLeftX = PhysicsWorld::ToPixels(center.x) - halfW;
+	const float topLeftY = PhysicsWorld::ToPixels(center.y) - halfH;
+
+	m_position.first = topLeftX;
+	m_position.second = topLeftY;
+	m_box.setX(static_cast<int>(topLeftX));
+	m_box.setY(static_cast<int>(topLeftY));
+
+	// Box2D angle is radians (CCW positive); the draw helpers take degrees.
+	m_angle = m_body->GetAngle() * (180.0f / PI);
+
+	m_textString->SetX(topLeftX);
+	m_textString->SetY(topLeftY);
+	m_textString->SetAngle(m_angle);
 }
 
 void TextBlock::Collision(Sprite &sprite)
