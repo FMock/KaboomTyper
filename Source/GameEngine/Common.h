@@ -28,8 +28,9 @@ namespace GameEngine
 
 	public:
 		static const std::string DEFAULT_WORD_CATEGORY;
-		static const int WINDOW_WIDTH = 900; // widened from 800 so the Word Category fly-out fits (matches the 900px menu bar)
-		static const int WINDOW_HEIGHT = 1000;
+		static const int WINDOW_WIDTH = 900; // logical width; widened from 800 so the Word Category fly-out fits (matches the 900px menu bar)
+		static const int WINDOW_HEIGHT = 976; // logical height; trimmed so the bordered window (976 + 2*border) fits comfortably under the taskbar
+		static const int BORDER_THICKNESS = 4; // red border drawn around the whole window (window is enlarged by 2x this)
 		static void SubmitText(std::string text);
 		static std::string GetSubmittedText();
 		static void SetActiveText(std::string text);
