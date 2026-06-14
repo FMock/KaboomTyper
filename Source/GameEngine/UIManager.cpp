@@ -438,7 +438,13 @@ void UIManager::IncreaseScore()
 
 void UIManager::GameOver()
 {
-	m_messageBox->ChangeMessage("GAME OVER", "F1:  NEW GAME", "ESC: EXIT GAME");
+	// Same single-column hint list as the start screen, with "GAME OVER" shown as a
+	// banner in the empty space on the right so all four hint lines still fit.
+	m_messageBox->ChangeMessage("F1:       NEW GAME",
+								"OPTIONS:  CTRL + O",
+								"HELP:     CTRL + H",
+								"ESC:      CLOSE MENUS");
+	m_messageBox->SetBanner("GAME OVER");
 }
 
 void UIManager::DisableAllButtonsExceptThisButton(const std::string& menuName)
