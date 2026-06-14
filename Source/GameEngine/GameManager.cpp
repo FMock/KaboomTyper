@@ -309,9 +309,10 @@ void GameManager::RespondToObserved(InputManager* InputMgr)
     }
     else if (InputMgr->m_kbState[SDL_SCANCODE_ESCAPE] && !InputMgr->m_kbPrevState[SDL_SCANCODE_ESCAPE]) // ESC just pressed (edge)
     {
-        // Edge-triggered so that a held ESC which closed an open menu (handled in
-        // HandleMenuInput) does not also quit the game on the following frames.
-        m_inputManager->SetShouldQuit(true); // Set the exit flag to true
+        // ESC is fully handled by UIManager::HandleMenuInput (above): it closes any open
+        // menu/popup, or shows the exit-confirmation dialog when nothing else is open.
+        // HandleMenuInput always consumes ESC now, so this branch is effectively unreachable
+        // and intentionally does nothing (quitting happens only via the confirmation dialog).
     }
     else if (InputMgr->m_kbState[SDL_SCANCODE_F4])
     {

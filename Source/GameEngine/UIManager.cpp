@@ -19,6 +19,10 @@ UIManager::UIManager(std::shared_ptr<InputManager> inputManager, std::shared_ptr
     m_messageBox(std::make_shared<MessageBox>()),
     m_gameMenu(std::make_shared<MainMenu>()),
     m_inputMessageBox(std::make_shared<InputMessageBox>()),
+    m_exitConfirmPopup(std::make_shared<PopupMessageBox>()),
+    m_instructionsPopup(std::make_shared<PopupMessageBox>()),
+    m_feedbackPopup(std::make_shared<PopupMessageBox>()),
+    m_sourcePopup(std::make_shared<PopupMessageBox>()),
     m_wordManager(wordManager),
     m_wordSpeedOptions{ "Default", "Hare", "Turtle", "Cheetah" },
     m_audioOptions{"Play Music"},
@@ -87,6 +91,12 @@ void UIManager::Initialize()
     }
 
     m_inputManager->RegisterObserver(m_inputMessageBox);
+
+    // Modal popups respond to mouse clicks on their buttons
+    m_inputManager->RegisterObserver(m_exitConfirmPopup);
+    m_inputManager->RegisterObserver(m_instructionsPopup);
+    m_inputManager->RegisterObserver(m_feedbackPopup);
+    m_inputManager->RegisterObserver(m_sourcePopup);
 
     // Register callbacks for submenus
     const char* errorMsg = "UIManager::Initialize(), Call to RegisterCallbacks() returned false";
@@ -287,12 +297,41 @@ bool GameEngine::UIManager::RegisterCallbacks()
     m_inputMessageBox->AddButtonCallback(std::bind(&UIManager::CancelButtonCallback, this), InputMessageBox::Buttons::CANCEL);
     m_inputMessageBox->SetIsActive(true); // ask user for name at start of game
 
+    // --- Exit-confirmation dialog ---
+    m_exitConfirmPopup->AddLine("Quit Kaboom Typer?");
+    m_exitConfirmPopup->AddLine("Are you sure you want to exit?");
+    m_exitConfirmPopup->AddButton("Yes", [this]() { m_inputManager->SetShouldQuit(true); });
+    m_exitConfirmPopup->AddButton("No", [this]() { m_exitConfirmPopup->SetIsActive(false); });
+
+    // --- Help: Instructions ---
+    m_instructionsPopup->AddLine("HOW TO PLAY KABOOM TYPER");
+    m_instructionsPopup->AddLine("Type the falling word and press Enter to blow it up.");
+    m_instructionsPopup->AddLine("Clear words before the blocks stack to the top.");
+    m_instructionsPopup->AddLine("Arrow keys nudge the active falling block.");
+    m_instructionsPopup->AddLine("F1 Start   F2 Pause   F3 End Game   Esc Menu/Quit");
+    m_instructionsPopup->AddButton("Close", [this]() { m_instructionsPopup->SetIsActive(false); });
+
+    // --- Help: Send Feedback ---
+    const char* feedbackUrl = "https://www.frankmock.com/software/kaboomtyper/";
+    m_feedbackPopup->AddLine("Visit the Kaboom Typer webpage to send feedback:");
+    m_feedbackPopup->AddLine(feedbackUrl);
+    m_feedbackPopup->AddButton("Open in Browser", [feedbackUrl]() { SDL_OpenURL(feedbackUrl); });
+    m_feedbackPopup->AddButton("Close", [this]() { m_feedbackPopup->SetIsActive(false); });
+
+    // --- Help: View Source Code ---
+    const char* sourceUrl = "https://github.com/FMock/KaboomTyper";
+    m_sourcePopup->AddLine("Visit the GitHub webpage to view the source code:");
+    m_sourcePopup->AddLine(sourceUrl);
+    m_sourcePopup->AddButton("Open in Browser", [sourceUrl]() { SDL_OpenURL(sourceUrl); });
+    m_sourcePopup->AddButton("Close", [this]() { m_sourcePopup->SetIsActive(false); });
+
     return true;
 }
 
 void UIManager::Update(float dt)
 {
     m_inputTextBox->Update(dt);
+    m_messageBox->Update(dt); // drives the slow flash of the "GAME OVER" banner
 	if (m_headsUpDisplay->UpdateRequired()) // only update the HUD if needed
 		m_headsUpDisplay->Update(dt);
 
@@ -352,6 +391,10 @@ void UIManager::RegisterDrawables(DrawOrderManager& manager)
     std::dynamic_pointer_cast<IDrawable>(m_choiceMenus["Word Speed"])->SetPriority(9);
     std::dynamic_pointer_cast<IDrawable>(m_choiceMenus["Audio"])->SetPriority(9);
     m_inputMessageBox->SetPriority(13);
+    m_exitConfirmPopup->SetPriority(14);
+    m_instructionsPopup->SetPriority(14);
+    m_feedbackPopup->SetPriority(14);
+    m_sourcePopup->SetPriority(14);
 
     // Sharing IDrawables with DrawOrderManager
     manager.AddDrawable(m_inputTextBox);
@@ -360,6 +403,10 @@ void UIManager::RegisterDrawables(DrawOrderManager& manager)
     manager.AddDrawable(m_gameMenu);
     manager.AddDrawable(m_messageBox);
     manager.AddDrawable(m_inputMessageBox);
+    manager.AddDrawable(m_exitConfirmPopup);
+    manager.AddDrawable(m_instructionsPopup);
+    manager.AddDrawable(m_feedbackPopup);
+    manager.AddDrawable(m_sourcePopup);
 
     // Add all menus to the DrawOrderManager
     for (const auto& pair : m_dropDownMenus)
@@ -388,6 +435,34 @@ void GameEngine::UIManager::CancelButtonCallback()
 {
     m_inputMessageBox->SetIsActive(false);
     m_inputTextBox->SetIsActive(true);
+}
+
+void GameEngine::UIManager::ShowModal(const std::shared_ptr<PopupMessageBox>& popup)
+{
+    CloseActiveModal();          // only one popup may be visible at a time
+    CloseAllMenus();             // close menus behind it so keyboard input goes to the popup
+    popup->SetIsActive(true);
+}
+
+void GameEngine::UIManager::ShowExitConfirm()
+{
+    ShowModal(m_exitConfirmPopup);
+}
+
+bool GameEngine::UIManager::IsAnyModalActive() const
+{
+    return m_exitConfirmPopup->GetIsActive()
+        || m_instructionsPopup->GetIsActive()
+        || m_feedbackPopup->GetIsActive()
+        || m_sourcePopup->GetIsActive();
+}
+
+void GameEngine::UIManager::CloseActiveModal()
+{
+    m_exitConfirmPopup->SetIsActive(false);
+    m_instructionsPopup->SetIsActive(false);
+    m_feedbackPopup->SetIsActive(false);
+    m_sourcePopup->SetIsActive(false);
 }
 
 void GameEngine::UIManager::ChangeStartMenuItemLabel(const std::string& newLabelText)
@@ -634,6 +709,13 @@ bool GameEngine::UIManager::HandleMenuInput(InputManager* InputMgr)
     //    if nothing is open, defer to the caller (quit).
     if (KeyJustPressed(InputMgr, SDL_SCANCODE_ESCAPE))
     {
+        // An open modal popup takes priority: Esc dismisses it (and is treated as
+        // "No" / cancel for the exit-confirmation dialog).
+        if (IsAnyModalActive())
+        {
+            CloseActiveModal();
+            return true;
+        }
         auto flyIt = m_choiceMenus.find("Animals");
         if (flyIt != m_choiceMenus.end() && flyIt->second->GetIsActive())
         {
@@ -652,7 +734,9 @@ bool GameEngine::UIManager::HandleMenuInput(InputManager* InputMgr)
             CloseAllMenus();
             return true;
         }
-        return false;
+        // Nothing else open: prompt for exit instead of quitting outright.
+        ShowExitConfirm();
+        return true;
     }
 
     // 3a. Arrow / Enter navigation while a choice sub-menu has focus (a fly-out wins over its
@@ -784,7 +868,7 @@ void GameEngine::UIManager::FileDropDownMenuOnClick(const std::string& choice)
     }
     else if (choice == "EXIT")
     {
-        m_inputManager->SetShouldQuit(true); // user pressed Exit sub-menu item
+        ShowExitConfirm(); // confirm before quitting
 #if DEBUG
         std::cout << "Exit The Game" << std::endl;
 #endif
@@ -927,21 +1011,21 @@ void GameEngine::UIManager::HelpDropDownMenuOnClick(const std::string& choice)
 #if DEBUG
         std::cout << "Display Instructions" << std::endl;
 #endif
-
+        ShowModal(m_instructionsPopup);
     }
     else if (choice == "VIEW SOURCE CODE")
     {
 #if DEBUG
         std::cout << "Display View Source Code Option" << std::endl;
 #endif
-
+        ShowModal(m_sourcePopup);
     }
     else if (choice == "SEND FEEDBACK")
     {
 #if DEBUG
         std::cout << "Display Send Feedback Option" << std::endl;
 #endif
-
+        ShowModal(m_feedbackPopup);
     }
     else
     {

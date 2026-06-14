@@ -21,6 +21,7 @@
 #include "InputManager.h"
 #include "DrawOrderManager.h"
 #include "InputMessageBox.h"
+#include "PopupMessageBox.h"
 
 namespace GameEngine
 {
@@ -41,6 +42,11 @@ namespace GameEngine
 		bool HandleMenuInput(InputManager* InputMgr);
 		bool IsAnyMenuOpen() const;
 		void CloseAllMenus();
+
+		// Modal popups (exit confirmation + Help windows).
+		void ShowExitConfirm();          // pop the "really quit?" dialog
+		bool IsAnyModalActive() const;   // true if any popup dialog is showing
+		void CloseActiveModal();         // dismiss whichever popup is showing
 		void OpenWordCategoryFlyout(const std::string& name); // open a fly-out beside the Word Category menu
 
 		void WordCategoryChoiceMenuOnClick(const std::string& choice);
@@ -75,6 +81,10 @@ namespace GameEngine
 		std::shared_ptr<Menu> m_gameMenu;
 		std::shared_ptr<InputManager> m_inputManager;
 		std::shared_ptr<InputMessageBox> m_inputMessageBox;
+		std::shared_ptr<PopupMessageBox> m_exitConfirmPopup;
+		std::shared_ptr<PopupMessageBox> m_instructionsPopup;
+		std::shared_ptr<PopupMessageBox> m_feedbackPopup;
+		std::shared_ptr<PopupMessageBox> m_sourcePopup;
 		std::shared_ptr<WordManager> m_wordManager;
 		std::vector<std::string> m_wordCategories;     // all categories from the DB
 		std::vector<std::string> m_animalCategories;   // categories grouped under "Animals"
@@ -91,6 +101,8 @@ namespace GameEngine
 		void Initialize();
 		bool RegisterCallbacks();
 		void DisableAllButtonsExceptThisButton(const std::string& buttonName);
+		// Show a popup, ensuring it is the only one visible (closes any other first).
+		void ShowModal(const std::shared_ptr<PopupMessageBox>& popup);
 
 		// Keyboard-navigation helpers
 		void OpenMenu(const std::string& name);              // open this dropdown, close others, highlight first item
