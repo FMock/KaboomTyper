@@ -82,6 +82,7 @@ namespace GameEngine
 	void DropDownMenu::InitializeMenu(int x, int y, int width, int height, Colors, bool)
 	{
 		m_menuBody->Initialize(x, y, width, height, Colors::BLUE, true);
+		m_menuBody->SetFrameColor(RGBColor::GetRGBColor(RGBColor::Red)); // red frame, blue fill
 
 		// Initialize menu items
 		for (auto& item : m_menuItems)

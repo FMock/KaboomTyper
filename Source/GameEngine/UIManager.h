@@ -63,6 +63,7 @@ namespace GameEngine
 		using AudioCallback = std::function<void(bool)>;
 		using WordSpeedCallback = std::function<void(const std::string&)>;
 		void AddCallback(Callback callback);
+		void AddKaboomCallback(Callback callback);
 		void AddGameOverCallback(Callback callback);
 		void AddStartGameCallback(Callback callback);
 		void AddAudioCallback(AudioCallback callback);
@@ -92,6 +93,7 @@ namespace GameEngine
 		std::vector<std::string> m_audioOptions;
 		std::vector<std::string> m_wordSpeedOptions;
 		Callback m_processInputCallback;
+		Callback m_kaboomCallback;
 		Callback m_gameOverCallback;
 		Callback m_startGameCallback;
 		WordSpeedCallback m_wordSpeedCallback;

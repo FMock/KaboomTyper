@@ -93,9 +93,19 @@ namespace GameEngine
             throw std::exception("RectangleDrawable Not Fully Initialized");
 
         if (m_filled)
+        {
             glDrawTexture(m_colorTexture, m_x, m_y, (float)m_width, (float)m_height);
+            if (m_hasFrame) // draw a colored frame on top of the fill
+                glDrawRectangleOutline(m_x, m_y, m_width, m_height, m_frameColor);
+        }
+        else if (m_hasFrame)
+        {
+            glDrawRectangleOutline(m_x, m_y, m_width, m_height, m_frameColor);
+        }
         else
+        {
             glDrawRectangleOutline(m_colorTexture, m_x, m_y, (float)m_width, (float)m_height);
+        }
     }
 
     void RectangleDrawable::ChangeColor(Colors newColor)

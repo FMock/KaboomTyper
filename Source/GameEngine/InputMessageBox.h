@@ -51,6 +51,7 @@ namespace GameEngine
         std::vector<std::shared_ptr<TextString>> m_textStrings;
         std::shared_ptr<Button> m_cancelButton;
         std::shared_ptr<Button> m_submitButton;
+        int m_focusedButton; // keyboard-focused button (SUBMIT by default); arrows toggle it
         bool m_isActive;
         int m_nextYPosition; // To keep track of the next Y position for InputTextBox
         int m_priority; // draw priority
