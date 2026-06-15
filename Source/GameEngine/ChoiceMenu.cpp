@@ -118,12 +118,17 @@ namespace GameEngine
         {
             SetHeight(100);
         }
+        else if (m_choiceMenuItems.size() == 3)
+        {
+            SetHeight(165);
+            SetWidth(180);
+        }
         else if (m_choiceMenuItems.size() == 4)
         {
             SetHeight(200);
             SetWidth(180);
         }
-        else 
+        else
         {
             SetHeight(menuHeight);
         }

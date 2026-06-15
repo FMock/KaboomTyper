@@ -48,6 +48,14 @@ void GameEngine::MessageBox::SetBanner(const std::string& text)
 	m_bannerVisible = true;
 }
 
+void GameEngine::MessageBox::SetDifficulty(const std::string& text)
+{
+	if (text.empty())
+		m_difficultyText.reset();
+	else
+		m_difficultyText = std::make_unique<TextString>(text.c_str(), m_x + DIFFICULTY_X, m_y + DIFFICULTY_Y);
+}
+
 void GameEngine::MessageBox::Update(float dt)
 {
 	// Slowly blink the banner (e.g. "GAME OVER") by toggling its visibility.
@@ -88,5 +96,11 @@ void GameEngine::MessageBox::Draw()
     if (m_banner && m_bannerVisible)
     {
         m_banner->DrawText(BANNER_SCALE, 0.0f, RGBColor::GetRGBColor(RGBColor::Yellow));
+    }
+
+    // Persistent difficulty label (drawn only when no flashing banner occupies the same space).
+    if (m_difficultyText && !m_banner)
+    {
+        m_difficultyText->DrawText(DIFFICULTY_SCALE, 0.0f, RGBColor::GetRGBColor(RGBColor::Yellow));
     }
 }

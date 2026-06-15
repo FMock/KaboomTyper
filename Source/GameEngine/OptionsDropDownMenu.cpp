@@ -5,7 +5,7 @@ using namespace GameEngine;
 OptionsDropDownMenu::OptionsDropDownMenu()
 {
     InitializeMenuEntries();
-    InitializeMenu(125, 40, 240, 160, Colors::BLUE, true);
+    InitializeMenu(125, 40, 240, 206, Colors::BLUE, true); // height grown to fit the Difficulty item
 }
 
 void OptionsDropDownMenu::InitializeMenuEntries()
@@ -31,6 +31,11 @@ void OptionsDropDownMenu::InitializeMenuEntries()
     {
 
     });
+
+    AddMenuItem("Difficulty", std::make_unique<MenuItem>(), [this](const std::string& menuItemName)
+    {
+
+    });
 }
 
 void OptionsDropDownMenu::InitializeMenuEntry(MenuItem* menuItem, const std::string& label, int x, int y, float scale, int color)
@@ -52,6 +57,10 @@ void OptionsDropDownMenu::InitializeMenuEntry(MenuItem* menuItem, const std::str
         else if (label == "Audio")
         {
             menuItem->Initialize("AUDIO", menuXPos + 20, 156, menuXPos + 6, menuYPos, menuWidth, 0.65f, Colors::DARK_YELLOW);
+        }
+        else if (label == "Difficulty")
+        {
+            menuItem->Initialize("DIFFICULTY", menuXPos + 20, 202, menuXPos + 6, menuYPos, menuWidth, 0.65f, Colors::DARK_YELLOW);
         }
     }
     else

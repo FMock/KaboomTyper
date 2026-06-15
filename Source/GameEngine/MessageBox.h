@@ -32,6 +32,11 @@ namespace GameEngine
 		// box (e.g. "GAME OVER"). Pass "" to clear it. ChangeMessage also clears it.
 		void SetBanner(const std::string& text);
 
+		// Persistent (non-flashing) text shown in the right side of the box during gameplay,
+		// e.g. "Difficulty: Normal". Pass "" to clear it. Survives ChangeMessage so it stays
+		// visible across start/pause message changes.
+		void SetDifficulty(const std::string& text);
+
 	private:
 		// Line layout (relative to the box origin). Sized so four lines fit between the
 		// decorative boxes on the top and bottom borders of the message area.
@@ -49,10 +54,16 @@ namespace GameEngine
 		// so messages like "GAME OVER" blink slowly (driven by Update()).
 		static constexpr float BANNER_FLASH_INTERVAL = 0.6f;
 
+		// Difficulty text layout (relative to the box origin): right-side area, persistent.
+		static constexpr int DIFFICULTY_X = 290;
+		static constexpr int DIFFICULTY_Y = 44;
+		static constexpr float DIFFICULTY_SCALE = 0.50f;
+
 		RectangleDrawable m_body;
 		std::unique_ptr<TextString> m_defaultMessage;      // shown when no lines are set
 		std::vector<std::unique_ptr<TextString>> m_lines;  // current message, one entry per line
 		std::unique_ptr<TextString> m_banner;              // optional large right-side message
+		std::unique_ptr<TextString> m_difficultyText;      // persistent right-side difficulty label
 		float m_bannerFlashElapsed = 0.0f;                 // time accumulator for the banner flash
 		bool m_bannerVisible = true;                       // current banner blink state
 		int m_x, m_y, m_width, m_height;

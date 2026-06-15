@@ -19,6 +19,32 @@ namespace GameEngine
 		NONE, LEFT, RIGHT, UP, DOWN, MOVE_DIRECTION_COUNT
 	};
 
+	// Game difficulty: controls how many word blocks may fall at once.
+	// Easy = one at a time, Normal = up to two, Hard = up to three.
+	enum class Difficulty
+	{
+		Easy, Normal, Hard
+	};
+
+	// Display/lookup helpers for Difficulty (kept inline in the header so any TU can use them).
+	inline std::string DifficultyName(Difficulty d)
+	{
+		switch (d)
+		{
+		case Difficulty::Easy: return "Easy";
+		case Difficulty::Hard: return "Hard";
+		case Difficulty::Normal:
+		default:               return "Normal";
+		}
+	}
+
+	inline Difficulty ParseDifficulty(const std::string& name)
+	{
+		if (name == "Easy") return Difficulty::Easy;
+		if (name == "Hard") return Difficulty::Hard;
+		return Difficulty::Normal; // default
+	}
+
 	class Common
 	{
 	private:
