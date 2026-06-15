@@ -55,6 +55,9 @@ namespace GameEngine
 		bool IsPhysicsControlled() const;
 		void SyncFromBody();                 // mirror the body's transform onto this block + its text
 
+		// The word the player must type to destroy this block.
+		std::string GetWord() const { return m_textString ? m_textString->GetText() : std::string(); }
+
 		void Activate();
 		bool IsActive() const;
 		void SetActiveState(bool isActive);

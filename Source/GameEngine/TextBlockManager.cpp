@@ -5,6 +5,7 @@
 #include "PhysicsWorld.h"
 #include <iostream>
 #include <algorithm>
+#include <random>
 
 /// <summary>
 /// TextBlockManager manages TextBlock creation and removal
@@ -49,22 +50,17 @@ void TextBlockManager::ClearBlockDeque()
 
     // Now delete 'em
     m_blockDeque.clear();
+
+    // Reset the wave scheduler so a fresh game starts cleanly.
+    m_pendingExtraSpawns = 0;
+    m_staggerTimer = 0.0f;
 }
 
 
 void GameEngine::TextBlockManager::GenerateTextBlock()
 {
-    // Check if there's already an active TextBlock
-    auto it = std::find_if(m_blockDeque.begin(), m_blockDeque.end(), [](const std::shared_ptr<TextBlock>& block)
-        {
-            return block->IsActive();
-        });
-
-    if (it != m_blockDeque.end())
-    {
-        // There's already an active TextBlock, so don't create a new one
-        return;
-    }
+    // Spawning is governed by the difficulty scheduler in Update(); this method always creates a
+    // block. The newest block becomes the active (arrow-controllable) one via Activate().
 
     // Get a string based on the current word category
     std::string text = m_wordManager->GetNextWord();
@@ -103,29 +99,21 @@ void TextBlockManager::Update(float dt)
     if (!m_running)
         return;
 
-    // There is only ever one player-controlled block falling; everything else is owned by Box2D.
-    std::shared_ptr<TextBlock> falling;
+    // Update every player-controlled (non-physics) falling block. Several may be falling at once
+    // depending on the difficulty. Each is handed off to Box2D the moment it reaches the floor or
+    // the top of the settled stack. HandOffToPhysics only flips the block's state (it does not
+    // modify the deque), so iterating here is safe.
     for (auto& b : m_blockDeque)
     {
-        if (!b->IsPhysicsControlled())
-        {
-            falling = b;
-            break;
-        }
-    }
+        if (b->IsPhysicsControlled())
+            continue;
 
-    if (falling)
-    {
-        falling->Update(dt); // custom controlled descent
+        b->Update(dt); // custom controlled descent
 
-        // Once it reaches the floor or the top of the settled stack, hand it to the physics
-        // engine, which settles or topples it realistically, and give the player the next word.
-        AABB& box = falling->GetBox();
-        if (box.y + box.h >= FindSupportTopY(falling.get()))
+        AABB& box = b->GetBox();
+        if (box.y + box.h >= FindSupportTopY(b.get()))
         {
-            HandOffToPhysics(falling);
-            GenerateTextBlock();
-            falling = nullptr;
+            HandOffToPhysics(b);
         }
     }
 
@@ -148,17 +136,98 @@ void TextBlockManager::Update(float dt)
         ToggleRunning();
         m_limitReached = true;
         UnregisterAllTextBlocks();
-    }
-    else if (falling && falling->IsActive() && falling->GetMovingState())
-    {
-        SetHorizontalMovement(falling.get());
-    }
-    else
-    {
-        SetHorizontalMovement(nullptr);
+        return;
     }
 
+    // Difficulty-driven spawn scheduler: always keep at least one block falling, and (for
+    // Normal/Hard) stagger additional blocks ~1s apart so they don't obscure one another. A new
+    // wave begins only once every falling block from the previous wave has landed or been typed.
+    const int fallingCount = CountFallingBlocks();
+    const int maxConcurrent = (m_difficulty == Difficulty::Easy)   ? 1
+                            : (m_difficulty == Difficulty::Normal) ? 2
+                                                                   : 3;
+
+    if (fallingCount == 0)
+    {
+        GenerateTextBlock();               // lead block of a new wave
+        m_staggerTimer = 0.0f;
+        m_pendingExtraSpawns = ComputeExtraSpawns();
+    }
+    else if (m_pendingExtraSpawns > 0 && fallingCount < maxConcurrent)
+    {
+        m_staggerTimer += dt;
+        if (m_staggerTimer >= STAGGER_DELAY)
+        {
+            m_staggerTimer = 0.0f;
+            GenerateTextBlock();
+            --m_pendingExtraSpawns;
+        }
+    }
+
+    // Arrow-key horizontal control follows the single active falling block (the newest spawned).
+    TextBlock* activeFalling = nullptr;
+    for (auto& b : m_blockDeque)
+    {
+        if (!b->IsPhysicsControlled() && b->IsActive() && b->GetMovingState())
+        {
+            activeFalling = b.get();
+            break;
+        }
+    }
+    SetHorizontalMovement(activeFalling);
+
     UpdateTimer(dt);
+}
+
+// Number of blocks still under player control (i.e. falling, not yet owned by Box2D).
+int TextBlockManager::CountFallingBlocks() const
+{
+    int count = 0;
+    for (const auto& b : m_blockDeque)
+        if (!b->IsPhysicsControlled())
+            ++count;
+    return count;
+}
+
+// Extra blocks (beyond the lead) to queue at the start of a wave, per difficulty.
+int TextBlockManager::ComputeExtraSpawns()
+{
+    switch (m_difficulty)
+    {
+    case Difficulty::Normal:
+    {
+        // 50% chance a single second block joins the wave ~1s later.
+        static std::random_device rd;
+        static std::mt19937 gen(rd());
+        static std::uniform_int_distribution<int> coin(0, 1);
+        return coin(gen);
+    }
+    case Difficulty::Hard:
+        return 2; // lead + 2 = up to three falling at once
+    case Difficulty::Easy:
+    default:
+        return 0;
+    }
+}
+
+// After a falling block is destroyed, ensure a remaining falling block holds "active" status so
+// arrow-key control and the active word keep working.
+void TextBlockManager::ReactivateFallingBlock()
+{
+    const bool anyActive = std::any_of(m_blockDeque.begin(), m_blockDeque.end(),
+        [](const std::shared_ptr<TextBlock>& b) { return b->IsActive(); });
+    if (anyActive)
+        return;
+
+    for (auto it = m_blockDeque.rbegin(); it != m_blockDeque.rend(); ++it)
+    {
+        if (!(*it)->IsPhysicsControlled())
+        {
+            (*it)->Activate();
+            Common::SetActiveText((*it)->GetWord());
+            break;
+        }
+    }
 }
 
 
@@ -289,10 +358,36 @@ void TextBlockManager::DestroyActiveTextBlock()
             // Delete the active TextBlock from the container
             m_blockDeque.erase(it);
 
-            // Give the player a new TextBlock
-            GenerateTextBlock();
+            // Hand "active" status to a remaining falling block (the scheduler refills new waves).
+            ReactivateFallingBlock();
         }
     }
+}
+
+// Destroy the falling block whose word matches the typed text. Only blocks still under player
+// control (not settled) can be typed. Returns true if a matching block was found and removed.
+bool TextBlockManager::DestroyMatchingTextBlock(const std::string& word)
+{
+    auto it = std::find_if(m_blockDeque.begin(), m_blockDeque.end(),
+        [&word](const std::shared_ptr<TextBlock>& block)
+        {
+            return !block->IsPhysicsControlled() && block->GetWord() == word;
+        });
+
+    if (it == m_blockDeque.end())
+        return false;
+
+    // Set position/size for others to use (like Firework).
+    Common::s_currentPosition = it->get()->GetPosition();
+    auto size = it->get()->GetSize();
+    Common::s_currentTextBlockWidth = static_cast<int>(size.first);
+
+    m_inputManager->UnregisterObserver(it->get());
+    m_physics->DestroyBody(it->get()->GetBody()); // null-safe; a falling block owns no body
+    m_blockDeque.erase(it);
+
+    ReactivateFallingBlock();
+    return true;
 }
 
 void TextBlockManager::SetHorizontalMovement(TextBlock* block)

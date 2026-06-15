@@ -3,6 +3,7 @@
 #include "MainMenu.h"
 #include "AudioChoiceMenu.h"
 #include "WordSpeedChoiceMenu.h"
+#include "DifficultyChoiceMenu.h"
 #include <SDL.h>
 #include <iostream>
 #include <stdexcept>
@@ -28,6 +29,7 @@ UIManager::UIManager(std::shared_ptr<InputManager> inputManager, std::shared_ptr
     m_wordManager(wordManager),
     m_wordSpeedOptions{ "Default", "Hare", "Turtle", "Cheetah" },
     m_audioOptions{"Play Music"},
+    m_difficultyOptions{ "Easy", "Normal", "Hard" },
     m_initialized(false)
 {
 	Initialize();
@@ -66,6 +68,7 @@ void UIManager::Initialize()
     m_choiceMenus["Animals"] = std::make_shared<WordCategoryChoiceMenu>(m_animalCategories); // fly-out
     m_choiceMenus["Word Speed"] = std::make_shared<WordSpeedChoiceMenu>(m_wordSpeedOptions);
     m_choiceMenus["Audio"] = std::make_shared<AudioChoiceMenu>(m_audioOptions);
+    m_choiceMenus["Difficulty"] = std::make_shared<DifficultyChoiceMenu>(m_difficultyOptions);
 
     // User Input
     m_inputTextBox = std::make_shared<InputTextBox>();
@@ -178,6 +181,12 @@ bool GameEngine::UIManager::RegisterCallbacks()
         if (!optionsMenu->AddCallback("Word Speed", [this](const std::string& choice) { this->OptionsDropDownMenuOnClick(choice); }))
         {
             std::cerr << "Failed to register callback for Word Speed MenuItem" << std::endl;
+            return false;
+        }
+
+        if (!optionsMenu->AddCallback("Difficulty", [this](const std::string& choice) { this->OptionsDropDownMenuOnClick(choice); }))
+        {
+            std::cerr << "Failed to register callback for Difficulty MenuItem" << std::endl;
             return false;
         }
     }
@@ -293,6 +302,24 @@ bool GameEngine::UIManager::RegisterCallbacks()
         return false;
     }
 
+    //Register callbacks for DifficultyChoiceMenu
+    if (auto choiceMenu = std::dynamic_pointer_cast<DifficultyChoiceMenu>(m_choiceMenus["Difficulty"]))
+    {
+        for (auto& option : m_difficultyOptions)
+        {
+            if (!choiceMenu->AddCallback(option, [this](const std::string& option) { this->DifficultyChoiceMenuOnClick(option); }))
+            {
+                std::cerr << "Failed to register callback for " << option << " ChoiceMenuItem" << std::endl;
+                return false;
+            }
+        }
+    }
+    else
+    {
+        std::cerr << "Failed to find DifficultyChoiceMenu" << std::endl;
+        return false;
+    }
+
     // Bind the callback and add the InputTextBox
     m_inputMessageBox->AddInputTextBoxCallback(std::bind(&UIManager::GetUserNamePromptCallback, this));
     m_inputMessageBox->AddButtonCallback(std::bind(&UIManager::GetUserNamePromptCallback, this), InputMessageBox::Buttons::SUBMIT);
@@ -375,13 +402,11 @@ void UIManager::Update(float dt)
 
 void UIManager::ProcessInput()
 {
-    // compare input and active text
-    std::string activeStr = Common::GetActiveText();
     std::string submittedStr = Common::GetSubmittedText();
 
     // Only score during active gameplay. Ignore ENTER used to pick a menu /
     // sub-menu item, and ignore empty submissions (which would spuriously match
-    // an empty active word before the game starts or after it ends).
+    // an empty word before the game starts or after it ends).
     if (Common::CurrentState != GameState::RUNNING || IsAnyMenuOpen() || submittedStr.empty())
         return;
 
@@ -396,15 +421,10 @@ void UIManager::ProcessInput()
         return;
     }
 
-    // Did user score?
-    if (activeStr == submittedStr)
-    {
-        m_processInputCallback(); // Call GameManager's UserScored()
-    }
-
-#if DEBUG
-    std::cout << "The strings are " << (activeStr == submittedStr ? "equal" : "not equal") << "." << std::endl;
-#endif
+    // Match the typed word against any currently-falling block. The callback (GameManager::UserTyped)
+    // destroys the matching block and scores it, returning whether a match was found.
+    if (m_wordSubmittedCallback)
+        m_wordSubmittedCallback(submittedStr);
 }
 
 void UIManager::Render()
@@ -427,6 +447,7 @@ void UIManager::RegisterDrawables(DrawOrderManager& manager)
     std::dynamic_pointer_cast<IDrawable>(m_choiceMenus["Animals"])->SetPriority(9);
     std::dynamic_pointer_cast<IDrawable>(m_choiceMenus["Word Speed"])->SetPriority(9);
     std::dynamic_pointer_cast<IDrawable>(m_choiceMenus["Audio"])->SetPriority(9);
+    std::dynamic_pointer_cast<IDrawable>(m_choiceMenus["Difficulty"])->SetPriority(9);
     m_inputMessageBox->SetPriority(13);
     m_exitConfirmPopup->SetPriority(14);
     m_instructionsPopup->SetPriority(14);
@@ -508,9 +529,9 @@ void GameEngine::UIManager::ChangeStartMenuItemLabel(const std::string& newLabel
     menu->ChangeMenuItemLabel("Start", newLabelText); // For the menu item with key == "Start", change it's label to newLabelText
 }
 
-void GameEngine::UIManager::AddCallback(Callback callback)
+void GameEngine::UIManager::AddWordSubmittedCallback(WordSubmittedCallback callback)
 {
-    m_processInputCallback = callback;
+    m_wordSubmittedCallback = callback;
 }
 
 void GameEngine::UIManager::AddKaboomCallback(Callback callback)
@@ -554,6 +575,16 @@ void UIManager::AddWordSpeedCallback(WordSpeedCallback callback)
     m_wordSpeedCallback = callback;
 }
 
+void UIManager::AddDifficultyCallback(DifficultyCallback callback)
+{
+    m_difficultyCallback = callback;
+}
+
+void UIManager::SetDifficultyDisplay(const std::string& text)
+{
+    m_messageBox->SetDifficulty(text);
+}
+
 void UIManager::ResetScore()
 {
 	m_headsUpDisplay->ResetScore();
@@ -563,8 +594,7 @@ void UIManager::ResetScore()
 
 void UIManager::IncreaseScore()
 {
-	// 1 point per character. The just-typed word is still in Common's submitted text here
-	// (only the *active* text is overwritten when the next block spawns during UserScored).
+	// 1 point per character. The just-typed word is still in Common's submitted text here.
 	// Queue the points rather than adding them at once: Update() ticks them up one at a
 	// time, playing a ding for each so the scoreboard counts up in step with the dings.
 	int points = static_cast<int>(Common::GetSubmittedText().length());
@@ -963,6 +993,7 @@ void GameEngine::UIManager::OptionsDropDownMenuOnClick(const std::string& choice
         {
             m_choiceMenus["Audio"]->SetIsActive(false);
             m_choiceMenus["Word Speed"]->SetIsActive(false);
+            m_choiceMenus["Difficulty"]->SetIsActive(false);
         }
     }
     else if (choice == "AUDIO")
@@ -971,10 +1002,11 @@ void GameEngine::UIManager::OptionsDropDownMenuOnClick(const std::string& choice
         std::cout << "Display Audio Options" << std::endl;
 #endif
         m_choiceMenus["Audio"]->SetIsActive(!m_choiceMenus["Audio"]->GetIsActive());
-        if (m_choiceMenus["Audio"]->GetIsActive()) 
+        if (m_choiceMenus["Audio"]->GetIsActive())
         {
             m_choiceMenus["Word Category"]->SetIsActive(false);
             m_choiceMenus["Word Speed"]->SetIsActive(false);
+            m_choiceMenus["Difficulty"]->SetIsActive(false);
         }
     }
     else if (choice == "WORD SPEED")
@@ -983,11 +1015,25 @@ void GameEngine::UIManager::OptionsDropDownMenuOnClick(const std::string& choice
         std::cout << "Display Word Speed Options" << std::endl;
 #endif
         m_choiceMenus["Word Speed"]->SetIsActive(!m_choiceMenus["Word Speed"]->GetIsActive());
-        if (m_choiceMenus["Word Speed"]->GetIsActive()) 
+        if (m_choiceMenus["Word Speed"]->GetIsActive())
         {
             m_choiceMenus["Word Category"]->SetIsActive(false);
             m_choiceMenus["Audio"]->SetIsActive(false);
-        }  
+            m_choiceMenus["Difficulty"]->SetIsActive(false);
+        }
+    }
+    else if (choice == "DIFFICULTY")
+    {
+#if DEBUG
+        std::cout << "Display Difficulty Options" << std::endl;
+#endif
+        m_choiceMenus["Difficulty"]->SetIsActive(!m_choiceMenus["Difficulty"]->GetIsActive());
+        if (m_choiceMenus["Difficulty"]->GetIsActive())
+        {
+            m_choiceMenus["Word Category"]->SetIsActive(false);
+            m_choiceMenus["Audio"]->SetIsActive(false);
+            m_choiceMenus["Word Speed"]->SetIsActive(false);
+        }
     }
     else
     {
@@ -1069,6 +1115,31 @@ void GameEngine::UIManager::WordSpeedChoiceMenuOnClick(const std::string& choice
     }
 
     m_wordSpeedCallback(selection);
+}
+
+void GameEngine::UIManager::DifficultyChoiceMenuOnClick(const std::string& choice)
+{
+    NotifyMenuSelect();
+    bool state = false;
+    std::string selection = choice;
+
+    for (const auto& option : m_difficultyOptions)
+    {
+        if (option == choice) // valid difficulty option
+        {
+            auto menu = std::dynamic_pointer_cast<DifficultyChoiceMenu>(m_choiceMenus["Difficulty"]);
+            state = menu->GetMenuItemSelectionState(option);
+        }
+    }
+
+    // If the player toggled the current difficulty off, fall back to the default (Normal).
+    if (!state)
+    {
+        selection = "Normal";
+    }
+
+    if (m_difficultyCallback)
+        m_difficultyCallback(selection);
 }
 
 void GameEngine::UIManager::HelpDropDownMenuOnClick(const std::string& choice)

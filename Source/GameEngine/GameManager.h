@@ -32,8 +32,9 @@ namespace GameEngine
 	public:
 		static std::shared_ptr<GameManager> Create();
 		void Update(float dt);
-		void UserScored();
-		void BlowUpActiveBlock(); // detonate the active block (no scoring) — used by UserScored and the "kaboom" word
+		// Destroy the falling block matching the typed word and score it. Returns true on a match.
+		bool UserTyped(const std::string& word);
+		void BlowUpActiveBlock(); // detonate the active block (no scoring) — used by the "kaboom" word
 		void PlayMenuSelectSound(); // click sound for menu selections (wired to UIManager)
 		void PlayScoreDing(); // bell ding played once per scored point (wired to UIManager)
 		void Render();
@@ -42,6 +43,7 @@ namespace GameEngine
 		bool GetPlayMusic() const;
 		void SetPlayMusic(bool playMusic);
 		void ChangeTextBlockFallSpeed(const std::string& speed);
+		void SetDifficulty(const std::string& difficulty);
 
 	private:
 		GameManager();
@@ -50,6 +52,7 @@ namespace GameEngine
 		void GameOver();
 		void StartGame();
 		void RegisterDrawables();
+		void PlayExplosionEffects(); // fireworks + boom sound for a destroyed block
 
 		DrawOrderManager m_drawOrderManager;
 
@@ -62,6 +65,7 @@ namespace GameEngine
 		std::shared_ptr<WordManager> m_wordManager; // shares with TextBlockManager
 		bool m_playMusic;
 		bool m_exitGame;
+		Difficulty m_difficulty = Difficulty::Normal; // current game difficulty (default Normal)
 		
 		// Audio
 		std::shared_ptr<GameAudio> m_explosion;

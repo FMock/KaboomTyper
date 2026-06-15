@@ -210,6 +210,7 @@
     <ClInclude Include="WordCategoryChoiceMenu.h" />
     <ClInclude Include="WordManager.h" />
     <ClInclude Include="WordSpeedChoiceMenu.h" />
+    <ClInclude Include="DifficultyChoiceMenu.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AudioChoiceMenu.cpp" />
@@ -269,6 +270,7 @@
     <ClCompile Include="WordCategoryChoiceMenu.cpp" />
     <ClCompile Include="WordManager.cpp" />
     <ClCompile Include="WordSpeedChoiceMenu.cpp" />
+    <ClCompile Include="DifficultyChoiceMenu.cpp" />
     <ClCompile Include="PhysicsWorld.cpp" />
   </ItemGroup>
   <!-- Vendored Box2D 2.4.1 (physics) compiled into GameEngine -->

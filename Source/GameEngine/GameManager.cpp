@@ -31,7 +31,7 @@ void GameManager::Initialize()
 
     // UI Manager
     m_uiManager = std::make_unique<UIManager>(m_inputManager, m_wordManager);
-    m_uiManager->AddCallback(std::bind(&GameManager::UserScored, this));
+    m_uiManager->AddWordSubmittedCallback([this](const std::string& word) { return this->UserTyped(word); });
     m_uiManager->AddKaboomCallback(std::bind(&GameManager::BlowUpActiveBlock, this)); // "kaboom" clears the block for free
     m_uiManager->AddMenuSelectCallback(std::bind(&GameManager::PlayMenuSelectSound, this)); // click sound on menu selections
     m_uiManager->AddScoreDingCallback(std::bind(&GameManager::PlayScoreDing, this)); // bell ding per scored point
@@ -40,9 +40,13 @@ void GameManager::Initialize()
     //m_uiManager->AddAudioCallback(std::bind(&GameManager::SetPlayMusic, this, std::placeholders::_1)); // need placeholder since SetPlayMusic takes a bool parameter
     m_uiManager->AddAudioCallback([this](bool playMusic) { this->SetPlayMusic(playMusic); }); // Will using lambdas improve performance?
     m_uiManager->AddWordSpeedCallback([this](const std::string speed) { this->ChangeTextBlockFallSpeed(speed); });
+    m_uiManager->AddDifficultyCallback([this](const std::string& difficulty) { this->SetDifficulty(difficulty); });
 
     // TextBlock Manager
     m_textblockManager = std::make_shared<TextBlockManager>(10.0f, m_inputManager, m_wordManager);
+
+    // Establish the default difficulty (Normal) on the TextBlockManager and the display.
+    SetDifficulty(DifficultyName(m_difficulty));
 
     // Firework Explosion Manager
     m_fireworkExplosionManager = std::make_shared<FireworkExplosionManager>();
@@ -116,13 +120,10 @@ void GameManager::Update(float dt)
     m_exitGame = m_inputManager->ShouldQuit(); // user wishes to exit?
 }
 
-// Detonate the active TextBlock: destroy it, fire the explosion sprites, and play the boom.
-// Awards NO points — used both by UserScored() (which adds the score) and by the "kaboom"
-// cheat word (which clears the block for free).
-void GameManager::BlowUpActiveBlock()
+// Fire the explosion sprites and play the boom for a block that was just destroyed.
+// Awards NO points — shared by UserTyped() (which adds the score) and BlowUpActiveBlock().
+void GameManager::PlayExplosionEffects()
 {
-    m_textblockManager->DestroyActiveTextBlock();
-
     int blasts = m_fireworkExplosionManager->Trigger(); // bright sprite explosions (multiple for long words)
 
     // Play the boom on the next voice in the pool (round-robin) so consecutive scores
@@ -135,11 +136,22 @@ void GameManager::BlowUpActiveBlock()
     }
 }
 
-// User successfully typed target word/s, Destroy TextBlock and increase score
-void GameManager::UserScored()
+// Detonate the active TextBlock with no points — used by the "kaboom" cheat word.
+void GameManager::BlowUpActiveBlock()
 {
-    BlowUpActiveBlock();
+    m_textblockManager->DestroyActiveTextBlock();
+    PlayExplosionEffects();
+}
+
+// User submitted a word: destroy the matching falling block (if any) and award the score.
+bool GameManager::UserTyped(const std::string& word)
+{
+    if (!m_textblockManager->DestroyMatchingTextBlock(word))
+        return false;
+
+    PlayExplosionEffects();
     m_uiManager->IncreaseScore();
+    return true;
 }
 
 // Plays the menu-selection click sound (wired to UIManager via AddMenuSelectCallback).
@@ -311,6 +323,18 @@ void GameEngine::GameManager::ChangeTextBlockFallSpeed(const std::string& speed)
     {
         throw std::out_of_range("Key not found in GRAVITY_CHOICES map: " + speed);
     }
+}
+
+// Set the game difficulty: update the TextBlockManager's spawn behavior and the on-screen label.
+void GameEngine::GameManager::SetDifficulty(const std::string& difficulty)
+{
+    m_difficulty = ParseDifficulty(difficulty);
+    m_textblockManager->SetDifficulty(m_difficulty);
+    m_uiManager->SetDifficultyDisplay("Difficulty: " + DifficultyName(m_difficulty));
+
+#if DEBUG_GAMEMANAGER
+    std::cout << "Difficulty set to " << DifficultyName(m_difficulty) << std::endl;
+#endif
 }
 
 void GameManager::RespondToObserved(InputManager* InputMgr)

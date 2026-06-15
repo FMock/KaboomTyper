@@ -52,6 +52,7 @@ namespace GameEngine
 		void WordCategoryChoiceMenuOnClick(const std::string& choice);
 		void AudioChoiceMenuOnClick(const std::string& choice);
 		void WordSpeedChoiceMenuOnClick(const std::string& choice);
+		void DifficultyChoiceMenuOnClick(const std::string& choice);
 		void FileDropDownMenuOnClick(const std::string& choice);
 		void OptionsDropDownMenuOnClick(const std::string& choice);
 		void HelpDropDownMenuOnClick(const std::string& choice);
@@ -59,10 +60,15 @@ namespace GameEngine
 		void GetUserNamePromptCallback();
 		void CancelButtonCallback();
 		void ChangeStartMenuItemLabel(const std::string& choice);
+		// Show the current difficulty (e.g. "Difficulty: Normal") in the message box; "" clears it.
+		void SetDifficultyDisplay(const std::string& text);
 		using Callback = std::function<void()>;
 		using AudioCallback = std::function<void(bool)>;
 		using WordSpeedCallback = std::function<void(const std::string&)>;
-		void AddCallback(Callback callback);
+		using DifficultyCallback = std::function<void(const std::string&)>;
+		// Returns true if the typed word matched a falling block (so the caller can score it).
+		using WordSubmittedCallback = std::function<bool(const std::string&)>;
+		void AddWordSubmittedCallback(WordSubmittedCallback callback);
 		void AddKaboomCallback(Callback callback);
 		void AddMenuSelectCallback(Callback callback);
 		void AddScoreDingCallback(Callback callback);
@@ -70,6 +76,7 @@ namespace GameEngine
 		void AddStartGameCallback(Callback callback);
 		void AddAudioCallback(AudioCallback callback);
 		void AddWordSpeedCallback(WordSpeedCallback callback);
+		void AddDifficultyCallback(DifficultyCallback callback);
 
 		template<typename... Args> // Wrapper for MessageBox::ChangeMessage(Args&&... args)
 		void ChangeMessageBoxMessage(Args&&... args);
@@ -94,7 +101,8 @@ namespace GameEngine
 		std::vector<std::string> m_topLevelCategories; // "Animals" + the non-animal categories
 		std::vector<std::string> m_audioOptions;
 		std::vector<std::string> m_wordSpeedOptions;
-		Callback m_processInputCallback;
+		std::vector<std::string> m_difficultyOptions;
+		WordSubmittedCallback m_wordSubmittedCallback;
 		Callback m_kaboomCallback;
 		Callback m_menuSelectCallback;
 		Callback m_scoreDingCallback;
@@ -107,6 +115,7 @@ namespace GameEngine
 		static constexpr float SCORE_TICK_INTERVAL = 0.09f; // seconds between dings/points
 		Callback m_startGameCallback;
 		WordSpeedCallback m_wordSpeedCallback;
+		DifficultyCallback m_difficultyCallback;
 		AudioCallback m_audioCallback;
 		int m_priority; // draw priority
 		bool m_initialized;
