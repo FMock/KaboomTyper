@@ -28,6 +28,7 @@ namespace GameEngine
 		void SetIsActive(bool isActive);
 		void SetSelected(bool selected);
 		void SetText(std::string text);
+		void SetDrawOutline(bool draw) { m_drawOutline = draw; } // false hides the button's frame entirely
 
 	private:
 		std::unique_ptr<RectangleDrawable> m_outline;
@@ -42,5 +43,6 @@ namespace GameEngine
 		int m_outlineHeight;
 		bool m_active; // true when mouse hover present
 		bool m_selected = false; // true while this menu's drop-down is open
+		bool m_drawOutline = true; // when false, the outline/frame is not drawn
 	};
 }

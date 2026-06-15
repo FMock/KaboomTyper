@@ -33,6 +33,8 @@ void GameManager::Initialize()
     m_uiManager = std::make_unique<UIManager>(m_inputManager, m_wordManager);
     m_uiManager->AddCallback(std::bind(&GameManager::UserScored, this));
     m_uiManager->AddKaboomCallback(std::bind(&GameManager::BlowUpActiveBlock, this)); // "kaboom" clears the block for free
+    m_uiManager->AddMenuSelectCallback(std::bind(&GameManager::PlayMenuSelectSound, this)); // click sound on menu selections
+    m_uiManager->AddScoreDingCallback(std::bind(&GameManager::PlayScoreDing, this)); // bell ding per scored point
     m_uiManager->AddGameOverCallback(std::bind(&GameManager::GameOver, this));
     m_uiManager->AddStartGameCallback(std::bind(&GameManager::StartGame, this));
     //m_uiManager->AddAudioCallback(std::bind(&GameManager::SetPlayMusic, this, std::placeholders::_1)); // need placeholder since SetPlayMusic takes a bool parameter
@@ -72,6 +74,22 @@ void GameManager::Initialize()
         // other off (the SDL mixer mixes different keys; the same key would just restart).
         for (int v = 0; v < BOOM_VOICES; ++v)
             m_explosion->LoadWAV("boom_" + std::to_string(v), m_explosionPath);
+
+        // UI click sound played when the user makes a menu selection.
+        std::string optionSelectPath = Utilities::ReadConfigFileGetPath(Common::GAME_CONFIG_FILE, "optionSelectWavFilePath");
+        if (optionSelectPath.empty())
+            std::cout << "optionSelectWavFilePath not found in config file." << std::endl;
+        else
+            m_explosion->LoadWAV("option_select", optionSelectPath);
+
+        // Bell ding played once per scored point. Loaded under several keys so the rapid
+        // cascade of dings (one per point) overlaps instead of cutting itself off.
+        std::string scorePointPath = Utilities::ReadConfigFileGetPath(Common::GAME_CONFIG_FILE, "scorePointWavFilePath");
+        if (scorePointPath.empty())
+            std::cout << "scorePointWavFilePath not found in config file." << std::endl;
+        else
+            for (int v = 0; v < DING_VOICES; ++v)
+                m_explosion->LoadWAV("ding_" + std::to_string(v), scorePointPath);
     }
 
     RegisterDrawables();
@@ -122,6 +140,20 @@ void GameManager::UserScored()
 {
     BlowUpActiveBlock();
     m_uiManager->IncreaseScore();
+}
+
+// Plays the menu-selection click sound (wired to UIManager via AddMenuSelectCallback).
+void GameManager::PlayMenuSelectSound()
+{
+    m_explosion->PlaySound("option_select");
+}
+
+// Plays one bell ding on the next voice in the pool (round-robin) so a rapid cascade of
+// score dings layers instead of cutting off. Wired to UIManager via AddScoreDingCallback.
+void GameManager::PlayScoreDing()
+{
+    m_explosion->PlaySound("ding_" + std::to_string(m_dingVoice));
+    m_dingVoice = (m_dingVoice + 1) % DING_VOICES;
 }
 
 void GameManager::Render()

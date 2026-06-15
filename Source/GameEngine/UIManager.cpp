@@ -306,12 +306,14 @@ bool GameEngine::UIManager::RegisterCallbacks()
     m_exitConfirmPopup->AddButton("No", [this]() { m_exitConfirmPopup->SetIsActive(false); });
 
     // --- Help: Instructions ---
-    m_instructionsPopup->AddLine("HOW TO PLAY KABOOM TYPER");
-    m_instructionsPopup->AddLine("Type the falling word and press Enter to blow it up.");
-    m_instructionsPopup->AddLine("Clear words before the blocks stack to the top.");
-    m_instructionsPopup->AddLine("Arrow keys nudge the active falling block.");
     const RGBColor keyRed = RGBColor::GetRGBColor(RGBColor::Red);
     const RGBColor white = RGBColor::GetRGBColor(RGBColor::White);
+    m_instructionsPopup->AddLine("HOW TO PLAY KABOOM TYPER");
+    m_instructionsPopup->AddLine("Type the falling word and press Enter to blow it up.");
+    m_instructionsPopup->AddColoredLine({
+        { "Type ", white }, { "KABOOM", keyRed }, { " to blow up a block for no points.", white } });
+    m_instructionsPopup->AddLine("Clear words before the blocks stack to the top.");
+    m_instructionsPopup->AddLine("Arrow keys nudge the active falling block.");
     m_instructionsPopup->AddColoredLine({
         { "F1", keyRed }, { " Start   ", white },
         { "F2", keyRed }, { " Pause   ", white },
@@ -340,6 +342,22 @@ void UIManager::Update(float dt)
 {
     m_inputTextBox->Update(dt);
     m_messageBox->Update(dt); // drives the slow flash of the "GAME OVER" banner
+
+    // Tick the score up one point at a time, playing a ding for each, in rapid succession.
+    if (m_pendingScoreTicks > 0)
+    {
+        m_scoreTickTimer += dt;
+        if (m_scoreTickTimer >= SCORE_TICK_INTERVAL)
+        {
+            m_scoreTickTimer -= SCORE_TICK_INTERVAL;
+            m_headsUpDisplay->IncreaseScore(1);
+            m_headsUpDisplay->SetUpdateRequired(true);
+            if (m_scoreDingCallback)
+                m_scoreDingCallback();
+            --m_pendingScoreTicks;
+        }
+    }
+
 	if (m_headsUpDisplay->UpdateRequired()) // only update the HUD if needed
 		m_headsUpDisplay->Update(dt);
 
@@ -500,6 +518,22 @@ void GameEngine::UIManager::AddKaboomCallback(Callback callback)
     m_kaboomCallback = callback;
 }
 
+void GameEngine::UIManager::AddMenuSelectCallback(Callback callback)
+{
+    m_menuSelectCallback = callback;
+}
+
+void GameEngine::UIManager::AddScoreDingCallback(Callback callback)
+{
+    m_scoreDingCallback = callback;
+}
+
+void GameEngine::UIManager::NotifyMenuSelect()
+{
+    if (m_menuSelectCallback)
+        m_menuSelectCallback();
+}
+
 void UIManager::AddGameOverCallback(Callback callback)
 {
     m_gameOverCallback = callback;
@@ -523,16 +557,18 @@ void UIManager::AddWordSpeedCallback(WordSpeedCallback callback)
 void UIManager::ResetScore()
 {
 	m_headsUpDisplay->ResetScore();
+	m_pendingScoreTicks = 0; // drop any leftover score-tick cascade from the previous game
+	m_scoreTickTimer = 0.0f;
 }
 
 void UIManager::IncreaseScore()
 {
-	// 10 points per character: longer words are worth more. The just-typed word is
-	// still in Common's submitted text here (only the *active* text is overwritten
-	// when the next block spawns during UserScored).
-	int points = static_cast<int>(Common::GetSubmittedText().length()) * 10;
-	m_headsUpDisplay->IncreaseScore(points);
-	m_headsUpDisplay->SetUpdateRequired(true); // HUD needs to be updated
+	// 1 point per character. The just-typed word is still in Common's submitted text here
+	// (only the *active* text is overwritten when the next block spawns during UserScored).
+	// Queue the points rather than adding them at once: Update() ticks them up one at a
+	// time, playing a ding for each so the scoreboard counts up in step with the dings.
+	int points = static_cast<int>(Common::GetSubmittedText().length());
+	m_pendingScoreTicks += points;
 }
 
 void UIManager::GameOver()
@@ -568,6 +604,7 @@ void UIManager::DisableAllButtonsExceptThisButton(const std::string& menuName)
 
 void GameEngine::UIManager::DisplayMainMenuChoices(const std::string& buttonName)
 {
+    NotifyMenuSelect();
     auto it = m_dropDownMenus.find(buttonName);
     if (it != m_dropDownMenus.end())
     {
@@ -683,6 +720,7 @@ int GameEngine::UIManager::ComputeFlyoutX(int parentX, int parentWidth, int flyo
 
 void GameEngine::UIManager::OpenWordCategoryFlyout(const std::string& name)
 {
+    NotifyMenuSelect();
     auto parentIt = m_choiceMenus.find("Word Category");
     auto flyIt = m_choiceMenus.find(name);
     if (parentIt == m_choiceMenus.end() || flyIt == m_choiceMenus.end())
@@ -876,6 +914,7 @@ bool GameEngine::UIManager::HandleMenuInput(InputManager* InputMgr)
 
 void GameEngine::UIManager::FileDropDownMenuOnClick(const std::string& choice)
 {
+    NotifyMenuSelect();
     if (choice == "START")
     {
 #if DEBUG
@@ -905,6 +944,7 @@ void GameEngine::UIManager::FileDropDownMenuOnClick(const std::string& choice)
 
 void GameEngine::UIManager::OptionsDropDownMenuOnClick(const std::string& choice)
 {
+    NotifyMenuSelect();
     // The Animals fly-out is a child of the Word Category menu; reset it whenever the user
     // switches Options sub-menus so it can't be left visible without its parent.
     if (auto fly = m_choiceMenus.find("Animals"); fly != m_choiceMenus.end())
@@ -958,6 +998,7 @@ void GameEngine::UIManager::OptionsDropDownMenuOnClick(const std::string& choice
 
 void GameEngine::UIManager::WordCategoryChoiceMenuOnClick(const std::string& choice)
 {
+    NotifyMenuSelect();
     std::string selection = choice;
     for (const auto& category : m_wordCategories)
     {
@@ -975,6 +1016,7 @@ void GameEngine::UIManager::WordCategoryChoiceMenuOnClick(const std::string& cho
 
 void GameEngine::UIManager::AudioChoiceMenuOnClick(const std::string& choice)
 {
+    NotifyMenuSelect();
     bool state = false;
     const char* errorMsg = "UIManager::AudioChoiceMenuOnClick, invalid choice key";
     std::string selection = choice;
@@ -1002,6 +1044,7 @@ void GameEngine::UIManager::AudioChoiceMenuOnClick(const std::string& choice)
 
 void GameEngine::UIManager::WordSpeedChoiceMenuOnClick(const std::string& choice)
 {
+    NotifyMenuSelect();
     bool state = false;
     const char* errorMsg = "UIManager::WordSpeedChoiceMenuOnClick, invalid choice key";
     std::string selection = choice;
@@ -1030,6 +1073,7 @@ void GameEngine::UIManager::WordSpeedChoiceMenuOnClick(const std::string& choice
 
 void GameEngine::UIManager::HelpDropDownMenuOnClick(const std::string& choice)
 {
+    NotifyMenuSelect();
     if (choice == "INSTRUCTIONS")
     {
 #if DEBUG

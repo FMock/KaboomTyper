@@ -38,7 +38,7 @@ void InputMessageBox::Draw()
     {
         RGBColor color = RGBColor::GetRGBColor(RGBColor::Blue);
         glDrawFilledRectangle(m_x, m_y, m_width, m_height, 1.0f, 1.0f, color);
-        glDrawRectangleOutline(m_x, m_y, m_width, m_height, RGBColor::GetRGBColor(RGBColor::Red)); // red frame, consistent with menus/popups
+        glDrawThickRectangleOutline(m_x, m_y, m_width, m_height, RGBColor::GetRGBColor(RGBColor::LightGray), Common::FRAME_THICKNESS); // light gray frame, consistent with menus/popups
 
         m_cancelButton->Draw();
         m_submitButton->Draw();

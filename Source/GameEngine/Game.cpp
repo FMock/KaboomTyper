@@ -166,16 +166,16 @@ void Game::Draw()
 	// Draw Game
 	m_gameManager->Render();
 
-	// Strong red border around the whole app, drawn last so it sits on top, in the margin
+	// Light gray border around the whole app, drawn last so it sits on top, in the margin
 	// just outside the logical play field (which holds the existing blue border inside it).
 	const int B = Common::BORDER_THICKNESS;
 	const int W = Common::WINDOW_WIDTH;
 	const int H = Common::WINDOW_HEIGHT;
-	const RGBColor red = RGBColor::GetRGBColor(RGBColor::Red);
-	glDrawFilledRectangle(-B, -B, W + 2 * B, B, 1.0f, 1.0f, red); // top
-	glDrawFilledRectangle(-B, H, W + 2 * B, B, 1.0f, 1.0f, red);  // bottom
-	glDrawFilledRectangle(-B, 0, B, H, 1.0f, 1.0f, red);          // left
-	glDrawFilledRectangle(W, 0, B, H, 1.0f, 1.0f, red);           // right
+	const RGBColor borderColor = RGBColor::GetRGBColor(RGBColor::LightGray);
+	glDrawFilledRectangle(-B, -B, W + 2 * B, B, 1.0f, 1.0f, borderColor); // top
+	glDrawFilledRectangle(-B, H, W + 2 * B, B, 1.0f, 1.0f, borderColor);  // bottom
+	glDrawFilledRectangle(-B, 0, B, H, 1.0f, 1.0f, borderColor);          // left
+	glDrawFilledRectangle(W, 0, B, H, 1.0f, 1.0f, borderColor);           // right
 
 	// Swap Window
 	SDL_GL_SwapWindow(m_window);

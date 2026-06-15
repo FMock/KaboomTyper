@@ -569,6 +569,37 @@ void DrawUtilities::glDrawRectangleOutline(int x, int y, int w, int h, const RGB
 	glColor4ub(255, 255, 255, 255);
 }
 
+void DrawUtilities::glDrawThickRectangleOutline(int x, int y, int w, int h, const RGBColor& color, int t)
+{
+	// Disable texturing so the bars draw in the pure color regardless of bound texture.
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	glBegin(GL_QUADS);
+	{
+		glColor3ub(color.r, color.g, color.b);
+
+		// Top bar
+		glVertex2i(x, y);         glVertex2i(x + w, y);
+		glVertex2i(x + w, y + t); glVertex2i(x, y + t);
+
+		// Bottom bar
+		glVertex2i(x, y + h - t);     glVertex2i(x + w, y + h - t);
+		glVertex2i(x + w, y + h);     glVertex2i(x, y + h);
+
+		// Left bar (between the top and bottom bars)
+		glVertex2i(x, y + t);     glVertex2i(x + t, y + t);
+		glVertex2i(x + t, y + h - t); glVertex2i(x, y + h - t);
+
+		// Right bar
+		glVertex2i(x + w - t, y + t); glVertex2i(x + w, y + t);
+		glVertex2i(x + w, y + h - t); glVertex2i(x + w - t, y + h - t);
+	}
+	glEnd();
+
+	// Restore the default full-white color so subsequent textured draws aren't tinted.
+	glColor4ub(255, 255, 255, 255);
+}
+
 
 void DrawUtilities::glDrawRectangleOutlineFilled(GLuint tex, int x, int y, int w, int h, float scaleX, float scaleY, const RGBColor& fillColor)
 {

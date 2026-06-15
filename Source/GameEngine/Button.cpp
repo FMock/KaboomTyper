@@ -27,7 +27,7 @@ void Button::Initialize(std::string text, int x, int y, float scaler, Colors col
 	m_outlineWidth = m_adjustedWidth + 8;
 	m_outlineHeight = static_cast<int>(32 * m_scaler) + 8;
 	m_outline->Initialize(m_xPos, m_yPos, m_outlineWidth, m_outlineHeight, Colors::DEFAULT_COLOR);
-	m_outline->SetFrameColor(RGBColor::GetRGBColor(RGBColor::Red)); // red frame to match the scoreboard
+	m_outline->SetFrameColor(RGBColor::GetRGBColor(RGBColor::LightGray)); // light gray frame
 	m_label->Initialize(text, x, y);
 }
 
@@ -49,7 +49,8 @@ void Button::Draw()
 		glDrawFilledRectangle(m_xPos, m_yPos, m_outlineWidth, m_outlineHeight, 1.0f, 1.0f, color, 128); // 128 == hover opacity
 	}
 
-	m_outline->Draw();
+	if (m_drawOutline)
+		m_outline->Draw();
 	m_label->DrawText(m_scaler);
 }
 
