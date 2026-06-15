@@ -58,6 +58,9 @@ namespace GameEngine
             {
                 button->Initialize("ABOUT", 317, 12, 0.65f, Colors::DARK_YELLOW);
             }
+
+            // The top menu items show no frame — just the label (and hover highlight).
+            button->SetDrawOutline(false);
         }
         else
         {

@@ -96,11 +96,11 @@ namespace GameEngine
         {
             glDrawTexture(m_colorTexture, m_x, m_y, (float)m_width, (float)m_height);
             if (m_hasFrame) // draw a colored frame on top of the fill
-                glDrawRectangleOutline(m_x, m_y, m_width, m_height, m_frameColor);
+                glDrawThickRectangleOutline(m_x, m_y, m_width, m_height, m_frameColor, Common::FRAME_THICKNESS);
         }
         else if (m_hasFrame)
         {
-            glDrawRectangleOutline(m_x, m_y, m_width, m_height, m_frameColor);
+            glDrawThickRectangleOutline(m_x, m_y, m_width, m_height, m_frameColor, Common::FRAME_THICKNESS);
         }
         else
         {

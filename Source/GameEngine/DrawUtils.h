@@ -54,6 +54,9 @@ namespace DrawUtilities
 	void glDrawTexture(GLuint tex, int x, int y, float width, float height); // assumes the texture w = 1 and h = 1
 	void glDrawRectangleOutline(GLuint tex, int x, int y, int w, int h, float scaleX, float scaleY);
 	void glDrawRectangleOutline(int x, int y, int w, int h, const RGBColor& outlineColor);
+	// Draws a rectangle border of the given pixel thickness as four filled bars (inset within
+	// the rect). Reliable across drivers, unlike thick GL_LINES.
+	void glDrawThickRectangleOutline(int x, int y, int w, int h, const RGBColor& color, int thickness);
 	void glDrawRectangleOutline(GLuint tex, int x, int y, float width, float height); // assumes a texture w and h of 1
 	void glDrawRectangleOutlineFilled(GLuint tex, int x, int y, int w, int h, float scaleX, float scaleY, const RGBColor& fillColor);
 	void glDrawFilledRectangle(int x, int y, int w, int h, const RGBColor& fillColor);

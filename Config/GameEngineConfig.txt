@@ -1,1 +1,3 @@
 explosionWavFilePath=..\..\Resources\sounds\boom.wav
+optionSelectWavFilePath=..\..\Resources\sounds\option_select.wav
+scorePointWavFilePath=..\..\Resources\sounds\score_points.wav

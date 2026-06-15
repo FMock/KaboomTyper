@@ -27,7 +27,7 @@ void PopupMessageBox::Draw()
     // Dark-blue background with a red frame to match the red scoreboard.
     RGBColor background = RGBColor::GetRGBColor(RGBColor::DarkBlue);
     glDrawFilledRectangle(m_x, m_y, m_width, m_height, 1.0f, 1.0f, background);
-    glDrawRectangleOutline(m_x, m_y, m_width, m_height, RGBColor::GetRGBColor(RGBColor::Red));
+    glDrawThickRectangleOutline(m_x, m_y, m_width, m_height, RGBColor::GetRGBColor(RGBColor::LightGray), Common::FRAME_THICKNESS);
 
     for (auto& line : m_lines)
         for (auto& segment : line.segments)

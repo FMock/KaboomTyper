@@ -74,8 +74,7 @@ bool Menu::AddCallback(const std::string& name, Callback callback)
 
 void Menu::InitializeMenu(const std::string& name, int nameX, int nameY, int x, int y, int width, int height, GameEngine::Colors, bool fill)
 {
-    m_menuBar->Initialize(x, y, width, height, Colors::BLUE, fill);
-    m_menuBar->SetFrameColor(RGBColor::GetRGBColor(RGBColor::Red)); // red frame, blue fill
+    m_menuBar->Initialize(x, y, width, height, Colors::BLUE, fill); // header bar: blue fill, no red frame
     m_title = TextString(name, nameX, nameY);
 
     // Initialize menu items
@@ -84,8 +83,7 @@ void Menu::InitializeMenu(const std::string& name, int nameX, int nameY, int x, 
         InitializeMenuItem(item.second.button.get(), item.first, 0, 0, 1.0f, Colors::DEFAULT_COLOR); // Pass default values
     }
 
-    m_footer->Initialize(0, 950, 900, 42, Colors::BLUE, true);// TODO: REMOVE FOOTER FROM MENU
-    m_footer->SetFrameColor(RGBColor::GetRGBColor(RGBColor::Red)); // red frame, blue fill
+    m_footer->Initialize(0, 950, 900, 42, Colors::BLUE, true);// footer bar: blue fill, no red frame. TODO: REMOVE FOOTER FROM MENU
 }
 
 void Menu::RespondToObserved(InputManager* InputMgr)

@@ -34,6 +34,8 @@ namespace GameEngine
 		void Update(float dt);
 		void UserScored();
 		void BlowUpActiveBlock(); // detonate the active block (no scoring) — used by UserScored and the "kaboom" word
+		void PlayMenuSelectSound(); // click sound for menu selections (wired to UIManager)
+		void PlayScoreDing(); // bell ding played once per scored point (wired to UIManager)
 		void Render();
 		bool GetExitGame() const;
 		void SetExitGame(bool exitGame);
@@ -66,6 +68,8 @@ namespace GameEngine
 		std::string m_explosionPath;
 		static const int BOOM_VOICES = 4; // pool of explosion voices so rapid blasts overlap
 		int m_boomVoice = 0;              // round-robin index into the voice pool
+		static const int DING_VOICES = 8; // pool of ding voices so rapid score dings overlap
+		int m_dingVoice = 0;              // round-robin index into the ding voice pool
 
 	protected:
 		void RespondToObserved(InputManager* InputMgr) override;

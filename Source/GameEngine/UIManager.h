@@ -64,6 +64,8 @@ namespace GameEngine
 		using WordSpeedCallback = std::function<void(const std::string&)>;
 		void AddCallback(Callback callback);
 		void AddKaboomCallback(Callback callback);
+		void AddMenuSelectCallback(Callback callback);
+		void AddScoreDingCallback(Callback callback);
 		void AddGameOverCallback(Callback callback);
 		void AddStartGameCallback(Callback callback);
 		void AddAudioCallback(AudioCallback callback);
@@ -94,7 +96,15 @@ namespace GameEngine
 		std::vector<std::string> m_wordSpeedOptions;
 		Callback m_processInputCallback;
 		Callback m_kaboomCallback;
+		Callback m_menuSelectCallback;
+		Callback m_scoreDingCallback;
 		Callback m_gameOverCallback;
+
+		// Score-tick animation: points are queued and added one at a time (with a ding each)
+		// in rapid succession so the scoreboard counts up by one per ding.
+		int m_pendingScoreTicks = 0;
+		float m_scoreTickTimer = 0.0f;
+		static constexpr float SCORE_TICK_INTERVAL = 0.09f; // seconds between dings/points
 		Callback m_startGameCallback;
 		WordSpeedCallback m_wordSpeedCallback;
 		AudioCallback m_audioCallback;
@@ -102,6 +112,7 @@ namespace GameEngine
 		bool m_initialized;
 		void Initialize();
 		bool RegisterCallbacks();
+		void NotifyMenuSelect(); // plays the menu-selection click sound, if wired
 		void DisableAllButtonsExceptThisButton(const std::string& buttonName);
 		// Show a popup, ensuring it is the only one visible (closes any other first).
 		void ShowModal(const std::shared_ptr<PopupMessageBox>& popup);
